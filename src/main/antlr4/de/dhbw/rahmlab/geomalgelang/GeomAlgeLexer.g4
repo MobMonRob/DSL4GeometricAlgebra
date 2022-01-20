@@ -1,16 +1,48 @@
 lexer grammar GeomAlgeLexer;
 
-OPEN                : '[' -> pushMode(BBCODE) ;
-TEXT                : ~('[')+ ;
+fragment LETTER
+    : [a-zA-Z]
+    ;
 
-// Parsing content inside tags
-mode BBCODE;
+fragment DIGIT
+    : [0-9]
+    ;
 
-CLOSE               : ']' -> popMode ;
-SLASH               : '/' ;
-EQUALS              : '=' ;
-STRING              : '"' .*? '"' ;
-ID                  : LETTERS+ ;
-WS                  : [ \t\r\n] -> skip ;
+DECIMAL_LITERAL
+    : DIGIT+ (',' DIGIT+)?
+    ;
 
-fragment LETTERS    : [a-zA-Z] ;
+ADD
+    : '+'
+    ;
+
+SUB
+    : '-'
+    ;
+
+MUL
+    : '*'
+    ;
+
+DIV
+    : '/'
+    ;
+
+L_PAREN
+    : '('
+    ;
+
+R_PAREN
+    : ')'
+    ;
+
+WHITESPACE
+    :  [ \t\r\n\u000C]+ -> skip
+    ;
+
+NEWLINE: '\r'? '\n';
+
+// Catchall Rule https://tomassetti.me/antlr-mega-tutorial/#chapter56
+ANY
+    : .
+    ;

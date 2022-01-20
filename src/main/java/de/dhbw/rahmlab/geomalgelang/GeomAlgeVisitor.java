@@ -7,82 +7,99 @@ package de.dhbw.rahmlab.geomalgelang;
 
 import java.io.PrintStream;
 
-public class GeomAlgeVisitor extends GeomAlgeParserBaseVisitor<String>
-{            
+/**
+ * Dieser Visitor ist aus dem Beispielprojekt, um Visitors besser zu verstehen.
+ * Der Code bezieht sich nicht auf die aktuelle Parser Grammatik und wird auch
+ * nicht benutzt.
+ *
+ * @author fabian
+ */
+public class GeomAlgeVisitor extends GeomAlgeParserBaseVisitor<String> {
+
     private PrintStream stream;
-    public GeomAlgeVisitor(PrintStream stream)
-    {
+
+    public GeomAlgeVisitor(PrintStream stream) {
         this.stream = stream;
     }
 
     @Override
-    public String visitFile(GeomAlgeParser.FileContext context)    
-    {
+    public String visitExpr(GeomAlgeParser.ExprContext context) {
+        this.visitChildren(context);
+
+        String expr = context.getText();
+
+        this.stream.println(expr);
+
+        return null;
+    }
+
+    /*
+    @Override
+    public String visitFile(GeomAlgeParser.FileContext context) {
         visitChildren(context);
-           
+
         stream.println();
 
         return null;
     }
 
     @Override
-    public String visitTag(GeomAlgeParser.TagContext context)    
-    {
+    public String visitTag(GeomAlgeParser.TagContext context) {
         String text = "";
         String startDelimiter = "", endDelimiter = "";
 
         String id = context.ID(0).getText();
-        
-        switch(id)
-        {
+
+        switch (id) {
             case "b":
-                startDelimiter = endDelimiter = "**";                
-            break;
+                startDelimiter = endDelimiter = "**";
+                break;
             case "u":
-                startDelimiter = endDelimiter = "*";                
-            break;
+                startDelimiter = endDelimiter = "*";
+                break;
             case "quote":
                 String attribute = context.attribute().STRING().getText();
-                attribute = attribute.substring(1,attribute.length()-1);
+                attribute = attribute.substring(1, attribute.length() - 1);
                 startDelimiter = System.lineSeparator() + "> ";
                 endDelimiter = System.lineSeparator() + "> " + System.lineSeparator() + "> - "
-                             + attribute + System.lineSeparator();
-            break;
-        } 
+                    + attribute + System.lineSeparator();
+                break;
+        }
 
         text += startDelimiter;
 
-        for (GeomAlgeParser.ElementContext node: context.element())
-        {                
-            if(node.tag() != null)
+        for (GeomAlgeParser.ElementContext node : context.element()) {
+            if (node.tag() != null) {
                 text += visitTag(node.tag());
-            if(node.content() != null)
-                text += visitContent(node.content());                
-        }        
-        
+            }
+            if (node.content() != null) {
+                text += visitContent(node.content());
+            }
+        }
+
         text += endDelimiter;
-        
-        return text;        
+
+        return text;
     }
 
     @Override
-    public String visitContent(GeomAlgeParser.ContentContext context)    
-    {          
-        return context.getText();        
-    }    
+    public String visitContent(GeomAlgeParser.ContentContext context) {
+        return context.getText();
+    }
 
     @Override
-    public String visitElement(GeomAlgeParser.ElementContext context)
-    {
-        if(context.parent instanceof GeomAlgeParser.FileContext)
-        {
-            if(context.content() != null)            
+    public String visitElement(GeomAlgeParser.ElementContext context) {
+        if (context.parent instanceof GeomAlgeParser.FileContext) {
+            if (context.content() != null) {
                 stream.print(visitContent(context.content()));
-                
-            if(context.tag() != null)
-                stream.print(visitTag(context.tag()));                
-        }    
+            }
+
+            if (context.tag() != null) {
+                stream.print(visitTag(context.tag()));
+            }
+        }
 
         return null;
     }
+     */
 }
