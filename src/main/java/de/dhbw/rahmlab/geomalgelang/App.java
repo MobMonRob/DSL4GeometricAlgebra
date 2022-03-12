@@ -5,25 +5,41 @@
  */
 package de.dhbw.rahmlab.geomalgelang;
 
+import java.io.IOException;
 import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.CharStreams;
+import org.graalvm.polyglot.Context;
+import org.graalvm.polyglot.Source;
+import org.graalvm.polyglot.Value;
 
 public class App {
 
-    public static void main(String[] args) throws Exception {
-        CharStream inputStream = CharStreams.fromString(
-            "7 * (8,5 + 10)");
-        GeomAlgeLexer lexer = new GeomAlgeLexer(inputStream);
-        CommonTokenStream commonTokenStream = new CommonTokenStream(lexer);
-        GeomAlgeParser parser = new GeomAlgeParser(commonTokenStream);
+	public static void main(String[] args) throws Exception {
+		String input = "7 * (8,5 + 10)";
 
-        AntlrTestRig testRig = new AntlrTestRig();
-        testRig.process(lexer, parser, inputStream, "program");
+		parseTest(input);
+		invokeLanguage(input);
+	}
 
-        /*
-        GeomAlgeParser.ExprContext context = parser.expr();
-        GeomAlgeVisitor visitor = new GeomAlgeVisitor(System.out);
-        visitor.visit(context);
-         */
-    }
+	private static void parseTest(String program) throws Exception {
+		CharStream inputStream = CharStreams.fromString(program);
+		GeomAlgeLexer lexer = new GeomAlgeLexer(inputStream);
+		CommonTokenStream commonTokenStream = new CommonTokenStream(lexer);
+		GeomAlgeParser parser = new GeomAlgeParser(commonTokenStream);
+
+		AntlrTestRig testRig = new AntlrTestRig();
+		testRig.process(lexer, parser, inputStream, "program");
+	}
+
+	private static void invokeLanguage(String program) throws IOException {
+		Context context = Context.create("geomalgelang");
+		Source source = Source.newBuilder("geomalgelang", program, "MATH").build();
+
+		try {
+			Value value = context.eval(source);
+			System.out.println("answer: " + value);
+			System.out.println();
+		} finally {
+			context.close();
+		}
+	}
 }
