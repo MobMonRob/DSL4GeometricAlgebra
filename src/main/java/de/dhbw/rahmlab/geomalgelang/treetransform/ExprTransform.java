@@ -19,7 +19,7 @@ import java.util.Deque;
 /**
  * This class converts an expression subtree of an ANTLR parsetree into an expression AST in truffle.
  *
- * Note that the parenthesis expression don't need an analogon in the AST.
+ * Note that the parenthesis expression don't need an analogue in the AST.
  *
  * The nodeStack cache works, because ANTLR ParseTree is traversed Depth-First. For visuals refer to:
  * https://saumitra.me/blog/antlr4-visitor-vs-listener-pattern/
