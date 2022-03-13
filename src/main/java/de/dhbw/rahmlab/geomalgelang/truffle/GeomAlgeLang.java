@@ -29,7 +29,8 @@ public class GeomAlgeLang extends TruffleLanguage<Void> {
 
 	@Override
 	protected Void createContext(Env env) {
-		throw new UnsupportedOperationException("Not supported yet.");
+		//throw new UnsupportedOperationException("Not supported yet.");
+		return null;
 	}
 
 	@Override

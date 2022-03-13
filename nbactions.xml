@@ -10,9 +10,9 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:3.0.0:exec</goal>
             </goals>
             <properties>
-                <exec.vmArgs>-Dtruffle.class.path.append=/home/fabian/Desktop/Geometrische Algebra/DSL4GeometricAlgebra/target/GeomAlgeLang-1.0-SNAPSHOT.jar</exec.vmArgs>
+                <exec.vmArgs>-Dgraalvm.locatorDisabled=true</exec.vmArgs>
                 <exec.args>${exec.vmArgs} -classpath %classpath ${exec.mainClass} ${exec.appArgs}</exec.args>
-                <exec.appArgs>-Dtruffle.class.path.append=/home/fabian/Desktop/Geometrische Algebra/DSL4GeometricAlgebra/target/GeomAlgeLang-1.0-SNAPSHOT.jar</exec.appArgs>
+                <exec.appArgs></exec.appArgs>
                 <exec.mainClass>de.dhbw.rahmlab.geomalgelang.App</exec.mainClass>
                 <exec.executable>java</exec.executable>
             </properties>
@@ -27,9 +27,9 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:3.0.0:exec</goal>
             </goals>
             <properties>
-                <exec.vmArgs>-Dtruffle.class.path.append=/home/fabian/Desktop/Geometrische Algebra/DSL4GeometricAlgebra/target/GeomAlgeLang-1.0-SNAPSHOT.jar -agentlib:jdwp=transport=dt_socket,server=n,address=${jpda.address}</exec.vmArgs>
+                <exec.vmArgs>-Dgraalvm.locatorDisabled=true -agentlib:jdwp=transport=dt_socket,server=n,address=${jpda.address}</exec.vmArgs>
                 <exec.args>${exec.vmArgs} -classpath %classpath ${exec.mainClass} ${exec.appArgs}</exec.args>
-                <exec.appArgs>-Dtruffle.class.path.append=/home/fabian/Desktop/Geometrische Algebra/DSL4GeometricAlgebra/target/GeomAlgeLang-1.0-SNAPSHOT.jar</exec.appArgs>
+                <exec.appArgs></exec.appArgs>
                 <exec.mainClass>de.dhbw.rahmlab.geomalgelang.App</exec.mainClass>
                 <exec.executable>java</exec.executable>
                 <jpda.listen>true</jpda.listen>
@@ -45,11 +45,11 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:3.0.0:exec</goal>
             </goals>
             <properties>
-                <exec.vmArgs>-Dtruffle.class.path.append=/home/fabian/Desktop/Geometrische Algebra/DSL4GeometricAlgebra/target/GeomAlgeLang-1.0-SNAPSHOT.jar</exec.vmArgs>
+                <exec.vmArgs>-Dgraalvm.locatorDisabled=true</exec.vmArgs>
                 <exec.args>${exec.vmArgs} -classpath %classpath ${exec.mainClass} ${exec.appArgs}</exec.args>
                 <exec.mainClass>de.dhbw.rahmlab.geomalgelang.App</exec.mainClass>
                 <exec.executable>java</exec.executable>
-                <exec.appArgs>-Dtruffle.class.path.append=/home/fabian/Desktop/Geometrische Algebra/DSL4GeometricAlgebra/target/GeomAlgeLang-1.0-SNAPSHOT.jar</exec.appArgs>
+                <exec.appArgs></exec.appArgs>
             </properties>
         </action>
     </actions>
