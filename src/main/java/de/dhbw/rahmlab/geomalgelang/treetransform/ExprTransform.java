@@ -5,8 +5,8 @@
 package de.dhbw.rahmlab.geomalgelang.treetransform;
 
 import com.oracle.truffle.api.frame.FrameDescriptor;
-import de.dhbw.rahmlab.geomalgelang.GeomAlgeParser;
-import de.dhbw.rahmlab.geomalgelang.GeomAlgeParserBaseListener;
+import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParser;
+import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParserBaseListener;
 import de.dhbw.rahmlab.geomalgelang.truffle.GeomAlgeLang;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.BaseNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.GeomAlgeLangRootNode;

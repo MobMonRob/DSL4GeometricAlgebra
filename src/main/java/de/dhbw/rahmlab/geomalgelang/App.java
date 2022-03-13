@@ -5,6 +5,8 @@
  */
 package de.dhbw.rahmlab.geomalgelang;
 
+import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeLexer;
+import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParser;
 import java.io.IOException;
 import org.antlr.v4.runtime.*;
 import org.graalvm.polyglot.Context;
