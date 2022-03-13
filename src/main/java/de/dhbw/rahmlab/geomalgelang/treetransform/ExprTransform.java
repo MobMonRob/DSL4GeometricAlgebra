@@ -13,6 +13,9 @@ import de.dhbw.rahmlab.geomalgelang.truffle.nodes.BaseNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.GeomAlgeLangRootNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.literal.DecimalLiteral;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.ops.binops.*;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.ParseException;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
@@ -58,12 +61,27 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		nodeStack.push(current);
 	}
 
+	// https://stackoverflow.com/questions/4323599/best-way-to-parsedouble-with-comma-as-decimal-separator/4323627#4323627
+	private static final DecimalFormat decimalFormat = new DecimalFormat();
+
+	static {
+		final DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+		symbols.setDecimalSeparator(',');
+		symbols.setGroupingSeparator(' ');
+		decimalFormat.setDecimalFormatSymbols(symbols);
+	}
+
 	@Override
 	public void exitLiteralDecimal(GeomAlgeParser.LiteralDecimalContext ctx) {
-		String decimalLiteral = ctx.value.getText();
-		double value = Double.parseDouble(decimalLiteral);
-		DecimalLiteral node = new DecimalLiteral(value);
-		nodeStack.push(node);
+		try {
+			String decimalLiteral = ctx.value.getText();
+			double value = decimalFormat.parse(decimalLiteral).doubleValue();
+			DecimalLiteral node = new DecimalLiteral(value);
+			nodeStack.push(node);
+		} catch (ParseException ex) {
+			// Should never occur because of the DECIMAL_LITERAL lexer token definition.
+			throw new AssertionError(ex);
+		}
 	}
 
 	@Override
