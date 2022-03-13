@@ -4,10 +4,18 @@
  */
 package de.dhbw.rahmlab.geomalgelang.truffle.nodes.ops.binops;
 
+import com.oracle.truffle.api.dsl.Specialization;
+import com.oracle.truffle.api.nodes.NodeInfo;
+
 /**
  *
  * @author fabian
  */
+@NodeInfo(shortName = "+")
 public abstract class Add extends BinaryOp {
 
+	@Specialization
+	protected double add(double left, double right) {
+		return (left + right);
+	}
 }

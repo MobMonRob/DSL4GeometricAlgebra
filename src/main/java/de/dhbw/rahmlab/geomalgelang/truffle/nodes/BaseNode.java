@@ -4,12 +4,15 @@
  */
 package de.dhbw.rahmlab.geomalgelang.truffle.nodes;
 
+import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.Node;
+import com.oracle.truffle.api.nodes.NodeInfo;
 
 /**
  *
  * @author fabian
  */
+@NodeInfo
 public abstract class BaseNode extends Node {
-
+	public abstract Object executeGeneric(VirtualFrame frame);
 }

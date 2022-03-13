@@ -4,12 +4,27 @@
  */
 package de.dhbw.rahmlab.geomalgelang.truffle.nodes.literal;
 
+import com.oracle.truffle.api.frame.VirtualFrame;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.BaseNode;
 
 /**
  *
  * @author fabian
  */
-public abstract class DecimalLiteral extends BaseNode {
+public class DecimalLiteral extends BaseNode {
 
+	private final double value;
+
+	public DecimalLiteral(double d) {
+		this.value = d;
+	}
+
+	public double executeDouble(VirtualFrame frame) {
+		return this.value;
+	}
+
+	@Override
+	public Object executeGeneric(VirtualFrame frame) {
+		return this.value;
+	}
 }
