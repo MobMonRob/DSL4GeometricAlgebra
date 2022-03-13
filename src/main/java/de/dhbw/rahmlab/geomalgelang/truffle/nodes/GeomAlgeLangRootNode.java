@@ -15,9 +15,6 @@ import com.oracle.truffle.api.nodes.RootNode;
  */
 public class GeomAlgeLangRootNode extends RootNode {
 
-	/**
-	 * The function body that is executed, and specialized during execution.
-	 */
 	private BaseNode bodyNode;
 
 	public GeomAlgeLangRootNode(TruffleLanguage<?> language, FrameDescriptor frameDescriptor, BaseNode node) {
@@ -27,7 +24,6 @@ public class GeomAlgeLangRootNode extends RootNode {
 
 	@Override
 	public Object execute(VirtualFrame frame) {
-		throw new UnsupportedOperationException("Not supported yet.");
+		return bodyNode.executeGeneric(frame);
 	}
-
 }

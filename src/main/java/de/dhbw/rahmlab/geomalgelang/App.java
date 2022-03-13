@@ -33,14 +33,6 @@ public class App {
 	}
 
 	private static void invokeLanguage(String program) throws IOException {
-		/*
-		GeomAlgeLangProvider prov = new GeomAlgeLangProvider();
-		GeomAlgeLang geomAlge = new GeomAlgeLang();
-		Source source = new Source();
-		ParsingRequest request = new ParsingRequest();
-		 */
-
-		//geomAlge.parse()
 		Context context = Context.create("geomalgelang");
 		Source source = Source.newBuilder("geomalgelang", program, "MATH").build();
 

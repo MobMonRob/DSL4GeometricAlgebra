@@ -41,6 +41,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		BaseNode left = nodeStack.pop();
 
 		BaseNode current = null;
+
 		switch (ctx.op.getType()) {
 			case GeomAlgeLexer.ADD:
 				current = AddNodeGen.create(left, right);
