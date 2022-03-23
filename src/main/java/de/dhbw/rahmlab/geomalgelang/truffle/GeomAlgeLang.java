@@ -39,11 +39,8 @@ public class GeomAlgeLang extends TruffleLanguage<Void> {
 		return rootNode.getCallTarget();
 	}
 
-	// TODO: raustrennen, sodass Parser Teil und Transformation Teil an ihrer Stelle sind.
 	private GeomAlgeLangRootNode parseSource(Source source) throws IOException {
 		CharStream inputStream = CharStreams.fromReader(source.getReader());
-
-		System.out.println("inputed String: " + inputStream.toString());
 
 		// Lexer and Parser invokation
 		GeomAlgeLexer lexer = new GeomAlgeLexer(inputStream);

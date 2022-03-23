@@ -16,7 +16,8 @@ import org.graalvm.polyglot.Value;
 public class App {
 
 	public static void main(String[] args) throws Exception {
-		String input = "7 * (8,5 + 10)";
+		//String input = "7 * (8,5 + 10)";
+		String input = "3,25 * (10 / 5)";
 
 		//parseTest(input);
 		invokeLanguage(input);
@@ -33,6 +34,8 @@ public class App {
 	}
 
 	private static void invokeLanguage(String program) throws IOException {
+		System.out.println("inputed program: " + program);
+
 		Context context = Context.create("geomalgelang");
 		Source source = Source.newBuilder("geomalgelang", program, "MATH").build();
 
