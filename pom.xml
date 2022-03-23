@@ -10,6 +10,7 @@
 		<maven.compiler.source>11</maven.compiler.source>
 		<maven.compiler.target>11</maven.compiler.target>
 		<skipTests>true</skipTests>
+		<graalvm.version>22.0.0</graalvm.version>
 	</properties>
 	<dependencies>
 		<!-- https://mvnrepository.com/artifact/org.antlr/antlr4-maven-plugin -->
@@ -27,12 +28,19 @@
 		<dependency>
 			<groupId>org.graalvm.truffle</groupId>
 			<artifactId>truffle-api</artifactId>
-			<version>22.0.0</version> <!-- or any later version -->
+			<version>${graalvm.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.graalvm.truffle</groupId>
 			<artifactId>truffle-dsl-processor</artifactId>
-			<version>22.0.0</version>
+			<version>${graalvm.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<!-- https://www.graalvm.org/22.0/reference-manual/embed-languages/#dependency-setup -->
+			<groupId>org.graalvm.sdk</groupId>
+			<artifactId>graal-sdk</artifactId>
+			<version>${graalvm.version}</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
