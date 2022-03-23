@@ -11,7 +11,7 @@ Within the Netbeans 13 IDE you can do this if you follow these steps:
 - open project properties via right-click on the project
 - navigate to Build / Compile
 - click "Manage Java Platforms..."
-- 
+
 or navigate to this point via the Tools main menu.
 
 - click "Add Platform..."
