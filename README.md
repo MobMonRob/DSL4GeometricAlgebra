@@ -1,7 +1,7 @@
 # DSL4GeometricAlgebra
 
 ## GraalVM Setup
-Download <https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.0.0.2/graalvm-ce-java11-linux-amd64-22.0.0.2.tar.gz> \
+Download the [GraalVM](https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.0.0.2/graalvm-ce-java11-linux-amd64-22.0.0.2.tar.gz)
 Extract the downloaded archive to an arbitrary location.
 
 ### Netbeans configuration
