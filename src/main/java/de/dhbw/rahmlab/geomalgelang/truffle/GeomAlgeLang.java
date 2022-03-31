@@ -25,12 +25,16 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 	id = "geomalgelang",
 	name = "GeomAlgeLang",
 	version = "0.0.1")
-public class GeomAlgeLang extends TruffleLanguage<Void> {
+public class GeomAlgeLang extends TruffleLanguage<GeomAlgeLangContext> {
 
 	@Override
-	protected Void createContext(Env env) {
-		//throw new UnsupportedOperationException("Not supported yet.");
-		return null;
+	protected GeomAlgeLangContext createContext(Env env) {
+		return new GeomAlgeLangContext();
+	}
+
+	@Override
+	protected Object getScope(GeomAlgeLangContext context) {
+		return context.globalVariableScope;
 	}
 
 	@Override

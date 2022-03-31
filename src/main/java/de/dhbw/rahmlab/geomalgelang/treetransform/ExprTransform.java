@@ -11,6 +11,8 @@ import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParserBaseListener;
 import de.dhbw.rahmlab.geomalgelang.truffle.GeomAlgeLang;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.BaseNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.GeomAlgeLangRootNode;
+import de.dhbw.rahmlab.geomalgelang.truffle.nodes.GlobalVariableReference;
+import de.dhbw.rahmlab.geomalgelang.truffle.nodes.GlobalVariableReferenceNodeGen;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.literal.DecimalLiteral;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.ops.binops.*;
 import java.text.DecimalFormat;
@@ -34,6 +36,10 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 	private BaseNode topExprNode = null;
 
 	private Deque<BaseNode> nodeStack = new ArrayDeque<>();
+
+	public GeomAlgeLangRootNode getRoot(GeomAlgeLang geomAlgeLang) {
+		return new GeomAlgeLangRootNode(geomAlgeLang, new FrameDescriptor(), topExprNode);
+	}
 
 	@Override
 	public void exitBinaryOp(GeomAlgeParser.BinaryOpContext ctx) {
@@ -93,7 +99,12 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		topExprNode = nodeStack.pop();
 	}
 
-	public GeomAlgeLangRootNode getRoot(GeomAlgeLang geomAlgeLang) {
-		return new GeomAlgeLangRootNode(geomAlgeLang, new FrameDescriptor(), topExprNode);
+	@Override
+	public void exitVariableReference(GeomAlgeParser.VariableReferenceContext ctx) {
+		String name = ctx.varName.getText();
+		GlobalVariableReference varRef = GlobalVariableReferenceNodeGen.create(name);
+		nodeStack.push(varRef);
+
+		//Entweder hier auch die Variable References in den Scope einfügen oder das inn einem separaten Schritt machen, nachdem ExprTransform durchgelaufen ist.
 	}
 }

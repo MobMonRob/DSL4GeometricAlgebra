@@ -12,6 +12,10 @@ DECIMAL_LITERAL
     : DIGIT+ (',' DIGIT+)?
     ;
 
+IDENTIFIER
+	: LETTER+
+	;
+
 ADD
     : '+'
     ;

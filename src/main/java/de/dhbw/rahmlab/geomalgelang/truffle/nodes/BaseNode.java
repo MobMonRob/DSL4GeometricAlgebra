@@ -14,5 +14,6 @@ import com.oracle.truffle.api.nodes.NodeInfo;
  */
 @NodeInfo
 public abstract class BaseNode extends Node {
+
 	public abstract Object executeGeneric(VirtualFrame frame);
 }

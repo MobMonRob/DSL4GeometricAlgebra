@@ -11,4 +11,5 @@ expr
     | left=expr op=(MUL|DIV) right=expr		#BinaryOp
     | left=expr op=(ADD|SUB) right=expr		#BinaryOp
     | value=DECIMAL_LITERAL					#LiteralDecimal
+	| varName=IDENTIFIER					#VariableReference
     ;
