@@ -26,7 +26,7 @@ public abstract class GlobalVariableReference extends BaseNode {
 		String variableId = this.getName();
 		var value = context.globalVariableScope.getVariable(variableId);
 		if (value == null) {
-			throw new GeomAlgeLangException(this, "'" + variableId + "' is not defined");
+			throw new GeomAlgeLangException(this, this.getClass().getSimpleName() + ": " + "'" + variableId + "' is not defined");
 		}
 		return value;
 	}

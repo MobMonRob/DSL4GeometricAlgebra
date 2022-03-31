@@ -105,6 +105,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		GlobalVariableReference varRef = GlobalVariableReferenceNodeGen.create(name);
 		nodeStack.push(varRef);
 
-		//Entweder hier auch die Variable References in den Scope einfügen oder das inn einem separaten Schritt machen, nachdem ExprTransform durchgelaufen ist.
+		// Entweder hier auch die Variable References in den Scope einfügen oder das inn einem separaten Schritt machen, nachdem ExprTransform durchgelaufen ist.
+		// Fraglich, ob notwendig, wenn die Variablen mit putMember eh übergeben werden...
 	}
 }

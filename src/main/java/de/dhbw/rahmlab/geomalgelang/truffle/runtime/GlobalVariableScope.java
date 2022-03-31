@@ -9,6 +9,8 @@ import com.oracle.truffle.api.interop.InteropLibrary;
 import com.oracle.truffle.api.interop.InvalidArrayIndexException;
 import com.oracle.truffle.api.interop.TruffleObject;
 import com.oracle.truffle.api.interop.UnknownIdentifierException;
+import com.oracle.truffle.api.interop.UnsupportedMessageException;
+import com.oracle.truffle.api.interop.UnsupportedTypeException;
 import com.oracle.truffle.api.library.ExportLibrary;
 import com.oracle.truffle.api.library.ExportMessage;
 import de.dhbw.rahmlab.geomalgelang.truffle.GeomAlgeLang;
@@ -47,6 +49,29 @@ public final class GlobalVariableScope implements TruffleObject {
 
 	public boolean isVariableAssigned(String name) {
 		return this.variables.get(name) != null;
+	}
+
+	// necessary for context.getBindings.putMember
+	@ExportMessage
+	public void writeMember(String member, Object value) throws UnsupportedMessageException, UnknownIdentifierException, UnsupportedTypeException {
+		if (!(value instanceof Double)) {
+			throw UnsupportedTypeException.create(new Object[]{value}, this.getClass().getSimpleName() + ": is not a double");
+		}
+		this.newVariable(member);
+		this.assignVariable(member, value);
+	}
+
+	@ExportMessage
+	public boolean isMemberInsertable(String member) {
+		// https://www.graalvm.org/truffle/javadoc/com/oracle/truffle/api/interop/InteropLibrary.html#isMemberInsertable-java.lang.Object-java.lang.String-
+		//Or isVariableAssigned??
+		return !this.isVariablePresent(member);
+	}
+
+	@ExportMessage
+	public boolean isMemberModifiable(String member) {
+		//https://www.graalvm.org/truffle/javadoc/com/oracle/truffle/api/interop/InteropLibrary.html#isMemberModifiable-java.lang.Object-java.lang.String-
+		return this.isVariablePresent(member);
 	}
 
 	@ExportMessage

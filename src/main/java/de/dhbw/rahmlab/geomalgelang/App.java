@@ -37,9 +37,9 @@ public class App {
 		Source source = Source.newBuilder("geomalgelang", program, "MATH")
 			.build();
 
-		Value bindings = context.getPolyglotBindings();
-		double a = 5;
-		bindings.putMember("a", 5);
+		Value bindings = context.getBindings("geomalgelang");
+		Double a = 5.0;
+		bindings.putMember("a", a);
 
 		try {
 			Value value = context.eval(source);
