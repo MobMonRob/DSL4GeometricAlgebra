@@ -1,5 +1,7 @@
 # DSL4GeometricAlgebra
 
+This repository contains code to work with multivector expressions of conformal algebra. The code is used as a reference implementation to test the software pipeline of truffle/graal and underlaying multivector implementations.
+
 ## GraalVM Setup
 Download the [GraalVM](https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.0.0.2/graalvm-ce-java11-linux-amd64-22.0.0.2.tar.gz)
 
