@@ -16,11 +16,15 @@ import org.graalvm.polyglot.Value;
  */
 public class LanguageInvocation {
 
-	public static String invoke(String program, Map<String, Object> inputVars) throws IOException {
+	public static Source StringToSource(String program) throws IOException {
+		Source source = Source.newBuilder("geomalgelang", program, "MATH")
+			.build();
+		return source;
+	}
+
+	public static String invoke(Source program, Map<String, Object> inputVars) {
 		Context context = Context.newBuilder("geomalgelang")
 			.allowAllAccess(true)
-			.build();
-		Source source = Source.newBuilder("geomalgelang", program, "MATH")
 			.build();
 
 		Value bindings = context.getBindings("geomalgelang");
@@ -32,7 +36,7 @@ public class LanguageInvocation {
 		String answer = null;
 
 		try {
-			Value value = context.eval(source);
+			Value value = context.eval(program);
 			answer = value.toString();
 		} finally {
 			context.close();

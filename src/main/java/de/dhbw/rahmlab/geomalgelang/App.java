@@ -5,6 +5,7 @@ import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParser;
 import java.util.HashMap;
 import java.util.Map;
 import org.antlr.v4.runtime.*;
+import org.graalvm.polyglot.Source;
 
 public class App {
 
@@ -19,7 +20,8 @@ public class App {
 		Double a = 5.0;
 		inputVars.put("a", a);
 
-		String answer = LanguageInvocation.invoke(program, inputVars);
+		Source source = LanguageInvocation.StringToSource(program);
+		String answer = LanguageInvocation.invoke(source, inputVars);
 		System.out.println("answer: " + answer);
 		System.out.println();
 	}
