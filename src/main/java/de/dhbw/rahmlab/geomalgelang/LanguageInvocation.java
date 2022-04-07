@@ -16,10 +16,11 @@ import org.graalvm.polyglot.Value;
  */
 public class LanguageInvocation {
 
-	public static Source StringToSource(String program) throws IOException {
+	public static String invoke(String program, Map<String, Object> inputVars) throws IOException {
 		Source source = Source.newBuilder("geomalgelang", program, "MATH")
 			.build();
-		return source;
+		String answer = invoke(source, inputVars);
+		return answer;
 	}
 
 	public static String invoke(Source program, Map<String, Object> inputVars) {
