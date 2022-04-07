@@ -2,20 +2,26 @@ package de.dhbw.rahmlab.geomalgelang;
 
 import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeLexer;
 import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParser;
-import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import org.antlr.v4.runtime.*;
-import org.graalvm.polyglot.Context;
-import org.graalvm.polyglot.Source;
-import org.graalvm.polyglot.Value;
 
 public class App {
 
 	public static void main(String[] args) throws Exception {
 		//String input = "7 * (8,5 + 10)";
-		String input = "a * (10 / 5)";
+		String program = "a * (10 / 5)";
 
+		System.out.println("inputed program: " + program);
 		//parseTest(input);
-		invokeLanguage(input);
+
+		Map<String, Object> inputVars = new HashMap<>();
+		Double a = 5.0;
+		inputVars.put("a", a);
+
+		String answer = LanguageInvocation.invoke(program, inputVars);
+		System.out.println("answer: " + answer);
+		System.out.println();
 	}
 
 	private static void parseTest(String program) throws Exception {
@@ -26,27 +32,5 @@ public class App {
 
 		AntlrTestRig testRig = new AntlrTestRig();
 		testRig.process(lexer, parser, inputStream, "program");
-	}
-
-	private static void invokeLanguage(String program) throws IOException {
-		System.out.println("inputed program: " + program);
-
-		Context context = Context.newBuilder("geomalgelang")
-			.allowAllAccess(true)
-			.build();
-		Source source = Source.newBuilder("geomalgelang", program, "MATH")
-			.build();
-
-		Value bindings = context.getBindings("geomalgelang");
-		Double a = 5.0;
-		bindings.putMember("a", a);
-
-		try {
-			Value value = context.eval(source);
-			System.out.println("answer: " + value);
-			System.out.println();
-		} finally {
-			context.close();
-		}
 	}
 }
