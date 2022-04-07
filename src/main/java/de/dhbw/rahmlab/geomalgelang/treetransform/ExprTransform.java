@@ -4,13 +4,10 @@
  */
 package de.dhbw.rahmlab.geomalgelang.treetransform;
 
-import com.oracle.truffle.api.frame.FrameDescriptor;
 import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeLexer;
 import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParser;
 import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParserBaseListener;
-import de.dhbw.rahmlab.geomalgelang.truffle.GeomAlgeLang;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.BaseNode;
-import de.dhbw.rahmlab.geomalgelang.truffle.nodes.GeomAlgeLangRootNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.GlobalVariableReference;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.GlobalVariableReferenceNodeGen;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.binops.AddNodeGen;
@@ -37,12 +34,10 @@ import java.util.Deque;
  */
 public class ExprTransform extends GeomAlgeParserBaseListener {
 
-	private BaseNode topExprNode = null;
+	protected final Deque<BaseNode> nodeStack = new ArrayDeque<>();
 
-	private Deque<BaseNode> nodeStack = new ArrayDeque<>();
-
-	public GeomAlgeLangRootNode getRoot(GeomAlgeLang geomAlgeLang) {
-		return new GeomAlgeLangRootNode(geomAlgeLang, new FrameDescriptor(), topExprNode);
+	public BaseNode getTopNode() {
+		return nodeStack.getFirst();
 	}
 
 	@Override
@@ -93,14 +88,6 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 			// Should never occur because of the DECIMAL_LITERAL lexer token definition.
 			throw new AssertionError(ex);
 		}
-	}
-
-	@Override
-	public void exitTopExpr(GeomAlgeParser.TopExprContext ctx) {
-		// Fraglich, ob sinnvoll. Könnte auch bei getRoot() immer den obersten Knoten holen.
-		// - Mehr Aufwand, weil in g4 Datei spezifizieren muss
-		// Unklar: Was ist, wenn man mehrere Expression Subtrees hat.
-		topExprNode = nodeStack.pop();
 	}
 
 	@Override
