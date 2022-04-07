@@ -13,8 +13,12 @@ import de.dhbw.rahmlab.geomalgelang.truffle.nodes.BaseNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.GeomAlgeLangRootNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.GlobalVariableReference;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.GlobalVariableReferenceNodeGen;
+import de.dhbw.rahmlab.geomalgelang.truffle.nodes.binops.AddNodeGen;
+import de.dhbw.rahmlab.geomalgelang.truffle.nodes.binops.DivNodeGen;
+import de.dhbw.rahmlab.geomalgelang.truffle.nodes.binops.MulNodeGen;
+import de.dhbw.rahmlab.geomalgelang.truffle.nodes.binops.SubNodeGen;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.literal.DecimalLiteral;
-import de.dhbw.rahmlab.geomalgelang.truffle.nodes.ops.binops.*;
+import de.dhbw.rahmlab.geomalgelang.truffle.nodes.literal.DecimalLiteralNodeGen;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
@@ -83,7 +87,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		try {
 			String decimalLiteral = ctx.value.getText();
 			double value = decimalFormat.parse(decimalLiteral).doubleValue();
-			DecimalLiteral node = new DecimalLiteral(value);
+			DecimalLiteral node = DecimalLiteralNodeGen.create(value);
 			nodeStack.push(node);
 		} catch (ParseException ex) {
 			// Should never occur because of the DECIMAL_LITERAL lexer token definition.
