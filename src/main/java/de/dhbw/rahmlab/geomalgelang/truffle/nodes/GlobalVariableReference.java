@@ -4,7 +4,7 @@
  */
 package de.dhbw.rahmlab.geomalgelang.truffle.nodes;
 
-import com.oracle.truffle.api.dsl.CachedContext;
+import com.oracle.truffle.api.TruffleLanguage.ContextReference;
 import com.oracle.truffle.api.dsl.NodeField;
 import com.oracle.truffle.api.dsl.Specialization;
 import de.dhbw.rahmlab.geomalgelang.truffle.GeomAlgeLang;
@@ -20,9 +20,10 @@ public abstract class GlobalVariableReference extends BaseNode {
 
 	protected abstract String getName();
 
+	protected final GeomAlgeLangContext context = ContextReference.create(GeomAlgeLang.class).get(this);
+
 	@Specialization
-	//protected Object readVariable(ContextReference<GeomAlgeLangContext> context) {
-	protected Object readVariable(@CachedContext(GeomAlgeLang.class) final GeomAlgeLangContext context) {
+	protected Object readVariable() {
 		String variableId = this.getName();
 		var value = context.globalVariableScope.getVariable(variableId);
 		if (value == null) {
