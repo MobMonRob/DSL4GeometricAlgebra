@@ -44,7 +44,7 @@ or navigate to this point via the Tools main menu.
 | 1 | &#43;  | + | sum |
 | 1 | &#45; | - | subtraction |
 
-### Single side operators
+### Single (right) side operators
 | Precedence | unicode | latex | description |
 | ---------- | ------:| ----- | ----------- |
 | 4 | &#8315;&#185;    |  | general inverse |
