@@ -54,12 +54,12 @@ or navigate to this point via the Tools main menu.
 | 4 | *    |  | dual |
 | 4 | &#8315;*    |  | undual |
 | 4 | &#732;    |  | reverse |
-| 4 | &#8224;    |  | conjugate |
+| 4 | &#8224;    | \textsuperscript{\textdagger} | conjugate |
 
 ### Functions
 | Precedence | unicode | latex | description |
 | ---------- | ------:| ----- | ----------- |
-| 4 | exp()    | \exp() | exponential |
+| 4 | exp()    | \exp{} | exponential |
 | 4 | involute()    |  | grade inversion |
 | 4 | reverse()    |  | reverse |
 | 4 | conjugate()    |  | clifford conjugate |
