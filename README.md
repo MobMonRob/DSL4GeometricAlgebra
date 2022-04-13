@@ -47,7 +47,7 @@ or navigate to this point via the Tools main menu.
 ### Single side operators
 | Precedence | unicode | latex | description |
 | ---------- | ------:| ----- | ----------- |
-| 4 | &#124;  |  |  |
+| 4 | &#8315; &#185   |  | general inverse |
 
 ### Functions
 | Precedence | unicode | latex | description |
