@@ -69,6 +69,6 @@ or navigate to this point via the Tools main menu.
 | ------:| ----- | ----------- |
 | o   |  | base vector representing the origin |
 | &#8734;      |  | base vector representing the infiity |
-| &#949;&#8321;   |  | base vector representing x direction |
-| &#949;&#8322;  |  | base vector representing y direction |
-| &#949;&#8323;   |  | base vector representing y direction |
+| &#949;&#8321;   | \textepsilon   | base vector representing x direction |
+| &#949;&#8322;  | \textepsilon  | base vector representing y direction |
+| &#949;&#8323;   | \textepsilon  | base vector representing y direction |
