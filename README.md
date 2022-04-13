@@ -56,7 +56,16 @@ or navigate to this point via the Tools main menu.
 ### Functions
 | Precedence | unicode | latex | description |
 | ---------- | ------:| ----- | ----------- |
+| 4 | exp()    |  | exponential of a multivector |
+| 4 | involute()    |  | grade inversion |
+| 4 | reverse()    |  | reverse |
+| 4 | conjugate()    |  | clifford conjugate |
 
 ### Symbols
-| Precedence | unicode | latex | description |
-| ---------- | ------:| ----- | ----------- |
+| unicode | latex | description |
+| ------:| ----- | ----------- |
+| o   |  | base vector representing the origin |
+| &#8734;      |  | base vector representing the infiity |
+| &#8734;&#8321   |  | base vector representing x direction |
+| &#8734;&#8322  |  | base vector representing y direction |
+| &#8734;&#8323   |  | base vector representing y direction |
