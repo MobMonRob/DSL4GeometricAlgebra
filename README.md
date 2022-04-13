@@ -37,7 +37,7 @@ or navigate to this point via the Tools main menu.
 | 3 | &#8970; | \llcorner | right contraction |
 | 3 | &#8971; | \lrcorner | left contraction |
 | 3 | &#8743; | \wedge | outer product |
-| 3 | &#8744; | \vee | shortcut for (X &#8416; &#8743; Y &#8416;) &#8315; &#8416; |
+| 3 | &#8744; | \vee | shortcut for (X* &#8743; Y*)* |
 
 ### Single side operators
 
