@@ -34,8 +34,8 @@ or navigate to this point via the Tools main menu.
 ### Dual operators
 | Precedence | unicode | latex | description |
 | ---------- | ------:| ----- | ----------- |
-| 3 | &#8746;   | &cup;  | meet |
-| 3 | &#8745;   | &cap;  | join |
+| 3 | &#8746;   | \cup  | meet |
+| 3 | &#8745;   | \cap  | join |
 | 3 | &#124;  | \vert | geometric product |
 | 3 |   | \cdot | inner product |
 | 3 | &#8970; | \llcorner | right contraction |
