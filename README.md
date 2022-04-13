@@ -34,13 +34,25 @@ or navigate to this point via the Tools main menu.
 ### Dual operators
 | Precedence | unicode | latex | description |
 | ---------- | ------:| ----- | ----------- |
+| 3 | &#124;  |  | geometric product |
 | 3 | &#8970; | \llcorner | right contraction |
 | 3 | &#8971; | \lrcorner | left contraction |
 | 3 | &#8743; | \wedge | outer product |
 | 3 | &#8744; | \vee | shortcut for (X* &#8743; Y*)* |
+| 2 | &#42;  | * | scalar product |
+| 2 | &#47;  | / | division |
+| 1 | &#43;  | + | sum |
+| 1 | &#45; | - | subtraction |
 
 ### Single side operators
+| Precedence | unicode | latex | description |
+| ---------- | ------:| ----- | ----------- |
+| 4 | &#124;  |  |  |
 
 ### Functions
+| Precedence | unicode | latex | description |
+| ---------- | ------:| ----- | ----------- |
 
 ### Symbols
+| Precedence | unicode | latex | description |
+| ---------- | ------:| ----- | ----------- |
