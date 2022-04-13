@@ -50,10 +50,10 @@ or navigate to this point via the Tools main menu.
 ### Single (right) side operators
 | Precedence | unicode | latex | description |
 | ---------- | ------:| ----- | ----------- |
-| 4 | &#8315;&#185;    |  | general inverse |
-| 4 | *    |  | dual |
-| 4 | &#8315;*    |  | undual |
-| 4 | &#732;    |  | reverse |
+| 4 | &#8315;&#185;    | \textsuperscript{-1} | general inverse |
+| 4 | *    | \textsuperscript{*} | dual |
+| 4 | &#8315;*    | \textsuperscript{-*} | undual |
+| 4 | &#732;    | \textsuperscript{\tilde} | reverse |
 | 4 | &#8224;    | \textsuperscript{\textdagger} | conjugate |
 
 ### Functions
