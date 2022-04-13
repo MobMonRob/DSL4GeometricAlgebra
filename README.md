@@ -43,7 +43,7 @@ or navigate to this point via the Tools main menu.
 | 3 | &#8743; | \wedge | outer product |
 | 3 | &#8744; | \vee | shortcut for (X* &#8743; Y*)* |
 | 2 | &#42;  | * | scalar product |
-| 2 | &#47;  | / | division |
+| 2 | &#47;  | \StrikingThrough | division |
 | 1 | &#43;  | + | sum |
 | 1 | &#45; | - | subtraction |
 
