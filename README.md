@@ -29,3 +29,15 @@ or navigate to this point via the Tools main menu.
 - navigate to Build / Compile
 - in the drop-down list labeled "Java Platform" choose "GraalVM 11"
 
+## Operators
+
+### Dual operators
+| Precedence | unicode | symbol | latex | description |
+| ---------- |:-------:| ------:| ----- | ----------- |
+| 3 | &#8970; |  | \llrcorner   | left contraction |
+
+### Single side operators
+
+### Functions
+
+### Symbols
