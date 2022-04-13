@@ -56,7 +56,7 @@ or navigate to this point via the Tools main menu.
 ### Functions
 | Precedence | unicode | latex | description |
 | ---------- | ------:| ----- | ----------- |
-| 4 | exp()    |  | exponential of a multivector |
+| 4 | exp()    | \exp() | exponential of a multivector |
 | 4 | involute()    |  | grade inversion |
 | 4 | reverse()    |  | reverse |
 | 4 | conjugate()    |  | clifford conjugate |
