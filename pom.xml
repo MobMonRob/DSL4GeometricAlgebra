@@ -7,14 +7,18 @@
 	<packaging>jar</packaging>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>11</maven.compiler.source>
-		<maven.compiler.target>11</maven.compiler.target>
+		<maven.compiler.source>17</maven.compiler.source>
+		<maven.compiler.target>17</maven.compiler.target>
 		<skipTests>true</skipTests>
-		<graalvm.version>22.0.0</graalvm.version>
+		<graalvm.version>22.0.0.2</graalvm.version>
 	</properties>
 	<repositories>
 		<repository>
-			<id>jitpack.io</id>
+			<id>1. Maven Central</id>
+			<url>https://repo1.maven.org/maven2/</url>
+		</repository>
+		<repository>
+			<id>2. jitpack.io</id>
 			<url>https://jitpack.io</url>
 		</repository>
 	</repositories>

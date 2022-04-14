@@ -5,12 +5,12 @@ This repository contains code to work with multivector expressions of conformal 
 The code is in very early stage.
 
 ## GraalVM Setup
-Download the [GraalVM](https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.0.0.2/graalvm-ce-java11-linux-amd64-22.0.0.2.tar.gz)
+Download the [GraalVM](https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.0.0.2/graalvm-ce-java17-linux-amd64-22.0.0.2.tar.gz)
 
 Extract the downloaded archive to an arbitrary location.
 
 ### Netbeans configuration
-Add a new java platform with the name "GraalVM 11". \
+Add a new java platform with the name "GraalVM 17". \
 Within the Netbeans 13 IDE you can do this if you follow these steps:
 - open project properties via right-click on the project
 - navigate to Build / Compile
@@ -22,12 +22,12 @@ or navigate to this point via the Tools main menu.
 - In the poping-up wizard:
   - select platform type "Java Standard Edition"
   - choose the platform folder within the extracted archive.
-  - name it "GraalVM 11"
+  - name it "GraalVM 17"
 
 ### Netbeans project configuration
 - open project properties via right-click on the project
 - navigate to Build / Compile
-- in the drop-down list labeled "Java Platform" choose "GraalVM 11"
+- in the drop-down list labeled "Java Platform" choose "GraalVM 17"
 
 ## Operators
 
@@ -71,4 +71,4 @@ or navigate to this point via the Tools main menu.
 | &#8734;      |  | base vector representing the infinity |
 | &#949;&#8321;   | \textepsilon   | base vector representing x direction |
 | &#949;&#8322;  | \textepsilon  | base vector representing y direction |
-| &#949;&#8323;   | \textepsilon  | base vector representing y direction |
+| &#949;&#8323;   | \textepsilon  | base vector representing z direction |
