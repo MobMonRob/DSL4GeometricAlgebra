@@ -32,7 +32,7 @@ or navigate to this point via the Tools main menu.
 ## Operators
 
 ### Dual operators
-| Precedence | unicode | latex | description |
+| precedence | symbol | latex | description |
 | ---------- | ------:| ----- | ----------- |
 | 3 | &#8746;   | \cup  | meet |
 | 3 | &#8745;   | \cap  | join |
@@ -48,7 +48,7 @@ or navigate to this point via the Tools main menu.
 | 1 | &#45; | - | subtraction |
 
 ### Single (right) side operators
-| Precedence | unicode | latex | description |
+| precedence | symobol | latex | description |
 | ---------- | ------:| ----- | ----------- |
 | 4 | &#8315;&#185;    | \textsuperscript{-1} | general inverse |
 | 4 | *    | \textsuperscript{*} | dual |
@@ -57,7 +57,7 @@ or navigate to this point via the Tools main menu.
 | 4 | &#8224;    | \textsuperscript{\textdagger} | conjugate |
 
 ### Buildin functions
-| Precedence | unicode | latex | description |
+| precedence | symbol | latex | description |
 | ---------- | ------:| ----- | ----------- |
 | 4 | exp()    | \exp{} | exponential |
 | 4 | involute()    |  | grade inversion |
@@ -65,7 +65,7 @@ or navigate to this point via the Tools main menu.
 | 4 | conjugate()    | \textsuperscript{\textdagger} | clifford conjugate |
 
 ### Symbols
-| unicode | latex | description |
+| symbol | latex | description |
 | ------:| ----- | ----------- |
 | o   |  | base vector representing the origin |
 | &#8734;      |  | base vector representing the infinity |
