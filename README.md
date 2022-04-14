@@ -32,7 +32,7 @@ or navigate to this point via the Tools main menu.
 ## Operators
 
 ### Dual operators
-| precedence | symbol | unicode | latex | description |
+| precedence | symbol | latex | unicode | description |
 | ---------- | ------:| ------- | ----- | ----------- |
 | 3 | &#8746;   | \cup  | \u222A | meet |
 | 3 | &#8745;   | \cap  | \u2229 | join |
@@ -43,9 +43,9 @@ or navigate to this point via the Tools main menu.
 | 3 | &#8743; | \wedge | \u2227 | outer product |
 | 3 | &#8744; | \vee | \u2228 | shortcut for (X* &#8743; Y*)* |
 | 2 | &#42;  | * | | scalar product |
-| 2 | &#47;  | | \StrikingThrough | division |
-| 1 | &#43;  | + | | sum |
-| 1 | &#45; | - | | subtraction |
+| 2 | &#47;  | \StrikingThrough | \u2F | division |
+| 1 | &#43;  | + | \u2B | sum |
+| 1 | &#45; | - | \u2D| subtraction |
 
 ### Single (right) side operators
 | precedence | symobol | latex | description |
