@@ -61,8 +61,8 @@ or navigate to this point via the Tools main menu.
 | ---------- | ------:| ----- | ----------- |
 | 4 | exp()    | \exp{} | exponential |
 | 4 | involute()    |  | grade inversion |
-| 4 | reverse()    |  | reverse |
-| 4 | conjugate()    |  | clifford conjugate |
+| 4 | reverse()    |  \textsuperscript{\tilde} | reverse |
+| 4 | conjugate()    | \textsuperscript{\textdagger} | clifford conjugate |
 
 ### Symbols
 | unicode | latex | description |
