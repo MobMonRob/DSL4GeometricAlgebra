@@ -56,7 +56,7 @@ or navigate to this point via the Tools main menu.
 | 4 | &#732;    | \textsuperscript{\tilde} | reverse |
 | 4 | &#8224;    | \textsuperscript{\textdagger} | conjugate |
 
-### buildin functions
+### Buildin functions
 | Precedence | unicode | latex | description |
 | ---------- | ------:| ----- | ----------- |
 | 4 | exp()    | \exp{} | exponential |
