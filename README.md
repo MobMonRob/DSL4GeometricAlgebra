@@ -68,7 +68,7 @@ or navigate to this point via the Tools main menu.
 | unicode | latex | description |
 | ------:| ----- | ----------- |
 | o   |  | base vector representing the origin |
-| &#8734;      |  | base vector representing the infiity |
+| &#8734;      |  | base vector representing the infinity |
 | &#949;&#8321;   | \textepsilon   | base vector representing x direction |
 | &#949;&#8322;  | \textepsilon  | base vector representing y direction |
 | &#949;&#8323;   | \textepsilon  | base vector representing y direction |
