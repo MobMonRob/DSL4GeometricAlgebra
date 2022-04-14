@@ -48,7 +48,7 @@ or navigate to this point via the Tools main menu.
 | 1 | &#45; | - | \u2D| subtraction |
 
 ### Single (right) side operators
-| precedence | symobol | latex | description |
+| precedence | symbol | latex | description |
 | ---------- | ------:| ----- | ----------- |
 | 4 | &#8315;&#185;    | \textsuperscript{-1} | general inverse |
 | 4 | *    | \textsuperscript{*} | dual |
