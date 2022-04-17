@@ -47,7 +47,7 @@ or navigate to this point via the Tools main menu.
 | 1 | &#43;  | + | \u2B | sum |
 | 1 | &#45; | - | \u2D| subtraction |
 
-### Single (right) side operators
+### Monadic operators (placed all on right side)
 | precedence | symbol | latex | description |
 | ---------- | ------:| ----- | ----------- |
 | 4 | &#8315;&#185;    | \textsuperscript{-1} | general inverse |
