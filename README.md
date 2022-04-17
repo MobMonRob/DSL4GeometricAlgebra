@@ -38,7 +38,7 @@ or navigate to this point via the Tools main menu.
 | 3 | &#124;  | \vert | \u007C | geometric product | gp(Multivector) |
 | 3 | &#8901;   | \cdot | \u22C5 | inner product | In the default configuration equal to left contraction. ip(Multivector, LEFT_CONTRACTION) |
 | 3 | &#8743; | \wedge | \u2227 | outer product | op(Multivector) |
-| 2 | &#42;  | * | | scalar product | scp(Multivector) |
+| 2 | &#42;  | * | \u002a | scalar product | scp(Multivector) |
 | 1 | &#43;  | + | \u2B | sum | add(Multivector) |
 | 1 | &#45; | - | \u2D| difference | sub(Multivector) |
 
