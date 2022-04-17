@@ -33,14 +33,14 @@ or navigate to this point via the Tools main menu.
 
 ### Dual operators
 #### Base operators
-| precedence | symbol | latex | unicode | description |
-| ---------- | ------:| ------- | ----- | ----------- |
-| 3 | &#124;  | \vert | \u007C | geometric product |
-| 3 | &#8901;   | \cdot | \u22C5 | inner product |
-| 3 | &#8743; | \wedge | \u2227 | outer product |
-| 2 | &#42;  | * | | scalar product |
-| 1 | &#43;  | + | \u2B | sum |
-| 1 | &#45; | - | \u2D| subtraction |
+| precedence | symbol | latex | unicode | name | implementation |
+| ---------- | ------:| ------- | ----- | ---- | -------------- |
+| 3 | &#124;  | \vert | \u007C | geometric product | |
+| 3 | &#8901;   | \cdot | \u22C5 | inner product | In the default configuration equal to left contraction |
+| 3 | &#8743; | \wedge | \u2227 | outer product | |
+| 2 | &#42;  | * | | scalar product | |
+| 1 | &#43;  | + | \u2B | sum | |
+| 1 | &#45; | - | \u2D| difference | |
 
 #### Additional operators (for more convinience only)
 | precedence | symbol | latex | unicode | description |
