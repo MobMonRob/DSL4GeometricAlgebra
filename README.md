@@ -35,21 +35,21 @@ or navigate to this point via the Tools main menu.
 #### Base operators
 | precedence | symbol | latex | unicode | name | implementation |
 | ---------- | ------:| ------- | ----- | ---- | -------------- |
-| 3 | &#124;  | \vert | \u007C | geometric product | |
-| 3 | &#8901;   | \cdot | \u22C5 | inner product | In the default configuration equal to left contraction |
-| 3 | &#8743; | \wedge | \u2227 | outer product | |
-| 2 | &#42;  | * | | scalar product | |
-| 1 | &#43;  | + | \u2B | sum | |
-| 1 | &#45; | - | \u2D| difference | |
+| 3 | &#124;  | \vert | \u007C | geometric product | gp(Multivector) |
+| 3 | &#8901;   | \cdot | \u22C5 | inner product | In the default configuration equal to left contraction. ip(Multivector, LEFT_CONTRACTION) |
+| 3 | &#8743; | \wedge | \u2227 | outer product | op(Multivector) |
+| 2 | &#42;  | * | | scalar product | scp(Multivector) |
+| 1 | &#43;  | + | \u2B | sum | add(Multivector) |
+| 1 | &#45; | - | \u2D| difference | sub(Multivector) |
 
 #### Additional operators (for more convinience only)
-| precedence | symbol | latex | unicode | description |
-| ---------- | ------:| ------- | ----- | ----------- |
-| 3 | &#8746;   | \cup  | \u222A | meet |
-| 3 | &#8745;   | \cap  | \u2229 | join |
-| 3 | &#8970; | \llcorner | \u230B | right contraction |
-| 3 | &#8971; | \lrcorner | \u230A | left contraction |
-| 3 | &#8744; | \vee | \u2228 | shortcut for (X* &#8743; Y*)* |
+| precedence | symbol | latex | unicode | description | implementation |
+| ---------- | ------:| ------- | ----- | ----------- | -------------- |
+| 3 | &#8746;   | \cup  | \u222A | meet | |
+| 3 | &#8745;   | \cap  | \u2229 | join | |
+| 3 | &#8970; | \llcorner | \u230B | left contraction | ip(Multivector, LEFT_CONTRACTION) |
+| 3 | &#8971; | \lrcorner | \u230A | right contraction | ip(Multivector, RIGHT_CONTRACTION) |
+| 3 | &#8744; | \vee | \u2228 |   | (X* &#8743; Y*)*
 | 2 | &#47;  | \StrikingThrough | \u2F | division |
 
 ### Monadic operators (placed all on right side)
