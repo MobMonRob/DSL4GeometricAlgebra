@@ -1,7 +1,8 @@
 package de.dhbw.rahmlab.geomalgelang.test;
 
 import de.dhbw.rahmlab.geomalgelang.api.LanguageInvocation;
-import de.dhbw.rahmlab.geomalgelang.cga.CGAMultivector_CGA1Multivector;
+import de.dhbw.rahmlab.geomalgelang.cga.CGAMultivector_Processor_CGA1Multivector;
+import de.dhbw.rahmlab.geomalgelang.cga.CGAMultivector_Processor_Generic;
 import de.dhbw.rahmlab.geomalgelang.cga.ICGAMultivector;
 import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeLexer;
 import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParser;
@@ -22,8 +23,14 @@ public class App {
 	}
 
 	private static void otherTest(String program) throws Exception {
-		ICGAMultivector vec = new CGAMultivector_CGA1Multivector(new CGA1Multivector());
-		ICGAMultivector vec2 = vec.meet(vec);
+		CGAMultivector_Processor_CGA1Multivector concreteProcessor = new CGAMultivector_Processor_CGA1Multivector();
+		CGAMultivector_Processor_Generic genericProcessor = new CGAMultivector_Processor_Generic(concreteProcessor);
+
+		CGA1Multivector innerst = new CGA1Multivector();
+		ICGAMultivector wrapper = new ICGAMultivector(innerst);
+
+		ICGAMultivector result = genericProcessor.meet(wrapper, wrapper);
+
 	}
 
 	private static void invocationTest(String program) throws Exception {

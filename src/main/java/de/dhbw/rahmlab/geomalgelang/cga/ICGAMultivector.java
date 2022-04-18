@@ -8,25 +8,15 @@ package de.dhbw.rahmlab.geomalgelang.cga;
  *
  * @author fabian
  */
-public interface ICGAMultivector<T> {
+public class ICGAMultivector<T> {
 
-	T getInner();
+	protected final T inner;
 
-	ICGAMultivector<T> meet(ICGAMultivector<T> rhs);
+	public ICGAMultivector(T t) {
+		this.inner = t;
+	}
 
-	ICGAMultivector<T> join(ICGAMultivector<T> rhs);
-
-	ICGAMultivector<T> geometric_product(ICGAMultivector<T> rhs);
-
-	ICGAMultivector<T> inner_product(ICGAMultivector<T> rhs);
-
-	ICGAMultivector<T> right_contraction(ICGAMultivector<T> rhs);
-
-	ICGAMultivector<T> left_contraction(ICGAMultivector<T> rhs);
-
-	ICGAMultivector<T> outer_product(ICGAMultivector<T> rhs);
-
-	ICGAMultivector<T> vee(ICGAMultivector<T> rhs);
-
-	//ICGAMultivector<T> scalar_product(ICGAMultivector<T> rhs);
+	public T getInner() {
+		return this.inner;
+	}
 }
