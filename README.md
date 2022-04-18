@@ -33,14 +33,14 @@ or navigate to this point via the Tools main menu.
 
 ### Dual operators
 #### Base operators
-| precedence | symbol | latex | unicode | name | implementation |
-| :--------: | :----: | ------- | ----- | ---- | -------------- |
-| 3 | space  |  | \u0020 | geometric product | gp(Multivector) |
-| 3 | &#8901;   | \cdot | \u22C5 | inner product | In the default configuration equal to left contraction. ip(Multivector, LEFT_CONTRACTION) |
-| 3 | &#8743; | \wedge | \u2227 | outer product | op(Multivector) |
-| 2 | &#42;  | * | \u002A | scalar product | scp(Multivector) |
-| 1 | &#43;  | + | \u002B | sum | add(Multivector) |
-| 1 | &#45; | - | \u002D| difference | sub(Multivector) |
+| precedence | symbol | latex | unicode | name | implementation | hints |
+| :--------: | :----: | ------- | ----- | ---- | -------------- | ----- |
+| 3 | space  |  | \u0020 | geometric product | gp(Multivector) | exactly one space character is intepreted as the operator |
+| 3 | &#8901;   | \cdot | \u22C5 | inner product | ip(Multivector, LEFT_CONTRACTION) | In the default configuration equal to left contraction. |
+| 3 | &#8743; | \wedge | \u2227 | outer product | op(Multivector) | |
+| 2 | &#42;  | * | \u002A | scalar product | scp(Multivector) | |
+| 1 | &#43;  | + | \u002B | sum | add(Multivector) | |
+| 1 | &#45; | - | \u002D| difference | sub(Multivector) | |
 
 #### Additional operators (for more convenience only)
 | precedence | symbol | latex | unicode | description | implementation |
