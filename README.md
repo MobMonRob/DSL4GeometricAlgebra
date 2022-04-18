@@ -44,7 +44,7 @@ or navigate to this point via the Tools main menu.
 
 #### Additional operators (for more convenience only)
 | precedence | symbol | latex | unicode | description | implementation |
-| ---------- | ------:| ------- | ----- | ----------- | -------------- |
+| :--------: | :----: | ------- | ----- | ----------- | -------------- |
 | 3 | &#8746;   | \cup  | \u222A | meet | |
 | 3 | &#8745;   | \cap  | \u2229 | join | |
 | 3 | &#8970; | \llcorner | \u230B | left contraction | ip(Multivector, LEFT_CONTRACTION) |
@@ -54,20 +54,20 @@ or navigate to this point via the Tools main menu.
 
 ### Monadic operators (placed all on right side)
 | precedence | symbol | latex | description |
-| ---------- | ------:| ----- | ----------- |
-| 4 | &#8315;&#185;    | \textsuperscript{-1} | general inverse |
-| 4 | *    | \textsuperscript{*} | dual |
-| 4 | &#8315;*    | \textsuperscript{-*} | undual |
-| 4 | &#732;    | \textsuperscript{\tilde} | reverse |
-| 4 | &#8224;    | \textsuperscript{\textdagger} | conjugate |
+| :--------: | ------:| ----- | ----------- |
+| 4 | &#8315;&#185;    | \textsuperscript{-1}          | general inverse |
+| 4 | *                | \textsuperscript{*}           | dual |
+| 4 | &#8315;*         | \textsuperscript{-*}          | undual |
+| 4 | &#732;           | \textsuperscript{\tilde}      | reverse |
+| 4 | &#8224;          | \textsuperscript{\textdagger} | conjugate |
 
 ### Buildin functions
 | precedence | symbol | latex | description |
-| ---------- | ------:| ----- | ----------- |
-| 4 | exp()    | \exp{} | exponential |
+| :--------: | ------:| ----- | ----------- |
+| 4 | exp()         | \exp{} | exponential |
 | 4 | involute()    |  | grade inversion |
-| 4 | reverse()    |  \textsuperscript{\tilde} | reverse |
-| 4 | conjugate()    | \textsuperscript{\textdagger} | clifford conjugate |
+| 4 | reverse()     |  \textsuperscript{\tilde} | reverse |
+| 4 | conjugate()   | \textsuperscript{\textdagger} | clifford conjugate |
 
 ### Symbols
 | symbol | latex | description |
