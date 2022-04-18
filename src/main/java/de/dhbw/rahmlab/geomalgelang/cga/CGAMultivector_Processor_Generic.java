@@ -89,4 +89,55 @@ public class CGAMultivector_Processor_Generic<T> implements ICGAMultivector_Proc
 	public ICGAMultivector<T> dual(ICGAMultivector<T> input) {
 		return new ICGAMultivector(concreteProcessor.dual(input.inner));
 	}
+
+	@Override
+	public ICGAMultivector<T> undual(ICGAMultivector<T> input) {
+		return new ICGAMultivector(concreteProcessor.undual(input.inner));
+	}
+
+	@Override
+	public ICGAMultivector<T> reverse(ICGAMultivector<T> input) {
+		return new ICGAMultivector(concreteProcessor.reverse(input.inner));
+	}
+
+	@Override
+	public ICGAMultivector<T> conjugate(ICGAMultivector<T> input) {
+		return new ICGAMultivector(concreteProcessor.conjugate(input.inner));
+	}
+
+	@Override
+	public ICGAMultivector<T> exponentiate(ICGAMultivector<T> input) {
+		return new ICGAMultivector(concreteProcessor.exponentiate(input.inner));
+	}
+
+	@Override
+	public ICGAMultivector<T> involute(ICGAMultivector<T> input) {
+		return new ICGAMultivector(concreteProcessor.involute(input.inner));
+	}
+
+	// Nullary Operators
+	@Override
+	public ICGAMultivector<T> base_vector_origin() {
+		return new ICGAMultivector(concreteProcessor.base_vector_origin());
+	}
+
+	@Override
+	public ICGAMultivector<T> base_vector_infinity() {
+		return new ICGAMultivector(concreteProcessor.base_vector_infinity());
+	}
+
+	@Override
+	public ICGAMultivector<T> base_vector_x() {
+		return new ICGAMultivector(concreteProcessor.base_vector_x());
+	}
+
+	@Override
+	public ICGAMultivector<T> base_vector_y() {
+		return new ICGAMultivector(concreteProcessor.base_vector_y());
+	}
+
+	@Override
+	public ICGAMultivector<T> base_vector_z() {
+		return new ICGAMultivector(concreteProcessor.base_vector_z());
+	}
 }

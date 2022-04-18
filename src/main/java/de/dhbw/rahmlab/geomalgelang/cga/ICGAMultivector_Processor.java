@@ -38,4 +38,25 @@ public interface ICGAMultivector_Processor<T> {
 	T general_inverse(T input);
 
 	T dual(T input);
+
+	T undual(T input);
+
+	T reverse(T input);
+
+	T conjugate(T input);
+
+	T exponentiate(T input);
+
+	T involute(T input);
+
+	// Nullary Operators
+	T base_vector_origin();
+
+	T base_vector_infinity();
+
+	T base_vector_x();
+
+	T base_vector_y();
+
+	T base_vector_z();
 }

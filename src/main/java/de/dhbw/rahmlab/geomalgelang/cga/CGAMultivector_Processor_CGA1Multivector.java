@@ -86,4 +86,55 @@ public class CGAMultivector_Processor_CGA1Multivector implements ICGAMultivector
 	public CGA1Multivector dual(CGA1Multivector input) {
 		return input.dual();
 	}
+
+	@Override
+	public CGA1Multivector undual(CGA1Multivector input) {
+		return input.undual();
+	}
+
+	@Override
+	public CGA1Multivector reverse(CGA1Multivector input) {
+		return input.reverse();
+	}
+
+	@Override
+	public CGA1Multivector conjugate(CGA1Multivector input) {
+		return input.conjugate();
+	}
+
+	@Override
+	public CGA1Multivector exponentiate(CGA1Multivector input) {
+		return input.exp();
+	}
+
+	@Override
+	public CGA1Multivector involute(CGA1Multivector input) {
+		return input.gradeInversion();
+	}
+
+	// Nullary Operators
+	@Override
+	public CGA1Multivector base_vector_origin() {
+		return CGA1Multivector.createBasisVectorE0();
+	}
+
+	@Override
+	public CGA1Multivector base_vector_infinity() {
+		return CGA1Multivector.createBasisVectorEinf();
+	}
+
+	@Override
+	public CGA1Multivector base_vector_x() {
+		return CGA1Multivector.createBasisVector(1);
+	}
+
+	@Override
+	public CGA1Multivector base_vector_y() {
+		return CGA1Multivector.createBasisVector(2);
+	}
+
+	@Override
+	public CGA1Multivector base_vector_z() {
+		return CGA1Multivector.createBasisVector(3);
+	}
 }

@@ -30,7 +30,6 @@ public class App {
 		ICGAMultivector wrapper = new ICGAMultivector(innerst);
 
 		ICGAMultivector result = genericProcessor.meet(wrapper, wrapper);
-
 	}
 
 	private static void invocationTest(String program) throws Exception {
