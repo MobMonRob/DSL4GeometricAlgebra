@@ -54,7 +54,7 @@ or navigate to this point via the Tools main menu.
 
 ### Monadic operators (placed all on right side)
 | precedence | symbol | latex | description |
-| :--------: | ------:| ----- | ----------- |
+| :--------: | :----: | ----- | ----------- |
 | 4 | &#8315;&#185;    | \textsuperscript{-1}          | general inverse |
 | 4 | *                | \textsuperscript{*}           | dual |
 | 4 | &#8315;*         | \textsuperscript{-*}          | undual |
