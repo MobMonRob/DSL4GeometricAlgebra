@@ -42,7 +42,7 @@ or navigate to this point via the Tools main menu.
 | 1 | &#43;  | + | \u002B | sum | add(Multivector) |
 | 1 | &#45; | - | \u002D| difference | sub(Multivector) |
 
-#### Additional operators (for more convinience only)
+#### Additional operators (for more convenience only)
 | precedence | symbol | latex | unicode | description | implementation |
 | ---------- | ------:| ------- | ----- | ----------- | -------------- |
 | 3 | &#8746;   | \cup  | \u222A | meet | |
