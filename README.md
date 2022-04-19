@@ -29,6 +29,13 @@ or navigate to this point via the Tools main menu.
 - navigate to Build / Compile
 - in the drop-down list labeled "Java Platform" choose "GraalVM 17"
 
+
+## Types
+| Name | class name |
+| :-------- | :---- |
+| double | double |
+| Tuple3d | Tuple3d |
+
 ## Operators
 
 ### Dual operators
