@@ -68,6 +68,8 @@ or navigate to this point via the Tools main menu.
 | :--------: | ------:| ----- | ----------- | -------------- |
 | 4 | exp()         | \exp{} | exponential | exp(Multivector) |
 | 4 | involute()    |  | grade inversion | gradeInversion() |
+| 4 | abs()         |  | absolute value | abs(double) |
+| 4 | sqrt()         |  | square root | sqrt(double) |
 
 #### Additional functions (for more convenience only)
 | precedence | symbol | latex | description | implementation |
