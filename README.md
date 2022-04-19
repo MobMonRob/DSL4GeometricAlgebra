@@ -71,7 +71,7 @@ or navigate to this point via the Tools main menu.
 
 ### Symbols
 | symbol        | latex         | Unicode      | description |
-| ------------- | ------------- | ------------ | ----------- |
+| :-----------: | ------------- | ------------ | ----------- |
 | o             |               | \u006F       | base vector representing the origin |
 | &#8734;       |               | \u221e       | base vector representing the infinity |
 | &#949;&#8321; | \textepsilon  | \u03b5\u2081 | base vector representing x direction |
