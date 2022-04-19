@@ -43,22 +43,22 @@ or navigate to this point via the Tools main menu.
 #### Base operators
 | precedence | symbol | latex | unicode | name | implementation | hints |
 | :--------: | :----: | ------- | ----- | ---- | -------------- | ----- |
-| 3 | space  |  | \u0020 | geometric product | gp(Multivector) | Exactly one space character is interpreted as the operator. |
-| 3 | &#8901;   | \cdot | \u22C5 | inner product | ip(Multivector, LEFT_CONTRACTION) | In the default configuration equal to left contraction. |
-| 3 | &#8743; | \wedge | \u2227 | outer product | op(Multivector) | |
-| 2 | &#42;  | * | \u002A | scalar product | scp(Multivector) | |
-| 1 | &#43;  | + | \u002B | sum | add(Multivector) | |
-| 1 | &#45; | - | \u002D| difference | sub(Multivector) | |
+| 3 | space  |  | \u0020 | geometric product | multivector.gp(Multivector) | Exactly one space character is interpreted as the operator. |
+| 3 | &#8901;   | \cdot | \u22C5 | inner product | multivector.ip(Multivector, LEFT_CONTRACTION) | In the default configuration equal to left contraction. |
+| 3 | &#8743; | \wedge | \u2227 | outer product | multivector.op(Multivector) | |
+| 2 | &#42;  | * | \u002A | scalar product | multivector.scp(Multivector), double * double | |
+| 1 | &#43;  | + | \u002B | sum | multivector.add(Multivector), double + double | |
+| 1 | &#45; | - | \u002D| difference | multivector.sub(Multivector), double - double | |
 
 #### Additional operators (for more convenience only)
 | precedence | symbol | latex | unicode | description | implementation |
 | :--------: | :----: | ------- | ----- | ----------- | -------------- |
-| 3 | &#8746;   | \cup  | \u222A | meet | meet(Multivector) |
-| 3 | &#8745;   | \cap  | \u2229 | join | join(Multivector) |
-| 3 | &#8970; | \llcorner | \u230B | left contraction | ip(Multivector, LEFT_CONTRACTION) |
-| 3 | &#8971; | \lrcorner | \u230A | right contraction | ip(Multivector, RIGHT_CONTRACTION) |
-| 3 | &#8744; | \vee | \u2228 | (X* &#8743; Y*)* | vee(Multivector) |
-| 2 | &#47;  | \StrikingThrough | \u002F | division | div(Multivector) |
+| 3 | &#8746;   | \cup  | \u222A | meet | multivector.meet(Multivector) |
+| 3 | &#8745;   | \cap  | \u2229 | join | multivector.join(Multivector) |
+| 3 | &#8970; | \llcorner | \u230B | left contraction | multivetor.ip(Multivector, LEFT_CONTRACTION) |
+| 3 | &#8971; | \lrcorner | \u230A | right contraction | multivector.ip(Multivector, RIGHT_CONTRACTION) |
+| 3 | &#8744; | \vee | \u2228 | (X* &#8743; Y*)* | multivector.vee(Multivector) |
+| 2 | &#47;  | \StrikingThrough | \u002F | division | multivector.div(Multivector), double.div(double) |
 
 ### Monadic operators (placed all on right side)
 | precedence | symbol        | latex                         | Unicode      | description |
@@ -74,17 +74,18 @@ or navigate to this point via the Tools main menu.
 #### Base functions
 | precedence | symbol | latex | description | implementation |
 | :--------: | ------:| ----- | ----------- | -------------- |
-| 4 | exp()         | \exp{} | exponential | exp(Multivector) |
-| 4 | involute()    |  | grade inversion | gradeInversion() |
-| 4 | abs()         |  | absolute value | abs(double) |
-| 4 | sqrt()         |  | square root | sqrt(double) |
+| 4 | exp()         | \exp{} | exponential | Multivector.exp(Multivector) |
+| 4 | involute()    |  | grade inversion | multivector.gradeInversion() |
+| 4 | abs()         |  | absolute value | Math.abs(double) |
+| 4 | sqrt()         |  | square root | Math.sqrt(double) |
+| 4 | atan2()         |  | arcus tansgens 2 | Math.atan2(double, double) |
 
 #### Additional functions (for more convenience only)
 | precedence | symbol | latex | description | implementation |
 | :--------: | ------:| ----- | ----------- | -------------- |
-| 4 | reverse()     |  \textsuperscript{\tilde} | reverse | reverse() |
-| 4 | conjugate()   | \textsuperscript{\textdagger} | clifford conjugate | conjugate() |
-| 4 | normalize()        | | normalize | unit() |#### Additional functions (for more convenience only)
+| 4 | reverse()     |  \textsuperscript{\tilde} | reverse | multivector.reverse() |
+| 4 | conjugate()   | \textsuperscript{\textdagger} | clifford conjugate | multivector.conjugate() |
+| 4 | normalize()        | | normalize | unit() |
 
 #### Additional functions (2) defining geometric objects (for more convenience only)
 | precedence | symbol | latex | description | implementation |
