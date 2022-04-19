@@ -35,7 +35,7 @@ or navigate to this point via the Tools main menu.
 #### Base operators
 | precedence | symbol | latex | unicode | name | implementation | hints |
 | :--------: | :----: | ------- | ----- | ---- | -------------- | ----- |
-| 3 | space  |  | \u0020 | geometric product | gp(Multivector) | exactly one space character is intepreted as the operator |
+| 3 | space  |  | \u0020 | geometric product | gp(Multivector) | Exactly one space character is interpreted as the operator. |
 | 3 | &#8901;   | \cdot | \u22C5 | inner product | ip(Multivector, LEFT_CONTRACTION) | In the default configuration equal to left contraction. |
 | 3 | &#8743; | \wedge | \u2227 | outer product | op(Multivector) | |
 | 2 | &#42;  | * | \u002A | scalar product | scp(Multivector) | |
@@ -45,8 +45,8 @@ or navigate to this point via the Tools main menu.
 #### Additional operators (for more convenience only)
 | precedence | symbol | latex | unicode | description | implementation |
 | :--------: | :----: | ------- | ----- | ----------- | -------------- |
-| 3 | &#8746;   | \cup  | \u222A | meet | |
-| 3 | &#8745;   | \cap  | \u2229 | join | |
+| 3 | &#8746;   | \cup  | \u222A | meet | meet(Multivector) |
+| 3 | &#8745;   | \cap  | \u2229 | join | joint(Multivector) |
 | 3 | &#8970; | \llcorner | \u230B | left contraction | ip(Multivector, LEFT_CONTRACTION) |
 | 3 | &#8971; | \lrcorner | \u230A | right contraction | ip(Multivector, RIGHT_CONTRACTION) |
 | 3 | &#8744; | \vee | \u2228 |   | (X* &#8743; Y*)*
