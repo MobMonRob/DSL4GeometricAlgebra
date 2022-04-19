@@ -59,22 +59,22 @@ or navigate to this point via the Tools main menu.
 | 4          | *             | \textsuperscript{*}           | \u002A       | dual |
 | 4          | &#8315;*      | \textsuperscript{-*}          | \u207B\u002A | undual |
 | 4          | &#732;        | \textsuperscript{\tilde}      | \u02DC       | reverse |
-| 4          | &#8224;       | \textsuperscript{\textdagger} | \u2020       | conjugate |
+| 4          | &#8224;       | \textsuperscript{\textdagger} | \u2020       | clifford conjugate |
 
 ### Buildin functions
 
 #### Base functions
-| precedence | symbol | latex | description |
-| :--------: | ------:| ----- | ----------- |
-| 4 | exp()         | \exp{} | exponential |
-| 4 | involute()    |  | grade inversion |
+| precedence | symbol | latex | description | implementation |
+| :--------: | ------:| ----- | ----------- | -------------- |
+| 4 | exp()         | \exp{} | exponential | exp(Multivector) |
+| 4 | involute()    |  | grade inversion | gradeInversion() |
 
 #### Additional functions (for more convenience only)
 | precedence | symbol | latex | description | implementation |
 | :--------: | ------:| ----- | ----------- | -------------- |
 | 4 | reverse()     |  \textsuperscript{\tilde} | reverse | reverse() |
 | 4 | conjugate()   | \textsuperscript{\textdagger} | clifford conjugate | conjugate() |
-| 4 | unit()        | | normalize | unit() |
+| 4 | normalize()        | | normalize | unit() |
 
 ### Base vector symbols
 | symbol        | latex         | Unicode      | description |
