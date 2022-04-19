@@ -46,7 +46,7 @@ or navigate to this point via the Tools main menu.
 | 3 | space  |  | \u0020 | geometric product | multivector.gp(Multivector) | Exactly one space character is interpreted as the operator. |
 | 3 | &#8901;   | \cdot | \u22C5 | inner product | multivector.ip(Multivector, LEFT_CONTRACTION) | In the default configuration equal to left contraction. |
 | 3 | &#8743; | \wedge | \u2227 | outer product | multivector.op(Multivector) | |
-| 2 | &#42;  | * | \u002A | scalar product | multivector.scp(Multivector), double * double | |
+| 2 | &#42;  | * | \u002A | scalar product | multivector.scp(Multivector), double * double, Multivector.createBasisVector(int, double) for e.g. &#949;&#8321; * double or double * &#949;&#8321; | |
 | 1 | &#43;  | + | \u002B | sum | multivector.add(Multivector), double + double | |
 | 1 | &#45; | - | \u002D| difference | multivector.sub(Multivector), double - double | |
 
