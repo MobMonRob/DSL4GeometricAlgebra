@@ -54,7 +54,7 @@ or navigate to this point via the Tools main menu.
 | precedence | symbol | latex | unicode | description | implementation |
 | :--------: | :----: | ------- | ----- | ----------- | -------------- |
 | 3 | &#8746;   | \cup  | \u222A | meet | multivector.meet(multivector) |
-| 3 | &#8745;   | \cap  | \u2229 | join | multivector.join(multivector) |
+| 3 | &#8745;   | \cap  | \u2229 | join | multivector.join(multivector) or multivector2\u002A &#8901; multivector1 or (multivector2\u002A &#8743; multivector1\u002A)\u002A |
 | 3 | &#8970; | \llcorner | \u230B | left contraction | multivetor.ip(multivector, LEFT_CONTRACTION) |
 | 3 | &#8971; | \lrcorner | \u230A | right contraction | multivector.ip(multivector, RIGHT_CONTRACTION) |
 | 3 | &#8744; | \vee | \u2228 | (X* &#8743; Y*)* | multivector.vee(multivector) |
