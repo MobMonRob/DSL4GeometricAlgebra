@@ -49,8 +49,8 @@ or navigate to this point via the Tools main menu.
 | 3 | &#8745;   | \cap  | \u2229 | join | joint(Multivector) |
 | 3 | &#8970; | \llcorner | \u230B | left contraction | ip(Multivector, LEFT_CONTRACTION) |
 | 3 | &#8971; | \lrcorner | \u230A | right contraction | ip(Multivector, RIGHT_CONTRACTION) |
-| 3 | &#8744; | \vee | \u2228 |   | (X* &#8743; Y*)*
-| 2 | &#47;  | \StrikingThrough | \u2F | division |
+| 3 | &#8744; | \vee | \u2228 | (X* &#8743; Y*)* | vee(Multivector) |
+| 2 | &#47;  | \StrikingThrough | \u2F | division | div(Multivector) |
 
 ### Monadic operators (placed all on right side)
 | precedence | symbol | latex | description |
