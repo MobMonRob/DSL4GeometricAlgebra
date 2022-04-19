@@ -53,13 +53,13 @@ or navigate to this point via the Tools main menu.
 | 2 | &#47;  | \StrikingThrough | \u2F | division | div(Multivector) |
 
 ### Monadic operators (placed all on right side)
-| precedence | symbol        | latex                         | Unicode     | description |
-| :--------: | :-----------: | ----------------------------- | ----------  | ----------- |
-| 4          | &#8315;&#185; | \textsuperscript{-1}          | \u207b\ub9  | general inverse |
-| 4          | *             | \textsuperscript{*}           | \002A       | dual |
-| 4          | &#8315;*      | \textsuperscript{-*}          | \207b\u002A | undual |
-| 4          | &#732;        | \textsuperscript{\tilde}      | \u2dc       | reverse |
-| 4          | &#8224;       | \textsuperscript{\textdagger} | \u2020      | conjugate |
+| precedence | symbol        | latex                         | Unicode      | description |
+| :--------: | :-----------: | ----------------------------- | ------------ | ----------- |
+| 4          | &#8315;&#185; | \textsuperscript{-1}          | \u207b\ub9   | general inverse |
+| 4          | *             | \textsuperscript{*}           | \u002A       | dual |
+| 4          | &#8315;*      | \textsuperscript{-*}          | \u207b\u002A | undual |
+| 4          | &#732;        | \textsuperscript{\tilde}      | \u2dc        | reverse |
+| 4          | &#8224;       | \textsuperscript{\textdagger} | \u2020       | conjugate |
 
 ### Buildin functions
 | precedence | symbol | latex | description |
@@ -72,7 +72,7 @@ or navigate to this point via the Tools main menu.
 ### Symbols
 | symbol        | latex         | Unicode     | description |
 | ------------- | ------------- | ----------- | ----------- |
-| o             |               | \006F       | base vector representing the origin |
+| o             |               | \u006F      | base vector representing the origin |
 | &#8734;       |               | \u221e      | base vector representing the infinity |
 | &#949;&#8321; | \textepsilon  | \u3b5\u2081 | base vector representing x direction |
 | &#949;&#8322; | \textepsilon  | \u3b5\u2082 | base vector representing y direction |
