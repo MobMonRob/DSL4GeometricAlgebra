@@ -88,7 +88,7 @@ or navigate to this point via the Tools main menu.
 
 #### Additional functions (2) defining geometric objects (for more convenience only)
 | precedence | symbol | latex | description | implementation |
-| :--------: | ------:| ----- | ----------- | -------------- |
+| :--------: | :------ | ----- | ----------- | -------------- |
 | 4 | point()        | | creates a conformal point from an 3d-tuple | createPoint(Tuple3d) |
 | 4 | dualLine()        | | creates a conformal line from 3d-tuples defining a point and a direction or a second point | createLine(Tuple3d, Tuple3d) |
 | 4 | dualSphere()        | | creates a conformal sphere from four 3d-tuple | createPoint(Tuple3d, Tuple3d, Tuple3d, Tuple3d) |
