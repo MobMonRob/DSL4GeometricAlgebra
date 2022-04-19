@@ -76,7 +76,11 @@ or navigate to this point via the Tools main menu.
 | :--------: | ------:| ----- | ----------- | -------------- |
 | 4 | reverse()     |  \textsuperscript{\tilde} | reverse | reverse() |
 | 4 | conjugate()   | \textsuperscript{\textdagger} | clifford conjugate | conjugate() |
-| 4 | normalize()        | | normalize | unit() |
+| 4 | normalize()        | | normalize | unit() |#### Additional functions (for more convenience only)
+
+#### Additional functions (2) defining geometric objects (for more convenience only)
+| precedence | symbol | latex | description | implementation |
+| :--------: | ------:| ----- | ----------- | -------------- |
 | 4 | point()        | | creates a conformal point from an 3d-tuple | createPoint(Tuple3d) |
 | 4 | sphere()        | | creates a conformal sphere from four 3d-tuple | createPoint(Tuple3d, Tuple3d, Tuple3d, Tuple3d) |
 | 4 | plane()        | | creates a conformal plane from a 3d-tuple defining a point on the plane and another 3d-tuple defining the normal vector | createPoint(Tuple3d, Tuple3d) |
