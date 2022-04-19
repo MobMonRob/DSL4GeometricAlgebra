@@ -46,7 +46,7 @@ or navigate to this point via the Tools main menu.
 | precedence | symbol | latex | unicode | description | implementation |
 | :--------: | :----: | ------- | ----- | ----------- | -------------- |
 | 3 | &#8746;   | \cup  | \u222A | meet | meet(Multivector) |
-| 3 | &#8745;   | \cap  | \u2229 | join | joint(Multivector) |
+| 3 | &#8745;   | \cap  | \u2229 | join | join(Multivector) |
 | 3 | &#8970; | \llcorner | \u230B | left contraction | ip(Multivector, LEFT_CONTRACTION) |
 | 3 | &#8971; | \lrcorner | \u230A | right contraction | ip(Multivector, RIGHT_CONTRACTION) |
 | 3 | &#8744; | \vee | \u2228 | (X* &#8743; Y*)* | vee(Multivector) |
