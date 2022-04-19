@@ -8,30 +8,6 @@ fragment DIGIT
 	: [0-9]
 	;
 
-DECIMAL_LITERAL
-	: DIGIT+ (',' DIGIT+)?
-	;
-
-IDENTIFIER
-	: LETTER+
-	;
-
-ADD
-	: '+'
-	;
-
-SUB
-	: '-'
-	;
-
-MUL
-	: '*'
-	;
-
-DIV
-	: '/'
-	;
-
 L_PAREN
 	: '('
 	;
@@ -40,11 +16,99 @@ R_PAREN
 	: ')'
 	;
 
-WHITESPACE
-	:  [ \t\r\n\u000C]+ -> skip
+DECIMAL_LITERAL
+	: DIGIT+ (',' DIGIT+)?
+	;
+
+IDENTIFIER
+	: LETTER+
+	;
+
+INFINITY
+	: '∞'
+	;
+
+EPSILON_ONE
+	: 'ε₁'
+	;
+
+EPSILON_TWO
+	: 'ε₂'
+	;
+
+EPSILON_THREE
+	: 'ε₃'
+	;
+
+DAGGER
+	: '†'
+	;
+
+SUPERSCRIPT_TILDE
+	: '˜'
+	;
+
+SUPERSCRIPT_MINUS_STAR
+	: '⁻*'
+	;
+
+STAR
+	: '*'
+	;
+
+SUPERSCRIPT_MINUS_ONE
+	: '⁻¹'
+	;
+
+CUP
+	: '∪'
+	;
+
+CAP
+	: '∩'
+	;
+
+L_CORNER
+	: '⌊'
+	;
+
+R_CORNER
+	: '⌋'
+	;
+
+VEE
+	: '∨'
+	;
+
+SLASH
+	: '/'
+	;
+
+SPACE
+	: ' '
+	;
+
+DOT
+	: '⋅'
+	;
+
+WEDGE
+	: '∧'
+	;
+
+PLUS
+	: '+'
+	;
+
+MINUS
+	: '-'
 	;
 
 NEWLINE: '\r'? '\n';
+
+WHITESPACE_OTHER
+	: [\t\u000C]+ -> skip
+	;
 
 // Catchall Rule https://tomassetti.me/antlr-mega-tutorial/#chapter56
 ANY

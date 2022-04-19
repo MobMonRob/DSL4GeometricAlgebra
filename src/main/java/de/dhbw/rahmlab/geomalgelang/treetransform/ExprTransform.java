@@ -48,16 +48,16 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		BaseNode current = null;
 
 		switch (ctx.op.getType()) {
-			case GeomAlgeLexer.ADD:
+			case GeomAlgeLexer.PLUS:
 				current = AddNodeGen.create(left, right);
 				break;
-			case GeomAlgeLexer.DIV:
+			case GeomAlgeLexer.SLASH:
 				current = DivNodeGen.create(left, right);
 				break;
-			case GeomAlgeLexer.MUL:
+			case GeomAlgeLexer.STAR:
 				current = MulNodeGen.create(left, right);
 				break;
-			case GeomAlgeLexer.SUB:
+			case GeomAlgeLexer.MINUS:
 				current = SubNodeGen.create(left, right);
 				break;
 			default:

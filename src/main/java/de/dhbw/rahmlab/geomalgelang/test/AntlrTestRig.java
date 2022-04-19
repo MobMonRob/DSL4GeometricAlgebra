@@ -30,7 +30,7 @@ public class AntlrTestRig extends TestRig {
         super.printTree = false;
         super.trace = false;
         super.diagnostics = false;
-        super.showTokens = false;
+		super.showTokens = false;
 
         // Standard
         super.gui = true;

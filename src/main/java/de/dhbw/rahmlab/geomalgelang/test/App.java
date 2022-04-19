@@ -7,6 +7,8 @@ import de.dhbw.rahmlab.geomalgelang.cga.ICGAMultivector;
 import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeLexer;
 import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParser;
 import de.orat.math.cga.impl1.CGA1Multivector;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import org.antlr.v4.runtime.*;
@@ -14,12 +16,25 @@ import org.antlr.v4.runtime.*;
 public class App {
 
 	public static void main(String[] args) throws Exception {
-		String program = "a * (10 / 5)";
+		//System.setOut(new PrintStream(System.out, true, "UTF8"));
+
+		//String test = "ε₁"; //FE FF 03 B5 20 81 00 00 00
+		String test = "" + '\u03b5' + '\u2081'; //FE FF 03 B5 20 81 00 00 00
+		ByteBuffer buf = StandardCharsets.UTF_16.encode(test);
+		byte[] byteArray = buf.array();
+		StringBuilder hex = new StringBuilder(byteArray.length * 2);
+		for (byte b : byteArray) {
+			hex.append(String.format("%02X ", b));
+		}
+		System.out.println(hex.toString());
+
+		//String program = "a b ⋅ (ε₁ + ε₂)†* * ∞";
+		String program = "a b";
 		System.out.println("inputed program: " + program);
 
-		//parseTest(program);
-		invocationTest(program);
-		otherTest(program);
+		parseTest(program);
+		//invocationTest(program);
+		//otherTest(program);
 	}
 
 	private static void otherTest(String program) throws Exception {
@@ -43,7 +58,7 @@ public class App {
 	}
 
 	private static void parseTest(String program) throws Exception {
-		CharStream inputStream = CharStreams.fromString(program);
+		CodePointCharStream inputStream = CharStreams.fromString(program);
 		GeomAlgeLexer lexer = new GeomAlgeLexer(inputStream);
 		CommonTokenStream commonTokenStream = new CommonTokenStream(lexer);
 		GeomAlgeParser parser = new GeomAlgeParser(commonTokenStream);
