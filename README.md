@@ -92,8 +92,8 @@ or navigate to this point via the Tools main menu.
 | :--------: | :------ | ----- | ----------- | -------------- |
 | 4 | point()        | | creates a conformal point from an 3d-tuple | createPoint(Tuple3d) |
 | 4 | dualLine()        | | creates a conformal line from 3d-tuples defining a point and a direction or a second point | createLine(Tuple3d, Tuple3d) |
-| 4 | dualSphere()        | | creates a conformal sphere from four 3d-tuple | createPoint(Tuple3d, Tuple3d, Tuple3d, Tuple3d) |
-| 4 | plane()        | | creates a conformal plane from a 3d-tuple defining a point on the plane and another 3d-tuple defining the normal vector | createPoint(Tuple3d, Tuple3d) |
+| 4 | dualSphere()        | | creates a conformal sphere from four 3d-tuple | createDualSphere(Tuple3d, Tuple3d, Tuple3d, Tuple3d) |
+| 4 | plane()        | | creates a conformal plane from a 3d-tuple defining a point on the plane and another 3d-tuple defining the normal vector | createPlane(Tuple3d, Tuple3d) |
 
 ### Base vector symbols
 | symbol        | latex         | Unicode      | description |
