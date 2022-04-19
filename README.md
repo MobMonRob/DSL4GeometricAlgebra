@@ -74,7 +74,7 @@ or navigate to this point via the Tools main menu.
 #### Base functions
 | precedence | symbol | latex | description | implementation |
 | :--------: | ------:| ----- | ----------- | -------------- |
-| 4 | exp()         | \exp{} | exponential | Multivector.exp(Multivector) |
+| 4 | exp()         | \exp{} | exponential | multivector.exp() |
 | 4 | involute()    |  | grade inversion | multivector.gradeInversion() |
 | 4 | abs()         |  | absolute value | Math.abs(double) |
 | 4 | sqrt()         |  | square root | Math.sqrt(double) |
