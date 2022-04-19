@@ -31,11 +31,11 @@ or navigate to this point via the Tools main menu.
 
 
 ## Types
-| Name | implementation class |
-| :-------- | :---- |
-| double | double |
-| Tuple3d | org.jogamp.vecmath.Tuple3d |
-| Multivector | de.orat.math.cga.impl1.CGA1Multivector |
+| Name | implementation class | setting from outside possible |
+| :-------- | :---- | ----- |
+| double | double | x |
+| Tuple3d | org.jogamp.vecmath.Tuple3d | x |
+| Multivector | de.orat.math.cga.impl1.CGA1Multivector | |
 
 ## Operators
 
