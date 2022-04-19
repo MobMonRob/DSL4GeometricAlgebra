@@ -57,7 +57,7 @@ or navigate to this point via the Tools main menu.
 | 3 | &#8745;   | \cap  | \u2229 | join | multivector1.join(multivector2) or multivector2* &#8901; multivector1 or (multivector2* &#8743; multivector1*)*|
 | 3 | &#8970; | \llcorner | \u230B | left contraction | multivetor1.ip(multivector2, LEFT_CONTRACTION) |
 | 3 | &#8971; | \lrcorner | \u230A | right contraction | multivector1.ip(multivector1, RIGHT_CONTRACTION) |
-| 3 | &#8744; | \vee | \u2228 | (X* &#8743; Y*)* | multivector1.vee(multivector2) |
+| 3 | &#8744; | \vee | \u2228 | | multivector1.vee(multivector2) or (multivector1* &#8743; multivector2*)* |
 | 2 | &#47;  | \StrikingThrough | \u002F | division | multivector1.div(multivector2), double.div(double) |
 
 ### Monadic operators (placed all on right side)
