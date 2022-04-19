@@ -69,7 +69,7 @@ or navigate to this point via the Tools main menu.
 | 4 | reverse()     |  \textsuperscript{\tilde} | reverse |
 | 4 | conjugate()   | \textsuperscript{\textdagger} | clifford conjugate |
 
-### Symbols
+### Base vector ymbols
 | symbol        | latex         | Unicode      | description |
 | :-----------: | ------------- | ------------ | ----------- |
 | o             |               | \u006F       | base vector representing the origin |
