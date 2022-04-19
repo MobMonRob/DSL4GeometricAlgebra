@@ -87,7 +87,7 @@ or navigate to this point via the Tools main menu.
 | 4 | conjugate()   | \textsuperscript{\textdagger} | clifford conjugate | multivector.conjugate() |
 | 4 | normalize()        | | normalize | unit() |
 
-#### Additional functions (2) defining geometric objects (for more convenience only)
+#### Additional functions (2) to define geometric objects (for more convenience only)
 | precedence | symbol | latex | description | implementation |
 | :--------: | :------ | ----- | ----------- | -------------- |
 | 4 | point()        | | creates a conformal point from an 3d-tuple | createPoint(Tuple3d) |
