@@ -55,10 +55,10 @@ or navigate to this point via the Tools main menu.
 ### Monadic operators (placed all on right side)
 | precedence | symbol        | latex                         | Unicode      | description |
 | :--------: | :-----------: | ----------------------------- | ------------ | ----------- |
-| 4          | &#8315;&#185; | \textsuperscript{-1}          | \u207B\u00b9 | general inverse |
+| 4          | &#8315;&#185; | \textsuperscript{-1}          | \u207B\u00B9 | general inverse |
 | 4          | *             | \textsuperscript{*}           | \u002A       | dual |
 | 4          | &#8315;*      | \textsuperscript{-*}          | \u207B\u002A | undual |
-| 4          | &#732;        | \textsuperscript{\tilde}      | \u02dC       | reverse |
+| 4          | &#732;        | \textsuperscript{\tilde}      | \u02DC       | reverse |
 | 4          | &#8224;       | \textsuperscript{\textdagger} | \u2020       | conjugate |
 
 ### Buildin functions
