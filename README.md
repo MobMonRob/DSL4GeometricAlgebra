@@ -94,11 +94,15 @@ Outer product null space representations are called dual. Corresponding regular 
 | precedence | symbol | description | implementation |
 | :--------: | :------ | ----------- | -------------- |
 | 4 | point(tuple3d)        |  creates a conformal point from an 3d-tuple | createPoint(tuple3d) |
-| 4 | dualPointPair(tuple3d, tuple3d)        |  creates a conformal dual point pair from two 3d-tuple | createDualPointPair(tuple3d,tuple3d) |
-| 4 | dualLine(tuple3d, tuple3d)        |  creates a conformal line from 3d-tuples defining a point and a direction or a second point | createDualLine(tuple3d, tuple3d) |
-| 4 | dualSphere(tuple3d, tuple3d, tuple3d, tuple3d)        |  creates a conformal sphere from four 3d-tuple | createDualSphere(tuple3d, tuple3d, tuple3d, tuple3d) |
+| 4 | dualPointPair(tuple3d1, tuple3d2)        |  creates a conformal dual point pair from two 3d-tuple | createDualPointPair(tuple3d1,tuple3d2) |
+| 4 | dualLine(tuple3d1, tuple3d2)        |  creates a conformal line from 3d-tuples defining a point and a direction or a second point | createDualLine(tuple3d1, tuple3d2) |
+| 4 | dualSphere(tuple3d1, tuple3d2, tuple3d3, tuple3d4)        |  creates a conformal sphere from four 3d-tuple | createDualSphere(tuple3d1, tuple3d2, tuple3d3, tuple3d4) |
 | 4 | sphere(tuple3d, double)        |  creates a conformal sphere from a 3d-tuple and the radius| createSphere(tuple3d, double) |
-| 4 | plane(tuple3d, tuple3d)        |  creates a conformal plane from a 3d-tuple defining a point on the plane and another 3d-tuple defining the normal vector | createPlane(tuple3d, tuple3d) |
+| 4 | plane(tuple3d1, tuple3d2)        |  creates a conformal plane from a 3d-tuple defining a point on the plane and another 3d-tuple defining the normal vector | createPlane(tuple3d, tuple3d) |
+| 4 | plane(tuple3d, double) | creates a conformal plane based on its normal vector and the distance to the origin (Hesse normal form) | createPlane(tuple3d, double) |
+| 4 | dualPlane(tuple3d1, tuple3d2, tuple3d3) | creates a conformal dual plane based on three points | createDualPlane(tuple3d1, tuple3d2, tuple3d3) |
+| 4 | dualCircle(tuple3d1, tuple3d2, tuple3d3) | creates a conformal dual circle based on three points | createDualCircle(tuple3d1, tuple3d2 tuple3d3) |
+| 4 | dualPointPair(tuple3d1, tuple3d2) | create a conformal dual point pair based on three points | createDualPointPair(tuple3d1, tuple3d2) |
 
 ### Base vector symbols
 | symbol        | latex         | Unicode      | description |
@@ -110,6 +114,15 @@ Outer product null space representations are called dual. Corresponding regular 
 | &#949;&#8323; | \textepsilon  | \u03B5\u2083 | base vector representing z direction |
 
 ## Important formulae
+### Formulae to create conformal objects
+| description | formula |
+| :---------- | :------ |
+| Create a conformal dual point from four conformal spheres (s1, s3, s3, d4) | s1 &#8743; s2 &#8743; s3 &#8743; s4 |
+| Create a conformal line from two conformal planes (p1, p2) | p1 &#8743; p2 |
+| Create a conformal circle from two conformal spheres (s1, s2) | s1 &#8743; s2 |
+| Create a conformal point pair from  three conformal spheres (s1, s2, s3) | s1 &#8743; s2 &#8743; s3 |
+
+### Formulae to decompose conformal object representations
 | description | formula |
 | :---------- | :------ |
 | location of a round (X) or a tangent (X) represented in 3d coordinates | -0.5 (X &#8734; X) / sqr(&#8734; &#8901; X) |
