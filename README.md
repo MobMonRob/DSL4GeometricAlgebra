@@ -124,14 +124,18 @@ Outer product null space representations are called dual. Corresponding regular 
 ### Formulae to create conformal objects
 | description | formula |
 | :---------- | :------ |
-| Create a conformal dual point from four conformal spheres (s1, s3, s3, d4) | s1 &#8743; s2 &#8743; s3 &#8743; s4 |
-| Create a conformal line from two conformal planes (p1, p2) | p1 &#8743; p2 |
-| Create a conformal circle from two conformal spheres (s1, s2) | s1 &#8743; s2 |
-| Create a conformal point pair from  three conformal spheres (s1, s2, s3) | s1 &#8743; s2 &#8743; s3 |
+| Dual point from four conformal spheres (s1, s3, s3, d4) | s1 &#8743; s2 &#8743; s3 &#8743; s4 |
+| Line from two conformal planes (p1, p2) | p1 &#8743; p2 |
+| Circle from two conformal spheres (s1, s2) | s1 &#8743; s2 |
+| Point pair from  three conformal spheres (s1, s2, s3) | s1 &#8743; s2 &#8743; s3 |
 
 ### Formulae to decompose conformal object representations
 | description | formula |
 | :---------- | :------ |
-| location of a round (X) or a tangent (X) represented in 3d coordinates | -0.5 (X &#8734; X) / (&#8734; &#8901; X)&sup2; |
-| direction vector of a line (L) represented in 3d coordinates | (L &#8901; o) &#8901; &#8734; |
+| Location of a round (X) or a tangent (X) represented in 3d coordinates | -0.5 (X &#8734; X) / (&#8734; &#8901; X)&sup2; |
+| Direction vector (attitude) of a line (L) represented in 3d coordinates | (L &#8901; o) &#8901; &#8734; |
 
+### General useful equations
+| description | equation |
+| :---------- | :------ |
+| | (A &#8970; B)&#732; = B&#732; &#8971 A&#732; |
