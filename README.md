@@ -88,6 +88,9 @@ or navigate to this point via the Tools main menu.
 | 4 | normalize(multivector)        | | normalize | multivector.unit() |
 
 #### Additional functions (2) to define geometric objects (for more convenience only)
+
+Outer product null space representations are called dual. Corresponding regular expressions are in the inner product null space representations. Be careful in the "older" literature this is often defined reverse.
+
 | precedence | symbol | description | implementation |
 | :--------: | :------ | ----------- | -------------- |
 | 4 | point(tuple3d)        |  creates a conformal point from an 3d-tuple | createPoint(tuple3d) |
