@@ -124,7 +124,7 @@ Outer product null space representations are called dual. Corresponding regular 
 ### Formulae to create conformal objects
 | description | formula |
 | :---------- | :------ |
-| Dual point from four conformal spheres (s1, s3, s3, d4) | s1 &#8743; s2 &#8743; s3 &#8743; s4 |
+| Dual point from four conformal spheres (s1, s3, s3, s4) | s1 &#8743; s2 &#8743; s3 &#8743; s4 |
 | Line from two conformal planes (p1, p2) | p1 &#8743; p2 |
 | Circle from two conformal spheres (s1, s2) | s1 &#8743; s2 |
 | Point pair from  three conformal spheres (s1, s2, s3) | s1 &#8743; s2 &#8743; s3 |
