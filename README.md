@@ -112,6 +112,6 @@ Outer product null space representations are called dual. Corresponding regular 
 ## Important formulae
 | description | formula |
 | :---------- | :------ |
-| location of a round or a tangent represented in 3d coordinates | -0.5 (X &#8734; X) / sqr(&#8734; &#8901; X) |
-| direction vector of a line represented in 3d coordinates | (L &#8901; o) &#8901; &#8734; |
+| location of a round (X) or a tangent (X) represented in 3d coordinates | -0.5 (X &#8734; X) / sqr(&#8734; &#8901; X) |
+| direction vector of a line (L) represented in 3d coordinates | (L &#8901; o) &#8901; &#8734; |
 
