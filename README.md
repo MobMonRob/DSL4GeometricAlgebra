@@ -92,7 +92,7 @@ or navigate to this point via the Tools main menu.
 | 4 | reverse(multivector)     |  \textsuperscript{\tilde} | reverse | multivector.reverse() |
 | 4 | conjugate(multivector)   | \textsuperscript{\textdagger} | clifford conjugate | multivector.conjugate() |
 | 4 | normalize(multivector)        | | normalize | multivector.unit() |
-| 4 | sqr(multivector) | | square | multivector.gp(multivector) |
+| 4 | sqr(multivector) | | square | multivector.gp(multivector) or multivector.sqr() |
 
 #### Additional functions (2) to define geometric objects (for more convenience only)
 
