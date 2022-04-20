@@ -73,7 +73,7 @@ or navigate to this point via the Tools main menu.
 #### Additional monatic operators (for more convenience only) 
 | precedence | symbol        | latex                         | unicode      | description | implementation |
 | :--------: | :-----------: | ----------------------------- | ------------ | ----------- | -------------- |
-| 4          | | | \u00B2 | square | sqr(multivector), sqr(double) |
+| 4          | &sup2; | | \u00B2 | square | sqr(multivector), sqr(double) |
 
 ### Buildin functions
 
