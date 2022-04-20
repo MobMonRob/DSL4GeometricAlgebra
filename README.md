@@ -33,7 +33,7 @@ or navigate to this point via the Tools main menu.
 ## Types
 | Name | implementation class | setting from outside possible |
 | :-------- | :---- | ----- |
-| double | double | x |
+| double | Double | x |
 | Tuple3d | org.jogamp.vecmath.Tuple3d | x |
 | Multivector | de.orat.math.cga.impl1.CGA1Multivector | |
 
