@@ -61,13 +61,19 @@ or navigate to this point via the Tools main menu.
 | 2 | &#47;  | \StrikingThrough | \u002F | division | multivector1.div(multivector2), double.div(double) |
 
 ### Monadic operators (placed all on right side)
-| precedence | symbol        | latex                         | unicode      | description |
-| :--------: | :-----------: | ----------------------------- | ------------ | ----------- |
-| 4          | &#8315;&#185; | \textsuperscript{-1}          | \u207B\u00B9 | general inverse |
-| 4          | *             | \textsuperscript{*}           | \u002A       | dual |
-| 4          | &#8315;*      | \textsuperscript{-*}          | \u207B\u002A | undual |
-| 4          | &#732;        | \textsuperscript{\tilde}      | \u02DC       | reverse |
-| 4          | &#8224;       | \textsuperscript{\textdagger} | \u2020       | clifford conjugate |
+#### Base monadic operators
+| precedence | symbol        | latex                         | unicode      | description | implementation |
+| :--------: | :-----------: | ----------------------------- | ------------ | ----------- | -------------- |
+| 4          | &#8315;&#185; | \textsuperscript{-1}          | \u207B\u00B9 | general inverse | multivector.generalInverse() |
+| 4          | *             | \textsuperscript{*}           | \u002A       | dual | multivector.dual() |
+| 4          | &#8315;*      | \textsuperscript{-*}          | \u207B\u002A | undual | multivector.undual() or -multivector.dual() |
+| 4          | &#732;        | \textsuperscript{\tilde}      | \u02DC       | reverse | multivector.reverse() |
+| 4          | &#8224;       | \textsuperscript{\textdagger} | \u2020       | clifford conjugate | multivector.conjugate() |
+
+#### Additional monatic operators (for more convenience only) 
+| precedence | symbol        | latex                         | unicode      | description | implementation |
+| :--------: | :-----------: | ----------------------------- | ------------ | ----------- | -------------- |
+| 4          | | | \u00B2 | square | sqr(multivector), sqr(double) |
 
 ### Buildin functions
 
