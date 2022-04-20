@@ -44,7 +44,7 @@ or navigate to this point via the Tools main menu.
 | precedence | symbol | latex | unicode | name | implementation | hints |
 | :--------: | :----: | ------- | ----- | ---- | -------------- | ----- |
 | 3 | space  |  | \u0020 | geometric product | multivector1.gp(multivector2) | Exactly one space character is interpreted as the operator. |
-| 3 | &#8901;   | \cdot | \u22C5 | inner product | multivector1.ip(multivector2, LEFT_CONTRACTION) | In the default configuration equal to left contraction. |
+| 3 | &#8901;   | \cdot | \u22C5 | inner product | multivector1.ip(multivector2, RIGHT_CONTRACTION) | In the default configuration equal to left contraction. |
 | 3 | &#8743; | \wedge | \u2227 | outer product | multivector1.op(multivector2), not used for double, for tuple3d it makes sense but actually no implementation is available | |
 | 2 | &#42;  | * | \u002A | scalar product | multivector1.scp(multivector2), double1 * double2, Multivector.createBasisVector(int, double) for e.g. &#949;&#8321; * double or double * &#949;&#8321; tuple3d1.add(tuple3d2) | |
 | 1 | &#43;  | + | \u002B | sum | multivector1.add(multivector2), double1 + double2 | |
