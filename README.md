@@ -108,3 +108,9 @@ Outer product null space representations are called dual. Corresponding regular 
 | &#949;&#8321; | \textepsilon  | \u03B5\u2081 | base vector representing x direction |
 | &#949;&#8322; | \textepsilon  | \u03B5\u2082 | base vector representing y direction |
 | &#949;&#8323; | \textepsilon  | \u03B5\u2083 | base vector representing z direction |
+
+## Important formulae
+| description | formula |
+| :---------- | :------ |
+| location of a round | -0.5 (X &#8734; X) / sqr(&#8734; &#8901; X) |
+
