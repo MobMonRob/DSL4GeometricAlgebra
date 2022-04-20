@@ -138,6 +138,9 @@ Outer product null space representations are called dual. Corresponding regular 
 ### General useful equations
 | description | equation |
 | :---------- | :------ |
+| Anticommutivity | u &#8743; v = - (v &#8743; u) |
+| Distributivity | u &#8743; (v + w) = u &#8743; v + u &#8743; w |
+| Associativity | u &#8743; (v &#8743; w) = (u &#8743; v) &#8743; w |
 | | (A &#8970; B)&#732; = B&#732; C&#8743; A&#732; |
 | | A &#8743; B * C = A * (B &#8971; C) |
 | | C * (B &#8743; A) = (C &#8970; B) * A |
