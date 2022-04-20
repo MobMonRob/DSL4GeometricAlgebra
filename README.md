@@ -138,4 +138,4 @@ Outer product null space representations are called dual. Corresponding regular 
 ### General useful equations
 | description | equation |
 | :---------- | :------ |
-| | (A &#8970; B)&#732; = B&#732; &#8971 A&#732; |
+| | (A &#8970; B)&#732; = B&#732; &#8971; A&#732; |
