@@ -61,7 +61,7 @@ or navigate to this point via the Tools main menu.
 | 2 | &#47;  | \StrikingThrough | \u002F | division | multivector1.div(multivector2), double.div(double) |
 
 ### Monadic operators (placed all on right side)
-| precedence | symbol        | latex                         | Unicode      | description |
+| precedence | symbol        | latex                         | unicode      | description |
 | :--------: | :-----------: | ----------------------------- | ------------ | ----------- |
 | 4          | &#8315;&#185; | \textsuperscript{-1}          | \u207B\u00B9 | general inverse |
 | 4          | *             | \textsuperscript{*}           | \u002A       | dual |
