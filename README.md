@@ -90,10 +90,12 @@ or navigate to this point via the Tools main menu.
 #### Additional functions (2) to define geometric objects (for more convenience only)
 | precedence | symbol | latex | description | implementation |
 | :--------: | :------ | ----- | ----------- | -------------- |
-| 4 | point()        | | creates a conformal point from an 3d-tuple | createPoint(Tuple3d) |
-| 4 | dualLine()        | | creates a conformal line from 3d-tuples defining a point and a direction or a second point | createLine(Tuple3d, Tuple3d) |
-| 4 | dualSphere()        | | creates a conformal sphere from four 3d-tuple | createDualSphere(Tuple3d, Tuple3d, Tuple3d, Tuple3d) |
-| 4 | plane()        | | creates a conformal plane from a 3d-tuple defining a point on the plane and another 3d-tuple defining the normal vector | createPlane(Tuple3d, Tuple3d) |
+| 4 | point()        | | creates a conformal point from an 3d-tuple | createPoint(tuple3d) |
+| 4 | dualPointPair()        | | creates a conformal dual point pair from two 3d-tuple | createDualPointPair(tuple3d,tuple3d) |
+| 4 | dualLine()        | | creates a conformal line from 3d-tuples defining a point and a direction or a second point | createLine(tuple3d, tuple3d) |
+| 4 | dualSphere()        | | creates a conformal sphere from four 3d-tuple | createDualSphere(tuple3d, tuple3d, tuple3d, tuple3d) |
+| 4 | sphere()        | | creates a conformal sphere from a 3d-tuple and the radius| createSphere(tuple3d, double) |
+| 4 | plane()        | | creates a conformal plane from a 3d-tuple defining a point on the plane and another 3d-tuple defining the normal vector | createPlane(tuple3d, tuple3d) |
 
 ### Base vector symbols
 | symbol        | latex         | Unicode      | description |
