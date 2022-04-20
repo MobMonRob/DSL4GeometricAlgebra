@@ -66,14 +66,14 @@ or navigate to this point via the Tools main menu.
 | :--------: | :-----------: | ----------------------------- | ------------ | ----------- | -------------- |
 | 4          | &#8315;&#185; | \textsuperscript{-1}          | \u207B\u00B9 | general inverse | multivector.generalInverse() |
 | 4          | *             | \textsuperscript{*}           | \u002A       | dual | multivector.dual() |
-| 4          | &#8315;*      | \textsuperscript{-*}          | \u207B\u002A | undual | multivector.undual() or -multivector.dual() |
 | 4          | &#732;        | \textsuperscript{\tilde}      | \u02DC       | reverse | multivector.reverse() |
 | 4          | &#8224;       | \textsuperscript{\textdagger} | \u2020       | clifford conjugate | multivector.conjugate() |
 
 #### Additional monatic operators (for more convenience only) 
 | precedence | symbol        | latex                         | unicode      | description | implementation |
 | :--------: | :-----------: | ----------------------------- | ------------ | ----------- | -------------- |
-| 4          | &sup2; | | \u00B2 | square | sqr(multivector), sqr(double) |
+| 4          | &#8315;*      | \textsuperscript{-*}          | \u207B\u002A | undual | multivector.undual() or -multivector.dual() |
+| 4          | &sup2; | | \u00B2 | square | multivector.gp(multivector), sqr(double) |
 
 ### Buildin functions
 
@@ -92,6 +92,7 @@ or navigate to this point via the Tools main menu.
 | 4 | reverse(multivector)     |  \textsuperscript{\tilde} | reverse | multivector.reverse() |
 | 4 | conjugate(multivector)   | \textsuperscript{\textdagger} | clifford conjugate | multivector.conjugate() |
 | 4 | normalize(multivector)        | | normalize | multivector.unit() |
+| 4 | sqr(multivector) | | square | multivector.gp(multivector) |
 
 #### Additional functions (2) to define geometric objects (for more convenience only)
 
@@ -131,6 +132,6 @@ Outer product null space representations are called dual. Corresponding regular 
 ### Formulae to decompose conformal object representations
 | description | formula |
 | :---------- | :------ |
-| location of a round (X) or a tangent (X) represented in 3d coordinates | -0.5 (X &#8734; X) / sqr(&#8734; &#8901; X) |
+| location of a round (X) or a tangent (X) represented in 3d coordinates | -0.5 (X &#8734; X) / (&#8734; &#8901; X)&sup2; |
 | direction vector of a line (L) represented in 3d coordinates | (L &#8901; o) &#8901; &#8734; |
 
