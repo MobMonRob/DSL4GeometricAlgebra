@@ -136,8 +136,8 @@ Outer product null space representations are called dual. Corresponding regular 
 | Direction vector (attitude) of a dual line (L*) represented as 3d coordinates of (&#949;&#8321;, &#949;&#8322;, &#949;&#8323;). | (L* &#8901; o) &#8901; &#8734; |
 
 ### General useful equations
-| description | equation |
-| ---------- | :-------------------------------: |
+| Description | Equation |
+| :----------: | :------------------------------- |
 | Anticommutivity | u &#8743; v = - (v &#8743; u) |
 | Distributivity | u &#8743; (v + w) = u &#8743; v + u &#8743; w |
 | Associativity | u &#8743; (v &#8743; w) = (u &#8743; v) &#8743; w |
