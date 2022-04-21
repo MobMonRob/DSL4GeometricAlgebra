@@ -80,7 +80,7 @@ or navigate to this point via the Tools main menu.
 
 #### Base functions
 | precedence | symbol | latex | description | implementation |
-| :--------: | ------:| ----- | ----------- | -------------- |
+| :--------: | :------ | ----- | ----------- | -------------- |
 | 4 | exp()         | \exp{} | exponential | multivector.exp() |
 | 4 | involute()    |  | grade inversion | multivector.gradeInversion() |
 | 4 | abs()         |  | absolute value | Math.abs(double) |
@@ -89,7 +89,7 @@ or navigate to this point via the Tools main menu.
 
 #### Additional functions (for more convenience only)
 | precedence | symbol | latex | description | implementation |
-| :--------: | ------:| ----- | ----------- | -------------- |
+| :--------: | :-----| ----- | ----------- | -------------- |
 | 4 | reverse(multivector)     |  \textsuperscript{\tilde} | reverse | multivector.reverse() |
 | 4 | conjugate(multivector)   | \textsuperscript{\textdagger} | clifford conjugate | multivector.conjugate() |
 | 4 | normalize(multivector)        | | normalize | multivector.unit() |
