@@ -42,7 +42,7 @@ or navigate to this point via the Tools main menu.
 
 ### Dual operators
 #### Base operators
-| precedence | symbol | latex | unicode | name | implementation | hints |
+| precedence | symbol | latex | unicode | name | implementation | hints | 
 | :--------: | :----: | ------- | ----- | ---- | -------------- | ----- |
 | 3 | space  |  | \u0020 | geometric product | multivector1.gp(multivector2) | Exactly one space character is interpreted as the operator. |
 | 3 | &#8901;   | \cdot | \u22C5 | inner product | multivector1.ip(multivector2, RIGHT_CONTRACTION), new Tuple3d(tuple3d1.x*tuple3d2.x, tuple3d1.y*tuple3d2.y, tuple3d1.z*tuple3d2.z) | In the default configuration equal to left contraction (corresponding to Ganja.js). But this looks to be incompatible with some formulas in [Kleppe], which work only with the usage of right contraction. |
