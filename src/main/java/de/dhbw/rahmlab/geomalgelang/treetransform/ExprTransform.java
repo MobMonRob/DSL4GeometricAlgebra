@@ -41,13 +41,20 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 	}
 
 	@Override
+	public void exitUnaryOp(GeomAlgeParser.UnaryOpContext ctx) {
+		int test = 1;
+	}
+
+	@Override
 	public void exitBinaryOp(GeomAlgeParser.BinaryOpContext ctx) {
 		BaseNode right = nodeStack.pop();
 		BaseNode left = nodeStack.pop();
 
 		BaseNode current = null;
 
-		switch (ctx.op.getType()) {
+		final int type = ctx.op.getType();
+
+		switch (type) {
 			case GeomAlgeLexer.PLUS:
 				current = AddNodeGen.create(left, right);
 				break;

@@ -30,11 +30,12 @@ public class App {
 		System.out.println(hex.toString());
 
 		//String program = "a b ⋅ (ε₁ + ε₂)†* * ∞";
-		String program = "a†*";
+		String program = "a * *   b ";
+		//String program = "a * b";
 		System.out.println("inputed program: " + program);
 
 		parseTest(program);
-		//invocationTest(program);
+		invocationTest(program);
 		//otherTest(program);
 	}
 
@@ -52,6 +53,7 @@ public class App {
 		Map<String, Object> inputVars = new HashMap<>();
 		Double a = 5.0;
 		inputVars.put("a", a);
+		inputVars.put("b", a);
 
 		String answer = LanguageInvocation.invoke(program, inputVars);
 		System.out.println("answer: " + answer);

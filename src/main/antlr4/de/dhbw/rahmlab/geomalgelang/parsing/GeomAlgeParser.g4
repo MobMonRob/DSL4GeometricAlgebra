@@ -6,12 +6,10 @@ program
 	: expr (EOF | NEWLINE)
 	;
 
-//Precedence Higher=EARLIER
-
-// SPACE | DOT
+// Precedence Higher <=> EARLIER
 
 expr
-	: L_PAREN expr R_PAREN	#Unused
+	: L_PAREN expr R_PAREN			#Unused
 	|	<assoc=right>
 		left=expr
 		op=	(SUPERSCRIPT_MINUS_ONE
@@ -19,7 +17,8 @@ expr
 			|SUPERSCRIPT_MINUS_STAR
 			|SUPERSCRIPT_TILDE
 			|DAGGER
-			)				#UnaryOp
+			)
+		expr						#UnaryOp
 	|	left=expr
 		op=	(SPACE
 			|DOT
@@ -41,6 +40,8 @@ expr
 			|MINUS
 			)
 		right=expr					#BinaryOp
+	|	(SPACE)+ expr				#Unused
+	|	expr (SPACE)+				#Unused
 	|	value=	DECIMAL_LITERAL		#LiteralDecimal
 	|	varName=IDENTIFIER			#VariableReference
 	|	value=	(INFINITY
@@ -49,3 +50,4 @@ expr
 				|EPSILON_THREE
 				)					#LiteralCGA
 	;
+

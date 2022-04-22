@@ -17,41 +17,41 @@ import org.antlr.v4.runtime.Parser;
  */
 public class AntlrTestRig extends TestRig {
 
-    public AntlrTestRig() throws Exception {
-        super(new String[2]);
+	public AntlrTestRig() throws Exception {
+		super(new String[2]);
 
-        // Not needed
-        super.grammarName = null;
-        super.inputFiles.clear();
-        super.encoding = null;
-        super.psFile = null;
+		// Not needed
+		super.grammarName = null;
+		super.inputFiles.clear();
+		super.encoding = null;
+		super.psFile = null;
 
-        // Optional
-        super.printTree = false;
-        super.trace = false;
-        super.diagnostics = false;
-		super.showTokens = false;
+		// Optional
+		super.printTree = true;
+		super.trace = true;
+		super.diagnostics = true;
+		super.showTokens = true;
 
-        // Standard
-        super.gui = true;
+		// Standard
+		super.gui = true;
 
-        // To be set somewhere else
-        super.startRuleName = null;
-    }
+		// To be set somewhere else
+		super.startRuleName = null;
+	}
 
-    public void useGui(boolean value) {
-        super.gui = value;
-    }
+	public void useGui(boolean value) {
+		super.gui = value;
+	}
 
-    public void useStdOut(boolean value) {
-        super.printTree = value;
-        super.trace = value;
-        super.diagnostics = value;
-        super.showTokens = value;
-    }
+	public void useStdOut(boolean value) {
+		super.printTree = value;
+		super.trace = value;
+		super.diagnostics = value;
+		super.showTokens = value;
+	}
 
-    public void process(Lexer lexer, Parser parser, CharStream input, String startRuleName) throws Exception {
-        super.startRuleName = startRuleName;
-        super.process(lexer, parser.getClass(), parser, input);
-    }
+	public void process(Lexer lexer, Parser parser, CharStream input, String startRuleName) throws Exception {
+		super.startRuleName = startRuleName;
+		super.process(lexer, parser.getClass(), parser, input);
+	}
 }
