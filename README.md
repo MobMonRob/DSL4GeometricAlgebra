@@ -145,4 +145,4 @@ Outer product null space representations are called dual. Corresponding regular 
 | | (A &#8970; B)&#732; = B&#732; C&#8743; A&#732; | |
 | | A &#8743; B * C = A * (B &#8971; C) | |
 | | C * (B &#8743; A) = (C &#8970; B) * A | |
-| attitude | (A &#8745; B)* = B* &#8743; A* | Intersection = outer product in the dual representation; B* &#8743; A* means computing the union of everything which is not B and everything that is not A. The dual of that must be what have A and B in common.|
+| intersection | (A &#8745; B)* = B* &#8743; A* | Intersection = outer product in the dual representation; B* &#8743; A* means computing the union of everything which is not B and everything that is not A. The dual of that must be what have A and B in common.|
