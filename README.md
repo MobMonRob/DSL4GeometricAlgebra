@@ -137,12 +137,12 @@ Outer product null space representations are called dual. Corresponding regular 
 | Direction vector (attitude) of a dual line (L*) represented as 3d coordinates of (&#949;&#8321;, &#949;&#8322;, &#949;&#8323;). | (L* &#8901; o) &#8901; &#8734; |
 
 ### General useful equations
-| Description | Equation |
-| :---------- | :--------------------------------------- |
-| Anticommutivity | u &#8743; v = - (v &#8743; u) |
-| Distributivity | u &#8743; (v + w) = u &#8743; v + u &#8743; w |
-| Associativity | u &#8743; (v &#8743; w) = (u &#8743; v) &#8743; w |
-| | (A &#8970; B)&#732; = B&#732; C&#8743; A&#732; |
-| | A &#8743; B * C = A * (B &#8971; C) |
-| | C * (B &#8743; A) = (C &#8970; B) * A |
-| Intersection = outer product in the dual representation; B* &#8743; A* means computing the union of everything which is not B and everything that is not A. The dual of that must be what have A and B in common. | (A &#8745; B)* = B* &#8743; A* 
+| name | equation | description |
+| :---------- | :------------------ | ---------------------- |
+| Anticommutivity | u &#8743; v = - (v &#8743; u) | |
+| Distributivity | u &#8743; (v + w) = u &#8743; v + u &#8743; w | |
+| Associativity | u &#8743; (v &#8743; w) = (u &#8743; v) &#8743; w | |
+| | (A &#8970; B)&#732; = B&#732; C&#8743; A&#732; | |
+| | A &#8743; B * C = A * (B &#8971; C) | |
+| | C * (B &#8743; A) = (C &#8970; B) * A | |
+| direction | (A &#8745; B)* = B* &#8743; A* | Intersection = outer product in the dual representation; B* &#8743; A* means computing the union of everything which is not B and everything that is not A. The dual of that must be what have A and B in common.|
