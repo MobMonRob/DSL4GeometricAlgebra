@@ -17,8 +17,7 @@ expr
 			|SUPERSCRIPT_MINUS_STAR
 			|SUPERSCRIPT_TILDE
 			|DAGGER
-			)
-		expr						#UnaryOp
+			)						#UnaryOp
 	|	left=expr
 		op=	(SPACE
 			|DOT
@@ -40,8 +39,6 @@ expr
 			|MINUS
 			)
 		right=expr					#BinaryOp
-	|	(SPACE)+ expr				#Unused
-	|	expr (SPACE)+				#Unused
 	|	value=	DECIMAL_LITERAL		#LiteralDecimal
 	|	varName=IDENTIFIER			#VariableReference
 	|	value=	(INFINITY
@@ -49,5 +46,7 @@ expr
 				|EPSILON_TWO
 				|EPSILON_THREE
 				)					#LiteralCGA
+	|	<assoc=right>
+		expr SPACE					#Unused
 	;
 

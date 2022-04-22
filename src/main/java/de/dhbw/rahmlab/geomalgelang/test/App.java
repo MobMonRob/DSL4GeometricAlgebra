@@ -30,8 +30,15 @@ public class App {
 		System.out.println(hex.toString());
 
 		//String program = "a b ⋅ (ε₁ + ε₂)†* * ∞";
-		String program = "a * *   b ";
-		//String program = "a * b";
+		String program = "a *b "; //richtig
+		//->Was ist oben die Erwartung? BinaryOp oder Fehler?
+		//Eigentlich BinaryOp. Also doch richtig.
+		//String program = "(a *)b "; //richtig (Nicht in der Sprache)
+		//String program = "a * b "; //richtig
+		//String program = "(a*) b"; //richtig
+		//String program = "a* b"; //richtig
+		//String program = "a*  b"; //richtig
+		//String program = "(a*)  b"; //richtig
 		System.out.println("inputed program: " + program);
 
 		parseTest(program);
