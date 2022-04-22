@@ -19,8 +19,7 @@ expr
 			|SUPERSCRIPT_MINUS_STAR
 			|SUPERSCRIPT_TILDE
 			|DAGGER
-			)
-		right=expr					#UnaryOp
+			)				#UnaryOp
 	|	left=expr
 		op=	(SPACE
 			|DOT

@@ -4,6 +4,7 @@ import de.dhbw.rahmlab.geomalgelang.api.LanguageInvocation;
 import de.dhbw.rahmlab.geomalgelang.cga.CGAMultivector_Processor_CGA1Multivector;
 import de.dhbw.rahmlab.geomalgelang.cga.CGAMultivector_Processor_Generic;
 import de.dhbw.rahmlab.geomalgelang.cga.ICGAMultivector;
+import de.dhbw.rahmlab.geomalgelang.debug.AntlrTestRig;
 import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeLexer;
 import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParser;
 import de.orat.math.cga.impl1.CGA1Multivector;
@@ -29,7 +30,7 @@ public class App {
 		System.out.println(hex.toString());
 
 		//String program = "a b ⋅ (ε₁ + ε₂)†* * ∞";
-		String program = "a b";
+		String program = "a†*";
 		System.out.println("inputed program: " + program);
 
 		parseTest(program);
