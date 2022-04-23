@@ -30,7 +30,7 @@ public class App {
 		System.out.println(hex.toString());
 
 		//Assoziativitäten noch checken für UnaryOp.
-		//String program = "a b ⋅ (ε₁ + ε₂)†* * ∞";
+		String program = "a b ⋅ (ε₁ + ε₂)†* * ∞";
 		//String program = "a *b "; //richtig
 		//->Was ist oben die Erwartung? BinaryOp oder Fehler?
 		//Eigentlich BinaryOp. Also doch richtig.
@@ -39,7 +39,7 @@ public class App {
 		//String program = "(a*) b"; //richtig
 		//String program = "a*  b"; //richtig
 		//String program = "a* b"; //richtig
-		String program = "a*b"; //richtig
+		//String program = "a*b"; //richtig
 		//String program = "(a*)  b"; //richtig
 		//String program = "(a *) b"; //richtig
 		//String program = "(a *)  b "; //richtig

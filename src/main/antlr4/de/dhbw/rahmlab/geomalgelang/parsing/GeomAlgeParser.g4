@@ -6,9 +6,6 @@ program
 	: expr (EOF | NEWLINE)
 	;
 
-// Precedence Higher <=> Earlier
-// Precedencce Higher <=> Higher in parse tree
-
 expr
 	: L_PAREN expr R_PAREN			#Unused
 	|	<assoc=right>
