@@ -5,20 +5,12 @@
  */
 package de.dhbw.rahmlab.geomalgelang;
 
-import org.antlr.v4.runtime.*;
-
-import java.io.StringWriter;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import org.junit.jupiter.api.Test;
-
 /**
  * Unit tests for parser.
  */
 public class AppTest {
 
-    /*
+	/*
     private GeomAlgeParser setup(String input) {
         CharStream inputStream = CharStreams.fromString(input);
         this.markupLexer = new GeomAlgeLexer(inputStream);
@@ -55,8 +47,8 @@ public class AppTest {
         GeomAlgeParser.ContentContext context = parser.content();
 
         // note that this.errorListener.symbol could be empty
-        // when ANTLR doesn't recognize the token or there is no error.           
-        // In such cases check the output of errorListener        
+        // when ANTLR doesn't recognize the token or there is no error.
+        // In such cases check the output of errorListener
         assertEquals("[", this.errorListener.getSymbol());
     }
 
@@ -98,5 +90,5 @@ public class AppTest {
 
         assertEquals("/", this.errorListener.getSymbol());
     }
-     */
+	 */
 }
