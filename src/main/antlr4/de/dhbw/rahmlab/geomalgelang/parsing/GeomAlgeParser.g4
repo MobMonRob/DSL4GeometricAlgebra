@@ -7,7 +7,7 @@ program
 	;
 
 expr
-	: L_PAREN expr R_PAREN			#Unused
+	: L_PAREN expr R_PAREN			#DummyLabel
 	|	<assoc=right>
 		left=expr
 		op=	(SUPERSCRIPT_MINUS_ONE
@@ -40,16 +40,21 @@ expr
 	|	<assoc=right>
 		left=expr
 		op=STAR						#UnaryOp
-	|	value=	DECIMAL_LITERAL		#LiteralDecimal
+	|	exprLiteral					#DummyLabel
+	|	<assoc=right>
+		expr SPACE+?				#DummyLabel
+	|	<assoc=right>
+		SPACE+?	expr				#DummyLabel
+	;
+
+
+exprLiteral
+	:	value=	DECIMAL_LITERAL		#LiteralDecimal
 	|	varName=IDENTIFIER			#VariableReference
 	|	value=	(INFINITY
 				|EPSILON_ONE
 				|EPSILON_TWO
 				|EPSILON_THREE
 				)					#LiteralCGA
-	|	<assoc=right>
-		expr SPACE+?				#Unused
-	|	<assoc=right>
-		SPACE+?	expr				#Unused
 	;
 
