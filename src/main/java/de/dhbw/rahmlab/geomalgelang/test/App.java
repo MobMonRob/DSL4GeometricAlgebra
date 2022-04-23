@@ -17,8 +17,6 @@ import org.antlr.v4.runtime.*;
 public class App {
 
 	public static void main(String[] args) throws Exception {
-		//System.setOut(new PrintStream(System.out, true, "UTF8"));
-
 		//String test = "ε₁"; //FE FF 03 B5 20 81 00 00 00
 		String test = "" + '\u03b5' + '\u2081'; //FE FF 03 B5 20 81 00 00 00
 		ByteBuffer buf = StandardCharsets.UTF_16.encode(test);
@@ -29,20 +27,26 @@ public class App {
 		}
 		System.out.println(hex.toString());
 
-		//Assoziativitäten noch checken für UnaryOp.
 		String program = "a b ⋅ (ε₁ + ε₂)†* * ∞";
-		//String program = "a *b "; //richtig
-		//->Was ist oben die Erwartung? BinaryOp oder Fehler?
-		//Eigentlich BinaryOp. Also doch richtig.
-		//String program = "(a *)b "; //richtig (Nicht in der Sprache)
-		//String program = "a * b "; //richtig
-		//String program = "(a*) b"; //richtig
-		//String program = "a*  b"; //richtig
-		//String program = "a* b"; //richtig
-		//String program = "a*b"; //richtig
-		//String program = "(a*)  b"; //richtig
-		//String program = "(a *) b"; //richtig
-		//String program = "(a *)  b "; //richtig
+		//................
+		// Folgend nur STAR Grammatik + Semantik.
+		// Behalten für regression Testcases!
+		// Tokenkette // Ergebnis -> Anmerkung
+		//String program = "a*b"; //binaryOp STAR -> passt
+		//String program = "a* b"; //binaryOp STAR -> Fehler
+		//String program = "a*  b"; //binaryOp STAR -> Fehler
+		//String program = "a *b"; //binaryOp STAR -> passt
+		//String program = "a  *b"; //binaryOp STAR -> passt
+		//String program = "a * b"; //binaryOp STAR -> passt
+		//String program = "a  * b"; //binaryOp STAR -> passt
+		//String program = "a *  b"; //binaryOp STAR -> passt
+		//String program = "a(*)b"; //binaryOp STAR -> Fehler. Sollte kein Wort sein.
+		//String program = "(a*)b"; //binaryOp STAR; kein Wort -> Je nachdem, wie man das mit dem SPACE Operator sieht.
+		//String program = "(a*) b"; //unaryOp STAR, binaryOP SPACE -> passt
+		//String program = "(a* )b"; //unaryOp STAR; Wort, aber ohne Operator vor B -> total falsch
+		//String program = "(a* ) b"; //unaryOp STAR, binaryOP SPACE -> passt
+		//String program = "(a *)b"; //unaryOp STAR; kein Wort -> Je nachdem, wie man das mit dem SPACE Operator sieht.
+		//String program = "(a *) b"; //unaryOp START, binaryOP SPACE -> passt
 		System.out.println("inputed program: " + program);
 
 		parseTest(program);
