@@ -70,6 +70,8 @@ or navigate to this point via the Tools main menu.
 | 4          | &#732;        | \textsuperscript{\tilde}      | \u02DC       | reverse | multivector.reverse() |
 | 4          | &#8224;       | \textsuperscript{\textdagger} | \u2020       | clifford conjugate | multivector.conjugate() |
 
+There exist three types of involution operations: Space inversion, reversion and the combination of both the clifford conjugation.
+
 #### Additional monatic operators (for more convenience only) 
 | precedence | symbol        | latex                         | unicode      | description | implementation |
 | :--------: | :-----------: | ----------------------------- | ------------ | ----------- | -------------- |
