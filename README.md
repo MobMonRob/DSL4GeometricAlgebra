@@ -81,7 +81,7 @@ There exist three types of involution operations: Space inversion, reversion and
 ### Composite operators
 | precedence | symbol        | latex                         | unicode      | description | implementation |
 | :--------: | :-----------: | ----------------------------- | ------------ | ----------- | -------------- |
-| 4          | &#60;multivector&#62;&#8322;  |                               |              | grade extraction, grade 0-5 as superscript | multivector.extractGrade(double)   |
+| 4          | &#60;multivector&#62;&#8322;  |                               |              | grade extraction, grade 0-5 as superscript | multivector.extractGrade(int grade)   |
 
 ### Buildin functions
 
