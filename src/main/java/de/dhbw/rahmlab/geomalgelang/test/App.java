@@ -17,8 +17,8 @@ import org.antlr.v4.runtime.*;
 public class App {
 
 	public static void main(String[] args) throws Exception {
-		//String test = "ε₁"; //FE FF 03 B5 20 81 00 00 00
-		String test = "" + '\u03b5' + '\u2081'; //FE FF 03 B5 20 81 00 00 00
+		String test = "*"; //FE FF 03 B5 20 81 00 00 00
+		//String test = "" + '\u03b5' + '\u2081'; //FE FF 03 B5 20 81 00 00 00
 		ByteBuffer buf = StandardCharsets.UTF_16.encode(test);
 		byte[] byteArray = buf.array();
 		StringBuilder hex = new StringBuilder(byteArray.length * 2);
