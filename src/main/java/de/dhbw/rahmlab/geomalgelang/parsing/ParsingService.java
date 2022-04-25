@@ -36,8 +36,8 @@ public class ParsingService {
 		}
 
 		{
-			this.lexer = new GeomAlgeLexer(inputStream);
-			CommonTokenStream commonTokenStream = new CommonTokenStream(lexer);
+			this.lexer = new GeomAlgeLexer(this.inputStream);
+			CommonTokenStream commonTokenStream = new CommonTokenStream(this.lexer);
 			this.parser = new GeomAlgeParser(commonTokenStream);
 		}
 
