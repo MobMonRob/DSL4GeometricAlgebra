@@ -45,7 +45,7 @@ or navigate to this point via the Tools main menu.
 | precedence | symbol | latex | unicode | name | implementation | hints | 
 | :--------: | :----: | ------- | ----- | ---- | -------------- | ----- |
 | 3 | space  |  | \u0020 | geometric product | multivector1.gp(multivector2) | Exactly one space character is interpreted as the operator. |
-| 3 | &#8901;   | \cdot | \u22C5 | inner product | multivector1.ip(multivector2, RIGHT_CONTRACTION), new Tuple3d(tuple3d1.x*tuple3d2.x, tuple3d1.y*tuple3d2.y, tuple3d1.z*tuple3d2.z) | In the default configuration equal to left contraction (corresponding to Ganja.js). But this looks to be incompatible with some formulas in [Kleppe], which work only with the usage of right contraction. |
+| 3 | &#8901;   | \cdot | \u22C5 | inner product | multivector1.ip(multivector2, RIGHT_CONTRACTION), new Tuple3d(tuple3d1.x*tuple3d2.x, tuple3d1.y*tuple3d2.y, tuple3d1.z*tuple3d2.z) | In the default configuration equal to left contraction (corresponding to Ganja.js). But this looks to be incompatible with some formulas in [Kleppe], which work only with the usage of right contraction. In CLUscript this corresponds to ".". |
 | 3 | &#8743; | \wedge | \u2227 | outer product | multivector1.op(multivector2), not used for double, for tuple3d it makes sense but actually no implementation is available | |
 | 2 | &#42;  | * | \u002A | scalar product | multivector1.scp(multivector2), double1 * double2, Multivector.createBasisVector(int, double) for e.g. &#949;&#8321; * double or double * &#949;&#8321; tuple3d.scale(double) | |
 | 1 | &#43;  | + | \u002B | sum | multivector1.add(multivector2), double1 + double2, tuple3d1.add(tuple3d2) | |
@@ -59,7 +59,7 @@ or navigate to this point via the Tools main menu.
 | 3 | &#8970; | \llcorner | \u230B | right contraction | multivetor1.ip(multivector2, RIGHT_CONTRACTION) |
 | 3 | &#8971; | \lrcorner | \u230A | left contraction | multivector1.ip(multivector1, LEFT_CONTRACTION); where the grade operator for negative grades is zero. This implies that `something of higher grade cannot be contracted onto something of lower grade'. |
 | 3 | &#8744; | \vee | \u2228 | regressive product | multivector1.vee(multivector2) or (multivector1* &#8743; multivector2*)* |
-| 2 | &#47;  | \StrikingThrough | \u002F | division | multivector1.div(multivector2), double.div(double) |
+| 2 | &#47;  | \StrikingThrough | \u002F | division (inverse geometric product) | multivector1.div(multivector2), double.div(double) |
 
 ### Monadic operators (placed all on right side)
 #### Base monadic operators
