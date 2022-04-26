@@ -63,12 +63,12 @@ or navigate to this point via the Tools main menu.
 
 ### Monadic operators (placed all on right side)
 #### Base monadic operators
-| precedence | symbol        | latex                         | unicode      | description | implementation |
-| :--------: | :-----------: | ----------------------------- | ------------ | ----------- | -------------- |
-| 4          | &#8315;&#185; | \textsuperscript{-1}          | \u207B\u00B9 | general inverse | multivector.generalInverse() |
-| 4          | *             | \textsuperscript{*}           | \u002A       | dual | multivector.dual() |
-| 4          | &#732;        | \textsuperscript{\tilde}      | \u02DC       | reverse | multivector.reverse() |
-| 4          | &#8224;       | \textsuperscript{\textdagger} | \u2020       | clifford conjugate | multivector.conjugate() |
+| precedence | symbol        | latex                         | unicode      | description | implementation | CLUscript |
+| :--------: | :-----------: | ----------------------------- | ------------ | ----------- | -------------- | :------- |
+| 4          | &#8315;&#185; | \textsuperscript{-1}          | \u207B\u00B9 | general inverse | multivector.generalInverse() | ! |
+| 4          | *             | \textsuperscript{*}           | \u002A       | dual | multivector.dual() | |
+| 4          | &#732;        | \textsuperscript{\tilde}      | \u02DC       | reverse | multivector.reverse() | &#732; |
+| 4          | &#8224;       | \textsuperscript{\textdagger} | \u2020       | clifford conjugate | multivector.conjugate() | |
 
 There exist three types of involution operations: Space inversion, reversion and the combination of both the clifford conjugation.
 
