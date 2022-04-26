@@ -60,10 +60,13 @@ or navigate to this point via the Tools main menu.
 | 3 | &#8744; | \vee | \u2228 | regressive product | multivector1.vee(multivector2) or (multivector1* &#8743; multivector2*)* |  |
 | 2 | &#47;  | \StrikingThrough | \u002F | division (inverse geometric product) | multivector1.div(multivector2), double.div(double) |  |
 
-### Monadic operators (placed all on right side)
+### Monadic/unary operators (placed all on right side)
+The unary operators have the highest precedence, so they are executed before any other operations. 
+
 #### Base monadic operators
 | precedence | symbol        | latex                         | unicode      | description | implementation | CLUscript |
 | :--------: | :-----------: | ----------------------------- | ------------ | ----------- | -------------- | :------- |
+| 4          | -             | - |      | negate |  | - |
 | 4          | &#8315;&#185; | \textsuperscript{-1}          | \u207B\u00B9 | general inverse | multivector.generalInverse() | ! |
 | 4          | *             | \textsuperscript{*}           | \u002A       | dual | multivector.dual() | |
 | 4          | &#732;        | \textsuperscript{\tilde}      | \u02DC       | reverse | multivector.reverse() | &#732; |
@@ -76,6 +79,7 @@ There exist three types of involution operations: Space inversion, reversion and
 | :--------: | :-----------: | ----------------------------- | ------------ | ----------- | -------------- |
 | 4          | &#8315;*      | \textsuperscript{-*}          | \u207B\u002A | undual | multivector.undual() or -multivector.dual() |
 | 4          | &sup2; | | \u00B2 | square | multivector.gp(multivector), sqr(double) |
+
 
 ### Composite operators
 | precedence | symbol        | latex                         | unicode      | description | implementation |
