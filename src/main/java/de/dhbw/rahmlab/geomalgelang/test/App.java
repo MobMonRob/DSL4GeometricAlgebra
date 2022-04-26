@@ -10,12 +10,11 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
-import org.antlr.v4.runtime.*;
 
 public class App {
 
 	public static void main(String[] args) throws Exception {
-		String program = "a b ⋅ (ε₁ + ε₂)†* * ∞";
+		String program = "a b ⋅ (1,5 + 5,3)†";
 		//................
 		// Folgend nur STAR Grammatik + Semantik.
 		// Behalten für regression Testcases!
@@ -77,8 +76,7 @@ public class App {
 	}
 
 	private static void parseTest(String program) throws Exception {
-		CodePointCharStream inputStream = CharStreams.fromString(program);
-		ParsingService parsingService = new ParsingService(inputStream);
+		ParsingService parsingService = new ParsingService(program);
 		parsingService.processANTLRTestRig();
 	}
 }

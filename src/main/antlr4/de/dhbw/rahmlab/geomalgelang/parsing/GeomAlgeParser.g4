@@ -50,7 +50,7 @@ expr
 
 exprLiteral
 	:	value=	DECIMAL_LITERAL		#LiteralDecimal
-	|	varName=IDENTIFIER			#VariableReference
+	|	name=	IDENTIFIER			#VariableReference
 	|	value=	(INFINITY
 				|EPSILON_ONE
 				|EPSILON_TWO

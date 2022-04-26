@@ -99,8 +99,31 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 
 	@Override
 	public void exitVariableReference(GeomAlgeParser.VariableReferenceContext ctx) {
-		String name = ctx.varName.getText();
+		String name = ctx.name.getText();
 		GlobalVariableReference varRef = GlobalVariableReferenceNodeGen.create(name);
 		nodeStack.push(varRef);
+	}
+
+	@Override
+	public void exitLiteralCGA(GeomAlgeParser.LiteralCGAContext ctx) {
+		// Alternative wäre eine CGA Literal Klasse.
+		// Aber eigentlich kann ich das auch als eine Variable behandeln.
+		// Oder ich könnte Konstanten in den GlobalVariableScope einbauen.
+		// -> Ich warte erst mal damit, und nutze was anderes für die Testserstellung. Denn das hier ist nicht wesentlich dafür.
+
+		// -> without fallthrough (Java 14)
+		switch (ctx.value.getType()) {
+			case GeomAlgeParser.INFINITY -> {
+			}
+			case GeomAlgeParser.EPSILON_ONE -> {
+			}
+			case GeomAlgeParser.EPSILON_TWO -> {
+			}
+			case GeomAlgeParser.EPSILON_THREE -> {
+			}
+			default -> {
+				throw new UnsupportedOperationException();
+			}
+		}
 	}
 }

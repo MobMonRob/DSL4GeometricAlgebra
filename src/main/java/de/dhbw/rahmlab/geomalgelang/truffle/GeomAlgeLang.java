@@ -12,8 +12,6 @@ import de.dhbw.rahmlab.geomalgelang.parsing.ParsingService;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.BaseNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.GeomAlgeLangRootNode;
 import java.io.IOException;
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.CharStreams;
 
 /**
  *
@@ -36,14 +34,13 @@ public class GeomAlgeLang extends TruffleLanguage<GeomAlgeLangContext> {
 	}
 
 	@Override
-	protected CallTarget parse(ParsingRequest request) throws Exception {
+	protected CallTarget parse(ParsingRequest request) throws IOException {
 		GeomAlgeLangRootNode rootNode = parseSource(request.getSource());
 		return rootNode.getCallTarget();
 	}
 
 	private GeomAlgeLangRootNode parseSource(Source source) throws IOException {
-		CharStream inputStream = CharStreams.fromReader(source.getReader());
-		ParsingService parsingService = new ParsingService(inputStream);
+		ParsingService parsingService = new ParsingService(source);
 		BaseNode topNode = parsingService.getTruffleTopNode();
 		GeomAlgeLangRootNode rootNode = new GeomAlgeLangRootNode(this, new FrameDescriptor(), topNode);
 		return rootNode;

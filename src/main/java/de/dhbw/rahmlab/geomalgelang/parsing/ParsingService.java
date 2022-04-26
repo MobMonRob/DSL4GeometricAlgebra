@@ -4,10 +4,13 @@
  */
 package de.dhbw.rahmlab.geomalgelang.parsing;
 
+import com.oracle.truffle.api.source.Source;
 import de.dhbw.rahmlab.geomalgelang.debug.AntlrTestRig;
 import de.dhbw.rahmlab.geomalgelang.treetransform.ExprTransform;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.BaseNode;
+import java.io.IOException;
 import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
@@ -15,7 +18,7 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
  *
  * @author fabian
  */
-public class ParsingService {
+public final class ParsingService {
 
 	private final CharStream inputStream;
 	private GeomAlgeLexer lexer = null;
@@ -26,8 +29,16 @@ public class ParsingService {
 	private boolean isLexerParserAvailable = false;
 	private boolean isExprTransformAvailable = false;
 
-	public ParsingService(CharStream inputStream) {
-		this.inputStream = inputStream;
+	public ParsingService(Source program) throws IOException {
+		this.inputStream = CharStreams.fromReader(program.getReader());
+	}
+
+	public ParsingService(String program) {
+		this.inputStream = CharStreams.fromString(program);
+	}
+
+	public ParsingService(CharStream program) {
+		this.inputStream = program;
 	}
 
 	private void ensureLexerParserAvailable() {
