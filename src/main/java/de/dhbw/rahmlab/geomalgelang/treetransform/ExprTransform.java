@@ -10,12 +10,13 @@ import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParserBaseListener;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.BaseNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.GlobalVariableReference;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.GlobalVariableReferenceNodeGen;
-import de.dhbw.rahmlab.geomalgelang.truffle.nodes.binops.AddNodeGen;
-import de.dhbw.rahmlab.geomalgelang.truffle.nodes.binops.DivNodeGen;
-import de.dhbw.rahmlab.geomalgelang.truffle.nodes.binops.MulNodeGen;
-import de.dhbw.rahmlab.geomalgelang.truffle.nodes.binops.SubNodeGen;
+import de.dhbw.rahmlab.geomalgelang.truffle.nodes.binaryOps.AddNodeGen;
+import de.dhbw.rahmlab.geomalgelang.truffle.nodes.binaryOps.DivNodeGen;
+import de.dhbw.rahmlab.geomalgelang.truffle.nodes.binaryOps.MulNodeGen;
+import de.dhbw.rahmlab.geomalgelang.truffle.nodes.binaryOps.SubNodeGen;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.literal.DecimalLiteral;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.literal.DecimalLiteralNodeGen;
+import de.dhbw.rahmlab.geomalgelang.truffle.nodes.unaryOps.CliffordConjugateNodeGen;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
@@ -42,7 +43,22 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 
 	@Override
 	public void exitUnaryOp(GeomAlgeParser.UnaryOpContext ctx) {
-		int test = 1;
+		BaseNode left = nodeStack.pop();
+
+		BaseNode current = switch (ctx.op.getType()) {
+			case GeomAlgeLexer.SUPERSCRIPT_MINUS_ONE ->
+				throw new UnsupportedOperationException();
+			case GeomAlgeLexer.SUPERSCRIPT_MINUS_STAR ->
+				throw new UnsupportedOperationException();
+			case GeomAlgeLexer.SUPERSCRIPT_TILDE ->
+				throw new UnsupportedOperationException();
+			case GeomAlgeLexer.DAGGER ->
+				CliffordConjugateNodeGen.create(left);
+			default ->
+				throw new UnsupportedOperationException();
+		};
+
+		nodeStack.push(current);
 	}
 
 	@Override
@@ -50,26 +66,19 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		BaseNode right = nodeStack.pop();
 		BaseNode left = nodeStack.pop();
 
-		BaseNode current = null;
-
-		final int type = ctx.op.getType();
-
-		switch (type) {
-			case GeomAlgeLexer.PLUS:
-				current = AddNodeGen.create(left, right);
-				break;
-			case GeomAlgeLexer.SLASH:
-				current = DivNodeGen.create(left, right);
-				break;
-			case GeomAlgeLexer.STAR:
-				current = MulNodeGen.create(left, right);
-				break;
-			case GeomAlgeLexer.MINUS:
-				current = SubNodeGen.create(left, right);
-				break;
-			default:
+		// ToDo: Switch to CGA nodes creation
+		BaseNode current = switch (ctx.op.getType()) {
+			case GeomAlgeLexer.PLUS ->
+				AddNodeGen.create(left, right);
+			case GeomAlgeLexer.SLASH ->
+				DivNodeGen.create(left, right);
+			case GeomAlgeLexer.STAR ->
+				MulNodeGen.create(left, right);
+			case GeomAlgeLexer.MINUS ->
+				SubNodeGen.create(left, right);
+			default ->
 				throw new UnsupportedOperationException();
-		}
+		};
 
 		nodeStack.push(current);
 	}
@@ -111,7 +120,10 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		// Oder ich könnte Konstanten in den GlobalVariableScope einbauen.
 		// -> Ich warte erst mal damit, und nutze was anderes für die Testserstellung. Denn das hier ist nicht wesentlich dafür.
 
+		throw new UnsupportedOperationException();
+
 		// -> without fallthrough (Java 14)
+		/*
 		switch (ctx.value.getType()) {
 			case GeomAlgeParser.INFINITY -> {
 			}
@@ -125,5 +137,6 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 				throw new UnsupportedOperationException();
 			}
 		}
+		 */
 	}
 }

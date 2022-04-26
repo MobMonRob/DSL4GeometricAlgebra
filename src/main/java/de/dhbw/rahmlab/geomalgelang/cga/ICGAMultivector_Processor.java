@@ -43,7 +43,7 @@ public interface ICGAMultivector_Processor<T> {
 
 	T reverse(T input);
 
-	T conjugate(T input);
+	T clifford_conjugate(T input);
 
 	T exponentiate(T input);
 

@@ -98,7 +98,7 @@ public class CGAMultivector_Processor_CGA1Multivector implements ICGAMultivector
 	}
 
 	@Override
-	public CGA1Multivector conjugate(CGA1Multivector input) {
+	public CGA1Multivector clifford_conjugate(CGA1Multivector input) {
 		return input.conjugate();
 	}
 

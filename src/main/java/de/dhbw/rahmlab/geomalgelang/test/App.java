@@ -5,6 +5,7 @@ import de.dhbw.rahmlab.geomalgelang.cga.CGAMultivector_Processor_CGA1Multivector
 import de.dhbw.rahmlab.geomalgelang.cga.CGAMultivector_Processor_Generic;
 import de.dhbw.rahmlab.geomalgelang.cga.ICGAMultivector;
 import de.dhbw.rahmlab.geomalgelang.parsing.ParsingService;
+import de.dhbw.rahmlab.geomalgelang.truffle.nodes.BaseNode;
 import de.orat.math.cga.impl1.CGA1Multivector;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -36,8 +37,9 @@ public class App {
 		//String program = "(a *) b"; //unaryOp START, binaryOP SPACE -> passt
 		System.out.println("inputed program: " + program);
 
-		parseTest(program);
-		invocationTest(program);
+		parseTestExtended(program);
+		//parseTestSimple(program);
+		//invocationTest(program);
 		//CGAAdapterTest(program);
 		//charsetTest();
 	}
@@ -75,8 +77,13 @@ public class App {
 		System.out.println();
 	}
 
-	private static void parseTest(String program) throws Exception {
+	private static void parseTestSimple(String program) throws Exception {
 		ParsingService parsingService = new ParsingService(program);
 		parsingService.processANTLRTestRig();
+	}
+
+	private static void parseTestExtended(String program) throws Exception {
+		ParsingService parsingService = new ParsingService(program);
+		BaseNode root = parsingService.getTruffleTopNode();
 	}
 }

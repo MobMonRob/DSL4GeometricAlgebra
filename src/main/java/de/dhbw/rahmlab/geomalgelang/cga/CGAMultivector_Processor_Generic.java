@@ -101,8 +101,8 @@ public class CGAMultivector_Processor_Generic<T> implements ICGAMultivector_Proc
 	}
 
 	@Override
-	public ICGAMultivector<T> conjugate(ICGAMultivector<T> input) {
-		return new ICGAMultivector(concreteProcessor.conjugate(input.inner));
+	public ICGAMultivector<T> clifford_conjugate(ICGAMultivector<T> input) {
+		return new ICGAMultivector(concreteProcessor.clifford_conjugate(input.inner));
 	}
 
 	@Override
