@@ -8,16 +8,12 @@ import com.oracle.truffle.api.CallTarget;
 import com.oracle.truffle.api.TruffleLanguage;
 import com.oracle.truffle.api.frame.FrameDescriptor;
 import com.oracle.truffle.api.source.Source;
-import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeLexer;
-import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParser;
-import de.dhbw.rahmlab.geomalgelang.treetransform.ExprTransform;
+import de.dhbw.rahmlab.geomalgelang.parsing.ParsingService;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.BaseNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.GeomAlgeLangRootNode;
 import java.io.IOException;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 /**
  *
@@ -47,20 +43,8 @@ public class GeomAlgeLang extends TruffleLanguage<GeomAlgeLangContext> {
 
 	private GeomAlgeLangRootNode parseSource(Source source) throws IOException {
 		CharStream inputStream = CharStreams.fromReader(source.getReader());
-
-		// Lexer and Parser invokation
-		GeomAlgeLexer lexer = new GeomAlgeLexer(inputStream);
-		CommonTokenStream commonTokenStream = new CommonTokenStream(lexer);
-		GeomAlgeParser parser = new GeomAlgeParser(commonTokenStream);
-
-		// create Truffle nodes from ANTLR parse result
-		ParseTreeWalker treeWalker = new ParseTreeWalker();
-		GeomAlgeParser.ProgramContext progCtx = parser.program();
-		ExprTransform exprTransform = new ExprTransform();
-		treeWalker.walk(exprTransform, progCtx);
-
-		// create rootNode
-		BaseNode topNode = exprTransform.getTopNode();
+		ParsingService parsingService = new ParsingService(inputStream);
+		BaseNode topNode = parsingService.getTruffleTopNode();
 		GeomAlgeLangRootNode rootNode = new GeomAlgeLangRootNode(this, new FrameDescriptor(), topNode);
 		return rootNode;
 	}
