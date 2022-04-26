@@ -52,14 +52,14 @@ or navigate to this point via the Tools main menu.
 | 1 | &#45; | - | \u002D| difference | multivector1.sub(multivector2), double1 - double2, tuple3d1.sub(tuple3d1) | |
 
 #### Additional operators (for more convenience only)
-| precedence | symbol | latex | unicode | description | implementation | hints |
+| precedence | symbol | latex | unicode | description | implementation | CLUscript |
 | :--------: | :----: | ------- | ----- | ----------- | -------------- | :----- |
 | 3 | &#8746;   | \cup  | \u222A | meet (intersection) | multivector1.meet(multivector2) | |
 | 3 | &#8745;   | \cap  | \u2229 | join  (union) | multivector1.join(multivector2) or multivector2* &#8901; multivector1 or (multivector2* &#8743; multivector1*)*|
 | 3 | &#8970; | \llcorner | \u230B | right contraction | multivetor1.ip(multivector2, RIGHT_CONTRACTION) | |
 | 3 | &#8971; | \lrcorner | \u230A | left contraction | multivector1.ip(multivector1, LEFT_CONTRACTION); where the grade operator for negative grades is zero. This implies that `something of higher grade cannot be contracted onto something of lower grade'. | |
 | 3 | &#8744; | \vee | \u2228 | regressive product | multivector1.vee(multivector2) or (multivector1* &#8743; multivector2*)* | |
-| 2 | &#47;  | \StrikingThrough | \u002F | division (inverse geometric product) | multivector1.div(multivector2), double.div(double) | In CLUscript the corresponding symbol is "|" |
+| 2 | &#47;  | \StrikingThrough | \u002F | division (inverse geometric product) | multivector1.div(multivector2), double.div(double) | \| |
 
 ### Monadic operators (placed all on right side)
 #### Base monadic operators
