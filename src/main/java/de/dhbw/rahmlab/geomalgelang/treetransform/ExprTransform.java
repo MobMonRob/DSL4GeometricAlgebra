@@ -80,8 +80,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 			case GeomAlgeParser.DOT ->
 				InnerProductNodeGen.create(left, right);
 			default ->
-				DecimalLiteralNodeGen.create(5.0);
-			//throw new UnsupportedOperationException();
+				throw new UnsupportedOperationException();
 		};
 
 		nodeStack.push(current);
