@@ -85,5 +85,6 @@ public class App {
 	private static void parseTestExtended(String program) throws Exception {
 		ParsingService parsingService = new ParsingService(program);
 		BaseNode root = parsingService.getTruffleTopNode();
+		// --add-exports org.graalvm.truffle/com.oracle.truffle.api.nodes=ALL-UNNAMED
 	}
 }

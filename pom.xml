@@ -94,6 +94,21 @@
 					<skipTests>${skipTests}</skipTests>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.10.1</version>
+				<configuration>
+					<compilerArgs>
+						<arg>--add-exports</arg>
+						<arg>org.graalvm.truffle/com.oracle.truffle.api.nodes=ALL-UNNAMED</arg>
+						<arg>--add-exports</arg>
+						<arg>org.graalvm.truffle/com.oracle.truffle.api.exception=ALL-UNNAMED</arg>
+						<arg>--add-exports</arg>
+						<arg>org.graalvm.truffle/com.oracle.truffle.api=ALL-UNNAMED</arg>
+					</compilerArgs>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 </project>
