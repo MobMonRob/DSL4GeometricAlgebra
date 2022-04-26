@@ -4,19 +4,15 @@
  */
 package de.dhbw.rahmlab.geomalgelang.treetransform;
 
-import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeLexer;
 import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParser;
 import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParserBaseListener;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.BaseNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.GlobalVariableReference;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.GlobalVariableReferenceNodeGen;
-import de.dhbw.rahmlab.geomalgelang.truffle.nodes.binaryOps.AddNodeGen;
-import de.dhbw.rahmlab.geomalgelang.truffle.nodes.binaryOps.DivNodeGen;
-import de.dhbw.rahmlab.geomalgelang.truffle.nodes.binaryOps.MulNodeGen;
-import de.dhbw.rahmlab.geomalgelang.truffle.nodes.binaryOps.SubNodeGen;
+import de.dhbw.rahmlab.geomalgelang.truffle.nodes.binaryOps.*;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.literal.DecimalLiteral;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.literal.DecimalLiteralNodeGen;
-import de.dhbw.rahmlab.geomalgelang.truffle.nodes.unaryOps.CliffordConjugateNodeGen;
+import de.dhbw.rahmlab.geomalgelang.truffle.nodes.unaryOps.*;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
@@ -46,13 +42,13 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		BaseNode left = nodeStack.pop();
 
 		BaseNode current = switch (ctx.op.getType()) {
-			case GeomAlgeLexer.SUPERSCRIPT_MINUS_ONE ->
+			case GeomAlgeParser.SUPERSCRIPT_MINUS_ONE ->
 				throw new UnsupportedOperationException();
-			case GeomAlgeLexer.SUPERSCRIPT_MINUS_STAR ->
+			case GeomAlgeParser.SUPERSCRIPT_MINUS_STAR ->
 				throw new UnsupportedOperationException();
-			case GeomAlgeLexer.SUPERSCRIPT_TILDE ->
+			case GeomAlgeParser.SUPERSCRIPT_TILDE ->
 				throw new UnsupportedOperationException();
-			case GeomAlgeLexer.DAGGER ->
+			case GeomAlgeParser.DAGGER ->
 				CliffordConjugateNodeGen.create(left);
 			default ->
 				throw new UnsupportedOperationException();
@@ -63,21 +59,29 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 
 	@Override
 	public void exitBinaryOp(GeomAlgeParser.BinaryOpContext ctx) {
+		// Sequence matters!
 		BaseNode right = nodeStack.pop();
 		BaseNode left = nodeStack.pop();
 
-		// ToDo: Switch to CGA nodes creation
 		BaseNode current = switch (ctx.op.getType()) {
-			case GeomAlgeLexer.PLUS ->
+			// Nur zum Testen
+			case GeomAlgeParser.PLUS ->
 				AddNodeGen.create(left, right);
-			case GeomAlgeLexer.SLASH ->
+			/*
+			case GeomAlgeParser.SLASH ->
 				DivNodeGen.create(left, right);
-			case GeomAlgeLexer.STAR ->
+			case GeomAlgeParser.STAR ->
 				MulNodeGen.create(left, right);
-			case GeomAlgeLexer.MINUS ->
+			case GeomAlgeParser.MINUS ->
 				SubNodeGen.create(left, right);
+			 */
+			case GeomAlgeParser.SPACE ->
+				GeometricProductNodeGen.create(left, right);
+			case GeomAlgeParser.DOT ->
+				InnerProductNodeGen.create(left, right);
 			default ->
-				throw new UnsupportedOperationException();
+				DecimalLiteralNodeGen.create(5.0);
+			//throw new UnsupportedOperationException();
 		};
 
 		nodeStack.push(current);
