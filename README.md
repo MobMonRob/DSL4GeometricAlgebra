@@ -122,7 +122,8 @@ Outer product null space representations are called dual. Corresponding regular 
 | 4 | dualCircle(tuple3d1, tuple3d2, tuple3d3) | creates a conformal dual circle based on three points | createDualCircle(tuple3d1, tuple3d2 tuple3d3) |
 | 4 | dualPointPair(tuple3d1, tuple3d2) | create a conformal dual point pair based on three points | createDualPointPair(tuple3d1, tuple3d2) |
 
-### Base vector symbols
+### Symbols
+#### Base vector symbols
 | symbol        | latex         | Unicode      | description |
 | :-----------: | ------------- | ------------ | ----------- |
 | o             |               | \u006F       | base vector representing the origin |
@@ -130,6 +131,11 @@ Outer product null space representations are called dual. Corresponding regular 
 | &#949;&#8321; | \textepsilon  | \u03B5\u2081 | base vector representing x direction |
 | &#949;&#8322; | \textepsilon  | \u03B5\u2082 | base vector representing y direction |
 | &#949;&#8323; | \textepsilon  | \u03B5\u2083 | base vector representing z direction |
+
+### Further symbols
+| symbol        | latex         | Unicode      | description |
+| :-----------: | ------------- | ------------ | ----------- |
+| &#960;        |     \pi          | \u03C0       | Ludolphs- or circle constant |
 
 ## Important formulae
 ### Formulae to create conformal objects
