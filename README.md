@@ -162,7 +162,7 @@ Outer product null space representations are called dual. Corresponding regular 
 ### Formulae to decompose conformal object representations
 | description | formula | 
 | :---------- | :------ |
-| Location of a round (X) or a tangent (X) represented in 3d coordinates | -0.5 (X &#8734; X) / (&#8734; &#8901; X)&sup2; | 
+| Location of a round (X) or a tangent (X) represented in 3d coordinates | -0.5(X&#8734;X)/(&#8734;&#8901;X)&sup2; | 
 | Direction vector (attitude) of a dual line (L*) represented as 3d coordinates of (&#949;&#8321;, &#949;&#8322;, &#949;&#8323;). | (L* &#8901; o) &#8901; &#8734; |
 
 ### General useful equations
