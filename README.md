@@ -44,7 +44,7 @@ or navigate to this point via the Tools main menu.
 #### Base operators
 | precedence | symbol | latex | unicode | name | implementation | hints | 
 | :--------: | :----: | ------- | ----- | ---- | -------------- | ----- |
-| 3 | space or *  | * | \u002A | geometric product | multivector1.gp(multivector2) | Exactly one space character is interpreted as the operator. |
+| 3 | space   |  | \u002A | geometric product | multivector1.gp(multivector2) | Exactly one space character is interpreted as the operator. |
 | 3 | &#8901;   | \cdot | \u22C5 | inner product | multivector1.ip(multivector2, RIGHT_CONTRACTION), new Tuple3d(tuple3d1.x*tuple3d2.x, tuple3d1.y*tuple3d2.y, tuple3d1.z*tuple3d2.z) | In the default configuration equal to left contraction (corresponding to Ganja.js). But this looks to be incompatible with some formulas in [Kleppe], which work only with the usage of right contraction. In CLUscript this corresponds to ".". |
 | 3 | &#8743; | \wedge | \u2227 | outer product | multivector1.op(multivector2), not used for double, for tuple3d it makes sense but actually no implementation is available | |
 | 1 | &#43;  | + | \u002B | sum | multivector1.add(multivector2), double1 + double2, tuple3d1.add(tuple3d2) | |
@@ -84,7 +84,7 @@ There exist three types of involution operations: Space inversion, reversion and
 ### Composite operators
 | precedence | symbol        | latex                         | unicode      | description | implementation |
 | :--------: | :-----------: | ----------------------------- | ------------ | ----------- | -------------- |
-| 4          | &#60;multivector&#62;&#8346;  |            | subscript p: \u2080, \u2081, \u2082, \u2083, \u2084| grade extraction, grade p=0-5 as superscript | multivector.extractGrade(int grade)   |
+| 4          | &#60;multivector&#62;&#8346;  |            | subscript p: \u2080, \u2081, \u2082, \u2083, \u2084| grade extraction, grade p=0-5 as subscript | multivector.extractGrade(int grade)   |
 
 ### Buildin functions
 
