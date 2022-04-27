@@ -143,21 +143,21 @@ Outer product null space representations are called dual. Corresponding regular 
 #### Geometric objects in outer product null space representation (dual)
 | description | formula | grade |
 | :---------- | :------ | :----|
-| Point from four conformal spheres (s1, s3, s3, s4) | s1 &#8743; s2 &#8743; s3 &#8743; s4 | |
-| Plane from thre conformal points (p1, p2, p3, p4) | p1 &#8743; p2 &#8743; p3 &#8743; &#8734;| |
-| Circle from three conformal Points (p1, p2) | p1 &#8743; p2 &#8743; p3 | |
-| Line from two conformal planes (p1, p2) | p1 &#8743; p2 | |
-| Point pair from  two conformal points (p1, p2) | p1 &#8743; p2 | |
+| Point from four conformal spheres (s1, s3, s3, s4) | s1&#8743;s2 &#8743;s3 &#8743;s4 | |
+| Plane from thre conformal points (p1, p2, p3, p4) | p1&#8743;p2 &#8743;p3&#8743;&#8734;| |
+| Circle from three conformal Points (p1, p2) | p1&#8743;p2&#8743;p3 | |
+| Line from two conformal planes (p1, p2) | p1&#8743;p2 | |
+| Point pair from  two conformal points (p1, p2) | p1&#8743;p2 | |
 
 #### Geometric objects in inner product null space representation
 | description | formula | grade |
 | :---------- | :------ | :----|
-| Point from euclidian vector x | x + 0.5x&sup2;&#8734; + o | |
-| Sphere from conformal point (P) and radius | P - 0.5&sup2;&#8734; | |
-| Plane from euclidian normal vector (n) and distance to origin (d) | n + d&#8734; | |
-| Circle from two conformal spheres (s1, s2) | s1 &#8743; s2 | |
-| Line from two conformal planes (p1, p2) | p1 &#8743; p2 | |
-| Point pair from  three conformal spheres (s1, s2, s3) | s1 &#8743; s2 &#8743; s3 | |
+| Point from euclidian vector x | x+0.5x&sup2;&#8734;+o | |
+| Sphere from conformal point (P) and radius | P-0.5&sup2;&#8734; | |
+| Plane from euclidian normal vector (n) and distance to origin (d) | n+d&#8734; | |
+| Circle from two conformal spheres (s1, s2) | s1&#8743;s2 | |
+| Line from two conformal planes (p1, p2) | p1&#8743;p2 | |
+| Point pair from  three conformal spheres (s1, s2, s3) | s1&#8743;s2&#8743;s3 | |
 
 ### Formulae to decompose conformal object representations
 | description | formula | 
