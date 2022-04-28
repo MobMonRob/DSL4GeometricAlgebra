@@ -122,6 +122,12 @@ Outer product null space representations are called dual. Corresponding regular 
 | 4 | dualCircle(tuple3d1, tuple3d2, tuple3d3) | creates a conformal dual circle based on three points | createDualCircle(tuple3d1, tuple3d2 tuple3d3) |
 | 4 | dualPointPair(tuple3d1, tuple3d2) | create a conformal dual point pair based on three points | createDualPointPair(tuple3d1, tuple3d2) |
 
+#### Additional functions (3) to create transformations (for more convenience only)
+
+| precedence | symbol | description | implementation |
+| :--------: | :------ | ----------- | -------------- |
+| 4 | translator(tuple3d)        |  creates a translation from an 3d-tuple | createTranslation(tuple3d) |
+| 4 | rotator(tuple3d, double)        |  creates a rotatio from an 3d-tuple representing the rotation axis and a double representing the angle in radian | createTranslation(tuple3d) |
 ### Symbols
 #### Base vector symbols
 | symbol        | latex         | Unicode      | description |
