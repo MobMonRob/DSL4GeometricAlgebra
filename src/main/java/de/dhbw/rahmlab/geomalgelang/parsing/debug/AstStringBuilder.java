@@ -5,27 +5,42 @@
 package de.dhbw.rahmlab.geomalgelang.parsing.debug;
 
 import com.oracle.truffle.api.nodes.Node;
-import com.oracle.truffle.api.nodes.NodeVisitor;
 
 /**
  *
  * @author fabian
  */
-public class AstStringBuilder implements NodeVisitor {
+public class AstStringBuilder {
 
-	private final StringBuilder stringBuilder = new StringBuilder();
+	private StringBuilder stringBuilder = null;
 
-	@Override
-	public boolean visit(Node node) {
-		String className = node.getClass().getSimpleName();
-		className = className.replaceFirst("NodeGen", "");
-		stringBuilder.append(className);
-		stringBuilder.append("\n");
-		return true; //Continue visting children
+	private static final String INDENTATION_SYMBOL = "	";
+
+	private final Node root;
+
+	public AstStringBuilder(Node root) {
+		this.root = root;
+	}
+
+	private void processTreeNode(Node node, String identation) {
+		String name = node.getClass().getSimpleName().replace("NodeGen", "");
+		this.stringBuilder.append(identation);
+		this.stringBuilder.append(name);
+		this.stringBuilder.append("\n");
+
+		String childrenIdentation = identation + INDENTATION_SYMBOL;
+		for (Node child : node.getChildren()) {
+			processTreeNode(child, childrenIdentation);
+		}
 	}
 
 	public String getAstString() {
-		return stringBuilder.toString();
+		if (this.stringBuilder == null) {
+			this.stringBuilder = new StringBuilder();
+			processTreeNode(this.root, "");
+		}
+
+		return this.stringBuilder.toString();
 	}
 
 }
