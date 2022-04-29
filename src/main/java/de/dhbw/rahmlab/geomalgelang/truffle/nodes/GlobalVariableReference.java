@@ -18,7 +18,7 @@ import de.dhbw.rahmlab.geomalgelang.truffle.GeomAlgeLangException;
 @NodeField(name = "name", type = String.class)
 public abstract class GlobalVariableReference extends BaseNode {
 
-	protected abstract String getName();
+	public abstract String getName();
 
 	protected final GeomAlgeLangContext context = ContextReference.create(GeomAlgeLang.class).get(this);
 
