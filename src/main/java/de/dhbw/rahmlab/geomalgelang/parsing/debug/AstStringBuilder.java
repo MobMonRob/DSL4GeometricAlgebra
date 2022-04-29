@@ -11,7 +11,7 @@ import java.util.ArrayDeque;
  *
  * @author fabian
  */
-public abstract class AstStringBuilder {
+public class AstStringBuilder {
 
 	private static record IdentNode(Node node, String indentation) {
 
@@ -19,19 +19,60 @@ public abstract class AstStringBuilder {
 
 	private static final String INDENTATION_SYMBOL = "	";
 
-	public static String getAstString(final Node root) {
-		final StringBuilder stringBuilder = new StringBuilder();
-		final ArrayDeque<IdentNode> identNodes = new ArrayDeque<>();
-		// Outside of the loop for optimization
-		final ArrayDeque<Node> childrenReverse = new ArrayDeque<>();
+	private StringBuilder stringBuilder = null;
 
-		final IdentNode rootIdentNode = new IdentNode(root, "");
+	private final Node root;
+
+	public AstStringBuilder(Node root) {
+		this.root = root;
+	}
+
+	private void processTreeNode(Node node, String identation) {
+		String name = node.getClass().getSimpleName().replace("NodeGen", "");
+
+		/*
+		// Only needed for debugging
+		if (node instanceof GlobalVariableReference) {
+			GlobalVariableReference theCurrent = (GlobalVariableReference) node;
+			name = "GlobalVariableReference[" + theCurrent.getName() + "]";
+		}
+		 */
+		this.stringBuilder.append(identation);
+		this.stringBuilder.append(name);
+		this.stringBuilder.append("\n");
+
+		String childrenIdentation = identation + INDENTATION_SYMBOL;
+		for (Node child : node.getChildren()) {
+			processTreeNode(child, childrenIdentation);
+		}
+	}
+
+	/**
+	 * Can lead to StackOverflow for large AST's. In this case either increase the stack or use
+	 * getAstStringNonRecursive().
+	 */
+	public String getAstString() {
+		if (this.stringBuilder == null) {
+			this.stringBuilder = new StringBuilder();
+			processTreeNode(this.root, "");
+		}
+
+		return this.stringBuilder.toString();
+	}
+
+	public static String getAstStringNonRecursive(Node root) {
+		StringBuilder stringBuilder = new StringBuilder();
+		ArrayDeque<IdentNode> identNodes = new ArrayDeque<>();
+		// Outside of the loop for optimization
+		ArrayDeque<Node> childrenReverse = new ArrayDeque<>();
+
+		IdentNode rootIdentNode = new IdentNode(root, "");
 		identNodes.push(rootIdentNode);
 
 		while (!identNodes.isEmpty()) {
-			final IdentNode frontIdentNode = identNodes.pop();
-			final Node currentNode = frontIdentNode.node;
-			final String currentIndentation = frontIdentNode.indentation;
+			IdentNode frontIdentNode = identNodes.pop();
+			Node currentNode = frontIdentNode.node;
+			String currentIndentation = frontIdentNode.indentation;
 
 			String name = currentNode.getClass().getSimpleName().replace("NodeGen", "");
 
@@ -46,7 +87,7 @@ public abstract class AstStringBuilder {
 			stringBuilder.append(name);
 			stringBuilder.append("\n");
 
-			final Iterable<Node> childrenIterable = currentNode.getChildren();
+			Iterable<Node> childrenIterable = currentNode.getChildren();
 
 			// Leaf, if not
 			if (childrenIterable.iterator().hasNext()) {
@@ -61,9 +102,9 @@ public abstract class AstStringBuilder {
 				// So overall we get the first child on the first position of identNodes. Then the next child.
 				// Till the last child. And after the children all previously inserted nodes.
 				// So essentially the tree will get sorted topologically in a way such that traversing it in the according direction will be equivalent to a pre-order traversal.
-				final String childrenIdentation = currentIndentation + INDENTATION_SYMBOL;
+				String childrenIdentation = currentIndentation + INDENTATION_SYMBOL;
 				for (Node child : childrenReverse) {
-					final IdentNode childIdentNode = new IdentNode(child, childrenIdentation);
+					IdentNode childIdentNode = new IdentNode(child, childrenIdentation);
 					identNodes.push(childIdentNode);
 				}
 			}

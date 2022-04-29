@@ -86,8 +86,8 @@ public class App {
 	private static void parseTestExtended(String program) throws Exception {
 		ParsingService parsingService = new ParsingService(program);
 		BaseNode root = parsingService.getTruffleTopNode();
-		//String program = "a b ⋅ (1,5 + 5,3)†";
-		String astString = AstStringBuilder.getAstString(root);
-		int i = 5;
+		AstStringBuilder astStringBuilder = new AstStringBuilder(root);
+		String astString = astStringBuilder.getAstString();
+		System.out.println(astString);
 	}
 }
