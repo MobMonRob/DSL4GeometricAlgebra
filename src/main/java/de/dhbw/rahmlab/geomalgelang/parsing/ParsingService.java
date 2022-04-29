@@ -5,8 +5,8 @@
 package de.dhbw.rahmlab.geomalgelang.parsing;
 
 import com.oracle.truffle.api.source.Source;
-import de.dhbw.rahmlab.geomalgelang.debug.AntlrTestRig;
-import de.dhbw.rahmlab.geomalgelang.treetransform.ExprTransform;
+import de.dhbw.rahmlab.geomalgelang.parsing.debug.AntlrTestRig;
+import de.dhbw.rahmlab.geomalgelang.parsing.treetransform.ExprTransform;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.BaseNode;
 import java.io.IOException;
 import org.antlr.v4.runtime.CharStream;
