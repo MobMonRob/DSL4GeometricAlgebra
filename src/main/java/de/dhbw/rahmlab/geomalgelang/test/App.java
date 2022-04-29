@@ -5,6 +5,7 @@ import de.dhbw.rahmlab.geomalgelang.cga.CGAMultivector_Processor_CGA1Multivector
 import de.dhbw.rahmlab.geomalgelang.cga.CGAMultivector_Processor_Generic;
 import de.dhbw.rahmlab.geomalgelang.cga.ICGAMultivector;
 import de.dhbw.rahmlab.geomalgelang.parsing.ParsingService;
+import de.dhbw.rahmlab.geomalgelang.parsing.debug.AstStringBuilder;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.BaseNode;
 import de.orat.math.cga.impl1.CGA1Multivector;
 import java.nio.ByteBuffer;
@@ -85,5 +86,10 @@ public class App {
 	private static void parseTestExtended(String program) throws Exception {
 		ParsingService parsingService = new ParsingService(program);
 		BaseNode root = parsingService.getTruffleTopNode();
+		AstStringBuilder astStringBuilder = new AstStringBuilder();
+		root.accept(astStringBuilder);
+		//String program = "a b ⋅ (1,5 + 5,3)†";
+		String astString = astStringBuilder.getAstString();
+		int i = 5;
 	}
 }
