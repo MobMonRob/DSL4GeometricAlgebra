@@ -13,7 +13,7 @@ import java.util.ArrayDeque;
  */
 public class AstStringBuilder {
 
-	private static record IdentNode(Node node, String indentation) {
+	private static record IndentNode(Node node, String indentation) {
 
 	}
 
@@ -68,17 +68,17 @@ public class AstStringBuilder {
 
 	public static String getAstStringNonRecursive(Node root) {
 		StringBuilder stringBuilder = new StringBuilder();
-		ArrayDeque<IdentNode> identNodes = new ArrayDeque<>();
+		ArrayDeque<IndentNode> indentNodes = new ArrayDeque<>();
 		// Outside of the loop for optimization
 		ArrayDeque<Node> childrenReverse = new ArrayDeque<>();
 
-		IdentNode rootIdentNode = new IdentNode(root, "");
-		identNodes.push(rootIdentNode);
+		IndentNode rootIndentNode = new IndentNode(root, "");
+		indentNodes.push(rootIndentNode);
 
-		while (!identNodes.isEmpty()) {
-			IdentNode frontIdentNode = identNodes.pop();
-			Node currentNode = frontIdentNode.node;
-			String currentIndentation = frontIdentNode.indentation;
+		while (!indentNodes.isEmpty()) {
+			IndentNode frontIndentNode = indentNodes.pop();
+			Node currentNode = frontIndentNode.node;
+			String currentIndentation = frontIndentNode.indentation;
 
 			String name = currentNode.getClass().getSimpleName().replace("NodeGen", "");
 
@@ -104,14 +104,14 @@ public class AstStringBuilder {
 					childrenReverse.push(child);
 				}
 
-				// Pushing the children into the identNode will reverse them a second time.
-				// So overall we get the first child on the first position of identNodes. Then the next child.
+				// Pushing the children into the indentNode will reverse them a second time.
+				// So overall we get the first child on the first position of indentNodes. Then the next child.
 				// Till the last child. And after the children all previously inserted nodes.
 				// So essentially the tree will get sorted topologically in a way such that traversing it in the according direction will be equivalent to a pre-order traversal.
 				String childrenIndentation = currentIndentation + INDENTATION_SYMBOL;
 				for (Node child : childrenReverse) {
-					IdentNode childIdentNode = new IdentNode(child, childrenIndentation);
-					identNodes.push(childIdentNode);
+					IndentNode childIndentNode = new IndentNode(child, childrenIndentation);
+					indentNodes.push(childIndentNode);
 				}
 			}
 		}
