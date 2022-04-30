@@ -19,7 +19,7 @@ public class AstStringBuilder {
 
 	private static final String INDENTATION_SYMBOL = "	";
 
-	private final StringBuilder stringBuilder = new StringBuilder();
+	private final StringBuilder astString = new StringBuilder();
 
 	private final Node root;
 
@@ -37,9 +37,9 @@ public class AstStringBuilder {
 			name = "GlobalVariableReference[" + theCurrent.getName() + "]";
 		}
 		 */
-		this.stringBuilder.append(indentation);
-		this.stringBuilder.append(name);
-		this.stringBuilder.append("\n");
+		this.astString.append(indentation);
+		this.astString.append(name);
+		this.astString.append("\n");
 
 		String childrenIndentation = indentation + INDENTATION_SYMBOL;
 		for (Node child : node.getChildren()) {
@@ -50,10 +50,12 @@ public class AstStringBuilder {
 	/**
 	 * Invocation once only.
 	 */
-	private String getAstString() {
+	private void processTree() {
 		processTreeNode(this.root, "");
+	}
 
-		return this.stringBuilder.toString();
+	private String getAstString() {
+		return this.astString.toString();
 	}
 
 	/**
@@ -62,12 +64,13 @@ public class AstStringBuilder {
 	 */
 	public static String getAstString(Node root) {
 		AstStringBuilder astStringBuilder = new AstStringBuilder(root);
+		astStringBuilder.processTree();
 		String astString = astStringBuilder.getAstString();
 		return astString;
 	}
 
 	public static String getAstStringNonRecursive(Node root) {
-		StringBuilder stringBuilder = new StringBuilder();
+		StringBuilder astString = new StringBuilder();
 		ArrayDeque<IndentNode> indentNodes = new ArrayDeque<>();
 		// Outside of the loop for optimization
 		ArrayDeque<Node> childrenReverse = new ArrayDeque<>();
@@ -89,13 +92,13 @@ public class AstStringBuilder {
 				name = "GlobalVariableReference[" + theCurrent.getName() + "]";
 			}
 			 */
-			stringBuilder.append(currentIndentation);
-			stringBuilder.append(name);
-			stringBuilder.append("\n");
+			astString.append(currentIndentation);
+			astString.append(name);
+			astString.append("\n");
 
 			Iterable<Node> childrenIterable = currentNode.getChildren();
 
-			// Leaf, if not
+			// Leaf, if false
 			if (childrenIterable.iterator().hasNext()) {
 				childrenReverse.clear();
 
@@ -116,6 +119,6 @@ public class AstStringBuilder {
 			}
 		}
 
-		return stringBuilder.toString();
+		return astString.toString();
 	}
 }
