@@ -19,11 +19,11 @@ public class AstStringBuilder {
 
 	private static final String INDENTATION_SYMBOL = "	";
 
-	private StringBuilder stringBuilder = null;
+	private final StringBuilder stringBuilder = new StringBuilder();
 
 	private final Node root;
 
-	public AstStringBuilder(Node root) {
+	private AstStringBuilder(Node root) {
 		this.root = root;
 	}
 
@@ -48,16 +48,22 @@ public class AstStringBuilder {
 	}
 
 	/**
+	 * Invocation once only.
+	 */
+	private String getAstString() {
+		processTreeNode(this.root, "");
+
+		return this.stringBuilder.toString();
+	}
+
+	/**
 	 * Can lead to StackOverflow for large AST's. In this case either increase the stack or use
 	 * getAstStringNonRecursive().
 	 */
-	public String getAstString() {
-		if (this.stringBuilder == null) {
-			this.stringBuilder = new StringBuilder();
-			processTreeNode(this.root, "");
-		}
-
-		return this.stringBuilder.toString();
+	public static String getAstString(Node root) {
+		AstStringBuilder astStringBuilder = new AstStringBuilder(root);
+		String astString = astStringBuilder.getAstString();
+		return astString;
 	}
 
 	public static String getAstStringNonRecursive(Node root) {
