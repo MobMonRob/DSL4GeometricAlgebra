@@ -27,7 +27,7 @@ public class AstStringBuilder {
 		this.root = root;
 	}
 
-	private void processTreeNode(Node node, String identation) {
+	private void processTreeNode(Node node, String indentation) {
 		String name = node.getClass().getSimpleName().replace("NodeGen", "");
 
 		/*
@@ -37,13 +37,13 @@ public class AstStringBuilder {
 			name = "GlobalVariableReference[" + theCurrent.getName() + "]";
 		}
 		 */
-		this.stringBuilder.append(identation);
+		this.stringBuilder.append(indentation);
 		this.stringBuilder.append(name);
 		this.stringBuilder.append("\n");
 
-		String childrenIdentation = identation + INDENTATION_SYMBOL;
+		String childrenIndentation = indentation + INDENTATION_SYMBOL;
 		for (Node child : node.getChildren()) {
-			processTreeNode(child, childrenIdentation);
+			processTreeNode(child, childrenIndentation);
 		}
 	}
 
@@ -108,9 +108,9 @@ public class AstStringBuilder {
 				// So overall we get the first child on the first position of identNodes. Then the next child.
 				// Till the last child. And after the children all previously inserted nodes.
 				// So essentially the tree will get sorted topologically in a way such that traversing it in the according direction will be equivalent to a pre-order traversal.
-				String childrenIdentation = currentIndentation + INDENTATION_SYMBOL;
+				String childrenIndentation = currentIndentation + INDENTATION_SYMBOL;
 				for (Node child : childrenReverse) {
-					IdentNode childIdentNode = new IdentNode(child, childrenIdentation);
+					IdentNode childIdentNode = new IdentNode(child, childrenIndentation);
 					identNodes.push(childIdentNode);
 				}
 			}
