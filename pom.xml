@@ -92,6 +92,8 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>3.0.0-M6</version>
 				<configuration>
+					<encoding>UTF-8</encoding>
+					<argLine>-Dgraalvm.locatorDisabled=true -Dfile.encoding=UTF-8 --add-exports org.graalvm.truffle/com.oracle.truffle.api.nodes=ALL-UNNAMED --add-exports org.graalvm.truffle/com.oracle.truffle.api.exception=ALL-UNNAMED --add-exports org.graalvm.truffle/com.oracle.truffle.api=ALL-UNNAMED</argLine>
 					<skipTests>${skipTests}</skipTests>
 				</configuration>
 			</plugin>
