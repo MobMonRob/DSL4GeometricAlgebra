@@ -6,6 +6,7 @@ package de.dhbw.rahmlab.geomalgelang.parsing;
 
 import com.oracle.truffle.api.source.Source;
 import de.dhbw.rahmlab.geomalgelang.parsing.debug.AntlrTestRig;
+import de.dhbw.rahmlab.geomalgelang.parsing.debug.AstStringBuilder;
 import de.dhbw.rahmlab.geomalgelang.parsing.treetransform.ExprTransform;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.BaseNode;
 import java.io.IOException;
@@ -25,9 +26,11 @@ public final class ParsingService {
 	private GeomAlgeParser parser = null;
 	private ExprTransform exprTransform = null;
 	private static AntlrTestRig testRig = null;
+	private String astString = null;
 
 	private boolean isLexerParserAvailable = false;
 	private boolean isExprTransformAvailable = false;
+	private boolean isAstStringAvailable = false;
 
 	public ParsingService(Source program) throws IOException {
 		this.inputStream = CharStreams.fromReader(program.getReader());
@@ -74,6 +77,21 @@ public final class ParsingService {
 		this.isExprTransformAvailable = true;
 	}
 
+	private void ensureAstStringAvailable() {
+		if (this.isAstStringAvailable) {
+			return;
+		}
+
+		ensureExprTransformAvailable();
+
+		{
+			BaseNode root = this.exprTransform.getTopNode();
+			this.astString = AstStringBuilder.getAstString(root);
+		}
+
+		this.isAstStringAvailable = true;
+	}
+
 	public void processANTLRTestRig() throws Exception {
 		this.ensureLexerParserAvailable();
 
@@ -88,5 +106,16 @@ public final class ParsingService {
 		this.ensureExprTransformAvailable();
 
 		return this.exprTransform.getTopNode();
+	}
+
+	public String getAstString() {
+		this.ensureAstStringAvailable();
+
+		return this.astString;
+	}
+
+	public static String getAstString(String program) {
+		ParsingService parsingService = new ParsingService(program);
+		return parsingService.getAstString();
 	}
 }
