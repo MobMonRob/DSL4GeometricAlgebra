@@ -7,9 +7,10 @@
 	<packaging>jar</packaging>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>
-		<skipTests>true</skipTests>
+		<skipTests>false</skipTests>
 		<graalvm.version>22.0.0.2</graalvm.version>
 	</properties>
 	<repositories>
@@ -31,7 +32,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter</artifactId>
+			<artifactId>junit-jupiter-engine</artifactId>
 			<version>5.8.2</version>
 			<scope>test</scope>
 		</dependency>
@@ -89,7 +90,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.22.2</version>
+				<version>3.0.0-M6</version>
 				<configuration>
 					<skipTests>${skipTests}</skipTests>
 				</configuration>
