@@ -5,6 +5,9 @@
 package de.dhbw.rahmlab.geomalgelang.cga;
 
 /**
+ * Policy: - The sequence of function definitions is the same as in the README.md.
+ */
+/**
  *
  * @author fabian
  */
