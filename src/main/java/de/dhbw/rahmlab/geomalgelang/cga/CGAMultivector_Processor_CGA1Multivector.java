@@ -51,16 +51,10 @@ public class CGAMultivector_Processor_CGA1Multivector implements ICGAMultivector
 	}
 
 	@Override
-	public CGA1Multivector vee(CGA1Multivector lhs, CGA1Multivector rhs) {
+	public CGA1Multivector regressive_product(CGA1Multivector lhs, CGA1Multivector rhs) {
 		return lhs.vee(rhs);
 	}
 
-	/*
-	@Override
-	public double scalar_product(CGA1Multivector lhs, CGA1Multivector rhs) {
-		return lhs.scp(rhs);
-	}
-	 */
 	@Override
 	public CGA1Multivector division(CGA1Multivector lhs, CGA1Multivector rhs) {
 		return lhs.div(rhs);
@@ -136,5 +130,16 @@ public class CGAMultivector_Processor_CGA1Multivector implements ICGAMultivector
 	@Override
 	public CGA1Multivector base_vector_z() {
 		return CGA1Multivector.createBasisVector(3);
+	}
+
+	// new ones
+	@Override
+	public CGA1Multivector negate(CGA1Multivector input) {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public CGA1Multivector grade_extraction(CGA1Multivector input, int grade) {
+		return input.extractGrade(grade);
 	}
 }

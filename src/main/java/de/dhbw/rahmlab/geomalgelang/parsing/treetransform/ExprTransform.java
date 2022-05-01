@@ -42,12 +42,6 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		BaseNode left = nodeStack.pop();
 
 		BaseNode current = switch (ctx.op.getType()) {
-			case GeomAlgeParser.SUPERSCRIPT_MINUS_ONE ->
-				throw new UnsupportedOperationException();
-			case GeomAlgeParser.SUPERSCRIPT_MINUS_STAR ->
-				throw new UnsupportedOperationException();
-			case GeomAlgeParser.SUPERSCRIPT_TILDE ->
-				throw new UnsupportedOperationException();
 			case GeomAlgeParser.DAGGER ->
 				CliffordConjugateNodeGen.create(left);
 			default ->
@@ -65,7 +59,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 
 		BaseNode current = switch (ctx.op.getType()) {
 			// Nur zum Testen
-			case GeomAlgeParser.PLUS ->
+			case GeomAlgeParser.PLUS_SIGN ->
 				AddNodeGen.create(left, right);
 			/*
 			case GeomAlgeParser.SLASH ->
@@ -77,7 +71,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 			 */
 			case GeomAlgeParser.SPACE ->
 				GeometricProductNodeGen.create(left, right);
-			case GeomAlgeParser.DOT ->
+			case GeomAlgeParser.DOT_OPERATOR ->
 				InnerProductNodeGen.create(left, right);
 			default ->
 				throw new UnsupportedOperationException();

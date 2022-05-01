@@ -53,20 +53,13 @@ public class CGAMultivector_Processor_Generic<T> implements ICGAMultivector_Proc
 	}
 
 	@Override
-	public ICGAMultivector<T> vee(ICGAMultivector<T> lhs, ICGAMultivector<T> rhs) {
-		return new ICGAMultivector(concreteProcessor.vee(lhs.inner, rhs.inner));
+	public ICGAMultivector<T> regressive_product(ICGAMultivector<T> lhs, ICGAMultivector<T> rhs) {
+		return new ICGAMultivector(concreteProcessor.regressive_product(lhs.inner, rhs.inner));
 	}
 
-
-	/*
-	@Override
-	public ICGAMultivector<T> scalar_product(ICGAMultivector<T> lhs, ICGAMultivector<T> rhs) {
-		return new ICGAMultivector(concreteProcessor.scalar_product(lhs.inner, rhs.inner));
-	}
-	 */
 	@Override
 	public ICGAMultivector<T> division(ICGAMultivector<T> lhs, ICGAMultivector<T> rhs) {
-		return new ICGAMultivector(concreteProcessor.vee(lhs.inner, rhs.inner));
+		return new ICGAMultivector(concreteProcessor.division(lhs.inner, rhs.inner));
 	}
 
 	@Override
@@ -139,5 +132,16 @@ public class CGAMultivector_Processor_Generic<T> implements ICGAMultivector_Proc
 	@Override
 	public ICGAMultivector<T> base_vector_z() {
 		return new ICGAMultivector(concreteProcessor.base_vector_z());
+	}
+
+	// new ones
+	@Override
+	public ICGAMultivector<T> negate(ICGAMultivector<T> input) {
+		return new ICGAMultivector(concreteProcessor.negate(input.inner));
+	}
+
+	@Override
+	public ICGAMultivector<T> grade_extraction(ICGAMultivector<T> input, int grade) {
+		return new ICGAMultivector(concreteProcessor.grade_extraction(input.inner, grade));
 	}
 }

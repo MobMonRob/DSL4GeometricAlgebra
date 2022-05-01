@@ -7,39 +7,38 @@ program
 	;
 
 expr
-	: L_PAREN expr R_PAREN			#DummyLabel
+	:	L_PARENTHESIS
+		expr
+		R_PARENTHESIS				#DummyLabel
 	|	<assoc=right>
 		left=expr
-		op=	(SUPERSCRIPT_MINUS_ONE
-			|SUPERSCRIPT_MINUS_STAR
-			|SUPERSCRIPT_TILDE
+		op=	(MINUS_SIGN
+			|SUPERSCRIPT_MINUS__SUPERSCRIPT_ONE
+			|ASTERISK
+			|SMALL_TILDE
 			|DAGGER
+			|SUPERSCRIPT_MINUS__ASTERISK
+			|SUPERSCRIPT_TWO
 			)						#UnaryOp
 	|	left=expr
 		op=	(SPACE
-			|DOT
-			|WEDGE
-			|CUP
-			|CAP
-			|L_CORNER
-			|R_CORNER
-			|VEE
+			|DOT_OPERATOR
+			|LOGICAL_AND
+			|UNION
+			|INTERSECTION
+			|R_FLOOR
+			|L_FLOOR
+			|LOGICAL_OR
 			)
 		right=expr					#BinaryOp
 	|	left=expr
-		(SPACE op=STAR
-		|(~SPACE+)? op=STAR (~SPACE+)?
-		|op=SLASH
-		)
+		op=SOLIDUS
 		right=expr					#BinaryOp
 	|	left=expr
-		op=	(PLUS
-			|MINUS
+		op=	(PLUS_SIGN
+			|HYPHEN_MINUS
 			)
 		right=expr					#BinaryOp
-	|	<assoc=right>
-		left=expr
-		op=STAR						#UnaryOp
 	|	exprLiteral					#DummyLabel
 	|	<assoc=right>
 		expr SPACE+?				#DummyLabel
@@ -52,9 +51,10 @@ exprLiteral
 	:	value=	DECIMAL_LITERAL		#LiteralDecimal
 	|	name=	IDENTIFIER			#VariableReference
 	|	value=	(INFINITY
-				|EPSILON_ONE
-				|EPSILON_TWO
-				|EPSILON_THREE
+				|SMALL_EPSILON__SUBSCRIPT_ONE
+				|SMALL_EPSILON__SUBSCRIPT_TWO
+				|SMALL_EPSILON__SUBSCRIPT_THREE
+				|SMALL_PI
 				)					#LiteralCGA
 	;
 

@@ -1,19 +1,15 @@
 lexer grammar GeomAlgeLexer;
 
+///////////////////////////////////////////////////////////////////////////
+// Various
+///////////////////////////////////////////////////////////////////////////
+
 fragment LETTER
 	: [a-zA-Z]
 	;
 
 fragment DIGIT
 	: [0-9]
-	;
-
-L_PAREN
-	: '('
-	;
-
-R_PAREN
-	: ')'
 	;
 
 DECIMAL_LITERAL
@@ -24,85 +20,231 @@ IDENTIFIER
 	: LETTER+
 	;
 
-INFINITY
-	: '∞'
+L_PARENTHESIS
+	: '('
 	;
 
-EPSILON_ONE
-	: 'ε₁'
+R_PARENTHESIS
+	: ')'
 	;
 
-EPSILON_TWO
-	: 'ε₂'
-	;
+///////////////////////////////////////////////////////////////////////////
+// Symbols for binaryOp's
+///////////////////////////////////////////////////////////////////////////
 
-EPSILON_THREE
-	: 'ε₃'
-	;
-
-DAGGER
-	: '†'
-	;
-
-SUPERSCRIPT_TILDE
-	: '˜'
-	;
-
-SUPERSCRIPT_MINUS_STAR
-	: '⁻*'
-	;
-
-STAR
-	: '*'
-	;
-
-SUPERSCRIPT_MINUS_ONE
-	: '⁻¹'
-	;
-
-CUP
-	: '∪'
-	;
-
-CAP
-	: '∩'
-	;
-
-L_CORNER
-	: '⌊'
-	;
-
-R_CORNER
-	: '⌋'
-	;
-
-VEE
-	: '∨'
-	;
-
-SLASH
-	: '/'
-	;
-
+// Precedence 3
+// geometric_product
+// \u0020
 SPACE
 	: ' '
 	;
 
-DOT
+// Precedence 3
+// inner_product
+// \u22C5
+DOT_OPERATOR
 	: '⋅'
 	;
 
-WEDGE
+// Precedence 3
+// outer_product
+// \u2227
+LOGICAL_AND
 	: '∧'
 	;
 
-PLUS
+// Precedence 1
+// addition
+// \u002B
+PLUS_SIGN
 	: '+'
 	;
 
-MINUS
+// Precedence 1
+// subtraction
+// \u002D
+HYPHEN_MINUS
 	: '-'
 	;
+
+// Precedence 3
+// meet (intersection)
+// \u222A
+UNION
+	: '∪'
+	;
+
+// Precedence 3
+// join (union)
+// \u2229
+INTERSECTION
+	: '∩'
+	;
+
+// Precedence 3
+// right_contraction
+// \u230B
+R_FLOOR
+	: '⌋'
+	;
+
+// Precedence 3
+// left_contraction
+// \u230A
+L_FLOOR
+	: '⌊'
+	;
+
+// Precedence 3
+// regressive_product
+// \u2228
+LOGICAL_OR
+	: '∨'
+	;
+
+// Precedence 2
+// division (inverse geometric product)
+// \u002F
+SOLIDUS
+	: '/'
+	;
+
+///////////////////////////////////////////////////////////////////////////
+// Symbols for unaryOp's
+///////////////////////////////////////////////////////////////////////////
+
+// Precedence 4
+// negate
+// \u2212
+MINUS_SIGN
+	: '−'
+	;
+
+// Precedence 4
+// general_inverse
+// \u207B\u00B9
+SUPERSCRIPT_MINUS__SUPERSCRIPT_ONE
+	: '⁻¹'
+	;
+
+// Precedence 4
+// dual
+// \u002A
+ASTERISK
+	: '*'
+	;
+
+// Precedence 4
+// reverse
+// \u02DC
+SMALL_TILDE
+	: '˜'
+	;
+
+// Precedence 4
+// clifford conjugate
+// \u2020
+DAGGER
+	: '†'
+	;
+
+// Precedence 4
+// undual
+// \u207B\u002A
+SUPERSCRIPT_MINUS__ASTERISK
+	: '⁻*'
+	;
+
+// Precedence 4
+// square
+// \u00B2
+SUPERSCRIPT_TWO
+	: '²'
+	;
+
+///////////////////////////////////////////////////////////////////////////
+// Symbols for composite operators
+///////////////////////////////////////////////////////////////////////////
+
+// Precedence 4
+
+// \u003C
+LESS_THAN_SIGN
+	: '<'
+	;
+
+// \u003E
+GREATER_THAN_SIGN
+	: '>'
+	;
+
+// \u2080
+SUBSCRIPT_ZERO
+	: '₀'
+	;
+
+// \u2081
+SUBSCRIPT_ONE
+	: '₁'
+	;
+
+// \u2082
+SUBSCRIPT_TWO
+	: '₂'
+	;
+
+// \u2083
+SUBSCRIPT_THREE
+	: '₃'
+	;
+
+// \u2084
+SUBSCRIPT_FOUR
+	: '₄'
+	;
+
+// \u2085
+SUBSCRIPT_FIFE
+	: '₅'
+	;
+
+///////////////////////////////////////////////////////////////////////////
+// Symbols for constants
+///////////////////////////////////////////////////////////////////////////
+
+// base_vector_infinity
+// \u221E
+INFINITY
+	: '∞'
+	;
+
+// base_vector_x
+// \u03B5\u2081
+SMALL_EPSILON__SUBSCRIPT_ONE
+	: 'ε₁'
+	;
+
+// base_vector_y
+// \u03B5\u2082
+SMALL_EPSILON__SUBSCRIPT_TWO
+	: 'ε₂'
+	;
+
+// base_vector_z
+// \u03B5\u2083
+SMALL_EPSILON__SUBSCRIPT_THREE
+	: 'ε₃'
+	;
+
+// pi
+// \u03C0
+SMALL_PI
+	: 'π'
+	;
+
+///////////////////////////////////////////////////////////////////////////
+// Technical
+///////////////////////////////////////////////////////////////////////////
 
 NEWLINE: '\r'? '\n';
 
