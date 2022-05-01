@@ -44,47 +44,17 @@ public class GrammarMixedTest {
 		String program = "a b ⋅ (1,5 + 5,3)†";
 		String actualAstString = ParsingService.getAstString(program);
 
-		// Kann ich einen Builder basteln für den expectedAstString?
-		// Einrückungssymbbol holen aus dem AstStringBuilder
-		// Evtl. sogar addInnerProduct und so.
-		// AstStringBuilder.add(0, InnerProduct).add(1, GeometricProduct).add(2, GlobalVariableReference)
-		// Oder statt String einfach einen normalen StringBuilder.
-		/*
-		Oder
-		AstStringBuilder
-		.add("InnerProduct")
-		.addLevel()
-			.add("geometricProduct")
-			.addLevel()
-				.addx2("GlobalVariableReference")
-			.closeLevel()
-			.add("CliffordConjugate")
-		.closeLevel()
-		.build()
-		 */
-		// Oder in einer separten Datei, wo in der 1. Zeile der Ausdruck steht, dann eine Leerzeile und ab der 3. Zeile der AST.
-		//    Ich könnte eine Funktion machen, die auf weniger triviale Art auf Äquivalenz prüft.
-		/*
-		String expectedAstString = ""
-			+ "InnerProduct\n"
-			+ "	GeometricProduct\n"
-			+ "		GlobalVariableReference\n"
-			+ "		GlobalVariableReference\n"
-			+ "	CliffordConjugate\n"
-			+ "		Add\n"
-			+ "			DecimalLiteral\n"
-			+ "			DecimalLiteral\n";
-		 */
+		// Alternativ \t statt sichtbare Tabulatoren
 		String expectedAstString = """
-								   InnerProduct
-								   \tGeometricProduct
-								   \t\tGlobalVariableReference
-								   \t\tGlobalVariableReference
-								   \tCliffordConjugate
-								   \t\tAdd
-								   \t\t\tDecimalLiteral
-								   \t\t\tDecimalLiteral
-								   """;
+			InnerProduct
+				GeometricProduct
+					GlobalVariableReference
+					GlobalVariableReference
+				CliffordConjugate
+					Add
+						DecimalLiteral
+						DecimalLiteral
+			""";
 
 		Assertions.assertEquals(expectedAstString, actualAstString);
 	}
