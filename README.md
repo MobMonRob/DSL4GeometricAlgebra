@@ -42,49 +42,49 @@ or navigate to this point via the Tools main menu.
 
 ### Dual operators
 #### Base operators
-| precedence | symbol | latex | unicode | name | implementation | hints | 
-| :--------: | :----: | ------- | ----- | ---- | -------------- | ----- |
-| 3 | space   |  | \u002A | geometric product | multivector1.gp(multivector2) | Exactly one space character is interpreted as the operator. |
-| 3 | &#8901;   | \cdot | \u22C5 | inner product | multivector1.ip(multivector2, RIGHT_CONTRACTION) | In the default configuration equal to left contraction (corresponding to Ganja.js). But this looks to be incompatible with some formulas in [Kleppe], which work only with the usage of right contraction. In CLUscript this corresponds to ".". |
-| 3 | &#8743; | \wedge | \u2227 | outer product | multivector1.op(multivector2), not used for double, for tuple3d it makes sense but actually no implementation is available | |
-| 1 | &#43;  | + | \u002B | sum | multivector1.add(multivector2) | |
-| 1 | &#45; | - | \u002D| difference | multivector1.sub(multivector2) | |
+| precedence | symbol           | latex   | unicode | name | implementation | hints | 
+| :--------: | :-------------:  | ------- | ------- | ---- | -------------- | ----- |
+| 3          | &#x0020; (space) |         | \u0020  | geometric product | multivector1.gp(multivector2) | Exactly one space character is interpreted as the operator. |
+| 3          | &#x22C5;         | \cdot   | \u22C5  | inner product | multivector1.ip(multivector2, RIGHT_CONTRACTION) | In the default configuration equal to left contraction (corresponding to Ganja.js). But this looks to be incompatible with some formulas in [Kleppe], which work only with the usage of right contraction. In CLUscript this corresponds to ".". |
+| 3          | &#x2227;         | \wedge  | \u2227  | outer product | multivector1.op(multivector2), not used for double, for tuple3d it makes sense but actually no implementation is available | |
+| 1          | &#x002B;         | +       | \u002B  | sum | multivector1.add(multivector2) | |
+| 1          | &#x002D;         | -       | \u002D  | difference | multivector1.sub(multivector2) | |
 
 #### Additional operators (for more convenience only)
-| precedence | symbol | latex | unicode | description | implementation | CLUscript |
-| :--------: | :----: | ------- | ----- | ----------- | -------------- | :----- |
-| 3 | &#8746;   | \cup  | \u222A | meet (intersection) | multivector1.meet(multivector2) | \& |
-| 3 | &#8745;   | \cap  | \u2229 | join  (union) | multivector1.join(multivector2) or multivector2* &#8901; multivector1 or (multivector2* &#8743; multivector1*)*|
-| 3 | &#8970; | \llcorner | \u230B | right contraction | multivetor1.ip(multivector2, RIGHT_CONTRACTION) | \| |
-| 3 | &#8971; | \lrcorner | \u230A | left contraction | multivector1.ip(multivector1, LEFT_CONTRACTION); where the grade operator for negative grades is zero. This implies that `something of higher grade cannot be contracted onto something of lower grade'. | |
-| 3 | &#8744; | \vee | \u2228 | regressive product | multivector1.vee(multivector2) or (multivector1* &#8743; multivector2*)* |  |
-| 2 | &#47;  | \StrikingThrough | \u002F | division (inverse geometric product) | multivector1.div(multivector2), double.div(double) |  |
+| precedence | symbol   | latex            | unicode | description | implementation | CLUscript |
+| :--------: | :------: | ---------------- | ------- | ----------- | -------------- | :----- |
+| 3          | &#x222A; | \cup             | \u222A  | meet (intersection) | multivector1.meet(multivector2) | \& |
+| 3          | &#x2229; | \cap             | \u2229  | join  (union) | multivector1.join(multivector2) or multivector2* &#8901; multivector1 or (multivector2* &#8743; multivector1*)*|
+| 3          | &#x230B; | \llcorner        | \u230B  | right contraction | multivetor1.ip(multivector2, RIGHT_CONTRACTION) | \| |
+| 3          | &#x230A; | \lrcorner        | \u230A  | left contraction | multivector1.ip(multivector1, LEFT_CONTRACTION); where the grade operator for negative grades is zero. This implies that `something of higher grade cannot be contracted onto something of lower grade`. | |
+| 3          | &#x2228; | \vee             | \u2228  | regressive product | multivector1.vee(multivector2) or (multivector1* &#8743; multivector2*)* |  |
+| 2          | &#x002F; | \StrikingThrough | \u002F  | division (inverse geometric product) | multivector1.div(multivector2), double.div(double) |  |
 
 ### Monadic/unary operators (placed all on right side)
 The unary operators have the highest precedence, so they are executed before any other operations. The '-' os the only left-side operator. All the others are right-sided. Except dual/undual the operators cancel itself so if your write X&#732;&#732; no reverse is executed.
 
 #### Base monadic operators
-| precedence | symbol        | latex                         | unicode      | description | implementation | CLUscript |
-| :--------: | :-----------: | ----------------------------- | ------------ | ----------- | -------------- | :------- |
-| 4          | -             | - | \u2212     | negate |  | - |
-| 4          | &#8315;&#185; | \textsuperscript{-1}          | \u207B\u00B9 | general inverse | multivector.generalInverse() | ! |
-| 4          | *             | \textsuperscript{*}           | \u002A       | dual | multivector.dual() | |
-| 4          | &#732;        | \textsuperscript{\tilde}      | \u02DC       | reverse | multivector.reverse() | &#732; |
-| 4          | &#8224;       | \textsuperscript{\textdagger} | \u2020       | clifford conjugate | multivector.conjugate() | |
+| precedence | symbol           | latex                         | unicode      | description | implementation | CLUscript |
+| :--------: | :--------------: | ----------------------------- | ------------ | ----------- | -------------- | :------- |
+| 4          | &#x2212;         | -                             | \u2212       | negate |  | - |
+| 4          | &#x207B;&#x00B9; | \textsuperscript{-1}          | \u207B\u00B9 | general inverse | multivector.generalInverse() | ! |
+| 4          | &#x002A;         | \textsuperscript{*}           | \u002A       | dual | multivector.dual() | |
+| 4          | &#x02DC;         | \textsuperscript{\tilde}      | \u02DC       | reverse | multivector.reverse() | &#732; |
+| 4          | &#x2020;         | \textsuperscript{\textdagger} | \u2020       | clifford conjugate | multivector.conjugate() | |
 
 There exist three types of involution operations: Space inversion, reversion and the combination of both the clifford conjugation.
 
 #### Additional monatic operators (for more convenience only) 
-| precedence | symbol        | latex                         | unicode      | description | implementation |
-| :--------: | :-----------: | ----------------------------- | ------------ | ----------- | -------------- |
-| 4          | &#8315;*      | \textsuperscript{-*}          | \u207B\u002A | undual | multivector.undual() or -multivector.dual() |
-| 4          | &sup2; | | \u00B2 | square | multivector.gp(multivector), sqr(double) |
+| precedence | symbol           | latex                | unicode      | description | implementation |
+| :--------: | :--------------: | ---------------------| ------------ | ----------- | -------------- |
+| 4          | &#x207B;&#x002A; | \textsuperscript{-*} | \u207B\u002A | undual | multivector.undual() or -multivector.dual() |
+| 4          | &#x00B2;         |                      | \u00B2       | square | multivector.gp(multivector), sqr(double) |
 
 
 ### Composite operators
-| precedence | symbol        | latex                         | unicode      | description | implementation |
-| :--------: | :-----------: | ----------------------------- | ------------ | ----------- | -------------- |
-| 4          | &#60;multivector&#62;&#8346;  |            | subscript p: \u2080, \u2081, \u2082, \u2083, \u2084| grade extraction, grade p=0-5 as subscript | multivector.extractGrade(int grade)   |
+| precedence | symbol                                                                                                   | latex | unicode      | description | implementation |
+| :--------: | :------------------------------------------------------------------------------------------------------: | ----- | ------------ | ----------- | -------------- |
+| 4          | &#x003C;multivector&#x003E;&#x209A; (with &#x209A; ∈ {&#x2080;, &#x2081;, &#x2082;, &#x2083;, &#x2084;, &#x2085;}) |       | &#x003C; = \u003C,  &#x003E; = \u003E, &#x2080; = \u2080, &#x2081; = \u2081, &#x2082; = \u2082, &#x2083; = \u2083, &#x2084; = \u2084, &#x2085; = \u2085| grade extraction, grade p=0-5 as subscript | multivector.extractGrade(int grade)   |
 
 ### Buildin functions
 
@@ -130,18 +130,18 @@ Outer product null space representations are called dual. Corresponding regular 
 | 4 | rotator(tuple3d, double)        |  creates a rotatio from an 3d-tuple representing the rotation axis and a double representing the angle in radian | createTranslation(tuple3d) |
 ### Symbols
 #### Base vector symbols
-| symbol        | latex         | Unicode      | description |
-| :-----------: | ------------- | ------------ | ----------- |
-| o             |               | \u006F       | base vector representing the origin |
-| &#8734;       |               | \u221E       | base vector representing the infinity |
-| &#949;&#8321; | \textepsilon  | \u03B5\u2081 | base vector representing x direction |
-| &#949;&#8322; | \textepsilon  | \u03B5\u2082 | base vector representing y direction |
-| &#949;&#8323; | \textepsilon  | \u03B5\u2083 | base vector representing z direction |
+| symbol           | latex         | Unicode      | description |
+| :--------------: | ------------- | ------------ | ----------- |
+| &#x006F;         |               | \u006F       | base vector representing the origin |
+| &#x221E;         |               | \u221E       | base vector representing the infinity |
+| &#x03B5;&#x2081; | \textepsilon  | \u03B5\u2081 | base vector representing x direction |
+| &#x03B5;&#x2082; | \textepsilon  | \u03B5\u2082 | base vector representing y direction |
+| &#x03B5;&#x2083; | \textepsilon  | \u03B5\u2083 | base vector representing z direction |
 
 ### Further symbols
-| symbol        | latex         | Unicode      | description |
-| :-----------: | ------------- | ------------ | ----------- |
-| &#960;        |     \pi          | \u03C0       | Ludolphs- or circle constant |
+| symbol          | latex         | Unicode       | description |
+| :-------------: | ------------- | ------------- | ----------- |
+| &#x03C0;        | \pi           | \u03C0        | Ludolphs- or circle constant |
 
 ## Important formulae
 ### Formulae to create conformal geometric objects
