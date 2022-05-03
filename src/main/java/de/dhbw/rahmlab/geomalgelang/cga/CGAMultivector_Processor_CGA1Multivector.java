@@ -32,7 +32,7 @@ public class CGAMultivector_Processor_CGA1Multivector implements ICGAMultivector
 
 	@Override
 	public CGA1Multivector inner_product(CGA1Multivector lhs, CGA1Multivector rhs) {
-		return lhs.ip(rhs, LEFT_CONTRACTION);
+		return lhs.ip(rhs, RIGHT_CONTRACTION);
 	}
 
 	@Override

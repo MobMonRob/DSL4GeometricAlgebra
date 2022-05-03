@@ -6,13 +6,10 @@ package de.dhbw.rahmlab.geomalgelang.parsing.treetransform;
 
 import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParser;
 import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParserBaseListener;
-import de.dhbw.rahmlab.geomalgelang.truffle.nodes.technical.BaseNode;
-import de.dhbw.rahmlab.geomalgelang.truffle.nodes.GlobalVariableReference;
-import de.dhbw.rahmlab.geomalgelang.truffle.nodes.GlobalVariableReferenceNodeGen;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.binaryOps.*;
-import de.dhbw.rahmlab.geomalgelang.truffle.nodes.literal.DecimalLiteral;
-import de.dhbw.rahmlab.geomalgelang.truffle.nodes.literal.DecimalLiteralNodeGen;
+import de.dhbw.rahmlab.geomalgelang.truffle.nodes.technical.BaseNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.unaryOps.*;
+import de.dhbw.rahmlab.geomalgelang.truffle.nodes.variableLike.*;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
