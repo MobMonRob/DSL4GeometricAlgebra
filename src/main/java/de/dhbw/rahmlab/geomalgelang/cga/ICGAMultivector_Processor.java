@@ -50,10 +50,10 @@ public interface ICGAMultivector_Processor<T> {
 
 	T undual(T input);
 
-	// Binary Operators with differing argument types
+	// Yes, its kinda unary. Because grade is a constant after parsing.
 	T grade_extraction(T input, int grade);
 
-	// implemented with mulitplication
+	// implemented with multiplication
 	//T square(T input)
 	// Unary builtins
 	T exponentiate(T input);

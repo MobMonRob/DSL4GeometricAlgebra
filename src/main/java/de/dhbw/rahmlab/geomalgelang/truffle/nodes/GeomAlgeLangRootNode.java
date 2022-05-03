@@ -8,6 +8,7 @@ import com.oracle.truffle.api.TruffleLanguage;
 import com.oracle.truffle.api.frame.FrameDescriptor;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.RootNode;
+import de.dhbw.rahmlab.geomalgelang.truffle.nodes.technical.BaseNode;
 
 /**
  *

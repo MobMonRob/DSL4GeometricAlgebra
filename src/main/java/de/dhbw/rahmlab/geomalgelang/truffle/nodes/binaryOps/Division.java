@@ -4,18 +4,19 @@
  */
 package de.dhbw.rahmlab.geomalgelang.truffle.nodes.binaryOps;
 
+import de.dhbw.rahmlab.geomalgelang.truffle.nodes.technical.BinaryOp;
 import com.oracle.truffle.api.dsl.Specialization;
-import com.oracle.truffle.api.nodes.NodeInfo;
+import de.dhbw.rahmlab.geomalgelang.cga.ICGAMultivector;
 
 /**
  *
  * @author fabian
  */
-@NodeInfo(shortName = "/")
-public abstract class Div extends BinaryOp {
+public abstract class Division extends BinaryOp {
 
 	@Specialization
-	protected double div(double left, double right) {
-		return (left / right);
+	@Override
+	public ICGAMultivector execute(ICGAMultivector left, ICGAMultivector right) {
+		throw new UnsupportedOperationException();
 	}
 }

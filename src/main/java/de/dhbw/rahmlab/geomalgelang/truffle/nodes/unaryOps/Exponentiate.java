@@ -2,23 +2,21 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package de.dhbw.rahmlab.geomalgelang.truffle.nodes.binaryOps;
+package de.dhbw.rahmlab.geomalgelang.truffle.nodes.unaryOps;
 
-import de.dhbw.rahmlab.geomalgelang.truffle.nodes.technical.BinaryOp;
+import de.dhbw.rahmlab.geomalgelang.truffle.nodes.technical.UnaryOp;
 import com.oracle.truffle.api.dsl.Specialization;
-import com.oracle.truffle.api.nodes.NodeInfo;
 import de.dhbw.rahmlab.geomalgelang.cga.ICGAMultivector;
 
 /**
  *
  * @author fabian
  */
-@NodeInfo(shortName = " ")
-public abstract class GeometricProduct extends BinaryOp {
+public abstract class Exponentiate extends UnaryOp {
 
 	@Specialization
 	@Override
-	public ICGAMultivector execute(ICGAMultivector left, ICGAMultivector right) {
+	protected ICGAMultivector execute(ICGAMultivector input) {
 		throw new UnsupportedOperationException();
 	}
 }

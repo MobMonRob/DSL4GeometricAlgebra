@@ -4,6 +4,7 @@
  */
 package de.dhbw.rahmlab.geomalgelang.truffle.nodes.binaryOps;
 
+import de.dhbw.rahmlab.geomalgelang.truffle.nodes.technical.BinaryOp;
 import com.oracle.truffle.api.dsl.Specialization;
 import com.oracle.truffle.api.nodes.NodeInfo;
 import de.dhbw.rahmlab.geomalgelang.cga.ICGAMultivector;
@@ -16,7 +17,8 @@ import de.dhbw.rahmlab.geomalgelang.cga.ICGAMultivector;
 public abstract class InnerProduct extends BinaryOp {
 
 	@Specialization
-	public ICGAMultivector execute(ICGAMultivector left, ICGAMultivector right) {
+	@Override
+	protected ICGAMultivector execute(ICGAMultivector left, ICGAMultivector right) {
 		throw new UnsupportedOperationException();
 	}
 }

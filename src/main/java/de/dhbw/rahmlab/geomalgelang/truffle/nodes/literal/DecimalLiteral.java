@@ -7,7 +7,7 @@ package de.dhbw.rahmlab.geomalgelang.truffle.nodes.literal;
 import com.oracle.truffle.api.dsl.NodeField;
 import com.oracle.truffle.api.dsl.Specialization;
 import com.oracle.truffle.api.frame.VirtualFrame;
-import de.dhbw.rahmlab.geomalgelang.truffle.nodes.BaseNode;
+import de.dhbw.rahmlab.geomalgelang.truffle.nodes.technical.BaseNode;
 
 /**
  *

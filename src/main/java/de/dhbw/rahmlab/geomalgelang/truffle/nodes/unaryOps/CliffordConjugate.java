@@ -4,6 +4,7 @@
  */
 package de.dhbw.rahmlab.geomalgelang.truffle.nodes.unaryOps;
 
+import de.dhbw.rahmlab.geomalgelang.truffle.nodes.technical.UnaryOp;
 import com.oracle.truffle.api.dsl.Specialization;
 import com.oracle.truffle.api.nodes.NodeInfo;
 import de.dhbw.rahmlab.geomalgelang.cga.ICGAMultivector;
@@ -15,9 +16,9 @@ import de.dhbw.rahmlab.geomalgelang.cga.ICGAMultivector;
 @NodeInfo(shortName = "†")
 public abstract class CliffordConjugate extends UnaryOp {
 
-	// Die binaryOps haben protected. Warum?
 	@Specialization
-	public ICGAMultivector execute(ICGAMultivector left) {
+	@Override
+	protected ICGAMultivector execute(ICGAMultivector input) {
 		throw new UnsupportedOperationException();
 	}
 }

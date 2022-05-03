@@ -6,7 +6,7 @@ package de.dhbw.rahmlab.geomalgelang.parsing.treetransform;
 
 import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParser;
 import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParserBaseListener;
-import de.dhbw.rahmlab.geomalgelang.truffle.nodes.BaseNode;
+import de.dhbw.rahmlab.geomalgelang.truffle.nodes.technical.BaseNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.GlobalVariableReference;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.GlobalVariableReferenceNodeGen;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.binaryOps.*;
@@ -58,9 +58,6 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		BaseNode left = nodeStack.pop();
 
 		BaseNode current = switch (ctx.op.getType()) {
-			// Nur zum Testen
-			case GeomAlgeParser.PLUS_SIGN ->
-				AddNodeGen.create(left, right);
 			/*
 			case GeomAlgeParser.SLASH ->
 				DivNodeGen.create(left, right);

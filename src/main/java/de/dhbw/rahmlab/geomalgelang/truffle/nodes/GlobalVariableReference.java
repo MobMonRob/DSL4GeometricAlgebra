@@ -10,6 +10,7 @@ import com.oracle.truffle.api.dsl.Specialization;
 import de.dhbw.rahmlab.geomalgelang.truffle.GeomAlgeLang;
 import de.dhbw.rahmlab.geomalgelang.truffle.GeomAlgeLangContext;
 import de.dhbw.rahmlab.geomalgelang.truffle.GeomAlgeLangException;
+import de.dhbw.rahmlab.geomalgelang.truffle.nodes.technical.BaseNode;
 
 /**
  *
