@@ -104,6 +104,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		nodeStack.push(varRef);
 	}
 
+	// Besser umbenennen in Constant. So wie die Klasse, wo das reinkommt.
 	@Override
 	public void exitLiteralCGA(GeomAlgeParser.LiteralCGAContext ctx) {
 		// Alternative wäre eine CGA Literal Klasse.
