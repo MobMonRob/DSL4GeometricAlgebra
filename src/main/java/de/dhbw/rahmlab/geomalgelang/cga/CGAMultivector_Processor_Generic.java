@@ -108,6 +108,11 @@ public class CGAMultivector_Processor_Generic<T> implements ICGAMultivector_Proc
 		return new ICGAMultivector(concreteProcessor.involute(input.inner));
 	}
 
+	@Override
+	public ICGAMultivector<T> negate(ICGAMultivector<T> input) {
+		return new ICGAMultivector(concreteProcessor.negate(input.inner));
+	}
+
 	// Nullary Operators
 	@Override
 	public ICGAMultivector<T> base_vector_origin() {
@@ -134,14 +139,14 @@ public class CGAMultivector_Processor_Generic<T> implements ICGAMultivector_Proc
 		return new ICGAMultivector(concreteProcessor.base_vector_z());
 	}
 
-	// new ones
-	@Override
-	public ICGAMultivector<T> negate(ICGAMultivector<T> input) {
-		return new ICGAMultivector(concreteProcessor.negate(input.inner));
-	}
-
+	// Other
 	@Override
 	public ICGAMultivector<T> grade_extraction(ICGAMultivector<T> input, int grade) {
 		return new ICGAMultivector(concreteProcessor.grade_extraction(input.inner, grade));
+	}
+
+	@Override
+	public ICGAMultivector<T> create(double scalar) {
+		return new ICGAMultivector(concreteProcessor.create(scalar));
 	}
 }

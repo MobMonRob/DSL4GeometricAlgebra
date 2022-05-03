@@ -50,9 +50,6 @@ public interface ICGAMultivector_Processor<T> {
 
 	T undual(T input);
 
-	// Yes, its kinda unary. Because grade is a constant after parsing.
-	T grade_extraction(T input, int grade);
-
 	// implemented with multiplication
 	//T square(T input)
 	// Unary builtins
@@ -73,4 +70,9 @@ public interface ICGAMultivector_Processor<T> {
 
 	// implemented with pi inserted into the constructor
 	//T pi();
+	// Other
+	T grade_extraction(T input, int grade);
+
+	T create(double scalar);
+
 }

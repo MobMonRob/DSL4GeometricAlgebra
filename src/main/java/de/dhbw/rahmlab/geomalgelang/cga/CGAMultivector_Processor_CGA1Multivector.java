@@ -106,6 +106,11 @@ public class CGAMultivector_Processor_CGA1Multivector implements ICGAMultivector
 		return input.gradeInversion();
 	}
 
+	@Override
+	public CGA1Multivector negate(CGA1Multivector input) {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
 	// Nullary Operators
 	@Override
 	public CGA1Multivector base_vector_origin() {
@@ -132,14 +137,14 @@ public class CGAMultivector_Processor_CGA1Multivector implements ICGAMultivector
 		return CGA1Multivector.createBasisVector(3);
 	}
 
-	// new ones
-	@Override
-	public CGA1Multivector negate(CGA1Multivector input) {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
-
+	// Other
 	@Override
 	public CGA1Multivector grade_extraction(CGA1Multivector input, int grade) {
 		return input.extractGrade(grade);
+	}
+
+	@Override
+	public CGA1Multivector create(double scalar) {
+		return new CGA1Multivector(scalar);
 	}
 }

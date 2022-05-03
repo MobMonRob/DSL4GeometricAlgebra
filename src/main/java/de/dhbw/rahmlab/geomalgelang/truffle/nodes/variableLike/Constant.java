@@ -13,16 +13,30 @@ import de.dhbw.rahmlab.geomalgelang.truffle.nodes.technical.BaseNode;
  *
  * @author fabian
  */
-@NodeField(name = "innerDouble", type = Double.class)
-public abstract class DecimalLiteral extends BaseNode {
+@NodeField(name = "inner", type = Constant.Type.class)
+public abstract class Constant extends BaseNode {
 
-	protected abstract double getInnerDouble();
+	// Diese noch befüllen, sobald der ICGAMultivector_Processor zur Verfügung steht.
+	public static enum Type {
+		base_vector_origin(null),
+		base_vector_infinity(null),
+		base_vector_x(null),
+		base_vector_y(null),
+		base_vector_z(null),
+		pi(null);
 
-	// Strategie:
-	//1. ad-hoc Erstellung aus dem Double über den ICGAMultivector_Processor
-	//2. Caching des Rückgabewertes via Truffle Funktionalität
+		private final ICGAMultivector inner;
+
+		private Type(ICGAMultivector type) {
+			this.inner = type;
+		}
+	}
+
+	protected abstract Type getInner();
+
 	@Specialization
 	public ICGAMultivector getValue() {
 		throw new UnsupportedOperationException();
+		//return this.getInner().inner;
 	}
 }
