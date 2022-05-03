@@ -19,8 +19,9 @@ public abstract class DecimalLiteral extends BaseNode {
 	protected abstract double getInnerDouble();
 
 	// Strategie:
-	//1. ad-hoc Erstellung aus dem Double über den ICGAMultivector_Processor
-	//2. Caching des Rückgabewertes via Truffle Funktionalität
+	// 1. ad-hoc Erstellung aus dem Double über den ICGAMultivector_Processor
+	// 2. Caching des Rückgabewertes via Truffle Funktionalität
+	// -> Alternative wäre, eigenen Konstruktor zu machen und alles, was generiert würde, hier rein zu kopieren. Ist ja nicht viel.
 	@Specialization
 	public ICGAMultivector getValue() {
 		throw new UnsupportedOperationException();
