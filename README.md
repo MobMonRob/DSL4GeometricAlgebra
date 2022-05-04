@@ -66,7 +66,7 @@ The unary operators have the highest precedence, so they are executed before any
 #### Base monadic operators
 | precedence | symbol           | latex                         | unicode      | description | implementation | CLUscript |
 | :--------: | :--------------: | ----------------------------- | ------------ | ----------- | -------------- | :------- |
-| 4          | &#x2212;         | -                             | \u2212       | negate |  | - |
+| 4          | &#x2212;         | -                             | \u2212       | negate | (-1 cast to multivector).gp(multivector) | - |
 | 4          | &#x207B;&#x00B9; | \textsuperscript{-1}          | \u207B\u00B9 | general inverse | multivector.generalInverse() | ! |
 | 4          | &#x002A;         | \textsuperscript{*}           | \u002A       | dual | multivector.dual() | |
 | 4          | &#x02DC;         | \textsuperscript{\tilde}      | \u02DC       | reverse | multivector.reverse() | &#732; |
