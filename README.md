@@ -34,10 +34,11 @@ or navigate to this point via the Tools main menu.
 | Name | implementation class | setting from outside possible | hints |
 | :-------- | :---- | ----- | ------|
 | double | Double | x | |
-| Tuple3d | org.jogamp.vecmath.Tuple3d | x | Automatic casting to a multivector is not possible because multiple object types are based on a Tuple3d, e.g. a point, a sphere together with an additional double etc. |
-| Quat4d | org.jogamp.vecmath.Quat4d | x | Casting to a multivector only. No other operations possible inside the language. 
+| Tuple3d | org.jogamp.vecmath.Tuple3d | x | |
+| Quat4d | org.jogamp.vecmath.Quat4d | x | |
 | Multivector | de.orat.math.cga.impl1.CGA1Multivector | | |
 
+Quad4d, Tuple3d and double are automatically casted into a multivector. No other operations possible based on these types inside the language. 
 ## Operators
 
 ### Dual operators
