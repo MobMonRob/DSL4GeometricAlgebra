@@ -54,8 +54,8 @@ or navigate to this point via the Tools main menu.
 | precedence | symbol   | latex            | unicode | description | implementation | CLUscript |
 | :--------: | :------: | ---------------- | ------- | ----------- | -------------- | :----- |
 | 3          | &#x2229; |  \cap            | \u2229  | meet (intersection) | multivector1.meet(multivector2) | \& |
-| 3          | &#x222A; |  \cup            | \u222A  | join  (union) | multivector1.join(multivector2) or multivector2* &#8901; multivector1 or (multivector2* &#8743; multivector1*)*|
-| 3          | &#x230B; | \llcorner        | \u230B  | right contraction | multivetor1.ip(multivector2, RIGHT_CONTRACTION) | \| |
+| 3          | &#x222A; |  \cup            | \u222A  | join  (union) | multivector1.join(multivector2) or multivector2* &#8901; multivector1 or (multivector2* &#8743; multivector1*)* | \| |
+| 3          | &#x230B; | \llcorner        | \u230B  | right contraction | multivetor1.ip(multivector2, RIGHT_CONTRACTION) |  |
 | 3          | &#x230A; | \lrcorner        | \u230A  | left contraction | multivector1.ip(multivector1, LEFT_CONTRACTION); where the grade operator for negative grades is zero. This implies that `something of higher grade cannot be contracted onto something of lower grade`. | |
 | 3          | &#x2228; | \vee             | \u2228  | regressive product | multivector1.vee(multivector2) or (multivector1* &#8743; multivector2*)* |  |
 | 2          | &#x002F; | \StrikingThrough | \u002F  | division (inverse geometric product) | multivector1.div(multivector2), double.div(double) |  |
