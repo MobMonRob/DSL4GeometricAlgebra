@@ -78,14 +78,14 @@ HYPHEN_MINUS
 	;
 
 // Precedence 3
-// meet (intersection)
+// join (union)
 // \u222A
 UNION
 	: '∪'
 	;
 
 // Precedence 3
-// join (union)
+// meet (intersection)
 // \u2229
 INTERSECTION
 	: '∩'
