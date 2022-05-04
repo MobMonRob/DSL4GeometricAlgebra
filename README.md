@@ -93,9 +93,9 @@ There exist three types of involution operations: Space inversion, reversion and
 | :--------: | :------ | ----- | ----------- | -------------- |
 | 4 | exp()         | \exp{} | exponential | multivector.exp() |
 | 4 | involute()    |  | grade inversion | multivector.gradeInversion() |
-| 4 | abs()         |  | absolute value | Math.abs(double) |
+| 4 | abs()         |  | absolute value | Math.abs(multivector) |
 | 4 | sqrt()         |  | square root | Math.sqrt(double) |
-| 4 | atan2()         |  | arcus tansgens 2 | Math.atan2(double, double) |
+| 4 | atan2()         |  | arcus tansgens 2 | Math.atan2(double/scalar as multivector, double/scalar as multivector) |
 
 #### Additional functions (for more convenience only)
 | precedence | symbol | latex | description | implementation |
