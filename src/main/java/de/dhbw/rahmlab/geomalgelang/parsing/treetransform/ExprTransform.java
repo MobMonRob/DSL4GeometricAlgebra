@@ -39,8 +39,20 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		BaseNode left = nodeStack.pop();
 
 		BaseNode current = switch (ctx.op.getType()) {
+			case GeomAlgeParser.MINUS_SIGN ->
+				NegateNodeGen.create(left);
+			case GeomAlgeParser.SUPERSCRIPT_MINUS__SUPERSCRIPT_ONE ->
+				GeneralInverseNodeGen.create(left);
+			case GeomAlgeParser.ASTERISK ->
+				DualNodeGen.create(left);
+			case GeomAlgeParser.SMALL_TILDE ->
+				ReverseNodeGen.create(left);
 			case GeomAlgeParser.DAGGER ->
 				CliffordConjugateNodeGen.create(left);
+			case GeomAlgeParser.SUPERSCRIPT_MINUS__ASTERISK ->
+				UndualNodeGen.create(left);
+			case GeomAlgeParser.SUPERSCRIPT_TWO ->
+				SquareNodeGen.create(left);
 			default ->
 				throw new UnsupportedOperationException();
 		};
@@ -49,24 +61,60 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 	}
 
 	@Override
+	public void exitExtractGrade(GeomAlgeParser.ExtractGradeContext ctx) {
+		BaseNode inner = nodeStack.pop();
+
+		int grade = switch (ctx.grade.getType()) {
+			case GeomAlgeParser.SUBSCRIPT_ZERO ->
+				0;
+			case GeomAlgeParser.SUBSCRIPT_ONE ->
+				1;
+			case GeomAlgeParser.SUBSCRIPT_TWO ->
+				2;
+			case GeomAlgeParser.SUBSCRIPT_THREE ->
+				3;
+			case GeomAlgeParser.SUBSCRIPT_FOUR ->
+				4;
+			case GeomAlgeParser.SUBSCRIPT_FIFE ->
+				5;
+			default ->
+				throw new UnsupportedOperationException();
+		};
+
+		BaseNode current = GradeExtractionNodeGen.create(inner, grade);
+
+		nodeStack.push(current);
+	}
+
+	@Override
 	public void exitBinaryOp(GeomAlgeParser.BinaryOpContext ctx) {
-		// Sequence matters!
+		// Sequence matters here!
 		BaseNode right = nodeStack.pop();
 		BaseNode left = nodeStack.pop();
 
 		BaseNode current = switch (ctx.op.getType()) {
-			/*
-			case GeomAlgeParser.SLASH ->
-				DivNodeGen.create(left, right);
-			case GeomAlgeParser.STAR ->
-				MulNodeGen.create(left, right);
-			case GeomAlgeParser.MINUS ->
-				SubNodeGen.create(left, right);
-			 */
 			case GeomAlgeParser.SPACE ->
 				GeometricProductNodeGen.create(left, right);
 			case GeomAlgeParser.DOT_OPERATOR ->
 				InnerProductNodeGen.create(left, right);
+			case GeomAlgeParser.LOGICAL_AND ->
+				OuterProductNodeGen.create(left, right);
+			case GeomAlgeParser.PLUS_SIGN ->
+				AdditionNodeGen.create(left, right);
+			case GeomAlgeParser.HYPHEN_MINUS ->
+				SubtractionNodeGen.create(left, right);
+			case GeomAlgeParser.UNION ->
+				JoinNodeGen.create(left, right);
+			case GeomAlgeParser.INTERSECTION ->
+				MeetNodeGen.create(left, right);
+			case GeomAlgeParser.R_FLOOR ->
+				RightContractionNodeGen.create(left, right);
+			case GeomAlgeParser.L_FLOOR ->
+				LeftContractionNodeGen.create(left, right);
+			case GeomAlgeParser.LOGICAL_OR ->
+				RegressiveProductNodeGen.create(left, right);
+			case GeomAlgeParser.SOLIDUS ->
+				DivisionNodeGen.create(left, right);
 			default ->
 				throw new UnsupportedOperationException();
 		};
@@ -104,31 +152,23 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		nodeStack.push(varRef);
 	}
 
-	// Besser umbenennen in Constant. So wie die Klasse, wo das reinkommt.
 	@Override
 	public void exitLiteralCGA(GeomAlgeParser.LiteralCGAContext ctx) {
-		// Alternative wäre eine CGA Literal Klasse.
-		// Aber eigentlich kann ich das auch als eine Variable behandeln.
-		// Oder ich könnte Konstanten in den GlobalVariableScope einbauen.
-		// -> Ich warte erst mal damit, und nutze was anderes für die Testserstellung. Denn das hier ist nicht wesentlich dafür.
-
-		throw new UnsupportedOperationException();
-
-		// -> without fallthrough (Java 14)
-		/*
-		switch (ctx.value.getType()) {
-			case GeomAlgeParser.INFINITY -> {
-			}
-			case GeomAlgeParser.EPSILON_ONE -> {
-			}
-			case GeomAlgeParser.EPSILON_TWO -> {
-			}
-			case GeomAlgeParser.EPSILON_THREE -> {
-			}
-			default -> {
+		BaseNode current = switch (ctx.value.getType()) {
+			case GeomAlgeParser.INFINITY ->
+				ConstantNodeGen.create(Constant.Type.base_vector_infinity);
+			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_ONE ->
+				ConstantNodeGen.create(Constant.Type.base_vector_x);
+			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_TWO ->
+				ConstantNodeGen.create(Constant.Type.base_vector_y);
+			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_THREE ->
+				ConstantNodeGen.create(Constant.Type.base_vector_z);
+			case GeomAlgeParser.SMALL_PI ->
+				ConstantNodeGen.create(Constant.Type.pi);
+			default ->
 				throw new UnsupportedOperationException();
-			}
-		}
-		 */
+		};
+
+		nodeStack.push(current);
 	}
 }

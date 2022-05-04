@@ -20,6 +20,16 @@ expr
 			|SUPERSCRIPT_MINUS__ASTERISK
 			|SUPERSCRIPT_TWO
 			)						#UnaryOp
+	|	LESS_THAN_SIGN
+		inner=expr
+		GREATER_THAN_SIGN
+		grade=	(SUBSCRIPT_ZERO
+				|SUBSCRIPT_ONE
+				|SUBSCRIPT_TWO
+				|SUBSCRIPT_THREE
+				|SUBSCRIPT_FOUR
+				|SUBSCRIPT_FIFE
+				)					#extractGrade
 	|	left=expr
 		op=	(SPACE
 			|DOT_OPERATOR
