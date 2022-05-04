@@ -58,7 +58,7 @@ or navigate to this point via the Tools main menu.
 | 3          | &#x230B; | \llcorner        | \u230B  | right contraction | multivetor1.ip(multivector2, RIGHT_CONTRACTION) |  |
 | 3          | &#x230A; | \lrcorner        | \u230A  | left contraction | multivector1.ip(multivector1, LEFT_CONTRACTION); where the grade operator for negative grades is zero. This implies that `something of higher grade cannot be contracted onto something of lower grade`. | |
 | 3          | &#x2228; | \vee             | \u2228  | regressive product | multivector1.vee(multivector2) or (multivector1* &#8743; multivector2*)* |  |
-| 2          | &#x002F; | \StrikingThrough | \u002F  | division (inverse geometric product) | multivector1.div(multivector2), double.div(double) |  |
+| 2          | &#x002F; | \StrikingThrough | \u002F  | division (inverse geometric product) | multivector1.div(multivector2) |  |
 
 ### Monadic/unary operators (placed all on right side)
 The unary operators have the highest precedence, so they are executed before any other operations. The '-' os the only left-side operator. All the others are right-sided. Except dual/undual the operators cancel itself so if your write X&#732;&#732; no reverse is executed.
