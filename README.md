@@ -157,12 +157,12 @@ Outer product null space representations are called dual. Corresponding regular 
 | Circle from three conformal Points (p1, p2, p3) | p1&#8743;p2&#8743;p3 | 3 |
 | Line from two conformal planes (p1, p2) | p1&#8743;p2 | 3 |
 | Point pair from  two conformal points (p1, p2) | p1&#8743;p2 | 2 |
-| Point from euclidian vector (x) | x+0.5x&sup2;&#x03B5;&#7522;+o | 1 |
+| Point from euclidian vector (x) | x+0.5x&sup2;&#x03B5;&#7522;+&#x03B5;&#8320; | 1 |
 
 #### Geometric objects in inner product null space representation
 | description | formula | grade |
 | :---------- | :------ | :----|
-| Point from euclidian vector (x) | x+0.5x&sup2;&#x03B5;&#7522;+o | 1 |
+| Point from euclidian vector (x) | x+0.5x&sup2;&#x03B5;&#7522;+&#x03B5;&#8320; | 1 |
 | Sphere from conformal point (P) and radius (r) | P-0.5r&sup2;&#x03B5;&#7522; | 1 |
 | Plane from euclidian normal vector (n) and distance to origin (d) | n+d&#x03B5;&#7522; | 1 |
 | Circle from two conformal spheres (s1, s2) | s1&#8743;s2 | 2 |
@@ -174,7 +174,7 @@ Outer product null space representations are called dual. Corresponding regular 
 | description | formula | 
 | :---------- | :------ |
 | Location of a round (X) or a tangent (X) represented in 3d coordinates | -0.5(X&#x03B5;&#7522;X)/(&#x03B5;&#7522;&#8901;X)&sup2; | 
-| Direction vector (attitude) of a dual line (L*) represented as 3d coordinates of (&#949;&#8321;, &#949;&#8322;, &#949;&#8323;). | (L*&#8901;o)&#8901;&#x03B5;&#7522; |
+| Direction vector (attitude) of a dual line (L*) represented as 3d coordinates of (&#949;&#8321;, &#949;&#8322;, &#949;&#8323;). | (L*&#8901;&#x03B5;&#8320;)&#8901;&#x03B5;&#7522; |
 
 ### General useful equations
 | name | equation | description |
