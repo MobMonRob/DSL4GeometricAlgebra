@@ -149,7 +149,7 @@ Outer product null space representations are called dual. Corresponding regular 
 | &#x6F;          | o             | \u004F        | corresponding to origin vector in Dorst, Fontijne & Mann 2007 | 0.5&#x03B5;&#7522;  |
 | &#110;          | n             | \u006E        | corresponding to infinity vector in Doran & Lasenby | &#x03B5;&#7522;  |
 | &#x00f1;        |               | \u00F1        | corresponding to origin vector in Doran & Lasenby | -2&#x03B5;&#8320; |
-| E&#8320;        |               | E\u8320       | Minkovsky | |
+| E&#8320;        |               | E\u8320       | Minkovsky bi-vector | &#x03B5;&#7522; &#x2227; &#x03B5;&#8320;|
 
 ## Important formulae
 ### Formulae to create conformal geometric objects
