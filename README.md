@@ -164,7 +164,7 @@ Outer product null space representations are called dual. Corresponding regular 
 | :---------- | :------ | :----|
 | Point from euclidian vector (x) | x+0.5x&sup2;&#x03B5;&#7522;+o | 1 |
 | Sphere from conformal point (P) and radius (r) | P-0.5r&sup2;&#x03B5;&#7522; | 1 |
-| Plane from euclidian normal vector (n) and distance to origin (d) | n+d&#x03B5;&#7522;&#x03B5;&#7522;&#x03B5;&#7522; | 1 |
+| Plane from euclidian normal vector (n) and distance to origin (d) | n+d&#x03B5;&#7522; | 1 |
 | Circle from two conformal spheres (s1, s2) | s1&#8743;s2 | 2 |
 | Line from two conformal planes (p1, p2) | p1&#8743;p2 | 2 |
 | Point pair from  three conformal spheres (s1, s2, s3) | s1&#8743;s2&#8743;s3 | 3 |
