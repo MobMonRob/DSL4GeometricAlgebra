@@ -133,22 +133,22 @@ Outer product null space representations are called dual. Corresponding regular 
 | 4 | rotator(tuple3d, double)        |  creates a rotatio from an 3d-tuple representing the rotation axis and a double representing the angle in radian | createTranslation(tuple3d) |
 ### Symbols
 #### Base vector symbols
-| symbol           | latex         | Unicode      | description |
-| :--------------: | ------------- | ------------ | ----------- |
-| &#x03B5;&#8320;  | \textepsilon  | \u03B5\u2080       | base vector representing the origin |
-| &#x03B5;&#7522;  | \textepsilon  | \u03B5\\u1062     | base vector representing the infinity |
-| &#x03B5;&#x2081; | \textepsilon  | \u03B5\u2081 | base vector representing x direction |
-| &#x03B5;&#x2082; | \textepsilon  | \u03B5\u2082 | base vector representing y direction |
-| &#x03B5;&#x2083; | \textepsilon  | \u03B5\u2083 | base vector representing z direction |
+| symbol           | latex         | Unicode      | description | implementation |
+| :--------------: | ------------- | ------------ | ----------- | -------------- |
+| &#x03B5;&#8320;  | \textepsilon  | \u03B5\u2080       | base vector representing the origin | createOrigin(1d) |
+| &#x03B5;&#7522;  | \textepsilon  | \u03B5\\u1062     | base vector representing the infinity | createInf(1d) |
+| &#x03B5;&#x2081; | \textepsilon  | \u03B5\u2081 | base vector representing x direction | createEx(1d) |
+| &#x03B5;&#x2082; | \textepsilon  | \u03B5\u2082 | base vector representing y direction | createEy(1d) |
+| &#x03B5;&#x2083; | \textepsilon  | \u03B5\u2083 | base vector representing z direction | createEz(1d) |
 
 ### Further symbols
-| symbol          | latex         | Unicode       | description |
-| :-------------: | ------------- | ------------- | ----------- |
-| &#x03C0;        | \pi           | \u03C0        | Ludolphs- or circle constant |
-| &#8734;         |               | \u221E        | 2&#x03B5;&#8320; corresponding to infinity vector in Dorst, Fontijne & Mann 2007 |
-| &#x6F;          | o             | \u004F        | 0.5&#x03B5;&#7522; corresponding to origin vector in Dorst, Fontijne & Mann 2007 |
-| &#110;          | n             | \u006E        | &#x03B5;&#7522; corresponding to infinity vector in Doran & Lasenby |
-| &#x00f1;        |               | \u00F1        | -2&#x03B5;&#8320; corresponding to origin vector in Doran & Lasenby | 
+| symbol          | latex         | Unicode       | description | implementation |
+| :-------------: | ------------- | ------------- | ----------- | -------------- |
+| &#x03C0;        | \pi           | \u03C0        | Ludolphs- or circle constant | |
+| &#8734;         |               | \u221E        | corresponding to infinity vector in Dorst, Fontijne & Mann 2007 | 2&#x03B5;&#8320;  |
+| &#x6F;          | o             | \u004F        | corresponding to origin vector in Dorst, Fontijne & Mann 2007 | 0.5&#x03B5;&#7522;  |
+| &#110;          | n             | \u006E        | corresponding to infinity vector in Doran & Lasenby | &#x03B5;&#7522;  |
+| &#x00f1;        |               | \u00F1        |  corresponding to origin vector in Doran & Lasenby | -2&#x03B5;&#8320; |
 
 ## Important formulae
 ### Formulae to create conformal geometric objects
