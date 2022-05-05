@@ -157,7 +157,7 @@ Outer product null space representations are called dual. Corresponding regular 
 | Circle from three conformal Points (p1, p2, p3) | p1&#8743;p2&#8743;p3 | 3 |
 | Line from two conformal planes (p1, p2) | p1&#8743;p2 | 3 |
 | Point pair from  two conformal points (p1, p2) | p1&#8743;p2 | 2 |
-| Point from euclidian vector (x) | x+0.5x&sup2;&#8734;+o | 1 |
+| Point from euclidian vector (x) | x+0.5x&sup2;&#x03B5;&#7522;+o | 1 |
 
 #### Geometric objects in inner product null space representation
 | description | formula | grade |
