@@ -144,7 +144,7 @@ Outer product null space representations are called dual. Corresponding regular 
 ### Further symbols
 | symbol          | latex         | Unicode       | description | implementation |
 | :-------------: | ------------- | ------------- | ----------- | -------------- |
-| &#x03C0;        | \pi           | \u03C0        | Ludolphs- or circle constant | |
+| &#x03C0;        | \pi           | \u03C0        | Ludolphs- or circle constant | Math.PI |
 | &#8734;         |               | \u221E        | corresponding to infinity vector in Dorst, Fontijne & Mann 2007 | 2&#x03B5;&#8320;  |
 | &#x6F;          | o             | \u004F        | corresponding to origin vector in Dorst, Fontijne & Mann 2007 | 0.5&#x03B5;&#7522;  |
 | &#110;          | n             | \u006E        | corresponding to infinity vector in Doran & Lasenby | &#x03B5;&#7522;  |
