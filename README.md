@@ -135,8 +135,8 @@ Outer product null space representations are called dual. Corresponding regular 
 #### Base vector symbols
 | symbol           | latex         | Unicode      | description |
 | :--------------: | ------------- | ------------ | ----------- |
-| &#x006F;         |               | \u006F       | base vector representing the origin |
-| &#x221E;         |               | \u221E       | base vector representing the infinity |
+| &#x03B5;&#8320;  | \textepsilon  | \u2080       | base vector representing the origin |
+| &#x03B5;&#8734;  | \textepsilon  | \u221E       | base vector representing the infinity |
 | &#x03B5;&#x2081; | \textepsilon  | \u03B5\u2081 | base vector representing x direction |
 | &#x03B5;&#x2082; | \textepsilon  | \u03B5\u2082 | base vector representing y direction |
 | &#x03B5;&#x2083; | \textepsilon  | \u03B5\u2083 | base vector representing z direction |
