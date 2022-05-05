@@ -153,7 +153,7 @@ Outer product null space representations are called dual. Corresponding regular 
 | description | formula | grade |
 | :---------- | :------ | :----|
 | Sphere(point) from four conformal points (p1, p2, p3, p4) | p1&#8743;p2&#8743;p3 &#8743;p4| 4 |
-| Plane from three conformal points (p1, p2, p3) | p1&#8743;p2&#8743;p3&#8743;&#8734;| 4 |
+| Plane from three conformal points (p1, p2, p3) | p1&#8743;p2&#8743;p3&#8743;&#x03B5;&#7522;| 4 |
 | Circle from three conformal Points (p1, p2, p3) | p1&#8743;p2&#8743;p3 | 3 |
 | Line from two conformal planes (p1, p2) | p1&#8743;p2 | 3 |
 | Point pair from  two conformal points (p1, p2) | p1&#8743;p2 | 2 |
