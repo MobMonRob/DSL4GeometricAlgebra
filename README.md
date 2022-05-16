@@ -190,7 +190,7 @@ Outer product null space representations are called dual. Corresponding regular 
 
 | description | formula | 
 | :---------- | :------ |
-| Matrix free implementation of the inverse | x&#x207B;&#x00B9; =  (x&#x2020; involute(x) x&#x02DC; negate14(x)(x x&#x2020; involute(x) x&#x02DC;))/(x x&#x2020; involute(x) x&#x02DC; negate14(x) (x x&#x2020; involute(x) x&#x02DC;)) |
+| Matrix free implementation of the inverse | x&#x207B;&#x00B9; =  (x&#x2020; x&#x5e; x&#x02DC; negate14(x)(x x&#x2020; involute(x) x&#x02DC;))/(x x&#x2020; involute(x) x&#x02DC; negate14(x) (x x&#x2020; involute(x) x&#x02DC;)) |
 
 ### General useful equations
 | name | equation | description |
