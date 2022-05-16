@@ -100,7 +100,7 @@ There exist three types of involution operations: Space inversion, reversion and
 | 4 | abs()         |  | absolute value | Math.abs(multivector) |
 | 4 | sqrt()        |  | square root | Math.sqrt(double) |
 | 4 | atan2()       |  | arcus tansgens 2 | Math.atan2(double/scalar as multivector, double/scalar as multivector) |
-| 4 | negate14()    |  | negate the signs of the vector- and 4-vector parts of an multivector. Usable to implement gerneral inverse. |
+| 4 | negate14()    |  | negate the signs of the vector- and 4-vector parts of an multivector. Usable to implement gerneral inverse. | multivector.negate14() |
 
 #### Additional functions (for more convenience only)
 | precedence | symbol | latex | description | implementation |
