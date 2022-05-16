@@ -97,8 +97,9 @@ There exist three types of involution operations: Space inversion, reversion and
 | 4 | exp()         | \exp{} | exponential | multivector.exp() |
 | 4 | involute()    |  | grade inversion | multivector.gradeInversion() |
 | 4 | abs()         |  | absolute value | Math.abs(multivector) |
-| 4 | sqrt()         |  | square root | Math.sqrt(double) |
-| 4 | atan2()         |  | arcus tansgens 2 | Math.atan2(double/scalar as multivector, double/scalar as multivector) |
+| 4 | sqrt()        |  | square root | Math.sqrt(double) |
+| 4 | atan2()       |  | arcus tansgens 2 | Math.atan2(double/scalar as multivector, double/scalar as multivector) |
+| 4 | negate14()    |  | negate the signs of the vector- and 4-vector parts of an multivector. Usable to implement gerneral inverse. |
 
 #### Additional functions (for more convenience only)
 | precedence | symbol | latex | description | implementation |
@@ -188,7 +189,7 @@ Outer product null space representations are called dual. Corresponding regular 
 
 | description | formula | 
 | :---------- | :------ |
-| Matrix free implementation of the inverse |  |
+| Matrix free implementation of the inverse | x&#x207B;&#x00B9; =  (x&#x2020; involute(x) x&#x02DC; negate14(x)(x x&#x2020; involute(x) x&#x02DC))/(x x&#x2020; involute(x) x&#x02DC negate14(x) (x x&#x2020; involute(x) x&#x02DC)) |
 
 ### General useful equations
 | name | equation | description |
