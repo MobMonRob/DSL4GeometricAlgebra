@@ -184,6 +184,12 @@ Outer product null space representations are called dual. Corresponding regular 
 | Radius (r) of a conformal sphere (S) | r&#x00B2; = (S&#x002A;)&#x00B2; = S&#x002A;&#x22C5;S&#x002A; |
 | Distance (d) between the the center of a conformal sphere (S) and a conformal point (P) | d&#x00B2; = S&#x22C5;S-2S&#x22C5;P |
 
+### Formulae to implement base functionalitity of CGA
+
+| description | formula | 
+| :---------- | :------ |
+| Matrix free implementation of the inverse |  |
+
 ### General useful equations
 | name | equation | description |
 | :---------- | :------------------ | ---------------------- |
