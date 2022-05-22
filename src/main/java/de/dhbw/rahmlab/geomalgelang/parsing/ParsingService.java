@@ -7,7 +7,7 @@ package de.dhbw.rahmlab.geomalgelang.parsing;
 import com.oracle.truffle.api.source.Source;
 import de.dhbw.rahmlab.geomalgelang.parsing.debug.AntlrTestRig;
 import de.dhbw.rahmlab.geomalgelang.parsing.debug.AstStringBuilder;
-import de.dhbw.rahmlab.geomalgelang.parsing.treetransform.ExprTransform;
+import de.dhbw.rahmlab.geomalgelang.parsing.astConstruction.ExprTransform;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.technical.BaseNode;
 import java.io.IOException;
 import org.antlr.v4.runtime.CharStream;
