@@ -108,7 +108,7 @@ public class CGAMultivector_Processor_CGA1Multivector implements ICGAMultivector
 
 	@Override
 	public CGA1Multivector negate(CGA1Multivector input) {
-		throw new UnsupportedOperationException("Not supported yet.");
+		return (new CGA1Multivector(-1.0)).gp(input);
 	}
 
 	// Nullary Operators
