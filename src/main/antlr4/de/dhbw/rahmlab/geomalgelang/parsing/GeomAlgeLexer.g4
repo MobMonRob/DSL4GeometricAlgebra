@@ -270,7 +270,7 @@ SMALL_N_TILDE
 	;
 
 // minkovsky_bi_vector
-// \u0045\u8320
+// \u0045\u2080
 CAPITAL_E__SUBSCRIPT_ZERO
 	: 'E₀'
 	;
