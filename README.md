@@ -82,7 +82,7 @@ There exist three types of involution operations: Space inversion, reversion and
 | :--------: | :--------------: | ---------------------| ------------ | ----------- | -------------- |
 | 4          | &#x207B;&#x002A; | \textsuperscript{-*} | \u207B\u002A | undual | multivector.undual() or -multivector.dual() |
 | 4          | &#x00B2;         |                      | \u00B2       | square | multivector.gp(multivector), sqr(double) |
-| 4          | &#x5e;           |                      | \u005E       | involute | multivector.gradeInversion(multivector) |
+| 4          | &#x005E;         |                      | \u005E       | involute | multivector.gradeInversion(multivector) |
 
 
 ### Composite operators
@@ -137,8 +137,8 @@ Outer product null space representations are called dual. Corresponding regular 
 #### Base vector symbols
 | symbol           | latex         | Unicode      | description | implementation |
 | :--------------: | ------------- | ------------ | ----------- | -------------- |
-| &#x03B5;&#8320;  | \textepsilon  | \u03B5\u2080       | base vector representing the origin | createOrigin(1d) |
-| &#x03B5;&#7522;  | \textepsilon  | \u03B5\\u1062     | base vector representing the infinity | createInf(1d) |
+| &#x03B5;&#x2080; | \textepsilon  | \u03B5\u2080 | base vector representing the origin | createOrigin(1d) |
+| &#x03B5;&#x1D62; | \textepsilon  | \u03B5\u1D62 | base vector representing the infinity | createInf(1d) |
 | &#x03B5;&#x2081; | \textepsilon  | \u03B5\u2081 | base vector representing x direction | createEx(1d) |
 | &#x03B5;&#x2082; | \textepsilon  | \u03B5\u2082 | base vector representing y direction | createEy(1d) |
 | &#x03B5;&#x2083; | \textepsilon  | \u03B5\u2083 | base vector representing z direction | createEz(1d) |
@@ -147,11 +147,11 @@ Outer product null space representations are called dual. Corresponding regular 
 | symbol          | latex         | Unicode       | description | implementation |
 | :-------------: | ------------- | ------------- | ----------- | -------------- |
 | &#x03C0;        | \pi           | \u03C0        | Ludolphs- or circle constant | Math.PI |
-| &#8734;         |               | \u221E        | corresponding to infinity vector in Dorst, Fontijne & Mann 2007 | 2&#x03B5;&#8320;  |
-| &#x6F;          | o             | \u004F        | corresponding to origin vector in Dorst, Fontijne & Mann 2007 | 0.5&#x03B5;&#7522;  |
-| &#110;          | n             | \u006E        | corresponding to infinity vector in Doran & Lasenby | &#x03B5;&#7522;  |
-| &#x00f1;        |               | \u00F1        | corresponding to origin vector in Doran & Lasenby | -2&#x03B5;&#8320; |
-| E&#8320;        |               | E\u8320       | Minkovsky bi-vector | &#x03B5;&#7522; &#x2227; &#x03B5;&#8320;|
+| &#x221E;        |               | \u221E        | corresponding to infinity vector in Dorst, Fontijne & Mann 2007 | 2&#x03B5;&#8320;  |
+| &#x006F;        | o             | \u004F        | corresponding to origin vector in Dorst, Fontijne & Mann 2007 | 0.5&#x03B5;&#7522;  |
+| &#x006E;        | n             | \u006E        | corresponding to infinity vector in Doran & Lasenby | &#x03B5;&#7522;  |
+| &#x00F1;        |               | \u00F1        | corresponding to origin vector in Doran & Lasenby | -2&#x03B5;&#8320; |
+| &#x0045;&#8320; |               | \u0045\u8320  | Minkovsky bi-vector | &#x03B5;&#7522; &#x2227; &#x03B5;&#8320;|
 
 ## Important formulae
 ### Formulae to create conformal geometric objects
