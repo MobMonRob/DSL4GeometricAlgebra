@@ -252,7 +252,7 @@ INFINITY
 	;
 
 // base_vector_origin_dorst
-// \u004F
+// \u006F
 SMALL_O
 	: 'o'
 	;
