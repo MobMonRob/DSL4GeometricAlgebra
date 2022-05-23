@@ -19,11 +19,16 @@ public abstract class Constant extends BaseNode {
 	// Diese noch befüllen, sobald der ICGAMultivector_Processor zur Verfügung steht.
 	public static enum Type {
 		base_vector_origin(null),
+		base_vector_origin_dorst(null),
+		base_vector_origin_doran(null),
 		base_vector_infinity(null),
+		base_vector_infinity_dorst(null),
+		base_vector_infinity_doran(null),
 		base_vector_x(null),
 		base_vector_y(null),
 		base_vector_z(null),
-		pi(null);
+		pi(null),
+		minkovsky_bi_vector(null);
 
 		private final ICGAMultivector inner;
 

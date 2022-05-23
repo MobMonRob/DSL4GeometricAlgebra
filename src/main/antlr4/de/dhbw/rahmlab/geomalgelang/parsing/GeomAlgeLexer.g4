@@ -11,34 +11,6 @@ lexer grammar GeomAlgeLexer;
 
 */
 ///////////////////////////////////////////////////////////////////////////
-// Various
-///////////////////////////////////////////////////////////////////////////
-
-fragment LETTER
-	: [a-zA-Z]
-	;
-
-fragment DIGIT
-	: [0-9]
-	;
-
-DECIMAL_LITERAL
-	: DIGIT+ (',' DIGIT+)?
-	;
-
-IDENTIFIER
-	: LETTER+
-	;
-
-L_PARENTHESIS
-	: '('
-	;
-
-R_PARENTHESIS
-	: ')'
-	;
-
-///////////////////////////////////////////////////////////////////////////
 // Symbols for binaryOp's
 ///////////////////////////////////////////////////////////////////////////
 
@@ -78,17 +50,17 @@ HYPHEN_MINUS
 	;
 
 // Precedence 3
-// join (union)
-// \u222A
-UNION
-	: '∪'
-	;
-
-// Precedence 3
 // meet (intersection)
 // \u2229
 INTERSECTION
 	: '∩'
+	;
+
+// Precedence 3
+// join (union)
+// \u222A
+UNION
+	: '∪'
 	;
 
 // Precedence 3
@@ -120,7 +92,7 @@ SOLIDUS
 	;
 
 ///////////////////////////////////////////////////////////////////////////
-// Symbols for unaryOp's
+// Symbols for unaryOp's left sided
 ///////////////////////////////////////////////////////////////////////////
 
 // Precedence 4
@@ -129,6 +101,10 @@ SOLIDUS
 MINUS_SIGN
 	: '−'
 	;
+
+///////////////////////////////////////////////////////////////////////////
+// Symbols for unaryOp's right sided
+///////////////////////////////////////////////////////////////////////////
 
 // Precedence 4
 // general_inverse
@@ -170,6 +146,13 @@ SUPERSCRIPT_MINUS__ASTERISK
 // \u00B2
 SUPERSCRIPT_TWO
 	: '²'
+	;
+
+// Precedence 4
+// involute
+// \u005E
+CIRCUMFLEX_ACCENT
+	: '^'
 	;
 
 ///////////////////////////////////////////////////////////////////////////
@@ -222,10 +205,16 @@ SUBSCRIPT_FIFE
 // Symbols for constants
 ///////////////////////////////////////////////////////////////////////////
 
+// base_vector_origin
+// \u03B5\u2080
+SMALL_EPSILON__SUBSCRIPT_ZERO
+	: 'ε₀'
+	;
+
 // base_vector_infinity
-// \u221E
-INFINITY
-	: '∞'
+// \u03B5\u1D62
+SMALL_EPSILON__SUBSCRIPT_SMALL_I
+	: 'εᵢ'
 	;
 
 // base_vector_x
@@ -246,10 +235,73 @@ SMALL_EPSILON__SUBSCRIPT_THREE
 	: 'ε₃'
 	;
 
+///////////////////////////////////////////////////////////////////////////
+// Symbols for constants (non-trivially constructed)
+///////////////////////////////////////////////////////////////////////////
+
 // pi
 // \u03C0
 SMALL_PI
 	: 'π'
+	;
+
+// base_vector_infinity_dorst
+// \u221E
+INFINITY
+	: '∞'
+	;
+
+// base_vector_origin_dorst
+// \u004F
+SMALL_O
+	: 'o'
+	;
+
+// base_vector_infinity_doran
+// \u006E
+SMALL_N
+	: 'n'
+	;
+
+// base_vector_origin_doran
+// \u00F1
+SMALL_N_TILDE
+	: 'ñ'
+	;
+
+// minkovsky_bi_vector
+// \u0045\u8320
+CAPITAL_E__SUBSCRIPT_ZERO
+	: 'E₀'
+	;
+
+///////////////////////////////////////////////////////////////////////////
+// Various
+// Identifier Symbol needs to be defined after o (origin vector) and n (infinity vector) due to lexer precedence rules!
+///////////////////////////////////////////////////////////////////////////
+
+fragment LETTER
+	: [a-zA-Z]
+	;
+
+fragment DIGIT
+	: [0-9]
+	;
+
+DECIMAL_LITERAL
+	: DIGIT+ (',' DIGIT+)?
+	;
+
+IDENTIFIER
+	: LETTER+
+	;
+
+L_PARENTHESIS
+	: '('
+	;
+
+R_PARENTHESIS
+	: ')'
 	;
 
 ///////////////////////////////////////////////////////////////////////////
