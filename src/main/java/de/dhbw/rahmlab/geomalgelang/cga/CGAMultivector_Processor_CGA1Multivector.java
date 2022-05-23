@@ -147,4 +147,9 @@ public class CGAMultivector_Processor_CGA1Multivector implements ICGAMultivector
 	public CGA1Multivector create(double scalar) {
 		return new CGA1Multivector(scalar);
 	}
+
+	@Override
+	public boolean isCGA(Object object) {
+		return object instanceof CGA1Multivector;
+	}
 }

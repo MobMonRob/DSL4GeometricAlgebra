@@ -71,7 +71,7 @@ public class App {
 		inputVars.put("a", a);
 		inputVars.put("b", a);
 
-		String answer = LanguageInvocation.invoke(program, inputVars);
+		String answer = LanguageInvocation.invoke(program, inputVars, new CGAMultivector_Processor_CGA1Multivector());
 		System.out.println("answer: " + answer);
 		System.out.println();
 	}

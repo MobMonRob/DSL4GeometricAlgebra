@@ -149,4 +149,9 @@ public class CGAMultivector_Processor_Generic<T> implements ICGAMultivector_Proc
 	public ICGAMultivector<T> create(double scalar) {
 		return new ICGAMultivector(concreteProcessor.create(scalar));
 	}
+
+	@Override
+	public boolean isCGA(Object object) {
+		return concreteProcessor.isCGA(object);
+	}
 }
