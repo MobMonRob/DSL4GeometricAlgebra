@@ -4,9 +4,12 @@
  */
 package de.dhbw.rahmlab.geomalgelang.api;
 
+import de.dhbw.rahmlab.geomalgelang.cga.Current_ICGAMultivector_Processor;
+import de.dhbw.rahmlab.geomalgelang.cga.ICGAMultivector_Processor;
 import java.io.IOException;
 import java.util.Map;
 import org.graalvm.polyglot.Context;
+import org.graalvm.polyglot.Engine;
 import org.graalvm.polyglot.Source;
 import org.graalvm.polyglot.Value;
 
@@ -16,17 +19,23 @@ import org.graalvm.polyglot.Value;
  */
 public class LanguageInvocation {
 
-	public static String invoke(String program, Map<String, Object> inputVars) throws IOException {
+	public static String invoke(String program, Map<String, Object> inputVars, ICGAMultivector_Processor cgaProcessor) throws IOException {
 		Source source = Source.newBuilder("geomalgelang", program, "MATH")
 			.build();
-		String answer = invoke(source, inputVars);
+		String answer = invoke(source, inputVars, cgaProcessor);
 		return answer;
 	}
 
-	public static String invoke(Source program, Map<String, Object> inputVars) {
-		Context context = Context.newBuilder("geomalgelang")
+	public static String invoke(Source program, Map<String, Object> inputVars, ICGAMultivector_Processor cgaProcessor) {
+		Current_ICGAMultivector_Processor.cga_processor = cgaProcessor;
+
+		Engine engine = Engine.create("geomalgelang");
+
+		Context.Builder builder = Context.newBuilder("geomalgelang")
 			.allowAllAccess(true)
-			.build();
+			.engine(engine);
+
+		Context context = builder.build();
 
 		Value bindings = context.getBindings("geomalgelang");
 

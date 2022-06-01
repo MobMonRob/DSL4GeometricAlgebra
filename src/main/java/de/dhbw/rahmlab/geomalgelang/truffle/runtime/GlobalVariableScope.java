@@ -54,9 +54,8 @@ public final class GlobalVariableScope implements TruffleObject {
 	// necessary for context.getBindings.putMember
 	@ExportMessage
 	public void writeMember(String member, Object value) throws UnsupportedMessageException, UnknownIdentifierException, UnsupportedTypeException {
-		if (!(value instanceof Double)) {
-			throw UnsupportedTypeException.create(new Object[]{value}, this.getClass().getSimpleName() + ": is not a double");
-		}
+		InputValidator.ensureIsValidVariableName(member);
+		InputValidator.ensureIsCGA(value);
 		this.newVariable(member);
 		this.assignVariable(member, value);
 	}
