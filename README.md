@@ -86,53 +86,53 @@ There exist three types of involution operations: Space inversion, reversion and
 
 
 ### Composite operators
-| precedence | symbol                                                                                                   | latex | unicode      | description | implementation |
-| :--------: | :------------------------------------------------------------------------------------------------------: | ----- | ------------ | ----------- | -------------- |
-| 4          | &#x003C;multivector&#x003E;&#x209A; (with &#x209A; ∈ {&#x2080;, &#x2081;, &#x2082;, &#x2083;, &#x2084;, &#x2085;}) |       | &#x003C; = \u003C,  &#x003E; = \u003E, &#x2080; = \u2080, &#x2081; = \u2081, &#x2082; = \u2082, &#x2083; = \u2083, &#x2084; = \u2084, &#x2085; = \u2085| grade extraction, grade p=0-5 as subscript | multivector.extractGrade(int grade)   |
+| precedence       | symbol                                                                                                   | latex | unicode      | description | implementation |
+| :--------------: | :------------------------------------------------------------------------------------------------------: | ----- | ------------ | ----------- | -------------- |
+| (not applicable) | &#x003C;multivector&#x003E;&#x209A; (with &#x209A; ∈ {&#x2080;, &#x2081;, &#x2082;, &#x2083;, &#x2084;, &#x2085;}) |       | &#x003C; = \u003C,  &#x003E; = \u003E, &#x2080; = \u2080, &#x2081; = \u2081, &#x2082; = \u2082, &#x2083; = \u2083, &#x2084; = \u2084, &#x2085; = \u2085| grade extraction, grade p=0-5 as subscript | multivector.extractGrade(int grade)   |
 
 ### Buildin functions
 
 #### Base functions
-| precedence | symbol | latex | description | implementation |
-| :--------: | :------ | ----- | ----------- | -------------- |
-| 4 | exp()         | \exp{} | exponential | multivector.exp() |
-| 4 | involute()    |  | grade inversion | multivector.gradeInversion() |
-| 4 | abs()         |  | absolute value | Math.abs(multivector) |
-| 4 | sqrt()        |  | square root | Math.sqrt(double) |
-| 4 | atan2()       |  | arcus tansgens 2 | Math.atan2(double/scalar as multivector, double/scalar as multivector) |
-| 4 | negate14()    |  | negate the signs of the vector- and 4-vector parts of an multivector. Usable to implement gerneral inverse. | multivector.negate14() |
+| symbol     | latex | description | implementation |
+| :--------- | ----- | ----------- | -------------- |
+| exp()      | \exp{} | exponential | multivector.exp() |
+| involute() |  | grade inversion | multivector.gradeInversion() |
+| abs()      |  | absolute value | Math.abs(multivector) |
+| sqrt()     |  | square root | Math.sqrt(double) |
+| atan2()    |  | arcus tansgens 2 | Math.atan2(double/scalar as multivector, double/scalar as multivector) |
+| negate14() |  | negate the signs of the vector- and 4-vector parts of an multivector. Usable to implement gerneral inverse. | multivector.negate14() |
 
 #### Additional functions (for more convenience only)
-| precedence | symbol | latex | description | implementation |
-| :--------: | :-----| ----- | ----------- | -------------- |
-| 4 | reverse(multivector)     |  \textsuperscript{\tilde} | reverse | multivector.reverse() |
-| 4 | conjugate(multivector)   | \textsuperscript{\textdagger} | clifford conjugate | multivector.conjugate() |
-| 4 | normalize(multivector)        | | normalize | multivector.unit() |
-| 4 | sqr(multivector) | | square | multivector.gp(multivector) or multivector.sqr() |
+| symbol                 | latex | description | implementation |
+| :--------------------- | ----- | ----------- | -------------- |
+| reverse(multivector)   |  \textsuperscript{\tilde} | reverse | multivector.reverse() |
+| conjugate(multivector) | \textsuperscript{\textdagger} | clifford conjugate | multivector.conjugate() |
+| normalize(multivector) | | normalize | multivector.unit() |
+| sqr(multivector)       | | square | multivector.gp(multivector) or multivector.sqr() |
 
 #### Additional functions (2) to define geometric objects (for more convenience only)
 
 Outer product null space representations are called dual. Corresponding regular expressions are in the inner product null space representations. Be careful in the "older" literature this is often defined reverse.
 
-| precedence | symbol | description | implementation |
-| :--------: | :------ | ----------- | -------------- |
-| 4 | point(tuple3d)        |  creates a conformal point from an 3d-tuple | createPoint(tuple3d) |
-| 4 | dualPointPair(tuple3d1, tuple3d2)        |  creates a conformal dual point pair from two 3d-tuple | createDualPointPair(tuple3d1,tuple3d2) |
-| 4 | dualLine(tuple3d1, tuple3d2)        |  creates a conformal line from 3d-tuples defining a point and a direction or a second point | createDualLine(tuple3d1, tuple3d2) |
-| 4 | dualSphere(tuple3d1, tuple3d2, tuple3d3, tuple3d4)        |  creates a conformal sphere from four 3d-tuple | createDualSphere(tuple3d1, tuple3d2, tuple3d3, tuple3d4) |
-| 4 | sphere(tuple3d, double)        |  creates a conformal sphere from a 3d-tuple and the radius| createSphere(tuple3d, double) |
-| 4 | plane(tuple3d1, tuple3d2)        |  creates a conformal plane from a 3d-tuple defining a point on the plane and another 3d-tuple defining the normal vector | createPlane(tuple3d, tuple3d) |
-| 4 | plane(tuple3d, double) | creates a conformal plane based on its normal vector and the distance to the origin (Hesse normal form) | createPlane(tuple3d, double) |
-| 4 | dualPlane(tuple3d1, tuple3d2, tuple3d3) | creates a conformal dual plane based on three points | createDualPlane(tuple3d1, tuple3d2, tuple3d3) |
-| 4 | dualCircle(tuple3d1, tuple3d2, tuple3d3) | creates a conformal dual circle based on three points | createDualCircle(tuple3d1, tuple3d2 tuple3d3) |
-| 4 | dualPointPair(tuple3d1, tuple3d2) | create a conformal dual point pair based on three points | createDualPointPair(tuple3d1, tuple3d2) |
+| symbol                                             | description | implementation |
+| :------------------------------------------------- | ----------- | -------------- |
+| point(tuple3d)                                     | creates a conformal point from an 3d-tuple | createPoint(tuple3d) |
+| dualPointPair(tuple3d1, tuple3d2)                  | creates a conformal dual point pair from two 3d-tuple | createDualPointPair(tuple3d1,tuple3d2) |
+| dualLine(tuple3d1, tuple3d2)                       | creates a conformal line from 3d-tuples defining a point and a direction or a second point | createDualLine(tuple3d1, tuple3d2) |
+| dualSphere(tuple3d1, tuple3d2, tuple3d3, tuple3d4) | creates a conformal sphere from four 3d-tuple | createDualSphere(tuple3d1, tuple3d2, tuple3d3, tuple3d4) |
+| sphere(tuple3d, double)                            | creates a conformal sphere from a 3d-tuple and the radius| createSphere(tuple3d, double) |
+| plane(tuple3d1, tuple3d2)                          | creates a conformal plane from a 3d-tuple defining a point on the plane and another 3d-tuple defining the normal vector | createPlane(tuple3d, tuple3d) |
+| plane(tuple3d, double)                             | creates a conformal plane based on its normal vector and the distance to the origin (Hesse normal form) | createPlane(tuple3d, double) |
+| dualPlane(tuple3d1, tuple3d2, tuple3d3)            | creates a conformal dual plane based on three points | createDualPlane(tuple3d1, tuple3d2, tuple3d3) |
+| dualCircle(tuple3d1, tuple3d2, tuple3d3)           | creates a conformal dual circle based on three points | createDualCircle(tuple3d1, tuple3d2 tuple3d3) |
+| dualPointPair(tuple3d1, tuple3d2)                  | create a conformal dual point pair based on three points | createDualPointPair(tuple3d1, tuple3d2) |
 
 #### Additional functions (3) to create transformations (for more convenience only)
 
-| precedence | symbol | description | implementation |
-| :--------: | :------ | ----------- | -------------- |
-| 4 | translator(tuple3d)        |  creates a translation from an 3d-tuple | createTranslation(tuple3d) |
-| 4 | rotator(tuple3d, double)        |  creates a rotatio from an 3d-tuple representing the rotation axis and a double representing the angle in radian | createTranslation(tuple3d) |
+| symbol                   | description | implementation |
+| :----------------------- | ----------- | -------------- |
+| translator(tuple3d)      | creates a translation from an 3d-tuple | createTranslation(tuple3d) |
+| rotator(tuple3d, double) | creates a rotatio from an 3d-tuple representing the rotation axis and a double representing the angle in radian | createTranslation(tuple3d) |
 ### Symbols
 #### Base vector symbols
 | symbol           | latex         | Unicode      | description | implementation |
