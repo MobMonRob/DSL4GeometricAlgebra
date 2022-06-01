@@ -70,19 +70,19 @@ The unary operators have the highest precedence, so they are executed before any
 | precedence | symbol           | latex                         | unicode      | description | implementation | CLUscript |
 | :--------: | :--------------: | ----------------------------- | ------------ | ----------- | -------------- | :------- |
 | 4          | &#x2212;         | -                             | \u2212       | negate | (-1 cast to multivector).gp(multivector) | - |
-| 4          | &#x207B;&#x00B9; | \textsuperscript{-1}          | \u207B\u00B9 | general inverse | multivector.generalInverse() | ! |
-| 4          | &#x002A;         | \textsuperscript{*}           | \u002A       | dual | multivector.dual() | |
-| 4          | &#x02DC;         | \textsuperscript{\tilde}      | \u02DC       | reverse | multivector.reverse() | &#732; |
-| 4          | &#x2020;         | \textsuperscript{\textdagger} | \u2020       | clifford conjugate | multivector.conjugate() | |
+| 5          | &#x207B;&#x00B9; | \textsuperscript{-1}          | \u207B\u00B9 | general inverse | multivector.generalInverse() | ! |
+| 5          | &#x002A;         | \textsuperscript{\*}           | \u002A       | dual | multivector.dual() | |
+| 5          | &#x02DC;         | \textsuperscript{\tilde}      | \u02DC       | reverse | multivector.reverse() | &#732; |
+| 5          | &#x2020;         | \textsuperscript{\textdagger} | \u2020       | clifford conjugate | multivector.conjugate() | |
 
 There exist three types of involution operations: Space inversion, reversion and the combination of both the clifford conjugation.
 
 #### Additional monatic operators (for more convenience only) 
 | precedence | symbol           | latex                | unicode      | description | implementation |
 | :--------: | :--------------: | ---------------------| ------------ | ----------- | -------------- |
-| 4          | &#x207B;&#x002A; | \textsuperscript{-*} | \u207B\u002A | undual | multivector.undual() or -multivector.dual() |
-| 4          | &#x00B2;         |                      | \u00B2       | square | multivector.gp(multivector), sqr(double) |
-| 4          | &#x005E;         |                      | \u005E       | involute | multivector.gradeInversion(multivector) |
+| 5          | &#x207B;&#x002A; | \textsuperscript{-*} | \u207B\u002A | undual | multivector.undual() or -multivector.dual() |
+| 5          | &#x00B2;         |                      | \u00B2       | square | multivector.gp(multivector), sqr(double) |
+| 5          | &#x005E;         |                      | \u005E       | involute | multivector.gradeInversion(multivector) |
 
 
 ### Composite operators
