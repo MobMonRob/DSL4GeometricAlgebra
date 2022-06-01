@@ -46,7 +46,7 @@ Quad4d, Tuple3d and double are automatically casted into a multivector. No other
 ### Dual operators
 #### Base operators
 | precedence | symbol           | latex   | unicode | name | implementation | hints | 
-| :--------: | :-------------:  | ------- | ------- | ---- | -------------- | ----- |
+| :--------: | :--------------: | ------- | ------- | ---- | -------------- | ----- |
 | 3          | &#x0020; (space) |         | \u0020  | geometric product | multivector1.gp(multivector2) | Exactly one space character is interpreted as the operator. |
 | 3          | &#x22C5;         | \cdot   | \u22C5  | inner product | multivector1.ip(multivector2, RIGHT_CONTRACTION) | Decreasing dimensions or contracting a subspace. In the default configuration equal to left contraction (corresponding to Ganja.js). But this looks to be incompatible with some formulas in [Kleppe], which work only with the usage of right contraction. In CLUscript this corresponds to ".". |
 | 3          | &#x2227;         | \wedge  | \u2227  | outer product (meet) | multivector1.op(multivector2), not used for double, for tuple3d it makes sense but actually no implementation is available | joining linearily independend vectors/two disjoint subspaces |
@@ -56,8 +56,8 @@ Quad4d, Tuple3d and double are automatically casted into a multivector. No other
 #### Additional operators (for more convenience only)
 | precedence | symbol   | latex            | unicode | description | implementation | CLUscript |
 | :--------: | :------: | ---------------- | ------- | ----------- | -------------- | :----- |
-| 3          | &#x2229; |  \cap            | \u2229  | meet (intersection) | multivector1.meet(multivector2) | \& |
-| 3          | &#x222A; |  \cup            | \u222A  | join  (union) | multivector1.join(multivector2) or multivector2* &#8901; multivector1 or (multivector2* &#8743; multivector1*)* | \| |
+| 3          | &#x2229; | \cap             | \u2229  | meet (intersection) | multivector1.meet(multivector2) | \& |
+| 3          | &#x222A; | \cup             | \u222A  | join  (union) | multivector1.join(multivector2) or multivector2* &#8901; multivector1 or (multivector2* &#8743; multivector1*)* | \| |
 | 3          | &#x230B; | \llcorner        | \u230B  | right contraction | multivetor1.ip(multivector2, RIGHT_CONTRACTION) |  |
 | 3          | &#x230A; | \lrcorner        | \u230A  | left contraction | multivector1.ip(multivector1, LEFT_CONTRACTION); where the grade operator for negative grades is zero. This implies that `something of higher grade cannot be contracted onto something of lower grade`. | |
 | 3          | &#x2228; | \vee             | \u2228  | regressive product (join) | multivector1.vee(multivector2) or (multivector1* &#8743; multivector2*)* |  |
@@ -69,20 +69,20 @@ The unary operators have the highest precedence, so they are executed before any
 #### Base monadic operators
 | precedence | symbol           | latex                         | unicode      | description | implementation | CLUscript |
 | :--------: | :--------------: | ----------------------------- | ------------ | ----------- | -------------- | :------- |
-| 4          | &#x2212;         | -                             | \u2212       | negate | (-1 cast to multivector).gp(multivector) | - |
+| 4          | &#x2212;         | &#x2212;                      | \u2212       | negate | (-1 cast to multivector).gp(multivector) | - |
 | 5          | &#x207B;&#x00B9; | \textsuperscript{-1}          | \u207B\u00B9 | general inverse | multivector.generalInverse() | ! |
-| 5          | &#x002A;         | \textsuperscript{\*}           | \u002A       | dual | multivector.dual() | |
+| 5          | &#x002A;         | \textsuperscript{\*}          | \u002A       | dual | multivector.dual() | |
 | 5          | &#x02DC;         | \textsuperscript{\tilde}      | \u02DC       | reverse | multivector.reverse() | &#732; |
 | 5          | &#x2020;         | \textsuperscript{\textdagger} | \u2020       | clifford conjugate | multivector.conjugate() | |
 
 There exist three types of involution operations: Space inversion, reversion and the combination of both the clifford conjugation.
 
 #### Additional monatic operators (for more convenience only) 
-| precedence | symbol           | latex                | unicode      | description | implementation |
-| :--------: | :--------------: | ---------------------| ------------ | ----------- | -------------- |
-| 5          | &#x207B;&#x002A; | \textsuperscript{-*} | \u207B\u002A | undual | multivector.undual() or -multivector.dual() |
-| 5          | &#x00B2;         |                      | \u00B2       | square | multivector.gp(multivector), sqr(double) |
-| 5          | &#x005E;         |                      | \u005E       | involute | multivector.gradeInversion(multivector) |
+| precedence | symbol           | latex                 | unicode      | description | implementation |
+| :--------: | :--------------: | --------------------- | ------------ | ----------- | -------------- |
+| 5          | &#x207B;&#x002A; | \textsuperscript{-\*} | \u207B\u002A | undual | multivector.undual() or -multivector.dual() |
+| 5          | &#x00B2;         |                       | \u00B2       | square | multivector.gp(multivector), sqr(double) |
+| 5          | &#x005E;         |                       | \u005E       | involute | multivector.gradeInversion(multivector) |
 
 
 ### Composite operators
@@ -135,13 +135,13 @@ Outer product null space representations are called dual. Corresponding regular 
 | rotator(tuple3d, double) | creates a rotatio from an 3d-tuple representing the rotation axis and a double representing the angle in radian | createTranslation(tuple3d) |
 ### Symbols
 #### Base vector symbols
-| symbol           | latex         | Unicode      | description | implementation |
-| :--------------: | ------------- | ------------ | ----------- | -------------- |
-| &#x03B5;&#x2080; | \textepsilon  | \u03B5\u2080 | base vector representing the origin | createOrigin(1d) |
-| &#x03B5;&#x1D62; | \textepsilon  | \u03B5\u1D62 | base vector representing the infinity | createInf(1d) |
-| &#x03B5;&#x2081; | \textepsilon  | \u03B5\u2081 | base vector representing x direction | createEx(1d) |
-| &#x03B5;&#x2082; | \textepsilon  | \u03B5\u2082 | base vector representing y direction | createEy(1d) |
-| &#x03B5;&#x2083; | \textepsilon  | \u03B5\u2083 | base vector representing z direction | createEz(1d) |
+| symbol           | latex        | Unicode      | description | implementation |
+| :--------------: | ------------ | ------------ | ----------- | -------------- |
+| &#x03B5;&#x2080; | \textepsilon | \u03B5\u2080 | base vector representing the origin | createOrigin(1d) |
+| &#x03B5;&#x1D62; | \textepsilon | \u03B5\u1D62 | base vector representing the infinity | createInf(1d) |
+| &#x03B5;&#x2081; | \textepsilon | \u03B5\u2081 | base vector representing x direction | createEx(1d) |
+| &#x03B5;&#x2082; | \textepsilon | \u03B5\u2082 | base vector representing y direction | createEy(1d) |
+| &#x03B5;&#x2083; | \textepsilon | \u03B5\u2083 | base vector representing z direction | createEz(1d) |
 
 ### Further symbols
 | symbol           | latex         | Unicode      | description | implementation |
