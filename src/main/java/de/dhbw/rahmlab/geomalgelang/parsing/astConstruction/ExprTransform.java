@@ -182,7 +182,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 
 	static {
 		final DecimalFormatSymbols symbols = new DecimalFormatSymbols();
-		symbols.setDecimalSeparator(',');
+		symbols.setDecimalSeparator('.');
 		symbols.setGroupingSeparator(' ');
 		decimalFormat.setDecimalFormatSymbols(symbols);
 	}
@@ -192,7 +192,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		try {
 			String decimalLiteral = ctx.value.getText();
 			double value = decimalFormat.parse(decimalLiteral).doubleValue();
-			DecimalLiteral node = DecimalLiteralNodeGen.create(value);
+			ScalarLiteral node = ScalarLiteralNodeGen.create(value);
 			nodeStack.push(node);
 		} catch (ParseException ex) {
 			// Should never occur because of the DECIMAL_LITERAL lexer token definition.

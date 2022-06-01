@@ -289,7 +289,7 @@ fragment DIGIT
 	;
 
 DECIMAL_LITERAL
-	: DIGIT+ (',' DIGIT+)?
+	: DIGIT+ ('.' DIGIT+)?
 	;
 
 IDENTIFIER

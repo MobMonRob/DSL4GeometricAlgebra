@@ -4,8 +4,10 @@
  */
 package de.dhbw.rahmlab.geomalgelang.truffle.nodes.variableLike;
 
+import com.oracle.truffle.api.CompilerDirectives.CompilationFinal;
 import com.oracle.truffle.api.dsl.NodeField;
 import com.oracle.truffle.api.dsl.Specialization;
+import de.dhbw.rahmlab.geomalgelang.cga.Current_ICGAMultivector_Processor;
 import de.dhbw.rahmlab.geomalgelang.cga.ICGAMultivector;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.technical.BaseNode;
 
@@ -14,16 +16,18 @@ import de.dhbw.rahmlab.geomalgelang.truffle.nodes.technical.BaseNode;
  * @author fabian
  */
 @NodeField(name = "innerDouble", type = Double.class)
-public abstract class DecimalLiteral extends BaseNode {
+public abstract class ScalarLiteral extends BaseNode {
 
 	protected abstract double getInnerDouble();
 
-	// Strategie:
-	// 1. ad-hoc Erstellung aus dem Double über den ICGAMultivector_Processor
-	// 2. Caching des Rückgabewertes via Truffle Funktionalität
-	// -> Alternative wäre, eigenen Konstruktor zu machen und alles, was generiert würde, hier rein zu kopieren. Ist ja nicht viel.
+	@CompilationFinal
+	private ICGAMultivector innerMultivector = null;
+
 	@Specialization
-	public ICGAMultivector getValue() {
-		throw new UnsupportedOperationException();
+	protected ICGAMultivector getValue() {
+		if (this.innerMultivector == null) {
+			innerMultivector = Current_ICGAMultivector_Processor.cga_processor.create(this.getInnerDouble());
+		}
+		return this.innerMultivector;
 	}
 }

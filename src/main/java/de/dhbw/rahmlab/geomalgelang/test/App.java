@@ -14,7 +14,7 @@ import java.util.Map;
 public class App {
 
 	public static void main(String[] args) throws Exception {
-		String program = "a b ⋅ (1,5 + 5,3)†";
+		String program = "a b ⋅ (1.5 + 5.3)†";
 		//................
 		// Folgend nur STAR Grammatik + Semantik.
 		// Behalten für regression Testcases!
