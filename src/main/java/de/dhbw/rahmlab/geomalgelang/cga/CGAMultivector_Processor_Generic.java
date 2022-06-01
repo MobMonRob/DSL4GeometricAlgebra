@@ -10,9 +10,9 @@ package de.dhbw.rahmlab.geomalgelang.cga;
  */
 public class CGAMultivector_Processor_Generic<T> implements ICGAMultivector_Processor<ICGAMultivector<T>> {
 
-	protected ICGAMultivector_Processor<T> concreteProcessor;
+	protected ICGAMultivector_Processor_Concrete<T> concreteProcessor;
 
-	public CGAMultivector_Processor_Generic(ICGAMultivector_Processor<T> concreteProcessor) {
+	public CGAMultivector_Processor_Generic(ICGAMultivector_Processor_Concrete<T> concreteProcessor) {
 		this.concreteProcessor = concreteProcessor;
 	}
 
