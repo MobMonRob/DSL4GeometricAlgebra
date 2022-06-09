@@ -161,6 +161,10 @@ Outer product null space representations are called dual. Corresponding regular 
 | &#x00F1;         |               | \u00F1       | corresponding to origin vector in Doran & Lasenby | -2&#x03B5;&#8320; |
 | &#x0045;&#x2080; |               | \u0045\u2080 | Minkovsky bi-vector | &#x03B5;&#7522; &#x2227; &#x03B5;&#8320;|
 
+### Syntax 
+
+A Semikolumn (;) at the end of a statement results in not visualizing the corresponding geometric object.
+
 ## Important formulae
 ### Formulae to create conformal geometric objects
 
