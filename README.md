@@ -38,13 +38,15 @@ The project depends on the vecmath library in the refactured version of jogamp. 
 | double | Double |  |
 | Tuple3d | org.jogamp.vecmath.Tuple3d |  |
 | Quat4d | org.jogamp.vecmath.Quat4d |  |
+
+All of these types are automatically casted into a multivector inside the language. No other operations possible based on these types inside the language.
+
 ## Types inside the language
 | Name | implementation class | hints |
 | :-------- | :---- | ------|
 | MV | de.orat.math.cga.impl1.CGA1Multivector | All types set from outside the language can be casted to this Multivector class. But there are more specific implementations which can be used for more efficiency. |
 | Scalar | de.orat.math.api.CGAScalar | |
 
-Quad4d, Tuple3d and double are automatically casted into a multivector. No other operations possible based on these types inside the language. 
 ## Operators
 
 ### Dual operators
