@@ -133,6 +133,14 @@ Outer product null space representations are called dual. Corresponding regular 
 | :----------------------- | ----------- | -------------- |
 | translator(tuple3d)      | creates a translation from an 3d-tuple | createTranslation(tuple3d) |
 | rotator(tuple3d, double) | creates a rotatio from an 3d-tuple representing the rotation axis and a double representing the angle in radian | createTranslation(tuple3d) |
+
+### Functions to get data from UI, files, data streams etc.
+
+| symbol                   | description | implementation |
+| :----------------------- | ----------- | -------------- |
+| checkbox(String name, String comment, boolean defaultValue) | The checkbox is shown in the properties sheet. The result value is +1 or -1 represented as a multivector representing a scalar  | |
+| scalar(String name, String comment, double defaultValue) | A property is shown in the properties sheet which allows to change the scalar value. The result value is a scalar represented as a multivector | |
+
 ### Symbols
 #### Base vector symbols
 | symbol           | latex        | Unicode      | description | implementation |
