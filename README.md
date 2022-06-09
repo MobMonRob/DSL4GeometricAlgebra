@@ -32,13 +32,17 @@ or navigate to this point via the Tools main menu.
 ### Dependencies
 The project depends on the vecmath library in the refactured version of jogamp. Your can find this library [here](https://jogamp.org/deployment/java3d/1.7.0-final/). Unfortunately there is no maven repository available. That is why you need to download the jar file manually and add it as a local depency of the project. To do this in the nebeans ide: Right-click on the depencies of the project and add the dependency manually. The group id is "org.jogamp.java3d", the artifactId is "vecmath" and the type is "jar".
 
-## Types
-| Name | implementation class | setting from outside possible | hints |
-| :-------- | :---- | ----- | ------|
-| double | Double | x | |
-| Tuple3d | org.jogamp.vecmath.Tuple3d | x | |
-| Quat4d | org.jogamp.vecmath.Quat4d | x | |
-| Multivector | de.orat.math.cga.impl1.CGA1Multivector | | |
+## Types to use from outside the language
+| Name | implementation class | hints |
+| :-------- | :---- | ------|
+| double | Double |  |
+| Tuple3d | org.jogamp.vecmath.Tuple3d |  |
+| Quat4d | org.jogamp.vecmath.Quat4d |  |
+## Types inside the language
+| Name | implementation class | hints |
+| :-------- | :---- | ------|
+| MV | de.orat.math.cga.impl1.CGA1Multivector | All types set from outside the language can be casted to this Multivector class. But there are more specific implementations which can be used for more efficiency. |
+| Scalar | de.orat.math.api.CGAScalar | |
 
 Quad4d, Tuple3d and double are automatically casted into a multivector. No other operations possible based on these types inside the language. 
 ## Operators
