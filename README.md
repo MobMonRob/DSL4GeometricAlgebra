@@ -42,14 +42,26 @@ The project depends on the vecmath library in the refactured version of jogamp. 
 All of these types are automatically casted into a multivector inside the language. No other operations possible based on these types inside the language.
 
 ## Types inside the language
+
+### CGA types
 | Name | implementation class | hints |
 | :-------- | :---- | ------|
-| MVec | de.orat.math.cga.impl1.CGA1Multivector | All types set from outside the language can be casted to this Multivector class. But there are more specific implementations which can be used for more efficiency. |
-| Scalar | de.orat.math.api.CGAScalar extends MVec| |
-| VecE3 | extends MVec |
-| Sphere | extends MVec |
-| PointPair | extends MVec |
-| Circle | extends MVec |
+| CGAMVec | de.orat.math.cga.impl1.CGA1Multivector | All types set from outside the language can be casted to this Multivector class. But there are more specific implementations which can be used for more efficiency. |
+| CGAScalar | de.orat.math.api.CGAScalar extends MVec| |
+| CGAVecE3 | extends CGAMVec |
+| Sphere | extends CGAMVec |
+| PointPair | extends CGAMVec |
+| Circle | extends CGAMVec |
+
+### PGA types
+| Name | implementation class | hints |
+| :-------- | :---- | ------|
+| PGAMVec | |
+
+### E3 types
+| Name | implementation class | hints |
+| :-------- | :---- | ------|
+| E3MVec | |
 
 ## Operators
 
