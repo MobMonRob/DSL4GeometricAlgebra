@@ -44,8 +44,9 @@ All of these types are automatically casted into a multivector inside the langua
 ## Types inside the language
 | Name | implementation class | hints |
 | :-------- | :---- | ------|
-| MV | de.orat.math.cga.impl1.CGA1Multivector | All types set from outside the language can be casted to this Multivector class. But there are more specific implementations which can be used for more efficiency. |
-| Scalar | de.orat.math.api.CGAScalar | |
+| MVec | de.orat.math.cga.impl1.CGA1Multivector | All types set from outside the language can be casted to this Multivector class. But there are more specific implementations which can be used for more efficiency. |
+| Scalar | de.orat.math.api.CGAScalar extends MVec| |
+| VecE3 | extends MVec |
 
 ## Operators
 
