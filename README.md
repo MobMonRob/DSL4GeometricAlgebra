@@ -49,9 +49,10 @@ All of these types are automatically casted into a multivector inside the langua
 | CGAMVec | de.orat.math.cga.impl1.CGA1Multivector | All types set from outside the language can be casted to this Multivector class. But there are more specific implementations which can be used for more efficiency. |
 | CGAScalar | de.orat.math.api.CGAScalar extends MVec| |
 | CGAVecE3 | extends CGAMVec |
-| Sphere | extends CGAMVec |
-| PointPair | extends CGAMVec |
-| Circle | extends CGAMVec |
+| CGASphere | extends CGAMVec |
+| CGAPointPair | extends CGAMVec |
+| CGACircle | extends CGAMVec |
+| CGAPoint | extends CGAMVec |
 
 ### PGA types
 | Name | implementation class | hints |
