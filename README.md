@@ -139,16 +139,16 @@ Outer product null space representations are called dual. Corresponding regular 
 
 | symbol                                             | description | implementation |
 | :------------------------------------------------- | ----------- | -------------- |
-| point(tuple3d)                                     | creates a conformal point from an 3d-tuple | createPoint(tuple3d) |
-| dualPointPair(tuple3d1, tuple3d2)                  | creates a conformal dual point pair from two 3d-tuple | createDualPointPair(tuple3d1,tuple3d2) |
+| CGAPoint(tuple3d)                                     | creates a conformal point from an 3d-tuple | createPoint(tuple3d) |
+| CGADualPointPair(tuple3d1, tuple3d2)                  | creates a conformal dual point pair from two 3d-tuple | createDualPointPair(tuple3d1,tuple3d2) |
 | dualLine(tuple3d1, tuple3d2)                       | creates a conformal line from 3d-tuples defining a point and a direction or a second point | createDualLine(tuple3d1, tuple3d2) |
-| dualSphere(tuple3d1, tuple3d2, tuple3d3, tuple3d4) | creates a conformal sphere from four 3d-tuple | createDualSphere(tuple3d1, tuple3d2, tuple3d3, tuple3d4) |
-| sphere(tuple3d, double)                            | creates a conformal sphere from a 3d-tuple and the radius| createSphere(tuple3d, double) |
-| plane(tuple3d1, tuple3d2)                          | creates a conformal plane from a 3d-tuple defining a point on the plane and another 3d-tuple defining the normal vector | createPlane(tuple3d, tuple3d) |
-| plane(tuple3d, double)                             | creates a conformal plane based on its normal vector and the distance to the origin (Hesse normal form) | createPlane(tuple3d, double) |
-| dualPlane(tuple3d1, tuple3d2, tuple3d3)            | creates a conformal dual plane based on three points | createDualPlane(tuple3d1, tuple3d2, tuple3d3) |
-| dualCircle(tuple3d1, tuple3d2, tuple3d3)           | creates a conformal dual circle based on three points | createDualCircle(tuple3d1, tuple3d2 tuple3d3) |
-| dualPointPair(tuple3d1, tuple3d2)                  | create a conformal dual point pair based on three points | createDualPointPair(tuple3d1, tuple3d2) |
+| CGADualSphere(tuple3d1, tuple3d2, tuple3d3, tuple3d4) | creates a conformal sphere from four 3d-tuple | createDualSphere(tuple3d1, tuple3d2, tuple3d3, tuple3d4) |
+| CGASphere(tuple3d, double)                            | creates a conformal sphere from a 3d-tuple and the radius| createSphere(tuple3d, double) |
+| CGAPlane(tuple3d1, tuple3d2)                          | creates a conformal plane from a 3d-tuple defining a point on the plane and another 3d-tuple defining the normal vector | createPlane(tuple3d, tuple3d) |
+| CGAPlane(tuple3d, double)                             | creates a conformal plane based on its normal vector and the distance to the origin (Hesse normal form) | createPlane(tuple3d, double) |
+| CGADualPlane(tuple3d1, tuple3d2, tuple3d3)            | creates a conformal dual plane based on three points | createDualPlane(tuple3d1, tuple3d2, tuple3d3) |
+| CGADualCircle(tuple3d1, tuple3d2, tuple3d3)           | creates a conformal dual circle based on three points | createDualCircle(tuple3d1, tuple3d2 tuple3d3) |
+| CGADualPointPair(tuple3d1, tuple3d2)                  | create a conformal dual point pair based on three points | createDualPointPair(tuple3d1, tuple3d2) |
 
 #### Additional functions (3) to create transformations (for more convenience only)
 
