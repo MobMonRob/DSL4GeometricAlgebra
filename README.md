@@ -140,18 +140,20 @@ There exist three types of involution operations: Space inversion, reversion and
 
 Outer product null space representations are called dual. Corresponding regular expressions are in the inner product null space representations. Be careful in the "older" literature this is often defined reverse.
 
+The implementation can be based on a method of the api class CGAMultivector or by implementing the same method in the language itself.
+
 | symbol                                             | description | implementation |
 | :------------------------------------------------- | ----------- | -------------- |
-| CGAPoint(tuple3d)                                     | creates a conformal point from a multivector representing 3d coordinates by e1,e2,e3 coordinates | createPoint(new CGAMultivector(tuple3d)) |
-| CGADualPointPair(tuple3d1, tuple3d2)                  | creates a conformal dual point pair from two multivectors, each representing 3d coordinates by e1, e2, e3 coordinates. | createDualPointPair(new CGAMultivector(tuple3d1),new CGAMultivector(tuple3d2)) |
-| CGADualLine(multivector, multivector)                       | creates a conformal line from two multivectors, one defining a point and the other the direction or a second point by e1,e2 and e3 coordinates only. | createDualLine(multivector, multivector) |
-| CGADualSphere(tuple3d1, tuple3d2, tuple3d3, tuple3d4) | creates a conformal sphere from four 3d-tuple | createDualSphere(tuple3d1, tuple3d2, tuple3d3, tuple3d4) |
-| CGASphere(tuple3d, double)                            | creates a conformal sphere from a 3d-tuple and the radius| createSphere(tuple3d, double) |
-| CGAPlane(tuple3d1, tuple3d2)                          | creates a conformal plane from a 3d-tuple defining a point on the plane and another 3d-tuple defining the normal vector | createPlane(tuple3d, tuple3d) |
-| CGAPlane(tuple3d, double)                             | creates a conformal plane based on its normal vector and the distance to the origin (Hesse normal form) | createPlane(tuple3d, double) |
-| CGADualPlane(tuple3d1, tuple3d2, tuple3d3)            | creates a conformal dual plane based on three points | createDualPlane(tuple3d1, tuple3d2, tuple3d3) |
-| CGADualCircle(tuple3d1, tuple3d2, tuple3d3)           | creates a conformal dual circle based on three points | createDualCircle(tuple3d1, tuple3d2 tuple3d3) |
-| CGADualPointPair(tuple3d1, tuple3d2)                  | create a conformal dual point pair based on three points | createDualPointPair(tuple3d1, tuple3d2) |
+| CGAPoint(tuple3d)                                     | creates a conformal point from a tuple3d | createPoint(new CGAMultivector(tuple3d)) |
+| CGADualPointPair(tuple3d1, tuple3d2)                  | creates a conformal dual point pair from two tuple3d objects. | createDualPointPair(new CGAMultivector(tuple3d1), new CGAMultivector(tuple3d2)) |
+| CGADualLine(tuple3d1, tuple3d2)                       | creates a conformal line from a tuple3d representing a point and an other tuple3d other representing a direction or a second point. | createDualLine(new CGAMultivector(tuple3d), new CGAMultivector(tuple3d)) |
+| CGADualSphere(tuple3d1, tuple3d2, tuple3d3, tuple3d4) | creates a conformal sphere from four 3d-tuple | createDualSphere(new CGAMultivector(tuple3d1), new CGAMultivector(tuple3d2), new CGAMultivector(tuple3d3), new CGAMultivector(tuple3d4)) |
+| CGASphere(tuple3d, double)                            | creates a conformal sphere from a 3d-tuple and the radius | createSphere(new CGAMultivector(tuple3d), new CGAMultivector(double)) |
+| CGAPlane(tuple3d1, tuple3d2)                          | creates a conformal plane from a 3d-tuple defining a point on the plane and another 3d-tuple defining the normal vector | createPlane(new CGAMultivector(tuple3d1), new CGAMultivector(tuple3d2)) |
+| CGAPlane(tuple3d, double)                             | creates a conformal plane based on its normal vector and the distance to the origin (Hesse normal form) | createPlane(new CGAMultivector(tuple3d), new CGAMultivector(double)) |
+| CGADualPlane(tuple3d1, tuple3d2, tuple3d3)            | creates a conformal dual plane based on three points | createDualPlane(new CGAMultivector(tuple3d1), new CGAMultivector(tuple3d2), new CGAMultivector(tuple3d3)) |
+| CGADualCircle(tuple3d1, tuple3d2, tuple3d3)           | creates a conformal dual circle based on three points | createDualCircle(new CGAMultivector(tuple3d1), new CGAMultivector(tuple3d2) new CGAMultivector(tuple3d3)) |
+| CGADualPointPair(tuple3d1, tuple3d2)                  | create a conformal dual point pair based on three points | createDualPointPair(new CGAMultivector(tuple3d1), new CGAMultivector(tuple3d2)) |
 
 #### Additional functions (3) to create transformations (for more convenience only)
 
