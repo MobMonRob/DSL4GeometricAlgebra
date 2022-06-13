@@ -141,7 +141,7 @@ Outer product null space representations are called dual. Corresponding regular 
 | :------------------------------------------------- | ----------- | -------------- |
 | CGAPoint(tuple3d)                                     | creates a conformal point from an 3d-tuple | createPoint(tuple3d) |
 | CGADualPointPair(tuple3d1, tuple3d2)                  | creates a conformal dual point pair from two 3d-tuple | createDualPointPair(tuple3d1,tuple3d2) |
-| dualLine(tuple3d1, tuple3d2)                       | creates a conformal line from 3d-tuples defining a point and a direction or a second point | createDualLine(tuple3d1, tuple3d2) |
+| CGAdualLine(tuple3d1, tuple3d2)                       | creates a conformal line from 3d-tuples defining a point and a direction or a second point | createDualLine(tuple3d1, tuple3d2) |
 | CGADualSphere(tuple3d1, tuple3d2, tuple3d3, tuple3d4) | creates a conformal sphere from four 3d-tuple | createDualSphere(tuple3d1, tuple3d2, tuple3d3, tuple3d4) |
 | CGASphere(tuple3d, double)                            | creates a conformal sphere from a 3d-tuple and the radius| createSphere(tuple3d, double) |
 | CGAPlane(tuple3d1, tuple3d2)                          | creates a conformal plane from a 3d-tuple defining a point on the plane and another 3d-tuple defining the normal vector | createPlane(tuple3d, tuple3d) |
@@ -156,13 +156,6 @@ Outer product null space representations are called dual. Corresponding regular 
 | :----------------------- | ----------- | -------------- |
 | translator(tuple3d)      | creates a translation from an 3d-tuple | createTranslation(tuple3d) |
 | rotator(tuple3d, double) | creates a rotatio from an 3d-tuple representing the rotation axis and a double representing the angle in radian | createTranslation(tuple3d) |
-
-### Functions to get data from UI, files, data streams etc.
-
-| symbol                   | description | implementation |
-| :----------------------- | ----------- | -------------- |
-| checkbox(String name, String comment, boolean defaultValue) | The checkbox is shown in the properties sheet. The result value is +1 or -1 represented as a multivector representing a scalar  | |
-| scalar(String name, String comment, double defaultValue) | A property is shown in the properties sheet which allows to change the scalar value. The result value is a scalar represented as a multivector | |
 
 ### Symbols
 #### Base vector symbols
