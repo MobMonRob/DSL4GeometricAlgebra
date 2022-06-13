@@ -38,6 +38,9 @@ The project depends on the vecmath library in the refactured version of jogamp. 
 | double | Double |  |
 | Tuple3d | org.jogamp.vecmath.Tuple3d |  |
 | Quat4d | org.jogamp.vecmath.Quat4d |  |
+| DualQuat4d | de.orat.math.vecmath.ext.DualQuat4d | |
+| DualNumber | de.orat.math.vecmath.ext.DualNumber | |
+| ComplexNumber | de.orat.math.vecmath.ext.ComplexNumber | |
 
 All of these types are automatically casted into a multivector inside the language. No other operations possible based on these types inside the language.
 
