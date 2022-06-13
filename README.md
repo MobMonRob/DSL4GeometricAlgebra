@@ -142,7 +142,7 @@ Outer product null space representations are called dual. Corresponding regular 
 
 | symbol                                             | description | implementation |
 | :------------------------------------------------- | ----------- | -------------- |
-| CGAPoint(multivector)                                     | creates a conformal point from a multivector representing 3d coordinates by e1,e2,e3 coordinates | createPoint(multivector) |
+| CGAPoint(createE(tuple3d))                                     | creates a conformal point from a multivector representing 3d coordinates by e1,e2,e3 coordinates | createPoint(createE(tuple3d)) |
 | CGADualPointPair(multivector, multivector)                  | creates a conformal dual point pair from two multivectors, each representing 3d coordinates by e1, e2, e3 coordinates. | createDualPointPair(tuple3d1,tuple3d2) |
 | CGADualLine(multivector, multivector)                       | creates a conformal line from two multivectors, one defining a point and the other the direction or a second point by e1,e2 and e3 coordinates only. | createDualLine(multivector, multivector) |
 | CGADualSphere(tuple3d1, tuple3d2, tuple3d3, tuple3d4) | creates a conformal sphere from four 3d-tuple | createDualSphere(tuple3d1, tuple3d2, tuple3d3, tuple3d4) |
