@@ -142,9 +142,9 @@ Outer product null space representations are called dual. Corresponding regular 
 
 | symbol                                             | description | implementation |
 | :------------------------------------------------- | ----------- | -------------- |
-| CGAPoint(tuple3d)                                     | creates a conformal point from an 3d-tuple | createPoint(tuple3d) |
-| CGADualPointPair(tuple3d1, tuple3d2)                  | creates a conformal dual point pair from two 3d-tuple | createDualPointPair(tuple3d1,tuple3d2) |
-| CGAdualLine(tuple3d1, tuple3d2)                       | creates a conformal line from 3d-tuples defining a point and a direction or a second point | createDualLine(tuple3d1, tuple3d2) |
+| CGAPoint(multivector)                                     | creates a conformal point from a multivector representing 3d coordinates by e1,e2,e3 coordinates | createPoint(multivector) |
+| CGADualPointPair(multivector, multivector)                  | creates a conformal dual point pair from two multivectors, each representing 3d coordinates by e1, e2, e3 coordinates. | createDualPointPair(tuple3d1,tuple3d2) |
+| CGADualLine(multivector, multivector)                       | creates a conformal line from two multivectors, one defining a point and the other the direction or a second point by e1,e2 and e3 coordinates only. | createDualLine(multivector, multivector) |
 | CGADualSphere(tuple3d1, tuple3d2, tuple3d3, tuple3d4) | creates a conformal sphere from four 3d-tuple | createDualSphere(tuple3d1, tuple3d2, tuple3d3, tuple3d4) |
 | CGASphere(tuple3d, double)                            | creates a conformal sphere from a 3d-tuple and the radius| createSphere(tuple3d, double) |
 | CGAPlane(tuple3d1, tuple3d2)                          | creates a conformal plane from a 3d-tuple defining a point on the plane and another 3d-tuple defining the normal vector | createPlane(tuple3d, tuple3d) |
