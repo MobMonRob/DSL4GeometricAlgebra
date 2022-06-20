@@ -116,7 +116,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 	public void exitExtractGrade(GeomAlgeParser.ExtractGradeContext ctx) {
 		BaseNode inner = nodeStack.pop();
 
-		int grade = switch (ctx.grade.getType()) {
+		int grade = switch (ctx.gradeExtractionExpr().grade.getType()) {
 			case GeomAlgeParser.SUBSCRIPT_ZERO ->
 				0;
 			case GeomAlgeParser.SUBSCRIPT_ONE ->

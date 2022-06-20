@@ -3,13 +3,15 @@ parser grammar GeomAlgeParser;
 options { tokenVocab=GeomAlgeLexer; }
 
 program
-	: expr (EOF | NEWLINE)
+	:	expr (EOF | NEWLINE)
 	;
 
+///////////////////////////////////////////////////////////////////////////
+// Expr
+///////////////////////////////////////////////////////////////////////////
+
 expr
-	:	L_PARENTHESIS
-		expr
-		R_PARENTHESIS				#DummyLabel
+	: parenExpr						#DummyLabel
 	// Precedence 4
 	|	<assoc=right>
 		left=expr
@@ -23,16 +25,7 @@ expr
 			)						#UnaryOpR
 	|	op=	MINUS_SIGN
 		right=expr					#UnaryOpL
-	|	LESS_THAN_SIGN
-		inner=expr
-		GREATER_THAN_SIGN
-		grade=	(SUBSCRIPT_ZERO
-				|SUBSCRIPT_ONE
-				|SUBSCRIPT_TWO
-				|SUBSCRIPT_THREE
-				|SUBSCRIPT_FOUR
-				|SUBSCRIPT_FIFE
-				)					#extractGrade
+	|	gradeExtractionExpr			#extractGrade
 	// Precedence 3
 	|	left=expr
 		op=	(SPACE
@@ -56,15 +49,18 @@ expr
 			)
 		right=expr					#BinaryOp
 	// ---
-	|	exprLiteral					#DummyLabel
+	|	literalExpr					#DummyLabel
 	|	<assoc=right>
 		expr SPACE+?				#DummyLabel
 	|	<assoc=right>
 		SPACE+?	expr				#DummyLabel
 	;
 
+///////////////////////////////////////////////////////////////////////////
+// Sub Expr
+///////////////////////////////////////////////////////////////////////////
 
-exprLiteral
+literalExpr
 	:	value=	(SMALL_EPSILON__SUBSCRIPT_ZERO
 				|SMALL_EPSILON__SUBSCRIPT_SMALL_I
 				|SMALL_EPSILON__SUBSCRIPT_ONE
@@ -79,5 +75,24 @@ exprLiteral
 				)					#LiteralCGA
 	|	value=	DECIMAL_LITERAL		#LiteralDecimal
 	|	name=	IDENTIFIER			#VariableReference
+	;
+
+parenExpr
+	:	L_PARENTHESIS
+		expr
+		R_PARENTHESIS
+	;
+
+gradeExtractionExpr
+	:	LESS_THAN_SIGN
+		inner=expr
+		GREATER_THAN_SIGN
+		grade=	(SUBSCRIPT_ZERO
+				|SUBSCRIPT_ONE
+				|SUBSCRIPT_TWO
+				|SUBSCRIPT_THREE
+				|SUBSCRIPT_FOUR
+				|SUBSCRIPT_FIFE
+				)
 	;
 
