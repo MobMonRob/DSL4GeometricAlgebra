@@ -281,19 +281,24 @@ CAPITAL_E__SUBSCRIPT_ZERO
 ///////////////////////////////////////////////////////////////////////////
 
 fragment LETTER
-	: [a-zA-Z]
-	;
+    : [a-zA-Z_]
+    ;
 
 fragment DIGIT
 	: [0-9]
 	;
+
+fragment LETTER_OR_DIGIT
+    : LETTER
+    | DIGIT
+    ;
 
 DECIMAL_LITERAL
 	: DIGIT+ ('.' DIGIT+)?
 	;
 
 IDENTIFIER
-	: LETTER+
+	: LETTER LETTER_OR_DIGIT*
 	;
 
 L_PARENTHESIS
