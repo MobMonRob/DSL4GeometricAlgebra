@@ -73,7 +73,7 @@ All of these types are automatically casted into a multivector inside the langua
 #### Base operators
 | precedence | symbol           | latex   | unicode | name | implementation | hints | 
 | :--------: | :--------------: | ------- | ------- | ---- | -------------- | ----- |
-| 3          | &#x0020; (space) |         | \u0020  | geometric product | multivector1.gp(multivector2) | Exactly one space character is interpreted as the operator. |
+| 4          | &#x0020; (space) |         | \u0020  | geometric product | multivector1.gp(multivector2) | Exactly one space character is interpreted as the operator. |
 | 3          | &#x22C5;         | \cdot   | \u22C5  | inner product | multivector1.ip(multivector2, RIGHT_CONTRACTION) | Decreasing dimensions or contracting a subspace. In the default configuration equal to left contraction (corresponding to Ganja.js). But this looks to be incompatible with some formulas in [Kleppe], which work only with the usage of right contraction. In CLUscript this corresponds to ".". |
 | 3          | &#x2227;         | \wedge  | \u2227  | outer product (meet) | multivector1.op(multivector2), not used for double, for tuple3d it makes sense but actually no implementation is available | joining linearily independend vectors/two disjoint subspaces |
 | 1          | &#x002B;         | +       | \u002B  | sum | multivector1.add(multivector2) | |
@@ -95,20 +95,20 @@ The unary operators have the highest precedence, so they are executed before any
 #### Base monadic operators
 | precedence | symbol           | latex                         | unicode      | description | implementation | CLUscript |
 | :--------: | :--------------: | ----------------------------- | ------------ | ----------- | -------------- | :------- |
-| 4          | &#x2212;         | &#x2212;                      | \u2212       | negate | (-1 cast to multivector).gp(multivector) | - |
-| 5          | &#x207B;&#x00B9; | \textsuperscript{-1}          | \u207B\u00B9 | general inverse | multivector.generalInverse() | ! |
-| 5          | &#x002A;         | \textsuperscript{\*}          | \u002A       | dual | multivector.dual() | |
-| 5          | &#x02DC;         | \textsuperscript{\tilde}      | \u02DC       | reverse | multivector.reverse() | &#732; |
-| 5          | &#x2020;         | \textsuperscript{\textdagger} | \u2020       | clifford conjugate | multivector.conjugate() | |
+| 5          | &#x2212;         | &#x2212;                      | \u2212       | negate | (-1 cast to multivector).gp(multivector) | - |
+| 6          | &#x207B;&#x00B9; | \textsuperscript{-1}          | \u207B\u00B9 | general inverse | multivector.generalInverse() | ! |
+| 6          | &#x002A;         | \textsuperscript{\*}          | \u002A       | dual | multivector.dual() | |
+| 6          | &#x02DC;         | \textsuperscript{\tilde}      | \u02DC       | reverse | multivector.reverse() | &#732; |
+| 6          | &#x2020;         | \textsuperscript{\textdagger} | \u2020       | clifford conjugate | multivector.conjugate() | |
 
 There exist three types of involution operations: Space inversion, reversion and the combination of both the clifford conjugation.
 
 #### Additional monatic operators (for more convenience only) 
 | precedence | symbol           | latex                 | unicode      | description | implementation |
 | :--------: | :--------------: | --------------------- | ------------ | ----------- | -------------- |
-| 5          | &#x207B;&#x002A; | \textsuperscript{-\*} | \u207B\u002A | undual | multivector.undual() or -multivector.dual() |
-| 5          | &#x00B2;         |                       | \u00B2       | square | multivector.gp(multivector), sqr(double) |
-| 5          | &#x005E;         |                       | \u005E       | involute | multivector.gradeInversion(multivector) |
+| 6          | &#x207B;&#x002A; | \textsuperscript{-\*} | \u207B\u002A | undual | multivector.undual() or -multivector.dual() |
+| 6          | &#x00B2;         |                       | \u00B2       | square | multivector.gp(multivector), sqr(double) |
+| 6          | &#x005E;         |                       | \u005E       | involute | multivector.gradeInversion(multivector) |
 
 
 ### Composite operators
