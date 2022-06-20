@@ -142,27 +142,27 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 	public void exitLiteralCGA(GeomAlgeParser.LiteralCGAContext ctx) {
 		BaseNode current = switch (ctx.value.getType()) {
 			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_ZERO ->
-				ConstantNodeGen.create(Constant.Type.base_vector_origin);
+				ConstantNodeGen.create(Constant.Kind.base_vector_origin);
 			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_SMALL_I ->
-				ConstantNodeGen.create(Constant.Type.base_vector_infinity);
+				ConstantNodeGen.create(Constant.Kind.base_vector_infinity);
 			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_ONE ->
-				ConstantNodeGen.create(Constant.Type.base_vector_x);
+				ConstantNodeGen.create(Constant.Kind.base_vector_x);
 			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_TWO ->
-				ConstantNodeGen.create(Constant.Type.base_vector_y);
+				ConstantNodeGen.create(Constant.Kind.base_vector_y);
 			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_THREE ->
-				ConstantNodeGen.create(Constant.Type.base_vector_z);
+				ConstantNodeGen.create(Constant.Kind.base_vector_z);
 			case GeomAlgeParser.SMALL_PI ->
-				ConstantNodeGen.create(Constant.Type.pi);
+				ConstantNodeGen.create(Constant.Kind.pi);
 			case GeomAlgeParser.INFINITY ->
-				ConstantNodeGen.create(Constant.Type.base_vector_infinity_dorst);
+				ConstantNodeGen.create(Constant.Kind.base_vector_infinity_dorst);
 			case GeomAlgeParser.SMALL_O ->
-				ConstantNodeGen.create(Constant.Type.base_vector_origin_dorst);
+				ConstantNodeGen.create(Constant.Kind.base_vector_origin_dorst);
 			case GeomAlgeParser.SMALL_N ->
-				ConstantNodeGen.create(Constant.Type.base_vector_infinity_doran);
+				ConstantNodeGen.create(Constant.Kind.base_vector_infinity_doran);
 			case GeomAlgeParser.SMALL_N_TILDE ->
-				ConstantNodeGen.create(Constant.Type.base_vector_origin_doran);
+				ConstantNodeGen.create(Constant.Kind.base_vector_origin_doran);
 			case GeomAlgeParser.CAPITAL_E__SUBSCRIPT_ZERO ->
-				ConstantNodeGen.create(Constant.Type.minkovsky_bi_vector);
+				ConstantNodeGen.create(Constant.Kind.minkovsky_bi_vector);
 			default ->
 				throw new UnsupportedOperationException();
 		};

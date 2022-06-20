@@ -20,15 +20,15 @@ import org.graalvm.polyglot.Value;
  */
 public class LanguageInvocation {
 
-	public static String invoke(String program, Map<String, Object> inputVars, ICGAMultivector_Processor_Concrete<?> concreteProcessor) throws IOException {
+	public static <T> String invoke(String program, Map<String, Object> inputVars, ICGAMultivector_Processor_Concrete<T> concreteProcessor) throws IOException {
 		Source source = Source.newBuilder("geomalgelang", program, "MATH")
 			.build();
 		String answer = invoke(source, inputVars, concreteProcessor);
 		return answer;
 	}
 
-	public static String invoke(Source program, Map<String, Object> inputVars, ICGAMultivector_Processor_Concrete<?> concreteProcessor) {
-		Current_ICGAMultivector_Processor.cga_processor = new CGAMultivector_Processor_Generic(concreteProcessor);
+	public static <T> String invoke(Source program, Map<String, Object> inputVars, ICGAMultivector_Processor_Concrete<T> concreteProcessor) {
+		Current_ICGAMultivector_Processor.cga_processor = new CGAMultivector_Processor_Generic<T>(concreteProcessor);
 
 		Engine engine = Engine.create("geomalgelang");
 

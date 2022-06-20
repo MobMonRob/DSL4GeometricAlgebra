@@ -10,6 +10,12 @@ package de.dhbw.rahmlab.geomalgelang.cga;
  */
 public class Current_ICGAMultivector_Processor {
 
-	// This is not nice. But I was not able to come up with a better solution.
-	public static CGAMultivector_Processor_Generic<?> cga_processor = null;
+	// This is not nice. But I was not able to come up with a better solution
+	//   to propagate an instance of CGAMultivector_Processor_Generic through
+	//   the language boundary.
+	// Another - likewise not nice - way would have been another CGAMultivector class
+	//   with an assigned processor.
+	// Two different ICGAMultivector<T> instances returned from methods of cga_processor always
+	//   have T identically assigned. Therefore no compatibility check needs to be done.
+	public static CGAMultivector_Processor_Generic cga_processor = null;
 }
