@@ -5,9 +5,9 @@
 package de.dhbw.rahmlab.geomalgelang.parsing;
 
 import com.oracle.truffle.api.source.Source;
+import de.dhbw.rahmlab.geomalgelang.parsing.astConstruction.ExprTransform;
 import de.dhbw.rahmlab.geomalgelang.parsing.debug.AntlrTestRig;
 import de.dhbw.rahmlab.geomalgelang.parsing.debug.AstStringBuilder;
-import de.dhbw.rahmlab.geomalgelang.parsing.astConstruction.ExprTransform;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.technical.BaseNode;
 import java.io.IOException;
 import org.antlr.v4.runtime.CharStream;
@@ -51,10 +51,15 @@ public final class ParsingService {
 
 		{
 			this.lexer = new GeomAlgeLexer(this.inputStream);
+			this.lexer.removeErrorListeners();
+			this.lexer.addErrorListener(SyntaxErrorListener.INSTANCE);
+
 			CommonTokenStream commonTokenStream = new CommonTokenStream(this.lexer);
 			this.parser = new GeomAlgeParser(commonTokenStream);
+			this.parser.removeErrorListeners();
+			this.parser.addErrorListener(SyntaxErrorListener.INSTANCE);
 		}
-
+		
 		this.isLexerParserAvailable = true;
 	}
 
