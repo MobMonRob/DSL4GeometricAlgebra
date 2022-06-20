@@ -15,6 +15,8 @@ public class Current_ICGAMultivector_Processor {
 	//   the language boundary.
 	// Another - likewise not nice - way would have been another CGAMultivector class
 	//   with an assigned processor.
+	// A possible way could be dependency injection into the language class. But can this be set from an
+	//   api with can be exposed?
 	// Two different ICGAMultivector<T> instances returned from methods of cga_processor always
 	//   have T identically assigned. Therefore no compatibility check needs to be done.
 	public static CGAMultivector_Processor_Generic cga_processor = null;
