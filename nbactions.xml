@@ -15,6 +15,8 @@
 			<exec.appArgs></exec.appArgs>
 			<exec.mainClass>de.dhbw.rahmlab.geomalgelang.test.App</exec.mainClass>
 			<exec.executable>java</exec.executable>
+			<Env.MAVEN_OPTS>-Dfile.encoding=UTF-8</Env.MAVEN_OPTS>
+			
 		</properties>
 	</action>
 	<action>
