@@ -11,8 +11,11 @@ program
 ///////////////////////////////////////////////////////////////////////////
 
 expr
+	// Precedence max
 	: parenExpr						#DummyLabel
-	// Precedence 4
+	|	gradeExtractionExpr			#extractGrade
+	|	literalExpr					#DummyLabel
+	// Precedence 6
 	|	<assoc=right>
 		left=expr
 		op=	(SUPERSCRIPT_MINUS__SUPERSCRIPT_ONE
@@ -23,13 +26,16 @@ expr
 			|SUPERSCRIPT_TWO
 			|CIRCUMFLEX_ACCENT
 			)						#UnaryOpR
+	// Precedence 5
 	|	op=	MINUS_SIGN
 		right=expr					#UnaryOpL
-	|	gradeExtractionExpr			#extractGrade
+	// Precedence 4
+	|	left=expr
+		op=	SPACE
+		right=expr					#BinaryOp
 	// Precedence 3
 	|	left=expr
-		op=	(SPACE
-			|DOT_OPERATOR
+		op=	(DOT_OPERATOR
 			|LOGICAL_AND
 			|INTERSECTION
 			|UNION
@@ -48,8 +54,7 @@ expr
 			|HYPHEN_MINUS
 			)
 		right=expr					#BinaryOp
-	// ---
-	|	literalExpr					#DummyLabel
+	// Precedence min
 	|	<assoc=right>
 		expr SPACE+?				#DummyLabel
 	|	<assoc=right>
