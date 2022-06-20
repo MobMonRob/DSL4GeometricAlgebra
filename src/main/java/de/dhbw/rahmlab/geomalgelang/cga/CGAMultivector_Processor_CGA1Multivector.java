@@ -12,7 +12,7 @@ import static de.orat.math.ga.basis.InnerProductTypes.RIGHT_CONTRACTION;
  *
  * @author fabian
  */
-public class CGAMultivector_Processor_CGA1Multivector implements ICGAMultivector_Processor<CGA1Multivector> {
+public class CGAMultivector_Processor_CGA1Multivector implements ICGAMultivector_Processor_Concrete<CGA1Multivector> {
 
 	// Binary Operators
 	@Override

@@ -11,5 +11,5 @@ package de.dhbw.rahmlab.geomalgelang.cga;
 public class Current_ICGAMultivector_Processor {
 
 	// This is not nice. But I was not able to come up with a better solution.
-	public static ICGAMultivector_Processor cga_processor = null;
+	public static CGAMultivector_Processor_Generic<?> cga_processor = null;
 }
