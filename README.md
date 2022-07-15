@@ -98,7 +98,7 @@ The unary operators have the highest precedence, so they are executed before any
 | 5          | &#x2212;         | &#x2212;                      | \u2212       | negate | (-1 cast to multivector).gp(multivector) | - |
 | 6          | &#x207B;&#x00B9; | \textsuperscript{-1}          | \u207B\u00B9 | general inverse | multivector.generalInverse() | ! |
 | 6          | &#x002A;         | \textsuperscript{\*}          | \u002A       | dual | multivector.dual() | |
-| 6          | &#x02DC;         | \textsuperscript{\tilde}      | \u02DC       | reverse | multivector.reverse() | &#732; |
+| 6          | &#x02DC;         | \textsuperscript{\tilde}      | \u02DC       | reverse/adjoint: reverse all multiplications | multivector.reverse() | &#732; |
 | 6          | &#x2020;         | \textsuperscript{\textdagger} | \u2020       | clifford conjugate | multivector.conjugate() | |
 
 There exist three types of involution operations: Space inversion, reversion and the combination of both the clifford conjugation.
@@ -235,5 +235,5 @@ A Semikolumn (;) at the end of a statement results in not visualizing the corres
 | | A &#8743; B * C = A * (B &#8971; C) | |
 | | C * (B &#8743; A) = (C &#8970; B) * A | |
 | intersection | (A &#8745; B)* = B* &#8743; A* | Intersection = outer product in the dual representation; B* &#8743; A* means computing the union of everything which is not B and everything that is not A. The dual of that must be what have A and B in common.|
-| projection | (A&#x230B;B) B&#x207B;&#x00B9; | Projection of A from B |
+| projection | (A&#x230B;B) B&#x207B;&#x00B9; | Projection of A onto B |
 | rejection | (A&#x2227;B) B&#x207B;&#x00B9; | Rejection of A from B |
