@@ -41,7 +41,7 @@ public class GrammarMixedTest {
 
 	@Test
 	void test() {
-		String program = "a b ⋅ (1,5 + 5,3)†";
+		String program = "a b ⋅ (1.5 + 5.3)†";
 		String actualAstString = ParsingService.getAstString(program);
 
 		// Alternativ \t statt sichtbare Tabulatoren
@@ -51,9 +51,9 @@ public class GrammarMixedTest {
 					GlobalVariableReference
 					GlobalVariableReference
 				CliffordConjugate
-					Add
-						DecimalLiteral
-						DecimalLiteral
+					Addition
+						ScalarLiteral
+						ScalarLiteral
 			""";
 
 		Assertions.assertEquals(expectedAstString, actualAstString);

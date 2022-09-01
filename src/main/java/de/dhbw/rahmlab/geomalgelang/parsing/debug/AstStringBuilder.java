@@ -27,6 +27,12 @@ public class AstStringBuilder {
 		this.root = root;
 	}
 
+	/**
+	 * Can lead to StackOverflow for large AST's due to the usage of Recursion.
+	 *
+	 * @param node
+	 * @param indentation
+	 */
 	private void processTreeNode(Node node, String indentation) {
 		String name = node.getClass().getSimpleName().replace("NodeGen", "");
 

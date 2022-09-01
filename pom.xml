@@ -10,7 +10,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>
-		<skipTests>true</skipTests>
+		<skipTests>false</skipTests>
 		<graalvm.version>22.0.0.2</graalvm.version>
 	</properties>
 	<repositories>
@@ -90,7 +90,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.0.0-M6</version>
+				<version>3.0.0-M7</version>
 				<configuration>
 					<encoding>UTF-8</encoding>
 					<argLine>-Dgraalvm.locatorDisabled=true -Dfile.encoding=UTF-8 --add-exports org.graalvm.truffle/com.oracle.truffle.api.nodes=ALL-UNNAMED --add-exports org.graalvm.truffle/com.oracle.truffle.api.exception=ALL-UNNAMED --add-exports org.graalvm.truffle/com.oracle.truffle.api=ALL-UNNAMED</argLine>
