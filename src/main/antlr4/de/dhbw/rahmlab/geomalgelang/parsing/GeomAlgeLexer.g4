@@ -277,7 +277,7 @@ CAPITAL_E__SUBSCRIPT_ZERO
 
 ///////////////////////////////////////////////////////////////////////////
 // Various
-// Identifier Symbol needs to be defined after o (origin vector) and n (infinity vector) due to lexer precedence rules!
+// Symbol 'IDENTIFIER' needs to be defined after o (origin vector) and n (infinity vector) due to lexer precedence rules!
 ///////////////////////////////////////////////////////////////////////////
 
 fragment LETTER
