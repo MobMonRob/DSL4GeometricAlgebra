@@ -10,8 +10,9 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>
-		<skipTests>false</skipTests>
+		<skipTests>true</skipTests>
 		<graalvm.version>22.0.0.2</graalvm.version>
+		<antlr.version>4.11.1</antlr.version>
 	</properties>
 	<repositories>
 		<repository>
@@ -24,11 +25,20 @@
 		</repository>
 	</repositories>
 	<dependencies>
-		<!-- https://mvnrepository.com/artifact/org.antlr/antlr4-maven-plugin -->
+		<!-- Needs to be antlr4-master. antlr4-maven-plugins doesn't work here. -->
 		<dependency>
 			<groupId>org.antlr</groupId>
-			<artifactId>antlr4-maven-plugin</artifactId>
-			<version>4.9.3</version>
+			<artifactId>antlr4-master</artifactId>
+			<version>${antlr.version}</version>
+			<scope>compile</scope>
+			<type>pom</type>
+		</dependency>
+		<!-- Needed for AntlrTestRig -->
+		<dependency>
+			<groupId>org.antlr</groupId>
+			<artifactId>antlr4</artifactId>
+			<version>${antlr.version}</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
@@ -74,10 +84,12 @@
 			<plugin>
 				<groupId>org.antlr</groupId>
 				<artifactId>antlr4-maven-plugin</artifactId>
-				<version>4.9.3</version>
+				<version>${antlr.version}</version>
 				<configuration>
 					<listener>true</listener>
 					<visitor>true</visitor>
+					<treatWarningsAsErrors>true</treatWarningsAsErrors>
+					<detail>true</detail>
 				</configuration>
 				<executions>
 					<execution>

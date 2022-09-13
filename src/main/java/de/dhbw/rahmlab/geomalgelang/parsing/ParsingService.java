@@ -6,7 +6,6 @@ package de.dhbw.rahmlab.geomalgelang.parsing;
 
 import com.oracle.truffle.api.source.Source;
 import de.dhbw.rahmlab.geomalgelang.parsing.astConstruction.ExprTransform;
-import de.dhbw.rahmlab.geomalgelang.parsing.debug.AntlrTestRig;
 import de.dhbw.rahmlab.geomalgelang.parsing.debug.AstStringBuilder;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.technical.BaseNode;
 import java.io.IOException;
@@ -25,7 +24,6 @@ public final class ParsingService {
 	private GeomAlgeLexer lexer = null;
 	private GeomAlgeParser parser = null;
 	private ExprTransform exprTransform = null;
-	private static AntlrTestRig testRig = null;
 	private String astString = null;
 
 	private boolean isLexerParserAvailable = false;
@@ -59,7 +57,7 @@ public final class ParsingService {
 			this.parser.removeErrorListeners();
 			this.parser.addErrorListener(SyntaxErrorListener.INSTANCE);
 		}
-		
+
 		this.isLexerParserAvailable = true;
 	}
 
@@ -95,16 +93,6 @@ public final class ParsingService {
 		}
 
 		this.isAstStringAvailable = true;
-	}
-
-	public void processANTLRTestRig() throws Exception {
-		this.ensureLexerParserAvailable();
-
-		if (testRig == null) {
-			testRig = new AntlrTestRig();
-		}
-
-		testRig.process(this.lexer, this.parser, this.inputStream, "program");
 	}
 
 	public BaseNode getTruffleTopNode() {

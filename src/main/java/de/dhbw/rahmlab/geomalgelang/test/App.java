@@ -45,9 +45,11 @@ public class App {
 		System.out.println();
 	}
 
+	@Deprecated
 	private static void parseTestSimple(String program) throws Exception {
-		ParsingService parsingService = new ParsingService(program);
-		parsingService.processANTLRTestRig();
+		throw new UnsupportedOperationException();
+		//ParsingService parsingService = new ParsingService(program);
+		//parsingService.processANTLRTestRig();
 	}
 
 	private static void parseTestExtended(String program) throws Exception {

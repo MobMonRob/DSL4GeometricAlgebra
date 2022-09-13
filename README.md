@@ -11,7 +11,7 @@ Extract the downloaded archive to an arbitrary location.
 
 ### Netbeans configuration
 Add a new java platform with the name "GraalVM 17". \
-Within the Netbeans 13 IDE you can do this if you follow these steps:
+Within the Netbeans 15 IDE you can do this if you follow these steps:
 - open project properties via right-click on the project
 - navigate to Build / Compile
 - click "Manage Java Platforms..."
@@ -71,7 +71,7 @@ All of these types are automatically casted into a multivector inside the langua
 
 ### Dual operators
 #### Base operators
-| precedence | symbol           | latex   | unicode | name | implementation | hints | 
+| precedence | symbol           | latex   | unicode | name | implementation | hints |
 | :--------: | :--------------: | ------- | ------- | ---- | -------------- | ----- |
 | 4          | &#x0020; (space) |         | \u0020  | geometric product | multivector1.gp(multivector2) | Exactly one space character is interpreted as the operator. |
 | 3          | &#x22C5;         | \cdot   | \u22C5  | inner product | multivector1.ip(multivector2, RIGHT_CONTRACTION) | Decreasing dimensions or contracting a subspace. In the default configuration equal to left contraction (corresponding to Ganja.js). But this looks to be incompatible with some formulas in [Kleppe], which work only with the usage of right contraction. In CLUscript this corresponds to ".". |
@@ -103,7 +103,7 @@ The unary operators have the highest precedence, so they are executed before any
 
 There exist three types of involution operations: Space inversion, reversion and the combination of both the clifford conjugation.
 
-#### Additional monatic operators (for more convenience only) 
+#### Additional monatic operators (for more convenience only)
 | precedence | symbol           | latex                 | unicode      | description | implementation |
 | :--------: | :--------------: | --------------------- | ------------ | ----------- | -------------- |
 | 6          | &#x207B;&#x002A; | \textsuperscript{-\*} | \u207B\u002A | undual | multivector.undual() or -multivector.dual() |
@@ -182,7 +182,7 @@ The implementation can be based on a method of the api class CGAMultivector or b
 | &#x00F1;         |               | \u00F1       | corresponding to origin vector in Doran & Lasenby | -2&#x03B5;&#8320; |
 | &#x0045;&#x2080; |               | \u0045\u2080 | Minkovsky bi-vector | &#x03B5;&#7522; &#x2227; &#x03B5;&#8320;|
 
-### Syntax 
+### Syntax
 
 A Semikolumn (;) at the end of a statement results in not visualizing the corresponding geometric object.
 
@@ -211,17 +211,17 @@ A Semikolumn (;) at the end of a statement results in not visualizing the corres
 | Point(sphere) from four conformal points (p1, p2, p3, p4) | p1&#8743;p2&#8743;p3 &#8743;p4 | 4 |
 
 ### Formulae to decompose conformal object representations
-| description | formula | 
+| description | formula |
 | :---------- | :------ |
 | Backprojection of a conformal point (P) into an euclidian vector. The formula in the first bracket normalizes the point. Then this normalized point is rejected from the minkowski plane. | (P/(P&#x22C5;&#x03B5;&#7522;))&#x2227;E&#8320;E&#8320;&#x207B;&#x00B9; |
-| Location of a round (X) or a tangent (X) represented in 3d coordinates | -0.5(X&#x03B5;&#7522;X)/(&#x03B5;&#7522;&#8901;X)&sup2; | 
+| Location of a round (X) or a tangent (X) represented in 3d coordinates | -0.5(X&#x03B5;&#7522;X)/(&#x03B5;&#7522;&#8901;X)&sup2; |
 | Direction vector (attitude) of a dual line (L*) represented as 3d coordinates of (&#949;&#8321;, &#949;&#8322;, &#949;&#8323;). | (L*&#8901;&#x03B5;&#8320;)&#8901;&#x03B5;&#7522; |
 | Radius (r) of a conformal sphere (S) | r&#x00B2; = (S&#x002A;)&#x00B2; = S&#x002A;&#x22C5;S&#x002A; |
 | Distance (d) between the the center of a conformal sphere (S) and a conformal point (P) | d&#x00B2; = S&#x22C5;S-2S&#x22C5;P |
 
 ### Formulae to implement base functionalitity of CGA
 
-| description | formula | 
+| description | formula |
 | :---------- | :------ |
 | Matrix free implementation of the inverse | x&#x207B;&#x00B9; =  (x&#x2020; x&#x5e; x&#x02DC; negate14(x)(x x&#x2020; x&#x5e; x&#x02DC;))/(x x&#x2020; x&#x5e; x&#x02DC; negate14(x) (x x&#x2020; x&#x5e; x&#x02DC;)) |
 

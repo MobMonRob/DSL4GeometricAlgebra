@@ -10,6 +10,7 @@ import de.dhbw.rahmlab.geomalgelang.truffle.nodes.binaryOps.*;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.technical.BaseNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.unaryOps.*;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.variableLike.*;
+import de.dhbw.rahmlab.geomalgelang.truffle.runtime.*;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
@@ -27,6 +28,13 @@ import java.util.Deque;
  * @author fabian
  */
 public class ExprTransform extends GeomAlgeParserBaseListener {
+
+	// Workaround to make the imports work for the generated sources ([...]NodeGen) so that the compiler recognizes them.
+	private Addition addition;
+	private Dual dual;
+	private Constant constant;
+	private GlobalVariableScope a;
+	private GlobalVariableScopeGen b;
 
 	protected final Deque<BaseNode> nodeStack = new ArrayDeque<>();
 
