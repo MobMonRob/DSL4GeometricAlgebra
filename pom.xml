@@ -43,7 +43,7 @@
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
-			<version>5.8.2</version>
+			<version>5.9.0</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -122,6 +122,18 @@
 						<arg>--add-exports</arg>
 						<arg>org.graalvm.truffle/com.oracle.truffle.api=ALL-UNNAMED</arg>
 					</compilerArgs>
+					<!-- Fix recognition of files generated from truffle. The entries are taken from the dependency truffle-dsl-processor / META-INF / services / javax.annotation.processing.Processor. Version was 22.0.0.2. The processor names could change with the version! Inspired from https://netbeans.apache.org/kb/docs/java/annotations.html ; https://stackoverflow.com/questions/9847483/why-doesnt-netbeans-ide-see-the-generated-sources/43331054#43331054 ; https://www.baeldung.com/java-annotation-processing-builder#3-using-maven -->
+					<generatedSourcesDirectory>${project.build.directory}/generated-sources/truffle-dsl-processor</generatedSourcesDirectory>
+					<annotationProcessors>
+						<annotationProcessor>com.oracle.truffle.dsl.processor.TruffleProcessor</annotationProcessor>
+						<annotationProcessor>com.oracle.truffle.dsl.processor.verify.VerifyTruffleProcessor</annotationProcessor>
+						<annotationProcessor>com.oracle.truffle.dsl.processor.LanguageRegistrationProcessor</annotationProcessor>
+						<annotationProcessor>com.oracle.truffle.dsl.processor.InstrumentRegistrationProcessor</annotationProcessor>
+						<annotationProcessor>com.oracle.truffle.dsl.processor.InstrumentableProcessor</annotationProcessor>
+						<annotationProcessor>com.oracle.truffle.dsl.processor.verify.VerifyCompilationFinalProcessor</annotationProcessor>
+						<annotationProcessor>com.oracle.truffle.dsl.processor.OptionProcessor</annotationProcessor>
+					</annotationProcessors>
+					<!--  -->
 				</configuration>
 			</plugin>
 			<plugin>
