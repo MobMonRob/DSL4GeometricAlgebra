@@ -68,6 +68,7 @@ All of these types are automatically casted into a multivector inside the langua
 | E3MVec | |
 
 ## Operators
+Hint: Operator precedence determines how operators are parsed concerning each other. Operators with higher precedence become the operands of operators with lower precedence.
 
 ### Dual operators
 #### Base operators
