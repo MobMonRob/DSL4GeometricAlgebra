@@ -10,7 +10,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>
-		<skipTests>true</skipTests>
+		<skipTests>false</skipTests>
 		<graalvm.version>22.0.0.2</graalvm.version>
 		<antlr.version>4.11.1</antlr.version>
 	</properties>
@@ -25,13 +25,11 @@
 		</repository>
 	</repositories>
 	<dependencies>
-		<!-- Needs to be antlr4-master. antlr4-maven-plugins doesn't work here. -->
 		<dependency>
 			<groupId>org.antlr</groupId>
-			<artifactId>antlr4-master</artifactId>
+			<artifactId>antlr4-runtime</artifactId>
 			<version>${antlr.version}</version>
 			<scope>compile</scope>
-			<type>pom</type>
 		</dependency>
 		<!-- Needed for AntlrTestRig -->
 		<dependency>
@@ -40,6 +38,7 @@
 			<version>${antlr.version}</version>
 			<scope>test</scope>
 		</dependency>
+		<!-- -->
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
@@ -51,11 +50,15 @@
 			<artifactId>truffle-api</artifactId>
 			<version>${graalvm.version}</version>
 		</dependency>
+		<!-- Workaround to make netbeans recognize generated source files. Otherwise unnecessary. -->
 		<dependency>
 			<groupId>org.graalvm.truffle</groupId>
 			<artifactId>truffle-dsl-processor</artifactId>
 			<version>${graalvm.version}</version>
+			<scope>provided</scope>
+			<type>pom</type>
 		</dependency>
+		<!-- -->
 		<dependency>
 			<!-- https://www.graalvm.org/22.0/reference-manual/embed-languages/#dependency-setup -->
 			<groupId>org.graalvm.sdk</groupId>
@@ -78,6 +81,7 @@
 			<artifactId>GeometricAlgebra</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
+		<!-- -->
 	</dependencies>
 	<build>
 		<plugins>
@@ -124,6 +128,13 @@
 					</compilerArgs>
 					<!-- Fix recognition of files generated from truffle. The entries are taken from the dependency truffle-dsl-processor / META-INF / services / javax.annotation.processing.Processor. Version was 22.0.0.2. The processor names could change with the version! Inspired from https://netbeans.apache.org/kb/docs/java/annotations.html ; https://stackoverflow.com/questions/9847483/why-doesnt-netbeans-ide-see-the-generated-sources/43331054#43331054 ; https://www.baeldung.com/java-annotation-processing-builder#3-using-maven -->
 					<generatedSourcesDirectory>${project.build.directory}/generated-sources/truffle-dsl-processor</generatedSourcesDirectory>
+					<annotationProcessorPaths>
+						<annotationProcessorPath>
+							<groupId>org.graalvm.truffle</groupId>
+							<artifactId>truffle-dsl-processor</artifactId>
+							<version>${graalvm.version}</version>
+						</annotationProcessorPath>
+					</annotationProcessorPaths>
 					<annotationProcessors>
 						<annotationProcessor>com.oracle.truffle.dsl.processor.TruffleProcessor</annotationProcessor>
 						<annotationProcessor>com.oracle.truffle.dsl.processor.verify.VerifyTruffleProcessor</annotationProcessor>
@@ -134,7 +145,17 @@
 						<annotationProcessor>com.oracle.truffle.dsl.processor.OptionProcessor</annotationProcessor>
 					</annotationProcessors>
 					<!--  -->
+					<failOnError>true</failOnError>
 				</configuration>
+				<dependencies>
+					<!-- truffle-dsl-processor is indeed only needed in compile time. -->
+					<dependency>
+						<groupId>org.graalvm.truffle</groupId>
+						<artifactId>truffle-dsl-processor</artifactId>
+						<version>${graalvm.version}</version>
+					</dependency>
+					<!-- -->
+				</dependencies>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
