@@ -146,18 +146,6 @@
 							<version>${graalvm.version}</version>
 						</annotationProcessorPath>
 					</annotationProcessorPaths>
-					<!-- -->
-					<!-- Workaround to make netbeans recognize the generated source files from truffle. The entries are taken from the dependency truffle-dsl-processor / META-INF / services / javax.annotation.processing.Processor. Version was 22.0.0.2. The processor names could change with the version! -->
-					<annotationProcessors>
-						<annotationProcessor>com.oracle.truffle.dsl.processor.TruffleProcessor</annotationProcessor>
-						<annotationProcessor>com.oracle.truffle.dsl.processor.verify.VerifyTruffleProcessor</annotationProcessor>
-						<annotationProcessor>com.oracle.truffle.dsl.processor.LanguageRegistrationProcessor</annotationProcessor>
-						<annotationProcessor>com.oracle.truffle.dsl.processor.InstrumentRegistrationProcessor</annotationProcessor>
-						<annotationProcessor>com.oracle.truffle.dsl.processor.InstrumentableProcessor</annotationProcessor>
-						<annotationProcessor>com.oracle.truffle.dsl.processor.verify.VerifyCompilationFinalProcessor</annotationProcessor>
-						<annotationProcessor>com.oracle.truffle.dsl.processor.OptionProcessor</annotationProcessor>
-					</annotationProcessors>
-					<!-- -->
 					<failOnError>true</failOnError>
 				</configuration>
 				<dependencies>
