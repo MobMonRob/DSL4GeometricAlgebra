@@ -50,21 +50,30 @@
 			<artifactId>truffle-api</artifactId>
 			<version>${graalvm.version}</version>
 		</dependency>
-		<!-- Workaround to make netbeans recognize generated source files. Otherwise unnecessary. -->
+		<!-- Workaround to make netbeans recognize generated source files from truffle. Otherwise unnecessary. -->
 		<dependency>
 			<groupId>org.graalvm.truffle</groupId>
 			<artifactId>truffle-dsl-processor</artifactId>
 			<version>${graalvm.version}</version>
+			<!-- Prevents dependent projects from using this dependency transitively. But also includes it in the compile classpath. -->
 			<scope>provided</scope>
+			<!-- -->
+			<!-- Prevents the dependency (but not it's dependencies) from being included in the compile classpath. And prevents thereby conflicts between it's included version of the antlr-runtime and our antlr-runtime dependency. -->
 			<type>pom</type>
+			<!-- -->
+			<!-- Prevents dependent projects from using this dependency transitively. (redundant) -->
+			<optional>true</optional>
+			<!-- -->
 		</dependency>
 		<!-- -->
+		<!-- https://www.graalvm.org/22.0/reference-manual/embed-languages/#dependency-setup -->
 		<dependency>
-			<!-- https://www.graalvm.org/22.0/reference-manual/embed-languages/#dependency-setup -->
 			<groupId>org.graalvm.sdk</groupId>
 			<artifactId>graal-sdk</artifactId>
 			<version>${graalvm.version}</version>
+			<scope>provided</scope>
 		</dependency>
+		<!-- -->
 		<dependency>
 			<groupId>com.github.JogAmp</groupId>
 			<artifactId>vecmath</artifactId>
@@ -126,8 +135,10 @@
 						<arg>--add-exports</arg>
 						<arg>org.graalvm.truffle/com.oracle.truffle.api=ALL-UNNAMED</arg>
 					</compilerArgs>
-					<!-- Fix recognition of files generated from truffle. The entries are taken from the dependency truffle-dsl-processor / META-INF / services / javax.annotation.processing.Processor. Version was 22.0.0.2. The processor names could change with the version! Inspired from https://netbeans.apache.org/kb/docs/java/annotations.html ; https://stackoverflow.com/questions/9847483/why-doesnt-netbeans-ide-see-the-generated-sources/43331054#43331054 ; https://www.baeldung.com/java-annotation-processing-builder#3-using-maven -->
+					<!-- Workaround to make netbeans recognize generated source files from truffle. -->
 					<generatedSourcesDirectory>${project.build.directory}/generated-sources/truffle-dsl-processor</generatedSourcesDirectory>
+					<!-- -->
+					<!-- Prevents conflicts between truffle and antlr-runtime. -->
 					<annotationProcessorPaths>
 						<annotationProcessorPath>
 							<groupId>org.graalvm.truffle</groupId>
@@ -135,6 +146,8 @@
 							<version>${graalvm.version}</version>
 						</annotationProcessorPath>
 					</annotationProcessorPaths>
+					<!-- -->
+					<!-- Workaround to make netbeans recognize the generated source files from truffle. The entries are taken from the dependency truffle-dsl-processor / META-INF / services / javax.annotation.processing.Processor. Version was 22.0.0.2. The processor names could change with the version! -->
 					<annotationProcessors>
 						<annotationProcessor>com.oracle.truffle.dsl.processor.TruffleProcessor</annotationProcessor>
 						<annotationProcessor>com.oracle.truffle.dsl.processor.verify.VerifyTruffleProcessor</annotationProcessor>
@@ -144,16 +157,18 @@
 						<annotationProcessor>com.oracle.truffle.dsl.processor.verify.VerifyCompilationFinalProcessor</annotationProcessor>
 						<annotationProcessor>com.oracle.truffle.dsl.processor.OptionProcessor</annotationProcessor>
 					</annotationProcessors>
-					<!--  -->
+					<!-- -->
 					<failOnError>true</failOnError>
 				</configuration>
 				<dependencies>
-					<!-- truffle-dsl-processor is indeed only needed in compile time. -->
+					<!-- Prevents conflicts between truffle and antlr-runtime. -->
+					<!-- truffle-dsl-processor is indeed only needed at compile time. -->
 					<dependency>
 						<groupId>org.graalvm.truffle</groupId>
 						<artifactId>truffle-dsl-processor</artifactId>
 						<version>${graalvm.version}</version>
 					</dependency>
+					<!-- -->
 					<!-- -->
 				</dependencies>
 			</plugin>
