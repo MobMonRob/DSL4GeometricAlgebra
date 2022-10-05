@@ -5,14 +5,17 @@
 package de.dhbw.rahmlab.geomalgelang.parsing.expr.space;
 
 import de.dhbw.rahmlab.geomalgelang.parsing.ParsingService;
+import de.dhbw.rahmlab.geomalgelang.parsing._util.AstStringBuilder;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.binaryOps.*;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.unaryOps.*;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.variableLike.*;
 import java.util.ArrayList;
 import java.util.List;
+import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.graalvm.polyglot.Context;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -59,23 +62,56 @@ public class GeometricProductTest {
 	// Genau 1 Leerzeichen zwischen zwei aus {unOp, grouping, lit}-Expr wird als binOp_ interpretiert.
 	@Test
 	void R1_1_and_R1_2() {
-		StringBuilder program = new StringBuilder();
+		final int maxSpaces = 3;
+		ArrayList<String> spaces = new ArrayList(maxSpaces);
+		for (int i = 1; i < maxSpaces; ++i) {
+			spaces.add(" ".repeat(i));
+		}
 
-		// Zweimal durch atomicExpr durchiterieren, um das program zu bauen
-		// Iterieren durch die Leerzeichen Anzahl
-		// -> Erst mal direkt die Assertion ausführen. Später evtl. mit Datenstruktur das Bauen und Testen separieren.
+		StringBuilder programStringBuilder = new StringBuilder();
+		StringBuilder expectedAstStringBuilder = new StringBuilder();
 
-		/*
-		String actualAstString = ParsingService.getAstString(program);
+		for (ExampleSet leftExamples : atomicExpr) {
+			String leftNodeName = leftExamples.nodeName();
 
-		// Alternativ \t statt sichtbare Tabulatoren
-		String expectedAstString = """
-			GeometricProduct
-				GlobalVariableReference
-				GlobalVariableReference
-			""";
+			for (ExampleSet rightExamples : atomicExpr) {
+				String rightNodeName = rightExamples.nodeName();
 
-		Assertions.assertEquals(expectedAstString, actualAstString);
-		 */
+				expectedAstStringBuilder.setLength(0);
+				expectedAstStringBuilder.append("\nGeometricProduct\n");
+				expectedAstStringBuilder.append("\t");
+				expectedAstStringBuilder.append(leftNodeName);
+				expectedAstStringBuilder.append("\n");
+				expectedAstStringBuilder.append("\t");
+				expectedAstStringBuilder.append(rightNodeName);
+				expectedAstStringBuilder.append("\n");
+
+				for (String space : spaces) {
+					for (String left : leftExamples.examples()) {
+						for (String right : rightExamples.examples()) {
+							programStringBuilder.setLength(0);
+							programStringBuilder.append(left);
+							programStringBuilder.append(space);
+							programStringBuilder.append(right);
+
+							StringBuilder messageBuilder = new StringBuilder();
+							messageBuilder.append("program: ");
+							messageBuilder.append(programStringBuilder.toString());
+							messageBuilder.append("\n");
+
+							String actualAstString = null;
+							try {
+								actualAstString = AstStringBuilder.getAstString(ParsingService.instance(programStringBuilder.toString()).getTruffleTopNode(), 2);
+							} catch (ParseCancellationException e) {
+								fail(messageBuilder.toString() + e.toString());
+							}
+
+							System.out.print(messageBuilder.toString());
+							Assertions.assertEquals(expectedAstStringBuilder.toString(), actualAstString, messageBuilder.toString());
+						}
+					}
+				}
+			}
+		}
 	}
 }

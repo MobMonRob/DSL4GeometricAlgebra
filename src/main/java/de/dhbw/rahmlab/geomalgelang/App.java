@@ -11,7 +11,7 @@ public class App {
 
 	public static void main(String[] args) throws Exception {
 		//String program = "a ε₀ ⋅ (1.5 + 5.3)†";
-		String program = "a (b) c";
+		String program = "a (π) c";
 
 		System.out.println("inputed program: " + program);
 

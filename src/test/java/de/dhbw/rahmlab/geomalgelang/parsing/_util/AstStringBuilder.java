@@ -17,9 +17,9 @@ public class AstStringBuilder {
 
 	}
 
-	private static final String INDENTATION_SYMBOL = "	";
+	private static final String INDENTATION_SYMBOL = "\t";
 
-	private final StringBuilder astString = new StringBuilder();
+	private final StringBuilder astString = new StringBuilder("\n");
 
 	private final Node root;
 
@@ -60,10 +60,10 @@ public class AstStringBuilder {
 	 * @param indentation
 	 */
 	private void processTreeNode(Node node, String indentation, int currentMaxDepth) {
-		--currentMaxDepth;
-		if (currentMaxDepth <= 0) {
+		if (currentMaxDepth < 1) {
 			return;
 		}
+		--currentMaxDepth;
 
 		String name = node.getClass().getSimpleName().replace("NodeGen", "");
 
