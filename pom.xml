@@ -138,13 +138,14 @@
 					<!-- Workaround to make netbeans recognize generated source files from truffle. -->
 					<generatedSourcesDirectory>${project.build.directory}/generated-sources/truffle-dsl-processor</generatedSourcesDirectory>
 					<!-- -->
-					<!-- Prevents conflicts between truffle and antlr-runtime. -->
 					<annotationProcessorPaths>
+						<!-- Prevents conflicts between truffle and antlr-runtime. -->
 						<annotationProcessorPath>
 							<groupId>org.graalvm.truffle</groupId>
 							<artifactId>truffle-dsl-processor</artifactId>
 							<version>${graalvm.version}</version>
 						</annotationProcessorPath>
+						<!-- -->
 					</annotationProcessorPaths>
 					<failOnError>true</failOnError>
 				</configuration>
