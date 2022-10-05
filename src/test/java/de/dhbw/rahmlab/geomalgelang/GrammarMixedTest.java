@@ -5,6 +5,7 @@
 package de.dhbw.rahmlab.geomalgelang;
 
 import de.dhbw.rahmlab.geomalgelang.parsing.ParsingService;
+import de.dhbw.rahmlab.geomalgelang.parsing._util.AstStringBuilder;
 import org.graalvm.polyglot.Context;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
@@ -42,7 +43,7 @@ public class GrammarMixedTest {
 	@Test
 	void test() {
 		String program = "a b ⋅ (1.5 + 5.3)†";
-		String actualAstString = ParsingService.getAstString(program);
+		String actualAstString = AstStringBuilder.getAstString(ParsingService.instance(program).getTruffleTopNode());
 
 		// Alternativ \t statt sichtbare Tabulatoren
 		String expectedAstString = """

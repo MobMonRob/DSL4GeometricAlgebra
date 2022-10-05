@@ -1,8 +1,7 @@
-package de.dhbw.rahmlab.geomalgelang.test;
+package de.dhbw.rahmlab.geomalgelang;
 
 import de.dhbw.rahmlab.geomalgelang.api.LanguageInvocation;
 import de.dhbw.rahmlab.geomalgelang.cga.CGAMultivector_Processor_CGA1Multivector;
-import de.dhbw.rahmlab.geomalgelang.parsing.ParsingService;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -16,8 +15,6 @@ public class App {
 
 		System.out.println("inputed program: " + program);
 
-		parseTestExtended(program);
-		//parseTestSimple(program);
 		//invocationTest(program);
 		//charsetTest();
 	}
@@ -43,17 +40,5 @@ public class App {
 		String answer = LanguageInvocation.invoke(program, inputVars, new CGAMultivector_Processor_CGA1Multivector());
 		System.out.println("answer: " + answer);
 		System.out.println();
-	}
-
-	@Deprecated
-	private static void parseTestSimple(String program) throws Exception {
-		throw new UnsupportedOperationException();
-		//ParsingService parsingService = new ParsingService(program);
-		//parsingService.processANTLRTestRig();
-	}
-
-	private static void parseTestExtended(String program) throws Exception {
-		String astString = ParsingService.getAstString(program);
-		System.out.println(astString);
 	}
 }

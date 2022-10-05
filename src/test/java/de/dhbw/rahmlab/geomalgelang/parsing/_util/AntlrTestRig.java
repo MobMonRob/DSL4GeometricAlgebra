@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.dhbw.rahmlab.geomalgelang.parsing.debug;
+package de.dhbw.rahmlab.geomalgelang.parsing._util;
 
 import org.antlr.v4.gui.TestRig;
 import org.antlr.v4.runtime.CharStream;

@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package de.dhbw.rahmlab.geomalgelang.parsing.debug;
+package de.dhbw.rahmlab.geomalgelang.parsing._util;
 
 import com.oracle.truffle.api.nodes.Node;
 import java.util.ArrayDeque;
@@ -54,6 +54,44 @@ public class AstStringBuilder {
 	}
 
 	/**
+	 * Can lead to StackOverflow for large AST's due to the usage of Recursion.
+	 *
+	 * @param node
+	 * @param indentation
+	 */
+	private void processTreeNode(Node node, String indentation, int currentMaxDepth) {
+		--currentMaxDepth;
+		if (currentMaxDepth <= 0) {
+			return;
+		}
+
+		String name = node.getClass().getSimpleName().replace("NodeGen", "");
+
+		/*
+		// Only needed for debugging
+		if (node instanceof GlobalVariableReference) {
+			GlobalVariableReference theCurrent = (GlobalVariableReference) node;
+			name = "GlobalVariableReference[" + theCurrent.getName() + "]";
+		}
+		 */
+		this.astString.append(indentation);
+		this.astString.append(name);
+		this.astString.append("\n");
+
+		String childrenIndentation = indentation + INDENTATION_SYMBOL;
+		for (Node child : node.getChildren()) {
+			processTreeNode(child, childrenIndentation, currentMaxDepth);
+		}
+	}
+
+	/**
+	 * Invocation once only.
+	 */
+	private void processTree(int maxDepth) {
+		processTreeNode(this.root, "", maxDepth);
+	}
+
+	/**
 	 * Invocation once only.
 	 */
 	private void processTree() {
@@ -62,6 +100,17 @@ public class AstStringBuilder {
 
 	private String getAstString() {
 		return this.astString.toString();
+	}
+
+	/**
+	 * Can lead to StackOverflow for large AST's. In this case either increase the stack or use
+	 * getAstStringNonRecursive().
+	 */
+	public static String getAstString(Node root, int maxDepth) {
+		AstStringBuilder astStringBuilder = new AstStringBuilder(root);
+		astStringBuilder.processTree(maxDepth);
+		String astString = astStringBuilder.getAstString();
+		return astString;
 	}
 
 	/**
