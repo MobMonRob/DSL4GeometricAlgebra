@@ -117,8 +117,8 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>3.0.0-M7</version>
 				<configuration>
-					<encoding>UTF-8</encoding>
-					<argLine>-Dgraalvm.locatorDisabled=true -Dfile.encoding=UTF-8 --add-exports org.graalvm.truffle/com.oracle.truffle.api.nodes=ALL-UNNAMED --add-exports org.graalvm.truffle/com.oracle.truffle.api.exception=ALL-UNNAMED --add-exports org.graalvm.truffle/com.oracle.truffle.api=ALL-UNNAMED</argLine>
+					<encoding>${project.build.sourceEncoding}</encoding>
+					<argLine>-Dfile.encoding=UTF-8 -Dstdout.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Dgraalvm.locatorDisabled=true --add-exports org.graalvm.truffle/com.oracle.truffle.api.nodes=ALL-UNNAMED --add-exports org.graalvm.truffle/com.oracle.truffle.api.exception=ALL-UNNAMED --add-exports org.graalvm.truffle/com.oracle.truffle.api=ALL-UNNAMED</argLine>
 					<skipTests>${skipTests}</skipTests>
 				</configuration>
 			</plugin>
@@ -127,6 +127,7 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.10.1</version>
 				<configuration>
+					<encoding>${project.build.sourceEncoding}</encoding>
 					<compilerArgs>
 						<arg>--add-exports</arg>
 						<arg>org.graalvm.truffle/com.oracle.truffle.api.nodes=ALL-UNNAMED</arg>

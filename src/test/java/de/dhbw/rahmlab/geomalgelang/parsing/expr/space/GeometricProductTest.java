@@ -9,6 +9,9 @@ import de.dhbw.rahmlab.geomalgelang.parsing._util.AstStringBuilder;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.binaryOps.*;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.unaryOps.*;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.variableLike.*;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
@@ -61,7 +64,7 @@ public class GeometricProductTest {
 	// Zwei und mehr Leerzeichen zwischen zwei aus {unOp, grouping, lit}-Expr wird als binOp_ interpretiert.
 	// Genau 1 Leerzeichen zwischen zwei aus {unOp, grouping, lit}-Expr wird als binOp_ interpretiert.
 	@Test
-	void R1_1_and_R1_2() {
+	void R1_1_and_R1_2() throws UnsupportedEncodingException {
 		final int maxSpaces = 3;
 		ArrayList<String> spaces = new ArrayList(maxSpaces);
 		for (int i = 1; i < maxSpaces; ++i) {
