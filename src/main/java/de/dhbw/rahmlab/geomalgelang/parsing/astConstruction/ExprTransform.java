@@ -15,6 +15,7 @@ import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 /**
  * This class converts an expression subtree of an ANTLR parsetree into an expression AST in truffle.
@@ -28,10 +29,20 @@ import java.util.Deque;
  */
 public class ExprTransform extends GeomAlgeParserBaseListener {
 
-	protected final Deque<BaseNode> nodeStack = new ArrayDeque<>();
+	private final Deque<BaseNode> nodeStack = new ArrayDeque<>();
 
-	public BaseNode getTopNode() {
-		return nodeStack.getFirst();
+	private ExprTransform() {
+		super();
+	}
+
+	public static BaseNode execute(GeomAlgeParser.ExprContext exprCtx) {
+		ParseTreeWalker treeWalker = new ParseTreeWalker();
+		ExprTransform exprTransform = new ExprTransform();
+
+		treeWalker.walk(exprTransform, exprCtx);
+
+		BaseNode rootNode = exprTransform.nodeStack.getFirst();
+		return rootNode;
 	}
 
 	@Override

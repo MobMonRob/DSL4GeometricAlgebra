@@ -11,8 +11,6 @@ import java.io.IOException;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.misc.ParseCancellationException;
-import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 /**
  *
@@ -20,71 +18,41 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
  */
 public final class ParsingService {
 
-	private final CharStream inputStream;
-	private GeomAlgeLexer lexer = null;
-	private GeomAlgeParser parser = null;
-	private ExprTransform exprTransform = null;
+	private ParsingService() {
 
-	private boolean isLexerParserAvailable = false;
-	private boolean isExprTransformAvailable = false;
-
-	public ParsingService(Source program) throws IOException {
-		this.inputStream = CharStreams.fromReader(program.getReader());
 	}
 
-	public ParsingService(String program) {
-		this.inputStream = CharStreams.fromString(program);
+	public static BaseNode sourceCodeToRootNode(Source program) throws IOException {
+		CharStream inputStream = CharStreams.fromReader(program.getReader());
+		return parseAndTransform(inputStream);
 	}
 
-	public ParsingService(CharStream program) {
-		this.inputStream = program;
+	public static BaseNode sourceCodeToRootNode(String program) {
+		CharStream inputStream = CharStreams.fromString(program);
+		return parseAndTransform(inputStream);
 	}
 
-	private void ensureLexerParserAvailable() {
-		if (this.isLexerParserAvailable) {
-			return;
-		}
-
-		{
-			this.lexer = new GeomAlgeLexer(this.inputStream);
-			this.lexer.removeErrorListeners();
-			this.lexer.addErrorListener(SyntaxErrorListener.INSTANCE);
-
-			CommonTokenStream commonTokenStream = new CommonTokenStream(this.lexer);
-			this.parser = new GeomAlgeParser(commonTokenStream);
-			this.parser.removeErrorListeners();
-			this.parser.addErrorListener(SyntaxErrorListener.INSTANCE);
-		}
-
-		this.isLexerParserAvailable = true;
+	public static BaseNode sourceCodeToRootNode(CharStream program) {
+		CharStream inputStream = program;
+		return parseAndTransform(inputStream);
 	}
 
-	private void ensureExprTransformAvailable() {
-		if (this.isExprTransformAvailable) {
-			return;
-		}
-
-		ensureLexerParserAvailable();
-
-		{
-			ParseTreeWalker treeWalker = new ParseTreeWalker();
-			this.exprTransform = new ExprTransform();
-
-			GeomAlgeParser.ProgramContext progCtx = this.parser.program();
-
-			treeWalker.walk(this.exprTransform, progCtx);
-		}
-
-		this.isExprTransformAvailable = true;
+	private static BaseNode parseAndTransform(CharStream inputStream) {
+		GeomAlgeParser parser = getParser(inputStream);
+		BaseNode rootNode = ExprTransform.execute(parser.expr());
+		return rootNode;
 	}
 
-	public BaseNode getTruffleTopNode() {
-		this.ensureExprTransformAvailable();
+	private static GeomAlgeParser getParser(CharStream inputStream) {
+		GeomAlgeLexer lexer = new GeomAlgeLexer(inputStream);
+		lexer.removeErrorListeners();
+		lexer.addErrorListener(SyntaxErrorListener.INSTANCE);
 
-		return this.exprTransform.getTopNode();
-	}
+		CommonTokenStream commonTokenStream = new CommonTokenStream(lexer);
+		GeomAlgeParser parser = new GeomAlgeParser(commonTokenStream);
+		parser.removeErrorListeners();
+		parser.addErrorListener(SyntaxErrorListener.INSTANCE);
 
-	public static ParsingService instance(String program) {
-		return new ParsingService(program);
+		return parser;
 	}
 }

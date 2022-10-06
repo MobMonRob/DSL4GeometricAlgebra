@@ -149,7 +149,7 @@ public class GeometricProductTest {
 
 							String actualAstString = null;
 							try {
-								actualAstString = AstStringBuilder.getAstString(ParsingService.instance(programStringBuilder.toString()).getTruffleTopNode(), 2);
+								actualAstString = AstStringBuilder.getAstString(ParsingService.sourceCodeToRootNode(programStringBuilder.toString()), 2);
 							} catch (ParseCancellationException e) {
 								fail(messageBuilder.toString() + e.toString());
 							}

@@ -40,8 +40,7 @@ public class GeomAlgeLang extends TruffleLanguage<GeomAlgeLangContext> {
 	}
 
 	private GeomAlgeLangRootNode parseSource(Source source) throws IOException {
-		ParsingService parsingService = new ParsingService(source);
-		BaseNode topNode = parsingService.getTruffleTopNode();
+		BaseNode topNode = ParsingService.sourceCodeToRootNode(source);
 		GeomAlgeLangRootNode rootNode = new GeomAlgeLangRootNode(this, new FrameDescriptor(), topNode);
 		return rootNode;
 	}
