@@ -76,7 +76,7 @@ Hint: Operator precedence determines how operators are parsed concerning each ot
 | :--------: | :--------------: | ------- | ------- | ---- | -------------- | ----- |
 | 4          | &#x0020; (space) |         | \u0020  | geometric product | multivector1.gp(multivector2) | Exactly one space character is interpreted as the operator. |
 | 3          | &#x22C5;         | \cdot   | \u22C5  | inner product | multivector1.ip(multivector2, RIGHT_CONTRACTION) | Decreasing dimensions or contracting a subspace. In the default configuration equal to left contraction (corresponding to Ganja.js). But this looks to be incompatible with some formulas in [Kleppe], which work only with the usage of right contraction. In CLUscript this corresponds to ".". |
-| 3          | &#x2227;         | \wedge  | \u2227  | outer product (meet) | multivector1.op(multivector2), not used for double, for tuple3d it makes sense but actually no implementation is available | joining linearily independend vectors/two disjoint subspaces |
+| 3          | &#x2227;         | \wedge  | \u2227  | outer product (join) | multivector1.op(multivector2), not used for double, for tuple3d it makes sense but actually no implementation is available | joining linearily independend vectors/two disjoint subspaces |
 | 1          | &#x002B;         | +       | \u002B  | sum | multivector1.add(multivector2) | |
 | 1          | &#x002D;         | -       | \u002D  | difference | multivector1.sub(multivector2) | |
 
