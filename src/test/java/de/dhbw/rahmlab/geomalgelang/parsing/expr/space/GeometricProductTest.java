@@ -4,15 +4,11 @@
  */
 package de.dhbw.rahmlab.geomalgelang.parsing.expr.space;
 
-import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParser;
 import de.dhbw.rahmlab.geomalgelang.parsing.ParsingService;
 import de.dhbw.rahmlab.geomalgelang.parsing._util.AstStringBuilder;
-import de.dhbw.rahmlab.geomalgelang.truffle.nodes.binaryOps.*;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.unaryOps.*;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.variableLike.*;
-import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
@@ -30,6 +26,20 @@ import org.junit.jupiter.api.TestInstance;
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class GeometricProductTest {
+
+	Context context;
+
+	@BeforeAll
+	void setup() {
+		context = Context.create();
+		context.enter();
+	}
+
+	@AfterAll
+	void desetup() {
+		context.leave();
+		context.close();
+	}
 
 	public record ExampleSet(String exprType, String nodeName, List<String> examples) {
 
@@ -97,20 +107,6 @@ public class GeometricProductTest {
 	}
 
 	static final List<ExampleSet> allExpr = generateAllExpr();
-
-	Context context;
-
-	@BeforeAll
-	void setup() {
-		context = Context.create();
-		context.enter();
-	}
-
-	@AfterAll
-	void desetup() {
-		context.leave();
-		context.close();
-	}
 
 	// Zwei und mehr Leerzeichen zwischen zwei aus {unOp, grouping, lit}-Expr wird als binOp_ interpretiert.
 	// Genau 1 Leerzeichen zwischen zwei aus {unOp, grouping, lit}-Expr wird als binOp_ interpretiert.
