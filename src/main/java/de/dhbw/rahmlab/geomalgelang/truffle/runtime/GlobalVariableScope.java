@@ -4,6 +4,7 @@
  */
 package de.dhbw.rahmlab.geomalgelang.truffle.runtime;
 
+import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.TruffleLanguage;
 import com.oracle.truffle.api.interop.InteropLibrary;
 import com.oracle.truffle.api.interop.InvalidArrayIndexException;
@@ -13,6 +14,8 @@ import com.oracle.truffle.api.interop.UnsupportedMessageException;
 import com.oracle.truffle.api.interop.UnsupportedTypeException;
 import com.oracle.truffle.api.library.ExportLibrary;
 import com.oracle.truffle.api.library.ExportMessage;
+import de.dhbw.rahmlab.geomalgelang.cga.Current_ICGAMultivector_Processor;
+import de.dhbw.rahmlab.geomalgelang.cga.ICGAMultivector;
 import de.dhbw.rahmlab.geomalgelang.truffle.GeomAlgeLang;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,19 +30,19 @@ import java.util.Set;
 @ExportLibrary(InteropLibrary.class)
 public final class GlobalVariableScope implements TruffleObject {
 
-	private final Map<String, Object> variables = new HashMap<>();
+	private final Map<String, ICGAMultivector> variables = new HashMap<>();
 
 	public boolean newVariable(String name) {
-		Object existingValue = this.variables.putIfAbsent(name, null);
+		ICGAMultivector existingValue = this.variables.putIfAbsent(name, null);
 		return existingValue == null;
 	}
 
-	public boolean assignVariable(String name, Object value) {
-		Object existingValue = this.variables.replace(name, value);
+	public boolean assignVariable(String name, ICGAMultivector value) {
+		ICGAMultivector existingValue = this.variables.replace(name, value);
 		return existingValue != null;
 	}
 
-	public Object getVariable(String name) {
+	public ICGAMultivector getVariable(String name) {
 		return this.variables.get(name);
 	}
 
@@ -53,11 +56,11 @@ public final class GlobalVariableScope implements TruffleObject {
 
 	// necessary for context.getBindings.putMember
 	@ExportMessage
+	@TruffleBoundary
 	public void writeMember(String member, Object value) throws UnsupportedMessageException, UnknownIdentifierException, UnsupportedTypeException {
 		InputValidator.ensureIsValidVariableName(member);
-		InputValidator.ensureIsCGA(value);
-		this.newVariable(member);
-		this.assignVariable(member, value);
+		ICGAMultivector cga = InputValidator.ensureIsCGA(value);
+		this.variables.putIfAbsent(member, cga);
 	}
 
 	@ExportMessage

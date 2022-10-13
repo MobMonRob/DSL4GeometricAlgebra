@@ -4,11 +4,10 @@
  */
 package de.dhbw.rahmlab.geomalgelang.cga;
 
-/**
- *
- * @author fabian
- */
-public class ICGAMultivector<T> {
+import com.oracle.truffle.api.interop.TruffleObject;
+
+// "implements TruffleObject" is only a temporary workaround
+public class ICGAMultivector<T> implements TruffleObject {
 
 	protected final T inner;
 

@@ -75,5 +75,5 @@ public interface ICGAMultivector_Processor<T> {
 
 	T create(double scalar);
 
-	boolean isCGA(Object object);
+	boolean isCGA(ICGAMultivector object);
 }

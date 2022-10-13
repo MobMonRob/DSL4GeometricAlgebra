@@ -118,7 +118,7 @@
 				<version>3.0.0-M7</version>
 				<configuration>
 					<encoding>${project.build.sourceEncoding}</encoding>
-					<argLine>-Dfile.encoding=UTF-8 -Dstdout.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Dgraalvm.locatorDisabled=true --add-exports org.graalvm.truffle/com.oracle.truffle.api.nodes=ALL-UNNAMED --add-exports org.graalvm.truffle/com.oracle.truffle.api.exception=ALL-UNNAMED --add-exports org.graalvm.truffle/com.oracle.truffle.api=ALL-UNNAMED</argLine>
+					<argLine>-Dfile.encoding=UTF-8 -Dstdout.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Dgraalvm.locatorDisabled=true --add-exports org.graalvm.truffle/com.oracle.truffle.api.nodes=ALL-UNNAMED --add-exports org.graalvm.truffle/com.oracle.truffle.api.exception=ALL-UNNAMED --add-exports org.graalvm.truffle/com.oracle.truffle.api=ALL-UNNAMED --add-exports org.graalvm.truffle/com.oracle.truffle.api.interop=ALL-UNNAMED</argLine>
 					<skipTests>${skipTests}</skipTests>
 				</configuration>
 			</plugin>
@@ -135,6 +135,8 @@
 						<arg>org.graalvm.truffle/com.oracle.truffle.api.exception=ALL-UNNAMED</arg>
 						<arg>--add-exports</arg>
 						<arg>org.graalvm.truffle/com.oracle.truffle.api=ALL-UNNAMED</arg>
+						<arg>--add-exports</arg>
+						<arg>org.graalvm.truffle/com.oracle.truffle.api.interop=ALL-UNNAMED</arg>
 					</compilerArgs>
 					<!-- Workaround to make netbeans recognize generated source files from truffle. -->
 					<generatedSourcesDirectory>${project.build.directory}/generated-sources/truffle-dsl-processor</generatedSourcesDirectory>

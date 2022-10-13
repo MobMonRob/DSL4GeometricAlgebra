@@ -151,7 +151,7 @@ public class CGAMultivector_Processor_Generic<T> implements ICGAMultivector_Proc
 	}
 
 	@Override
-	public boolean isCGA(Object object) {
+	public boolean isCGA(ICGAMultivector object) {
 		return concreteProcessor.isCGA(object);
 	}
 }

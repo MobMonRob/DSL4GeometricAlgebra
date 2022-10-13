@@ -149,7 +149,7 @@ public class CGAMultivector_Processor_CGA1Multivector implements ICGAMultivector
 	}
 
 	@Override
-	public boolean isCGA(Object object) {
-		return object instanceof CGA1Multivector;
+	public boolean isCGA(ICGAMultivector object) {
+		return object.inner instanceof CGA1Multivector;
 	}
 }
