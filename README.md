@@ -99,8 +99,8 @@ The unary operators have the highest precedence, so they are executed before any
 | 5          | &#x2212;         | &#x2212;                      | \u2212       | negate | (-1 cast to multivector).gp(multivector) | - |
 | 6          | &#x207B;&#x00B9; | \textsuperscript{-1}          | \u207B\u00B9 | general inverse | multivector.generalInverse() | ! |
 | 6          | &#x002A;         | \textsuperscript{\*}          | \u002A       | dual | multivector.dual() | |
-| 6          | &#x02DC;         | \textsuperscript{\tilde}      | \u02DC       | reverse/adjoint: reverse all multiplications | multivector.reverse() | &#732; |
-| 6          | &#x2020;         | \textsuperscript{\textdagger} | \u2020       | clifford conjugate | multivector.conjugate() | |
+| 6          | &#x02DC;         | \textsuperscript{\tilde}      | \u02DC       | reverse/adjoint: reverse all multiplications (a sign change operation) | multivector.reverse() | &#732; |
+| 6          | &#x2020;         | \textsuperscript{\textdagger} | \u2020       | clifford conjugate (a sign change operation) | multivector.conjugate() | |
 
 There exist three types of involution operations: Space inversion, reversion and the combination of both the clifford conjugation.
 
@@ -109,7 +109,7 @@ There exist three types of involution operations: Space inversion, reversion and
 | :--------: | :--------------: | --------------------- | ------------ | ----------- | -------------- |
 | 6          | &#x207B;&#x002A; | \textsuperscript{-\*} | \u207B\u002A | undual | multivector.undual() or -multivector.dual() |
 | 6          | &#x00B2;         |                       | \u00B2       | square | multivector.gp(multivector), sqr(double) |
-| 6          | &#x005E;         |                       | \u005E       | involute | multivector.gradeInversion(multivector) |
+| 6          | &#x005E;         |                       | \u005E       | grade involution (a sign change operation) | multivector.gradeInversion(multivector) |
 
 
 ### Composite operators
