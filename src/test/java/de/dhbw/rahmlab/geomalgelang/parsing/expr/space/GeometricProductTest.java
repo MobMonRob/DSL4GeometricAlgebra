@@ -4,18 +4,14 @@
  */
 package de.dhbw.rahmlab.geomalgelang.parsing.expr.space;
 
-import de.dhbw.rahmlab.geomalgelang.parsing.ParsingService;
-import de.dhbw.rahmlab.geomalgelang.parsing._util.AstStringBuilder;
+import static de.dhbw.rahmlab.geomalgelang.parsing._util.Util.parsePrintAssert;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.unaryOps.*;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.variableLike.*;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
-import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.graalvm.polyglot.Context;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
-import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -138,27 +134,7 @@ public class GeometricProductTest {
 							programStringBuilder.append(space);
 							programStringBuilder.append(right);
 
-							StringBuilder messageBuilder = new StringBuilder();
-							messageBuilder.append("program: ");
-							messageBuilder.append(programStringBuilder.toString());
-							messageBuilder.append("\n");
-
-							String actualAstString = null;
-							try {
-								actualAstString = AstStringBuilder.getAstString(ParsingService.sourceCodeToRootNode(programStringBuilder.toString()), 2);
-							} catch (ParseCancellationException e) {
-								fail(messageBuilder.toString() + e.toString());
-							}
-
-							System.out.print(messageBuilder.toString());
-							/*
-							System.out.print("->expected:");
-							System.out.print(expectedAstStringBuilder.toString());
-							System.out.print("->got:");
-							System.out.print(actualAstString);
-							System.out.println("---");
-							 */
-							Assertions.assertEquals(expectedAstStringBuilder.toString(), actualAstString, messageBuilder.toString());
+							parsePrintAssert(programStringBuilder.toString(), expectedAstStringBuilder.toString(), 2);
 						}
 					}
 				}

@@ -6,6 +6,7 @@ package de.dhbw.rahmlab.geomalgelang.parsing.expr.space;
 
 import de.dhbw.rahmlab.geomalgelang.parsing.ParsingService;
 import de.dhbw.rahmlab.geomalgelang.parsing._util.AstStringBuilder;
+import static de.dhbw.rahmlab.geomalgelang.parsing._util.Util.parsePrintAssert;
 import java.util.List;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.graalvm.polyglot.Context;
@@ -51,15 +52,7 @@ public class SpacesTest {
 		final List<String> programs = List.of(new String[]{"a+a", "a +a", "a+ a", "a + a", "a  +  a"});
 
 		for (String program : programs) {
-			String actualAstString = null;
-
-			try {
-				actualAstString = AstStringBuilder.getAstString(ParsingService.sourceCodeToRootNode(program));
-			} catch (ParseCancellationException e) {
-				fail("program: " + program + "\n" + e.toString());
-			}
-
-			Assertions.assertEquals(expected, actualAstString);
+			parsePrintAssert(program, expected);
 		}
 	}
 
@@ -73,15 +66,7 @@ public class SpacesTest {
 
 		String program = "a˜";
 
-		String actualAstString = null;
-
-		try {
-			actualAstString = AstStringBuilder.getAstString(ParsingService.sourceCodeToRootNode(program), 1);
-		} catch (ParseCancellationException e) {
-			fail("program: " + program + "\n" + e.toString());
-		}
-
-		Assertions.assertEquals(expected, actualAstString);
+		parsePrintAssert(program, expected, 1);
 	}
 
 	// With spaces
@@ -107,21 +92,7 @@ public class SpacesTest {
 		final List<String> programs = List.of(new String[]{"(a)", "( a)", "(a )", "( a )", "( a )"});
 
 		for (String program : programs) {
-			/*
-			assertDoesNotThrow(() -> {
-				AstStringBuilder.getAstString(ParsingService.sourceCodeToRootNode(program));
-			});
-			 */
-
-			String actualAstString = null;
-
-			try {
-				actualAstString = AstStringBuilder.getAstString(ParsingService.sourceCodeToRootNode(program));
-			} catch (ParseCancellationException e) {
-				fail("program: " + program + "\n" + e.toString());
-			}
-
-			Assertions.assertEquals(expected, actualAstString);
+			parsePrintAssert(program, expected);
 		}
 	}
 
@@ -135,21 +106,7 @@ public class SpacesTest {
 		final List<String> programs = List.of(new String[]{"a", "  a", "a  "});
 
 		for (String program : programs) {
-			/*
-			assertDoesNotThrow(() -> {
-				AstStringBuilder.getAstString(ParsingService.sourceCodeToRootNode(program));
-			});
-			 */
-
-			String actualAstString = null;
-
-			try {
-				actualAstString = AstStringBuilder.getAstString(ParsingService.sourceCodeToRootNode(program));
-			} catch (ParseCancellationException e) {
-				fail("program: " + program + "\n" + e.toString());
-			}
-
-			Assertions.assertEquals(expected, actualAstString);
+			parsePrintAssert(program, expected);
 		}
 	}
 }

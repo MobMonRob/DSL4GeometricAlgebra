@@ -105,10 +105,18 @@ public class AstStringBuilder {
 	/**
 	 * Can lead to StackOverflow for large AST's. In this case either increase the stack or use
 	 * getAstStringNonRecursive().
+	 *
+	 * negative maxDepth means unbounded maxDepth
 	 */
 	public static String getAstString(Node root, int maxDepth) {
 		AstStringBuilder astStringBuilder = new AstStringBuilder(root);
-		astStringBuilder.processTree(maxDepth);
+
+		if (maxDepth >= 0) {
+			astStringBuilder.processTree(maxDepth);
+		} else { //maxDepth < 0
+			astStringBuilder.processTree();
+		}
+
 		String astString = astStringBuilder.getAstString();
 		return astString;
 	}
