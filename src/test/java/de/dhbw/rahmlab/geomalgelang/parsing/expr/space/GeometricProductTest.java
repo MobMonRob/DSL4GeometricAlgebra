@@ -4,38 +4,20 @@
  */
 package de.dhbw.rahmlab.geomalgelang.parsing.expr.space;
 
+import de.dhbw.rahmlab.geomalgelang.parsing.AbstractParsingTest;
 import static de.dhbw.rahmlab.geomalgelang.parsing._util.Util.parsePrintAssert;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.unaryOps.*;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.variableLike.*;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
-import org.graalvm.polyglot.Context;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 
 /**
  *
  * @author fabian
  */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class GeometricProductTest {
-
-	Context context;
-
-	@BeforeAll
-	void setup() {
-		context = Context.create();
-		context.enter();
-	}
-
-	@AfterAll
-	void desetup() {
-		context.leave();
-		context.close();
-	}
+public class GeometricProductTest extends AbstractParsingTest {
 
 	public record ExampleSet(String exprType, String nodeName, List<String> examples) {
 

@@ -4,41 +4,20 @@
  */
 package de.dhbw.rahmlab.geomalgelang.parsing.expr.space;
 
+import de.dhbw.rahmlab.geomalgelang.parsing.AbstractParsingTest;
 import de.dhbw.rahmlab.geomalgelang.parsing.ParsingService;
 import de.dhbw.rahmlab.geomalgelang.parsing._util.AstStringBuilder;
 import static de.dhbw.rahmlab.geomalgelang.parsing._util.Util.parsePrintAssert;
 import java.util.List;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
-import org.graalvm.polyglot.Context;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.fail;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 
 /**
  *
  * @author fabian
  */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class SpacesTest {
-
-	Context context;
-
-	@BeforeAll
-	void setup() {
-		context = Context.create();
-		context.enter();
-	}
-
-	@AfterAll
-	void desetup() {
-		context.leave();
-		context.close();
-	}
+public class SpacesTest extends AbstractParsingTest {
 
 	@Test
 	void R1() {
