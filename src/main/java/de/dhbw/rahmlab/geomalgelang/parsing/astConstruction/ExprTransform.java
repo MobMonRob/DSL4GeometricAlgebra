@@ -36,10 +36,9 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 	}
 
 	public static BaseNode execute(GeomAlgeParser.ExprContext exprCtx) {
-		ParseTreeWalker treeWalker = new ParseTreeWalker();
 		ExprTransform exprTransform = new ExprTransform();
 
-		treeWalker.walk(exprTransform, exprCtx);
+		ParseTreeWalker.DEFAULT.walk(exprTransform, exprCtx);
 
 		BaseNode rootNode = exprTransform.nodeStack.getFirst();
 		return rootNode;
