@@ -19,7 +19,6 @@ public class SpacesTest extends AbstractParsingTest {
 	@Test
 	void R1() {
 		String expected = """
-
 		Addition
 			GlobalVariableReference
 			GlobalVariableReference
@@ -36,7 +35,6 @@ public class SpacesTest extends AbstractParsingTest {
 	@Test
 	void R2_1() {
 		String expected = """
-
 		Reverse
 		""";
 
@@ -59,7 +57,6 @@ public class SpacesTest extends AbstractParsingTest {
 	@Test
 	void R3() {
 		String expected = """
-
 		GlobalVariableReference
 		""";
 
@@ -73,7 +70,6 @@ public class SpacesTest extends AbstractParsingTest {
 	@Test
 	void R4() {
 		String expected = """
-
 		GlobalVariableReference
 		""";
 

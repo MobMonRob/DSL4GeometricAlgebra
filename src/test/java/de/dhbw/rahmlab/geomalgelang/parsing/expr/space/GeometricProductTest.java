@@ -100,7 +100,7 @@ public class GeometricProductTest extends AbstractParsingTest {
 				String rightNodeName = rightExamples.nodeName();
 
 				expectedAstStringBuilder.setLength(0);
-				expectedAstStringBuilder.append("\nGeometricProduct\n");
+				expectedAstStringBuilder.append("GeometricProduct\n");
 				expectedAstStringBuilder.append("\t");
 				expectedAstStringBuilder.append(leftNodeName);
 				expectedAstStringBuilder.append("\n");

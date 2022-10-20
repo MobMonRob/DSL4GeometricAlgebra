@@ -51,6 +51,7 @@ public class Asserts {
 	}
 
 	public static void parsePrintAssert(String program, String expectedAstString, int maxActualAstStringDepth) {
+		expectedAstString = "\n" + expectedAstString;
 		final String programMessage = generateProgramMessage(program);
 		//System.out.print(programMessage);
 
