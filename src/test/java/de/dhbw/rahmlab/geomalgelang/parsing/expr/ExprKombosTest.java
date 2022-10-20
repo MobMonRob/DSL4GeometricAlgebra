@@ -5,13 +5,11 @@
 package de.dhbw.rahmlab.geomalgelang.parsing.expr;
 
 import de.dhbw.rahmlab.geomalgelang.parsing.AbstractParsingTest;
-import de.dhbw.rahmlab.geomalgelang.parsing.ParsingService;
 import static de.dhbw.rahmlab.geomalgelang.parsing._util.Asserts.parsePrintAssertSyntaxError;
-import de.dhbw.rahmlab.geomalgelang.parsing._util.AstStringBuilder;
 import java.util.List;
-import org.antlr.v4.runtime.misc.ParseCancellationException;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import org.junit.jupiter.api.Test;
+import java.util.stream.Stream;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
 
 /**
  *
@@ -19,12 +17,10 @@ import org.junit.jupiter.api.Test;
  */
 public class ExprKombosTest extends AbstractParsingTest {
 
-	@Test
-	void expectSyntaxError() {
+	@TestFactory
+	Stream<DynamicTest> expectSyntaxError() {
 		final List<String> programs = List.of(new String[]{"a +", "a+", "+ a", "+a", "a + +", "a++", "+ + a", "++a", "a-+-a", "+", "+ +", "++", "a + + a", "a++a", "-", "--", "- -", "a - - -a", "a - - a", "- - a", "- -a", "~", "~ ~", "~a", "a~ +", "a +~", "+ -a", "-+ a", "-a +~", "-+a~"});
 
-		for (String program : programs) {
-			parsePrintAssertSyntaxError(program);
-		}
+		return programs.stream().map(program -> DynamicTest.dynamicTest(program, () -> parsePrintAssertSyntaxError(program)));
 	}
 }

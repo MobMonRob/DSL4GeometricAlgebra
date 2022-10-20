@@ -105,6 +105,8 @@
 					<encoding>${project.build.sourceEncoding}</encoding>
 					<argLine>-Dfile.encoding=UTF-8 -Dstdout.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Dgraalvm.locatorDisabled=true --add-exports org.graalvm.truffle/com.oracle.truffle.api.nodes=ALL-UNNAMED --add-exports org.graalvm.truffle/com.oracle.truffle.api.exception=ALL-UNNAMED --add-exports org.graalvm.truffle/com.oracle.truffle.api=ALL-UNNAMED --add-exports org.graalvm.truffle/com.oracle.truffle.api.interop=ALL-UNNAMED</argLine>
 					<skipTests>${skipTests}</skipTests>
+					<trimStackTrace>true</trimStackTrace>
+					<!-- <printSummary>false</printSummary> -->
 				</configuration>
 			</plugin>
 			<plugin>

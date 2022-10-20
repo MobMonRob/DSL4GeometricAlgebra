@@ -17,7 +17,7 @@ public class Asserts {
 
 	private static String generateProgramMessage(String program) {
 		StringBuilder messageBuilder = new StringBuilder();
-		messageBuilder.append("program: ");
+		messageBuilder.append("\nprogram: ");
 		messageBuilder.append(program);
 		messageBuilder.append("\n");
 		return messageBuilder.toString();
@@ -25,7 +25,7 @@ public class Asserts {
 
 	public static void parsePrintAssertSyntaxError(String program) {
 		final String programMessage = generateProgramMessage(program);
-		System.out.print(programMessage);
+		//System.out.print(programMessage);
 
 		String actualAstString = null;
 		try {
@@ -52,7 +52,7 @@ public class Asserts {
 
 	public static void parsePrintAssert(String program, String expectedAstString, int maxActualAstStringDepth) {
 		final String programMessage = generateProgramMessage(program);
-		System.out.print(programMessage);
+		//System.out.print(programMessage);
 
 		String actualAstString = null;
 		try {
