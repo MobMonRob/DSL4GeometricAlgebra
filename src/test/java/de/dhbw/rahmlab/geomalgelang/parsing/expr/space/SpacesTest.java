@@ -5,12 +5,9 @@
 package de.dhbw.rahmlab.geomalgelang.parsing.expr.space;
 
 import de.dhbw.rahmlab.geomalgelang.parsing.AbstractParsingTest;
-import de.dhbw.rahmlab.geomalgelang.parsing.ParsingService;
-import de.dhbw.rahmlab.geomalgelang.parsing._util.AstStringBuilder;
-import static de.dhbw.rahmlab.geomalgelang.parsing._util.Util.parsePrintAssert;
+import static de.dhbw.rahmlab.geomalgelang.parsing._util.Asserts.parsePrintAssert;
+import static de.dhbw.rahmlab.geomalgelang.parsing._util.Asserts.parsePrintAssertSyntaxError;
 import java.util.List;
-import org.antlr.v4.runtime.misc.ParseCancellationException;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -52,13 +49,11 @@ public class SpacesTest extends AbstractParsingTest {
 	@Test
 	void R2_2() {
 
-		String program = "a ˜";
+		final List<String> programs = List.of(new String[]{"a ˜", "- a"});
 
-		System.out.println("program: " + program + "\n");
-
-		assertThrows(ParseCancellationException.class, () -> {
-			AstStringBuilder.getAstString(ParsingService.sourceCodeToRootNode(program));
-		});
+		for (String program : programs) {
+			parsePrintAssertSyntaxError(program);
+		}
 	}
 
 	@Test

@@ -5,7 +5,7 @@
 package de.dhbw.rahmlab.geomalgelang.parsing.expr.space;
 
 import de.dhbw.rahmlab.geomalgelang.parsing.AbstractParsingTest;
-import static de.dhbw.rahmlab.geomalgelang.parsing._util.Util.parsePrintAssert;
+import static de.dhbw.rahmlab.geomalgelang.parsing._util.Asserts.parsePrintAssert;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.unaryOps.*;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.variableLike.*;
 import java.io.UnsupportedEncodingException;
