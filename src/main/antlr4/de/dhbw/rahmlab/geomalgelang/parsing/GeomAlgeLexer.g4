@@ -98,9 +98,9 @@ SOLIDUS
 // Precedence 4
 // negate
 // \u2212
-MINUS_SIGN
-	: '−'
-	;
+//MINUS_SIGN
+//	: '−'
+//	;
 
 ///////////////////////////////////////////////////////////////////////////
 // Symbols for unaryOp's right sided

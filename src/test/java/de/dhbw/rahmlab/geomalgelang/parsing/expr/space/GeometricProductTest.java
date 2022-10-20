@@ -42,8 +42,7 @@ public class GeometricProductTest extends AbstractParsingTest {
 
 	static final ArrayList<String> spaces = generateSpaces(3);
 
-	// changes later
-	static final String unOpLSymbol = "−";
+	static final String unOpLSymbol = "-";
 
 	static ExampleSet generateUnOpLExpr() {
 		ArrayList<String> unOpLExamples = new ArrayList();

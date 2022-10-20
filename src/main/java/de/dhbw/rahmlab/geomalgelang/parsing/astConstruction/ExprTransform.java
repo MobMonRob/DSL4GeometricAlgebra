@@ -113,7 +113,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		BaseNode right = nodeStack.pop();
 
 		BaseNode current = switch (ctx.op.getType()) {
-			case GeomAlgeParser.MINUS_SIGN ->
+			case GeomAlgeParser.HYPHEN_MINUS ->
 				NegateNodeGen.create(right);
 			default ->
 				throw new UnsupportedOperationException();

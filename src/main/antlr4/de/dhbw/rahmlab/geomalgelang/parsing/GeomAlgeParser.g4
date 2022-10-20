@@ -27,7 +27,7 @@ expr
 			|CIRCUMFLEX_ACCENT
 			)						#UnaryOpR
 	// Precedence 5
-	|	op=	MINUS_SIGN
+	|	op=	HYPHEN_MINUS
 		right=expr					#UnaryOpL
 	// Precedence 4
 	|	left=expr
