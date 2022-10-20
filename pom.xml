@@ -14,16 +14,6 @@
 		<graalvm.version>22.0.0.2</graalvm.version>
 		<antlr.version>4.11.1</antlr.version>
 	</properties>
-	<repositories>
-		<repository>
-			<id>1. Maven Central</id>
-			<url>https://repo1.maven.org/maven2/</url>
-		</repository>
-		<repository>
-			<id>2. jitpack.io</id>
-			<url>https://jitpack.io</url>
-		</repository>
-	</repositories>
 	<dependencies>
 		<dependency>
 			<groupId>org.antlr</groupId>
@@ -75,9 +65,9 @@
 		</dependency>
 		<!-- -->
 		<dependency>
-			<groupId>com.github.JogAmp</groupId>
+			<groupId>org.jogamp.java3d</groupId>
 			<artifactId>vecmath</artifactId>
-			<version>1.7.0-final</version>
+			<version>1.7.0</version>
 		</dependency>
 		<dependency>
 			<groupId>de.orat.math.cga</groupId>
