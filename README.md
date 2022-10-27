@@ -109,7 +109,7 @@ There exist three types of involution operations: Space inversion, reversion and
 | :--------: | :--------------: | --------------------- | ------------ | ----------- | -------------- |
 | 6          | &#x207B;&#x002A; | \textsuperscript{-\*} | \u207B\u002A | undual | multivector.undual() or -multivector.dual() |
 | 6          | &#x00B2;         |                       | \u00B2       | square | multivector.gp(multivector), sqr(double) |
-| 6          | &#x005E;         |                       | \u005E       | grade involution (a sign change operation) | multivector.gradeInversion(multivector) |
+| 6          | &#x005E;         |                       | \u005E       | grade involution/inversion (a sign change operation) | multivector.gradeInversion(multivector) |
 
 
 ### Composite operators
