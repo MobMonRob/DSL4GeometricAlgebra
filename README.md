@@ -30,12 +30,13 @@ or navigate to this point via the Tools main menu.
 - in the drop-down list labeled "Java Platform" choose "GraalVM 17"
 
 ## Dependencies Setup
-The project depends on the vecmath library in the refactured version of jogamp. Your can find this library [here](https://jogamp.org/deployment/java3d/1.7.0-final/). Unfortunately there is no maven repository available. That is why you need to download the jar file manually and add it as a local depency of the project. To do this in the nebeans ide: Right-click on the depencies of the project and add the dependency manually. The group id is "org.jogamp.java3d", the artifactId is "vecmath" and the type is "jar".
+The project depends on the vecmath library in the refactured version of jogamp. Your can find this library [here](https://jogamp.org/deployment/java3d/1.7.1-build-20200222/vecmath.jar). Unfortunately there is no maven repository available. That is why you need to download the jar file manually and add it as a local depency of the project. To do this in the nebeans ide: Right-click on the depencies of the project and add the dependency manually. The group id is "org.jogamp.java3d", the artifactId is "vecmath" and the type is "jar". \
+Alternatively clone it from [GitHub](https://github.com/JogAmp/vecmath/tree/dev1.7.1), update the compiler version in it's pom.xml and build it.
 
-Clone [GeometricAlgebra](https://github.com/orat/GeometricAlgebra/tree/181f2d7492b2c612339427d34a75271717edc06a) and [ConformalGeometricAlgebra](https://github.com/orat/ConformalGeometricAlgebra/tree/00ad2c32f311074e6b31ebd337da622bb099b9c2) and build those projects to have them available in yout local Maven cache.
+Clone [GeometricAlgebra](https://github.com/orat/GeometricAlgebra/tree/181f2d7492b2c612339427d34a75271717edc06a) and [ConformalGeometricAlgebra](https://github.com/orat/ConformalGeometricAlgebra/tree/00ad2c32f311074e6b31ebd337da622bb099b9c2) and build those projects to have them available in your local Maven cache.
 
 ## Run
-In order to run the example invokation in the package 'de.dhbw.rahmlab.geomalgelang.App' make sure you successfully executed the steps [GraalVM Setup](https://github.com/MobMonRob/DSL4GeometricAlgebra/tree/main#graalvm-setup) and [Dependencies Setup](https://github.com/MobMonRob/DSL4GeometricAlgebra/tree/main#dependencies-setup) beforehand. \
+In order to run the example invokation in the package 'de.dhbw.rahmlab.geomalgelang.App' make sure you successfully executed the steps [GraalVM Setup](https://github.com/MobMonRob/DSL4GeometricAlgebra#graalvm-setup) and [Dependencies Setup](https://github.com/MobMonRob/DSL4GeometricAlgebra#dependencies-setup) beforehand. \
 If you use an IDE other than Netbeans and execute the generated .class files directly rather than the generated .jar file, it might be necessary to configure the Maven execution in your IDE with the same properties set in the [nbactions.xml](https://github.com/MobMonRob/DSL4GeometricAlgebra/blob/main/nbactions.xml) file.
 
 ## Types to use from outside the language
