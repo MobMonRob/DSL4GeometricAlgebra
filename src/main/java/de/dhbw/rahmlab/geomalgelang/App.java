@@ -11,7 +11,7 @@ public class App {
 
 	public static void main(String[] args) throws Exception {
 		//encodingTest();
-		invocationTest("a b");
+		invocationTest();
 	}
 
 	private static void encodingTest() {
@@ -24,8 +24,10 @@ public class App {
 		System.out.println("ä π");
 	}
 
-	private static void invocationTest(String program) throws Exception {
+	private static void invocationTest() throws Exception {
 		CGAMultivector_Processor_CGAMultivector cgaMultivector_Processor_CGAMultivector = new CGAMultivector_Processor_CGAMultivector();
+
+		String program = "a b";
 
 		Map<String, ICGAMultivector> inputVars = new HashMap<>();
 		ICGAMultivector a = new ICGAMultivector(cgaMultivector_Processor_CGAMultivector.create(5.0));
