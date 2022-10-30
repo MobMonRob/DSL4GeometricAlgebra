@@ -1,9 +1,8 @@
 package de.dhbw.rahmlab.geomalgelang;
 
 import de.dhbw.rahmlab.geomalgelang.api.LanguageInvocation;
-import de.dhbw.rahmlab.geomalgelang.cga.CGAMultivector_Processor_CGA1Multivector;
+import de.dhbw.rahmlab.geomalgelang.cga.CGAMultivector_Processor_CGAMultivector;
 import de.dhbw.rahmlab.geomalgelang.cga.ICGAMultivector;
-import de.orat.math.cga.impl1.CGA1Multivector;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,12 +25,14 @@ public class App {
 	}
 
 	private static void invocationTest(String program) throws Exception {
+		CGAMultivector_Processor_CGAMultivector cgaMultivector_Processor_CGAMultivector = new CGAMultivector_Processor_CGAMultivector();
+
 		Map<String, ICGAMultivector> inputVars = new HashMap<>();
-		ICGAMultivector a = new ICGAMultivector(new CGA1Multivector(5.0));
+		ICGAMultivector a = new ICGAMultivector(cgaMultivector_Processor_CGAMultivector.create(5.0));
 		inputVars.put("a", a);
 		inputVars.put("b", a);
 
-		ICGAMultivector answer = LanguageInvocation.invoke(program, inputVars, new CGAMultivector_Processor_CGA1Multivector());
+		ICGAMultivector answer = LanguageInvocation.invoke(program, inputVars, cgaMultivector_Processor_CGAMultivector);
 		String answerString = answer.getInner().toString();
 
 		System.out.println("program: " + program);

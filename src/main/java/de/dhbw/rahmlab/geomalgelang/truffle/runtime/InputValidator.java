@@ -9,6 +9,7 @@ import de.dhbw.rahmlab.geomalgelang.cga.Current_ICGAMultivector_Processor;
 import de.dhbw.rahmlab.geomalgelang.cga.ICGAMultivector;
 import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeLexer;
 import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParser;
+import java.util.Objects;
 
 /**
  *
@@ -21,6 +22,11 @@ public abstract class InputValidator {
 			if (Current_ICGAMultivector_Processor.cga_processor.isCGA((ICGAMultivector) object)) {
 				return (ICGAMultivector) object;
 			}
+
+			String expectedInnerClassName = Current_ICGAMultivector_Processor.cga_processor.create(1d).getInner().getClass().getSimpleName();
+			String actualInnerClassName = ((ICGAMultivector) object).getInner().getClass().getSimpleName();
+
+			throw new IllegalArgumentException("Got \"" + actualInnerClassName + "\" but expected \"" + expectedInnerClassName + "\"");
 		}
 
 		throw new IllegalArgumentException("\"" + object.getClass().getSimpleName() + "\" is not a proper cga type");
