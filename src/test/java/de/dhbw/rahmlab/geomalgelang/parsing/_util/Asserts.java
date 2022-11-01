@@ -5,9 +5,14 @@
 package de.dhbw.rahmlab.geomalgelang.parsing._util;
 
 import de.dhbw.rahmlab.geomalgelang.parsing.ParsingService;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Stream;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.junit.jupiter.api.Assertions;
 import static org.junit.jupiter.api.Assertions.fail;
+import org.junit.jupiter.api.DynamicTest;
 
 /**
  *
@@ -46,15 +51,36 @@ public class Asserts {
 		fail(errorMessage.toString());
 	}
 
+	public static Stream<DynamicTest> parsePrintAssertEquivalent(List<String> programs) {
+		final String expectedAstString = getAstString(programs.get(0));
+		return parsePrintAssert(programs, expectedAstString);
+	}
+
+	public static Stream<DynamicTest> parsePrintAssert(List<String> programs, String expectedAstString) {
+		return DynamicTest.stream(programs.stream(), program -> program, program -> parsePrintAssert(program, expectedAstString));
+	}
+
 	public static void parsePrintAssert(String program, String expectedAstString) {
 		parsePrintAssert(program, expectedAstString, -1);
 	}
 
 	public static void parsePrintAssert(String program, String expectedAstString, int maxActualAstStringDepth) {
-		expectedAstString = "\n" + expectedAstString;
+		if (!expectedAstString.startsWith("\n")) {
+			expectedAstString = "\n" + expectedAstString;
+		}
 		final String programMessage = generateProgramMessage(program);
 		//System.out.print(programMessage);
 
+		String actualAstString = getAstString(program, maxActualAstStringDepth, programMessage);
+
+		Assertions.assertEquals(expectedAstString, actualAstString, programMessage);
+	}
+
+	private static String getAstString(String program) {
+		return getAstString(program, -1, generateProgramMessage(program));
+	}
+
+	private static String getAstString(String program, int maxActualAstStringDepth, final String programMessage) {
 		String actualAstString = null;
 		try {
 			actualAstString = AstStringBuilder.getAstString(ParsingService.sourceCodeToRootNode(program), maxActualAstStringDepth);
@@ -63,7 +89,6 @@ public class Asserts {
 			fail(programMessage + e.toString());
 			// return;
 		}
-
-		Assertions.assertEquals(expectedAstString, actualAstString, programMessage);
+		return actualAstString;
 	}
 }
