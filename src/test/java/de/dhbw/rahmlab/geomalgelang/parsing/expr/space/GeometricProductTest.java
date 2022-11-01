@@ -11,12 +11,14 @@ import de.dhbw.rahmlab.geomalgelang.truffle.nodes.variableLike.*;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
  *
  * @author fabian
  */
+@Disabled
 public class GeometricProductTest extends AbstractParsingTest {
 
 	public record ExampleSet(String exprType, String nodeName, List<String> examples) {

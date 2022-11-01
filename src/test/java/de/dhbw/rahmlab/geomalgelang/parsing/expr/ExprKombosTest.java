@@ -10,6 +10,7 @@ import static de.dhbw.rahmlab.geomalgelang.parsing._util.Asserts.parsePrintAsser
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 
@@ -17,6 +18,7 @@ import org.junit.jupiter.api.TestFactory;
  *
  * @author fabian
  */
+@Disabled
 public class ExprKombosTest extends AbstractParsingTest {
 
 	@TestFactory

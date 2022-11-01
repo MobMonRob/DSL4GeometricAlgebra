@@ -8,12 +8,14 @@ import de.dhbw.rahmlab.geomalgelang.parsing.AbstractParsingTest;
 import static de.dhbw.rahmlab.geomalgelang.parsing._util.Asserts.parsePrintAssert;
 import static de.dhbw.rahmlab.geomalgelang.parsing._util.Asserts.parsePrintAssertSyntaxError;
 import java.util.List;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
  *
  * @author fabian
  */
+@Disabled
 public class SpacesTest extends AbstractParsingTest {
 
 	@Test
