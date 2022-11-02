@@ -8,6 +8,7 @@ import de.dhbw.rahmlab.geomalgelang.parsing.AbstractParsingTest;
 import static de.dhbw.rahmlab.geomalgelang.parsing._util.Asserts.parsePrintAssert;
 import java.util.List;
 import java.util.stream.Stream;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.TestFactory;
  *
  * @author fabian
  */
+@Disabled
 public class ConstantTest extends AbstractParsingTest {
 
 	@TestFactory

@@ -6,6 +6,7 @@ package de.dhbw.rahmlab.geomalgelang.parsing.astConstruction;
 
 import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParser;
 import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParserBaseListener;
+import de.dhbw.rahmlab.geomalgelang.truffle.GeomAlgeLangContext;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.binaryOps.*;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.technical.BaseNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.unaryOps.*;
@@ -30,13 +31,15 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 public class ExprTransform extends GeomAlgeParserBaseListener {
 
 	private final Deque<BaseNode> nodeStack = new ArrayDeque<>();
+	private final GeomAlgeLangContext geomAlgeLangContext;
 
-	private ExprTransform() {
+	private ExprTransform(GeomAlgeLangContext geomAlgeLangContext) {
 		super();
+		this.geomAlgeLangContext = geomAlgeLangContext;
 	}
 
-	public static BaseNode execute(GeomAlgeParser.ExprContext exprCtx) {
-		ExprTransform exprTransform = new ExprTransform();
+	public static BaseNode execute(GeomAlgeParser.ExprContext exprCtx, GeomAlgeLangContext geomAlgeLangContext) {
+		ExprTransform exprTransform = new ExprTransform(geomAlgeLangContext);
 
 		ParseTreeWalker.DEFAULT.walk(exprTransform, exprCtx);
 
@@ -185,6 +188,9 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		String name = ctx.name.getText();
 		GlobalVariableReference varRef = GlobalVariableReferenceNodeGen.create(name);
 		nodeStack.push(varRef);
+
+		// Needed for semantic validation
+		geomAlgeLangContext.globalVariableScope.newVariable(name);
 	}
 
 	// https://stackoverflow.com/questions/4323599/best-way-to-parsedouble-with-comma-as-decimal-separator/4323627#4323627

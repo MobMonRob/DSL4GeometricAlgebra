@@ -14,13 +14,15 @@ import com.oracle.truffle.api.interop.UnsupportedMessageException;
 import com.oracle.truffle.api.interop.UnsupportedTypeException;
 import com.oracle.truffle.api.library.ExportLibrary;
 import com.oracle.truffle.api.library.ExportMessage;
-import de.dhbw.rahmlab.geomalgelang.cga.Current_ICGAMultivector_Processor;
 import de.dhbw.rahmlab.geomalgelang.cga.ICGAMultivector;
 import de.dhbw.rahmlab.geomalgelang.truffle.GeomAlgeLang;
+import de.dhbw.rahmlab.geomalgelang.truffle.GeomAlgeLangException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -30,20 +32,24 @@ import java.util.Set;
 @ExportLibrary(InteropLibrary.class)
 public final class GlobalVariableScope implements TruffleObject {
 
-	private final Map<String, ICGAMultivector> variables = new HashMap<>();
+	// Once validated by ExecutionValidation invoked by GeomAlgeLangRootNode, it would make sense to remove the Optional.
+	// Maybe we could use two different GlobalVariableScopes. One before and one after validation.
+	public final Map<String, Optional<ICGAMultivector>> variables = new HashMap<>();
 
 	public boolean newVariable(String name) {
-		ICGAMultivector existingValue = this.variables.putIfAbsent(name, null);
+		Object existingValue = this.variables.putIfAbsent(name, Optional.empty());
 		return existingValue == null;
 	}
 
-	public boolean assignVariable(String name, ICGAMultivector value) {
-		ICGAMultivector existingValue = this.variables.replace(name, value);
-		return existingValue != null;
+	public void assignVariable(String name, ICGAMultivector value) throws GeomAlgeLangException {
+		Object existingValue = this.variables.replace(name, Optional.of(value));
+		if (existingValue == null) {
+			throw new GeomAlgeLangException("\"" + name + "\" is not a known variable!");
+		}
 	}
 
-	public ICGAMultivector getVariable(String name) {
-		return this.variables.get(name);
+	public ICGAMultivector getVariable(String name) throws NoSuchElementException {
+		return this.variables.get(name).orElseThrow();
 	}
 
 	public boolean isVariablePresent(String name) {
@@ -51,23 +57,21 @@ public final class GlobalVariableScope implements TruffleObject {
 	}
 
 	public boolean isVariableAssigned(String name) {
-		return this.variables.get(name) != null;
+		return this.variables.get(name).isPresent();
 	}
 
 	// necessary for context.getBindings.putMember
 	@ExportMessage
 	@TruffleBoundary
 	public void writeMember(String member, Object value) throws UnsupportedMessageException, UnknownIdentifierException, UnsupportedTypeException {
-		InputValidator.ensureIsValidVariableName(member);
-		ICGAMultivector cga = InputValidator.ensureIsCGA(value);
-		this.variables.putIfAbsent(member, cga);
+		ICGAMultivector cga = InputValidation.ensureIsCGA(value);
+		this.assignVariable(member, cga);
 	}
 
 	@ExportMessage
 	public boolean isMemberInsertable(String member) {
 		// https://www.graalvm.org/truffle/javadoc/com/oracle/truffle/api/interop/InteropLibrary.html#isMemberInsertable-java.lang.Object-java.lang.String-
-		//Or isVariableAssigned??
-		return !this.isVariablePresent(member);
+		return this.isVariablePresent(member);
 	}
 
 	@ExportMessage

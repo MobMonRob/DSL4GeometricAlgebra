@@ -6,6 +6,7 @@ package de.dhbw.rahmlab.geomalgelang.parsing;
 
 import com.oracle.truffle.api.source.Source;
 import de.dhbw.rahmlab.geomalgelang.parsing.astConstruction.ExprTransform;
+import de.dhbw.rahmlab.geomalgelang.truffle.GeomAlgeLangContext;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.technical.BaseNode;
 import java.io.IOException;
 import org.antlr.v4.runtime.CharStream;
@@ -23,23 +24,35 @@ public final class ParsingService {
 	}
 
 	public static BaseNode sourceCodeToRootNode(Source program) throws IOException {
+		return sourceCodeToRootNode(program, new GeomAlgeLangContext());
+	}
+
+	public static BaseNode sourceCodeToRootNode(Source program, GeomAlgeLangContext geomAlgeLangContext) throws IOException {
 		CharStream inputStream = CharStreams.fromReader(program.getReader());
-		return parseAndTransform(inputStream);
+		return parseAndTransform(inputStream, geomAlgeLangContext);
 	}
 
 	public static BaseNode sourceCodeToRootNode(String program) {
+		return sourceCodeToRootNode(program, new GeomAlgeLangContext());
+	}
+
+	public static BaseNode sourceCodeToRootNode(String program, GeomAlgeLangContext geomAlgeLangContext) {
 		CharStream inputStream = CharStreams.fromString(program);
-		return parseAndTransform(inputStream);
+		return parseAndTransform(inputStream, geomAlgeLangContext);
 	}
 
 	public static BaseNode sourceCodeToRootNode(CharStream program) {
-		CharStream inputStream = program;
-		return parseAndTransform(inputStream);
+		return sourceCodeToRootNode(program, new GeomAlgeLangContext());
 	}
 
-	private static BaseNode parseAndTransform(CharStream inputStream) {
+	public static BaseNode sourceCodeToRootNode(CharStream program, GeomAlgeLangContext geomAlgeLangContext) {
+		CharStream inputStream = program;
+		return parseAndTransform(inputStream, geomAlgeLangContext);
+	}
+
+	private static BaseNode parseAndTransform(CharStream inputStream, GeomAlgeLangContext geomAlgeLangContext) {
 		GeomAlgeParser parser = getParser(inputStream);
-		BaseNode rootNode = ExprTransform.execute(parser.expr());
+		BaseNode rootNode = ExprTransform.execute(parser.expr(), geomAlgeLangContext);
 		return rootNode;
 	}
 

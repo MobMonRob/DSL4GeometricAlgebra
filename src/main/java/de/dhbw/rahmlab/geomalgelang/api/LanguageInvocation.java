@@ -56,7 +56,15 @@ public class LanguageInvocation {
 			throw e;
 		}
 
-		Value bindings = context.getBindings("geomalgelang");
+		// https://www.graalvm.org/truffle/javadoc/com/oracle/truffle/api/interop/InteropLibrary.html
+		// https://www.graalvm.org/truffle/javadoc/com/oracle/truffle/api/library/package-summary.html
+		// https://www.graalvm.org/truffle/javadoc/com/oracle/truffle/api/TruffleLanguage.Env.html#importSymbol-java.lang.String-
+		// https://www.graalvm.org/truffle/javadoc/com/oracle/truffle/api/TruffleLanguage.Env.html#exportSymbol-java.lang.String-java.lang.Object-
+		// https://www.graalvm.org/truffle/javadoc/com/oracle/truffle/api/TruffleLanguage.Env.html#getPolyglotBindings--
+		// Env is abailable in GeomAlgeLang.java
+		// program.invokeMember(identifier, arguments); // Alternative for main() function
+		// Do it similar to simple language: launcher / SLmain.java
+		Value bindings = context.getBindings("geomalgelang"); //polyglotBindings
 
 		for (var var : inputVars.entrySet()) {
 			bindings.putMember(var.getKey(), var.getValue());

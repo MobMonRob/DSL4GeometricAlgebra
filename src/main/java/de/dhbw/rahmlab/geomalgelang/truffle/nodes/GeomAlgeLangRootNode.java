@@ -9,6 +9,7 @@ import com.oracle.truffle.api.frame.FrameDescriptor;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.RootNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.technical.BaseNode;
+import de.dhbw.rahmlab.geomalgelang.truffle.runtime.ExecutionValidation;
 
 /**
  *
@@ -16,15 +17,18 @@ import de.dhbw.rahmlab.geomalgelang.truffle.nodes.technical.BaseNode;
  */
 public class GeomAlgeLangRootNode extends RootNode {
 
-	private BaseNode bodyNode;
+	private final BaseNode bodyNode;
+	private final ExecutionValidation executionValidation;
 
-	public GeomAlgeLangRootNode(TruffleLanguage<?> language, FrameDescriptor frameDescriptor, BaseNode node) {
+	public GeomAlgeLangRootNode(TruffleLanguage<?> language, FrameDescriptor frameDescriptor, BaseNode node, ExecutionValidation executionValidation) {
 		super(language, frameDescriptor);
 		this.bodyNode = node;
+		this.executionValidation = executionValidation;
 	}
 
 	@Override
 	public Object execute(VirtualFrame frame) {
+		executionValidation.validate();
 		return bodyNode.executeGeneric(frame);
 	}
 }
