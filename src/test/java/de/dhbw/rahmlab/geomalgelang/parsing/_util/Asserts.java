@@ -72,6 +72,9 @@ public class Asserts {
 		if (!expectedAstString.startsWith("\n")) {
 			expectedAstString = "\n" + expectedAstString;
 		}
+		if (!expectedAstString.endsWith("\n")) {
+			expectedAstString = expectedAstString + "\n";
+		}
 		final String programMessage = generateProgramMessage(program);
 		//System.out.print(programMessage);
 
