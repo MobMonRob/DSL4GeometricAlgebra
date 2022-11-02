@@ -45,7 +45,7 @@ public class EquivalentParenthesesCombinationsTest extends AbstractParsingTest {
 
 	@TestFactory
 	Stream<DynamicTest> parenthesesNumber() {
-		final List<String> equivalentPrograms = List.of(new String[]{"a", "((a))"});
+		final List<String> equivalentPrograms = List.of(new String[]{"a", "(a)", "((a))"});
 		return parsePrintAssertEquivalent(equivalentPrograms);
 	}
 

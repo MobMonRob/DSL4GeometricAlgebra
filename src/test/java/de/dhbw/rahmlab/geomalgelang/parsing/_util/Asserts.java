@@ -28,6 +28,10 @@ public class Asserts {
 		return messageBuilder.toString();
 	}
 
+	public static Stream<DynamicTest> parsePrintAssertSyntaxError(List<String> programs) {
+		return programs.stream().map(program -> DynamicTest.dynamicTest(program, () -> parsePrintAssertSyntaxError(program)));
+	}
+
 	public static void parsePrintAssertSyntaxError(String program) {
 		final String programMessage = generateProgramMessage(program);
 		//System.out.print(programMessage);
