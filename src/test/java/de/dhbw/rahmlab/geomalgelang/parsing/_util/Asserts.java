@@ -66,6 +66,10 @@ public class Asserts {
 		parsePrintAssert(program, expectedAstString, -1);
 	}
 
+	public static Stream<DynamicTest> parsePrintAssert(List<String> programs, String expectedAstString, int maxActualAstStringDepth) {
+		return DynamicTest.stream(programs.stream(), program -> program, program -> parsePrintAssert(program, expectedAstString, maxActualAstStringDepth));
+	}
+
 	public static void parsePrintAssert(String program, String expectedAstString, int maxActualAstStringDepth) {
 		if (!expectedAstString.startsWith("\n")) {
 			expectedAstString = "\n" + expectedAstString;

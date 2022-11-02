@@ -11,8 +11,10 @@ import de.dhbw.rahmlab.geomalgelang.truffle.nodes.variableLike.*;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
 
 /**
  *
@@ -89,8 +91,9 @@ public class GeometricProductTest extends AbstractParsingTest {
 
 	// Zwei und mehr Leerzeichen zwischen zwei aus {unOp, grouping, lit}-Expr wird als binOp_ interpretiert.
 	// Genau 1 Leerzeichen zwischen zwei aus {unOp, grouping, lit}-Expr wird als binOp_ interpretiert.
-	@Test
-	void R1_1_and_R1_2() throws UnsupportedEncodingException {
+	@TestFactory
+	Stream<DynamicTest> R1_1_and_R1_2() throws UnsupportedEncodingException {
+		ArrayList<DynamicTest> tests = new ArrayList();
 		StringBuilder programStringBuilder = new StringBuilder();
 		StringBuilder expectedAstStringBuilder = new StringBuilder();
 
@@ -108,6 +111,7 @@ public class GeometricProductTest extends AbstractParsingTest {
 				expectedAstStringBuilder.append("\t");
 				expectedAstStringBuilder.append(rightNodeName);
 				expectedAstStringBuilder.append("\n");
+				String expectedAstString = expectedAstStringBuilder.toString();
 
 				for (String left : leftExamples.examples()) {
 					for (String right : rightExamples.examples()) {
@@ -116,12 +120,16 @@ public class GeometricProductTest extends AbstractParsingTest {
 							programStringBuilder.append(left);
 							programStringBuilder.append(space);
 							programStringBuilder.append(right);
+							String programString = programStringBuilder.toString();
 
-							parsePrintAssert(programStringBuilder.toString(), expectedAstStringBuilder.toString(), 2);
+							DynamicTest test = DynamicTest.dynamicTest(programString, () -> parsePrintAssert(programString, expectedAstString, 2));
+							tests.add(test);
 						}
 					}
 				}
 			}
 		}
+
+		return tests.stream();
 	}
 }
