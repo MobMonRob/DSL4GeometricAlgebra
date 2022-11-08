@@ -16,8 +16,7 @@ expr
 	|	gradeExtractionExpr			#extractGrade
 	|	literalExpr					#DummyLabel
 	// Precedence 6
-	|	<assoc=right>
-		left=expr
+	|	left=expr
 		op=	(SUPERSCRIPT_MINUS__SUPERSCRIPT_ONE
 			|ASTERISK
 			|SMALL_TILDE
@@ -27,7 +26,8 @@ expr
 			|CIRCUMFLEX_ACCENT
 			)						#UnaryOpR
 	// Precedence 5
-	|	op=	HYPHEN_MINUS
+	|	<assoc=right>
+		op=	HYPHEN_MINUS
 		right=expr					#UnaryOpL
 	// Precedence 4
 	|	left=expr
