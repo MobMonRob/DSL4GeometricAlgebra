@@ -140,7 +140,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 				3;
 			case GeomAlgeParser.SUBSCRIPT_FOUR ->
 				4;
-			case GeomAlgeParser.SUBSCRIPT_FIFE ->
+			case GeomAlgeParser.SUBSCRIPT_FIVE ->
 				5;
 			default ->
 				throw new UnsupportedOperationException();

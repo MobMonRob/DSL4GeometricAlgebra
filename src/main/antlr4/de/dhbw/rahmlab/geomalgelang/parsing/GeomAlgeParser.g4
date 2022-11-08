@@ -97,7 +97,7 @@ gradeExtractionExpr
 				|SUBSCRIPT_TWO
 				|SUBSCRIPT_THREE
 				|SUBSCRIPT_FOUR
-				|SUBSCRIPT_FIFE
+				|SUBSCRIPT_FIVE
 				)
 	;
 
