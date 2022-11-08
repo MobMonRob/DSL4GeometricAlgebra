@@ -3,7 +3,10 @@ parser grammar GeomAlgeParser;
 options { tokenVocab=GeomAlgeLexer; }
 
 program
-	:	expr (EOF | NEWLINE)
+	:	SPACE*
+		expr
+		SPACE*
+		(EOF | NEWLINE)
 	;
 
 ///////////////////////////////////////////////////////////////////////////
@@ -12,7 +15,7 @@ program
 
 expr
 	// Precedence max
-	: parenExpr						#DummyLabel
+	:	parenExpr					#DummyLabel
 	|	gradeExtractionExpr			#extractGrade
 	|	literalExpr					#DummyLabel
 	// Precedence 6
@@ -54,11 +57,6 @@ expr
 			|HYPHEN_MINUS
 			)
 		right=expr					#BinaryOp
-	// Precedence min
-	|	<assoc=right>
-		expr SPACE+?				#DummyLabel
-	|	<assoc=right>
-		SPACE+?	expr				#DummyLabel
 	;
 
 ///////////////////////////////////////////////////////////////////////////
@@ -84,13 +82,17 @@ literalExpr
 
 parenExpr
 	:	L_PARENTHESIS
+		SPACE*
 		expr
+		SPACE*
 		R_PARENTHESIS
 	;
 
 gradeExtractionExpr
 	:	LESS_THAN_SIGN
-		inner=expr
+		SPACE*
+		expr
+		SPACE*
 		GREATER_THAN_SIGN
 		grade=	(SUBSCRIPT_ZERO
 				|SUBSCRIPT_ONE
