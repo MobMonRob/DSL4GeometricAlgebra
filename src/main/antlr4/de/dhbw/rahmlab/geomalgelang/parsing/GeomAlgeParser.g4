@@ -66,7 +66,7 @@ expr
 ///////////////////////////////////////////////////////////////////////////
 
 literalExpr
-	:	value=	(SMALL_EPSILON__SUBSCRIPT_ZERO
+	:	type=	(SMALL_EPSILON__SUBSCRIPT_ZERO
 				|SMALL_EPSILON__SUBSCRIPT_SMALL_I
 				|SMALL_EPSILON__SUBSCRIPT_ONE
 				|SMALL_EPSILON__SUBSCRIPT_TWO
@@ -77,7 +77,7 @@ literalExpr
 				|SMALL_N
 				|SMALL_N_TILDE
 				|CAPITAL_E__SUBSCRIPT_ZERO
-				)					#LiteralCGA
+				)					#LiteralConstant
 	|	value=	DECIMAL_LITERAL		#LiteralDecimal
 	|	name=	IDENTIFIER			#VariableReference
 	;

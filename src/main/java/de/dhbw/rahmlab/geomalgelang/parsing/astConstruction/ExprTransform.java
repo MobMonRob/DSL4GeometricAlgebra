@@ -152,8 +152,8 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 	}
 
 	@Override
-	public void exitLiteralCGA(GeomAlgeParser.LiteralCGAContext ctx) {
-		BaseNode current = switch (ctx.value.getType()) {
+	public void exitLiteralConstant(GeomAlgeParser.LiteralConstantContext ctx) {
+		BaseNode current = switch (ctx.type.getType()) {
 			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_ZERO ->
 				ConstantNodeGen.create(Constant.Kind.base_vector_origin);
 			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_SMALL_I ->
