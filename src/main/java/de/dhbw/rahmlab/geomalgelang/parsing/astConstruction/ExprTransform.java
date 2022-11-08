@@ -53,7 +53,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		BaseNode right = nodeStack.pop();
 		BaseNode left = nodeStack.pop();
 
-		BaseNode current = switch (ctx.op.getType()) {
+		BaseNode current = switch (ctx.op.op.getType()) {
 			case GeomAlgeParser.SPACE ->
 				GeometricProductNodeGen.create(left, right);
 			case GeomAlgeParser.DOT_OPERATOR ->
@@ -126,10 +126,10 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 	}
 
 	@Override
-	public void exitExtractGrade(GeomAlgeParser.ExtractGradeContext ctx) {
+	public void exitGradeExtraction(GeomAlgeParser.GradeExtractionContext ctx) {
 		BaseNode inner = nodeStack.pop();
 
-		int grade = switch (ctx.gradeExtractionExpr().grade.getType()) {
+		int grade = switch (ctx.grade.getType()) {
 			case GeomAlgeParser.SUBSCRIPT_ZERO ->
 				0;
 			case GeomAlgeParser.SUBSCRIPT_ONE ->

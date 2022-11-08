@@ -14,31 +14,72 @@ program
 ///////////////////////////////////////////////////////////////////////////
 
 expr
-	// Precedence max
-	:	parenExpr					#DummyLabel
-	|	gradeExtractionExpr			#extractGrade
-	|	literalExpr					#DummyLabel
-	// Precedence 6
-	|	left=expr
-		op=	(SUPERSCRIPT_MINUS__SUPERSCRIPT_ONE
+	:	unOpExpr
+	|	binOpExpr
+	|	nonOuterRecursiveExpr
+	;
+
+///////////////////////////////////////////////////////////////////////////
+// UnOp | singleSideRecursive
+///////////////////////////////////////////////////////////////////////////
+
+unOpExpr
+	:	unOpLExpr
+	|	unOpRExpr
+	;
+
+// rightSideRecursive (sic)
+unOpLExpr
+	:	<assoc=right>
+		op=	HYPHEN_MINUS
+		(nonOuterRecursiveExpr | unOpExpr)
+		#UnaryOpL
+	;
+
+// leftSideRecursive (sic)
+unOpRExpr
+	:	nonOuterRecursiveExpr
+		unOpRSymbolExpr
+	|	unOpRExpr
+		unOpRSymbolExpr
+	;
+
+unOpRSymbolExpr
+	:	op=	(SUPERSCRIPT_MINUS__SUPERSCRIPT_ONE
 			|ASTERISK
 			|SMALL_TILDE
 			|DAGGER
 			|SUPERSCRIPT_MINUS__ASTERISK
 			|SUPERSCRIPT_TWO
 			|CIRCUMFLEX_ACCENT
-			)						#UnaryOpR
-	// Precedence 5
-	|	<assoc=right>
-		op=	HYPHEN_MINUS
-		right=expr					#UnaryOpL
-	// Precedence 4
-	|	left=expr
-		op=	SPACE
-		right=expr					#BinaryOp
-	// Precedence 3
-	|	left=expr
-		op=	(DOT_OPERATOR
+			)
+		#UnaryOpR
+	;
+
+///////////////////////////////////////////////////////////////////////////
+// BinOp | doubleSideRecursive
+///////////////////////////////////////////////////////////////////////////
+
+binOpExpr
+	:	binOpSpacedExpr
+	;
+
+binOpSpacedExpr
+	:	binOpEndExpr
+		SPACE*
+		op=	binOpSymbolExpr
+		SPACE*
+		(binOpExpr | binOpEndExpr)
+		#BinaryOp
+	;
+
+binOpEndExpr
+	:	nonOuterRecursiveExpr
+	|	unOpExpr
+	;
+
+binOpSymbolExpr
+	:	op=	(DOT_OPERATOR
 			|LOGICAL_AND
 			|INTERSECTION
 			|UNION
@@ -46,21 +87,29 @@ expr
 			|L_FLOOR
 			|LOGICAL_OR
 			)
-		right=expr					#BinaryOp
-	// Precedence 2
-	|	left=expr
-		op=SOLIDUS
-		right=expr					#BinaryOp
-	// Precedence 1
-	|	left=expr
-		op=	(PLUS_SIGN
+	|	op=	SOLIDUS
+	|	op=	(PLUS_SIGN
 			|HYPHEN_MINUS
 			)
-		right=expr					#BinaryOp
 	;
 
 ///////////////////////////////////////////////////////////////////////////
-// Sub Expr
+// composite / abstract / higherOrder / meta Expr
+///////////////////////////////////////////////////////////////////////////
+
+// literalExpr are the only nonRecursive Expr
+nonOuterRecursiveExpr
+	:	innerRecursiveExpr
+	|	literalExpr
+	;
+
+innerRecursiveExpr
+	:	parenExpr
+	|	gradeExtractionExpr
+	;
+
+///////////////////////////////////////////////////////////////////////////
+// atomic / terminal / firstOrder Expr
 ///////////////////////////////////////////////////////////////////////////
 
 literalExpr
@@ -101,5 +150,5 @@ gradeExtractionExpr
 				|SUBSCRIPT_FOUR
 				|SUBSCRIPT_FIVE
 				)
+		#gradeExtraction
 	;
-
