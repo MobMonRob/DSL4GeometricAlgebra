@@ -37,11 +37,14 @@ public class App {
 		CharStream charStream = CharStreamSupplier.get(program);
 		GeomAlgeLexer lexer = ParsingService.getLexer(charStream);
 		GeomAlgeParser parser = ParsingService.getParser(lexer);
+		// tut nicht. richtig.
+		// GeomAlgeParser.ExprContext tree0 = parser.program().expr();
 		// tut. falsch. Warum?
-		BaseNode rootNode = ExprTransform.execute(parser.expr(), geomAlgeLangContext);
+		GeomAlgeParser.ExprContext tree1 = parser.expr();
+		//BaseNode rootNode = ExprTransform.execute(parser.expr(), geomAlgeLangContext);
 		System.out.println("-------- Trenner");
 		// tut nicht. richtig.
-		GeomAlgeParser.ExprContext tree1 = parser.expr();
+		GeomAlgeParser.ExprContext tree2 = parser.expr();
 
 		// GeomAlgeAntlrTestRig.process(program);
 	}
