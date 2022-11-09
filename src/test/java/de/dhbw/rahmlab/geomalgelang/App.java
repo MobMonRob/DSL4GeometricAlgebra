@@ -42,9 +42,10 @@ public class App {
 		// tut. falsch. Warum?
 		GeomAlgeParser.ExprContext tree1 = parser.expr();
 		//BaseNode rootNode = ExprTransform.execute(parser.expr(), geomAlgeLangContext);
-		System.out.println("-------- Trenner");
+		System.out.println("-------- Trenner ");
 		// tut nicht. richtig.
-		GeomAlgeParser.ExprContext tree2 = parser.expr();
+		GeomAlgeParser.ExprContext tree2 = parser.expr(); // Es scheint 2 Aufrufe zu brauchen, bis es einen Fehler gibt.
+		// Sicherstellen, dass tut überall, wo ExprTransform aufgerufen wird.
 
 		// GeomAlgeAntlrTestRig.process(program);
 	}
