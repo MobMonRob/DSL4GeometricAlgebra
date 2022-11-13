@@ -27,7 +27,7 @@ public class EquivalentParenthesesCombinationsTest extends AbstractParsingTest {
 
 	@TestFactory
 	Stream<DynamicTest> leftAssociativityUnOpRSamePrecedence() {
-		final List<String> equivalentPrograms = List.of(new String[]{"a~~~", "(((a~)~)~)"});
+		final List<String> equivalentPrograms = List.of(new String[]{"a˜˜˜", "(((a˜)˜)˜)"});
 		return parsePrintAssertEquivalent(equivalentPrograms);
 	}
 
@@ -39,7 +39,7 @@ public class EquivalentParenthesesCombinationsTest extends AbstractParsingTest {
 
 	@TestFactory
 	Stream<DynamicTest> unOpL_R_Mixed() {
-		final List<String> equivalentPrograms = List.of(new String[]{"---a~~~", "(-(-(-(((A~)~)~))))"});
+		final List<String> equivalentPrograms = List.of(new String[]{"---a˜˜˜", "(-(-(-(((A˜)˜)˜))))"});
 		return parsePrintAssertEquivalent(equivalentPrograms);
 	}
 
