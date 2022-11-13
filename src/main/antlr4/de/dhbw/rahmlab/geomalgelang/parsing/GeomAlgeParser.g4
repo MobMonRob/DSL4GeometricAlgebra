@@ -64,12 +64,15 @@ binOpExpr
 	:	binOpSpacedExpr
 	;
 
+// binOpExpr
 binOpSpacedExpr
 	:	binOpEndExpr
+		#Dummy
+	|	binOpSpacedExpr
 		SPACE*
 		op=	binOpSymbolExpr
 		SPACE*
-		(binOpExpr | binOpEndExpr)
+		binOpEndExpr
 		#BinaryOp
 	;
 

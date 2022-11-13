@@ -16,7 +16,7 @@ import org.junit.jupiter.api.TestFactory;
  *
  * @author fabian
  */
-@Disabled
+// @Disabled
 public class EquivalentParenthesesCombinationsTest extends AbstractParsingTest {
 
 	@TestFactory
