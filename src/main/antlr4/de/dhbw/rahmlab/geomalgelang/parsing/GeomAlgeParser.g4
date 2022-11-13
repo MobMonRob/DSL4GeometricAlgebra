@@ -66,23 +66,10 @@ binOpExpr
 
 // binOpExpr
 binOpSpacedExpr
-	:	binOpEndExpr
-		#Dummy
+	:	binOpEndExpr		#Dummy
 	|	binOpSpacedExpr
 		SPACE*
-		op=	binOpSymbolExpr
-		SPACE*
-		binOpEndExpr
-		#BinaryOp
-	;
-
-binOpEndExpr
-	:	nonOuterRecursiveExpr
-	|	unOpExpr
-	;
-
-binOpSymbolExpr
-	:	op=	(DOT_OPERATOR
+		op=	(DOT_OPERATOR
 			|LOGICAL_AND
 			|INTERSECTION
 			|UNION
@@ -90,10 +77,25 @@ binOpSymbolExpr
 			|L_FLOOR
 			|LOGICAL_OR
 			)
-	|	op=	SOLIDUS
-	|	op=	(PLUS_SIGN
+		SPACE*
+		binOpSpacedExpr		#BinaryOp //Precedence 3
+	|	binOpSpacedExpr
+		SPACE*
+		op=	SOLIDUS
+		SPACE*
+		binOpSpacedExpr		#BinaryOp //Precedence 2
+	|	binOpSpacedExpr
+		SPACE*
+		op=	(PLUS_SIGN
 			|HYPHEN_MINUS
 			)
+		SPACE*
+		binOpSpacedExpr		#BinaryOp //Precedence 1
+	;
+
+binOpEndExpr
+	:	nonOuterRecursiveExpr
+	|	unOpExpr
 	;
 
 ///////////////////////////////////////////////////////////////////////////

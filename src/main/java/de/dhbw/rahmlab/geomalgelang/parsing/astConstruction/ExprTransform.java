@@ -16,6 +16,7 @@ import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 /**
@@ -53,7 +54,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		BaseNode right = nodeStack.pop();
 		BaseNode left = nodeStack.pop();
 
-		BaseNode current = switch (ctx.op.op.getType()) {
+		BaseNode current = switch (ctx.op.getType()) {
 			case GeomAlgeParser.SPACE ->
 				GeometricProductNodeGen.create(left, right);
 			case GeomAlgeParser.DOT_OPERATOR ->
