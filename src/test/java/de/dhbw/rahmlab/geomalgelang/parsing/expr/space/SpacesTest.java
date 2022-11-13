@@ -7,7 +7,6 @@ package de.dhbw.rahmlab.geomalgelang.parsing.expr.space;
 import de.dhbw.rahmlab.geomalgelang.parsing.AbstractParsingTest;
 import static de.dhbw.rahmlab.geomalgelang.parsing._util.Asserts.parsePrintAssert;
 import static de.dhbw.rahmlab.geomalgelang.parsing._util.Asserts.parsePrintAssertSyntaxError;
-import de.dhbw.rahmlab.geomalgelang.parsing._util.GeomAlgeAntlrTestRig;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Disabled;

@@ -19,17 +19,12 @@ public final class ParsingService {
 
 	}
 
-	public static BaseNode sourceCodeToRootNode(CharStreamSupplier program) {
-		return parseAndTransform(program, new GeomAlgeLangContext());
-	}
-
 	public static BaseNode sourceCodeToRootNode(CharStreamSupplier program, GeomAlgeLangContext geomAlgeLangContext) {
-		return parseAndTransform(program, geomAlgeLangContext);
-	}
-
-	private static BaseNode parseAndTransform(CharStreamSupplier program, GeomAlgeLangContext geomAlgeLangContext) {
 		GeomAlgeParser parser = getParser(program);
-		BaseNode rootNode = ExprTransform.execute(parser.expr(), geomAlgeLangContext);
+		// Due to unknown reasons, parser.expr() won't throw syntax errors properly.
+		GeomAlgeParser.ProgramContext programContext = parser.program();
+		GeomAlgeParser.ExprContext exprContext = programContext.expr();
+		BaseNode rootNode = ExprTransform.execute(exprContext, geomAlgeLangContext);
 		return rootNode;
 	}
 

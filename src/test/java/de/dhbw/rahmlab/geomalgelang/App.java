@@ -32,21 +32,16 @@ public class App {
 
 		Context context = Context.create();
 		context.enter();
+
 		GeomAlgeLangContext geomAlgeLangContext = new GeomAlgeLangContext();
 
 		CharStreamSupplier charStream = CharStreamSupplier.from(program);
 		GeomAlgeLexer lexer = ParsingService.getLexer(charStream);
 		GeomAlgeParser parser = ParsingService.getParser(lexer);
-		// tut nicht. richtig.
-		// GeomAlgeParser.ExprContext tree0 = parser.program().expr();
-		// tut. falsch. Warum?
-		GeomAlgeParser.ExprContext tree1 = parser.expr();
-		//BaseNode rootNode = ExprTransform.execute(parser.expr(), geomAlgeLangContext);
-		System.out.println("-------- Trenner ");
-		// tut nicht. richtig.
-		GeomAlgeParser.ExprContext tree2 = parser.expr(); // Es scheint 2 Aufrufe zu brauchen, bis es einen Fehler gibt.
-		// Sicherstellen, dass tut überall, wo ExprTransform aufgerufen wird.
+		GeomAlgeParser.ProgramContext programContext = parser.program();
+		GeomAlgeParser.ExprContext exprContext = programContext.expr();
 
-		// GeomAlgeAntlrTestRig.process(program);
+		// BaseNode rootNode = ExprTransform.execute(exprContext, geomAlgeLangContext);
+		GeomAlgeAntlrTestRig.process(program);
 	}
 }
