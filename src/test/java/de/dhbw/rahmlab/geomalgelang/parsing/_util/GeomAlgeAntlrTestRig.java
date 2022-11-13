@@ -21,7 +21,7 @@ public class GeomAlgeAntlrTestRig {
 	}
 
 	public static void process(String program, String startRuleName) throws Exception {
-		CharStream charStream = CharStreamSupplier.get(program);
+		CharStreamSupplier charStream = CharStreamSupplier.from(program);
 		GeomAlgeLexer lexer = ParsingService.getLexer(charStream);
 		GeomAlgeParser parser = ParsingService.getParser(lexer);
 		AntlrTestRig antlrTestRig = new AntlrTestRig();

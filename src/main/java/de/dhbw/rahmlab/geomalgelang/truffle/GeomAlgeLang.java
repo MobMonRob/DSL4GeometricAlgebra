@@ -24,31 +24,31 @@ import java.io.IOException;
 	name = "GeomAlgeLang",
 	version = "0.0.1")
 public class GeomAlgeLang extends TruffleLanguage<GeomAlgeLangContext> {
-	
+
 	GeomAlgeLangContext context = new GeomAlgeLangContext();
-	
+
 	public GeomAlgeLang() {
 		super();
 	}
-	
+
 	@Override
 	protected GeomAlgeLangContext createContext(Env env) {
 		return this.context;
 	}
-	
+
 	@Override
 	protected Object getScope(GeomAlgeLangContext context) {
 		return context.globalVariableScope;
 	}
-	
+
 	@Override
 	protected CallTarget parse(ParsingRequest request) throws IOException {
 		GeomAlgeLangRootNode rootNode = parseSource(request.getSource());
 		return rootNode.getCallTarget();
 	}
-	
+
 	private GeomAlgeLangRootNode parseSource(Source source) throws IOException, GeomAlgeLangException {
-		BaseNode topNode = ParsingService.sourceCodeToRootNode(CharStreamSupplier.get(source), this.context);
+		BaseNode topNode = ParsingService.sourceCodeToRootNode(CharStreamSupplier.from(source), this.context);
 		// Semantic validation takes place here.
 		GeomAlgeLangRootNode rootNode = new GeomAlgeLangRootNode(this, new FrameDescriptor(), topNode, new ExecutionValidation(this.context));
 		return rootNode;

@@ -5,6 +5,7 @@
  */
 package de.dhbw.rahmlab.geomalgelang.parsing._util;
 
+import de.dhbw.rahmlab.geomalgelang.parsing.CharStreamSupplier;
 import org.antlr.v4.gui.TestRig;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Lexer;
@@ -50,8 +51,8 @@ public class AntlrTestRig extends TestRig {
 		super.showTokens = value;
 	}
 
-	public void process(Lexer lexer, Parser parser, CharStream input, String startRuleName) throws Exception {
+	public void process(Lexer lexer, Parser parser, CharStreamSupplier input, String startRuleName) throws Exception {
 		super.startRuleName = startRuleName;
-		super.process(lexer, parser.getClass(), parser, input);
+		super.process(lexer, parser.getClass(), parser, input.get());
 	}
 }

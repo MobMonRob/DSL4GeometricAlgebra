@@ -7,7 +7,6 @@ package de.dhbw.rahmlab.geomalgelang.parsing;
 import de.dhbw.rahmlab.geomalgelang.parsing.astConstruction.ExprTransform;
 import de.dhbw.rahmlab.geomalgelang.truffle.GeomAlgeLangContext;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.technical.BaseNode;
-import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 
 /**
@@ -20,22 +19,22 @@ public final class ParsingService {
 
 	}
 
-	public static BaseNode sourceCodeToRootNode(CharStream program) {
+	public static BaseNode sourceCodeToRootNode(CharStreamSupplier program) {
 		return parseAndTransform(program, new GeomAlgeLangContext());
 	}
 
-	public static BaseNode sourceCodeToRootNode(CharStream program, GeomAlgeLangContext geomAlgeLangContext) {
+	public static BaseNode sourceCodeToRootNode(CharStreamSupplier program, GeomAlgeLangContext geomAlgeLangContext) {
 		return parseAndTransform(program, geomAlgeLangContext);
 	}
 
-	private static BaseNode parseAndTransform(CharStream inputStream, GeomAlgeLangContext geomAlgeLangContext) {
-		GeomAlgeParser parser = getParser(inputStream);
+	private static BaseNode parseAndTransform(CharStreamSupplier program, GeomAlgeLangContext geomAlgeLangContext) {
+		GeomAlgeParser parser = getParser(program);
 		BaseNode rootNode = ExprTransform.execute(parser.expr(), geomAlgeLangContext);
 		return rootNode;
 	}
 
-	public static GeomAlgeLexer getLexer(CharStream inputStream) {
-		GeomAlgeLexer lexer = new GeomAlgeLexer(inputStream);
+	public static GeomAlgeLexer getLexer(CharStreamSupplier program) {
+		GeomAlgeLexer lexer = new GeomAlgeLexer(program.get());
 		lexer.removeErrorListeners();
 		lexer.addErrorListener(SyntaxErrorListener.INSTANCE);
 
@@ -51,7 +50,7 @@ public final class ParsingService {
 		return parser;
 	}
 
-	public static GeomAlgeParser getParser(CharStream inputStream) {
-		return getParser(getLexer(inputStream));
+	public static GeomAlgeParser getParser(CharStreamSupplier program) {
+		return getParser(getLexer(program));
 	}
 }

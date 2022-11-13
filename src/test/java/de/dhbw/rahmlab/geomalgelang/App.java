@@ -34,7 +34,7 @@ public class App {
 		context.enter();
 		GeomAlgeLangContext geomAlgeLangContext = new GeomAlgeLangContext();
 
-		CharStream charStream = CharStreamSupplier.get(program);
+		CharStreamSupplier charStream = CharStreamSupplier.from(program);
 		GeomAlgeLexer lexer = ParsingService.getLexer(charStream);
 		GeomAlgeParser parser = ParsingService.getParser(lexer);
 		// tut nicht. richtig.
