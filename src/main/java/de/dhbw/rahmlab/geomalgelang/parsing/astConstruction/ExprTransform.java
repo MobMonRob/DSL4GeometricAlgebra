@@ -38,7 +38,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		this.geomAlgeLangContext = geomAlgeLangContext;
 	}
 
-	public static BaseNode execute(GeomAlgeParser.ExprContext exprCtx, GeomAlgeLangContext geomAlgeLangContext) {
+	public static BaseNode generateAST(GeomAlgeParser.ExprContext exprCtx, GeomAlgeLangContext geomAlgeLangContext) {
 		ExprTransform exprTransform = new ExprTransform(geomAlgeLangContext);
 
 		ParseTreeWalker.DEFAULT.walk(exprTransform, exprCtx);
