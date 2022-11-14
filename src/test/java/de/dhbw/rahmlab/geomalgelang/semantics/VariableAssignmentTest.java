@@ -19,7 +19,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author fabian
  */
-@Disabled
+// @Disabled
 public class VariableAssignmentTest {
 
 	@Test
