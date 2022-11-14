@@ -62,7 +62,7 @@ public class ExprKombosTest extends AbstractParsingTest {
 			Addition
 				Reverse
 					GlobalVariableReference
-					GlobalVariableReference
+				GlobalVariableReference
 			""";
 
 			String _6 = """
