@@ -23,7 +23,7 @@ import org.graalvm.polyglot.Context;
  *
  * @author fabian
  */
-public class App {
+public class AppTest {
 
 	// Ausführen mit Rechtsklick auf die Datei -> Run File
 	// Oder Shift + Fn + F6
