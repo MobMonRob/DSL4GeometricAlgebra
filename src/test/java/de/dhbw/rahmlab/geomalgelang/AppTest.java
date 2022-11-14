@@ -28,7 +28,7 @@ public class AppTest {
 	// Ausführen mit Rechtsklick auf die Datei -> Run File
 	// Oder Shift + Fn + F6
 	public static void main(String[] args) throws Exception {
-		String program = "a + b ∧ c";
+		String program = "a +b";
 
 		Context context = Context.create();
 		context.enter();

@@ -20,7 +20,7 @@ import org.junit.jupiter.api.TestFactory;
  *
  * @author fabian
  */
-@Disabled
+// @Disabled
 public class GeometricProductTest extends AbstractParsingTest {
 
 	public record ExampleSet(String exprType, String nodeName, List<String> examples) {
@@ -38,6 +38,7 @@ public class GeometricProductTest extends AbstractParsingTest {
 
 	static ArrayList<String> generateSpaces(int maxSpaces) {
 		ArrayList<String> spaces = new ArrayList(maxSpaces);
+		// spaces.add("");
 		for (int i = 1; i < maxSpaces; ++i) {
 			spaces.add(" ".repeat(i));
 		}

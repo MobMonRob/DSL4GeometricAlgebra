@@ -49,14 +49,25 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 	}
 
 	@Override
+	public void exitGP(GeomAlgeParser.GPContext ctx) {
+		// Sequence matters here!
+		BaseNode right = nodeStack.pop();
+		BaseNode left = nodeStack.pop();
+
+		BaseNode current = GeometricProductNodeGen.create(left, right);
+
+		nodeStack.push(current);
+	}
+
+	@Override
 	public void exitBinaryOp(GeomAlgeParser.BinaryOpContext ctx) {
 		// Sequence matters here!
 		BaseNode right = nodeStack.pop();
 		BaseNode left = nodeStack.pop();
 
 		BaseNode current = switch (ctx.op.getType()) {
-			case GeomAlgeParser.SPACE ->
-				GeometricProductNodeGen.create(left, right);
+			// case GeomAlgeParser.SPACE ->
+			//	GeometricProductNodeGen.create(left, right);
 			case GeomAlgeParser.DOT_OPERATOR ->
 				InnerProductNodeGen.create(left, right);
 			case GeomAlgeParser.LOGICAL_AND ->

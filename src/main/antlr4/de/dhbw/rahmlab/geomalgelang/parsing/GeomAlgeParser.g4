@@ -61,13 +61,11 @@ unOpRSymbolExpr
 ///////////////////////////////////////////////////////////////////////////
 
 binOpExpr
-	:	binOpSpacedExpr
-	;
-
-// binOpExpr
-binOpSpacedExpr
 	:	binOpEndExpr		#Dummy
-	|	binOpSpacedExpr
+	|	binOpExpr
+		SPACE+
+		binOpExpr			#GP //Precedence 4
+	|	binOpExpr
 		SPACE*
 		op=	(DOT_OPERATOR
 			|LOGICAL_AND
@@ -78,19 +76,19 @@ binOpSpacedExpr
 			|LOGICAL_OR
 			)
 		SPACE*
-		binOpSpacedExpr		#BinaryOp //Precedence 3
-	|	binOpSpacedExpr
+		binOpExpr			#BinaryOp //Precedence 3
+	|	binOpExpr
 		SPACE*
 		op=	SOLIDUS
 		SPACE*
-		binOpSpacedExpr		#BinaryOp //Precedence 2
-	|	binOpSpacedExpr
+		binOpExpr			#BinaryOp //Precedence 2
+	|	binOpExpr
 		SPACE*
 		op=	(PLUS_SIGN
 			|HYPHEN_MINUS
 			)
 		SPACE*
-		binOpSpacedExpr		#BinaryOp //Precedence 1
+		binOpExpr			#BinaryOp //Precedence 1
 	;
 
 binOpEndExpr
