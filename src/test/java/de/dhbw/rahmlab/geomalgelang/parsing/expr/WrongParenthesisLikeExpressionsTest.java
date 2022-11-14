@@ -21,7 +21,7 @@ public class WrongParenthesisLikeExpressionsTest extends AbstractParsingTest {
 
 	@TestFactory
 	Stream<DynamicTest> expectSyntaxError() {
-		final List<String> programs = List.of(new String[]{"a(+)b", "(-)a", "a(~)", "()", "(<a)>₀", "<>₀"});
+		final List<String> programs = List.of(new String[]{"a(+)b", "(-)a", "a(˜)", "()", "(<a)>₀", "<>₀"});
 		return parsePrintAssertSyntaxError(programs);
 	}
 }

@@ -23,14 +23,14 @@ public class ExprKombosTest extends AbstractParsingTest {
 
 	@TestFactory
 	Stream<DynamicTest> expectSyntaxError() {
-		final List<String> programs = List.of(new String[]{"a +", "a+", "+ a", "+a", "a + +", "a++", "+ + a", "++a", "a-+-a", "+", "+ +", "++", "a + + a", "a++a", "-", "--", "- -", "a - - -a", "a - - a", "- - a", "- -a", "~", "~ ~", "~a", "a~ +", "a +~", "+ -a", "-+ a", "-a +~", "-+a~"});
+		final List<String> programs = List.of(new String[]{"a +", "a+", "+ a", "+a", "a + +", "a++", "+ + a", "++a", "a-+-a", "+", "+ +", "++", "a + + a", "a++a", "-", "--", "- -", "a - - -a", "a - - a", "- - a", "- -a", "˜", "˜ ˜", "˜a", "a˜ +", "a +˜", "+ -a", "-+ a", "-a +˜", "-+a˜"});
 
 		return parsePrintAssertSyntaxError(programs);
 	}
 
 	@TestFactory
 	Stream<DynamicTest> expectSyntaxCorrect() {
-		final List<String> programs = List.of(new String[]{"a + a - a", "a + -a", "a+-a", "-a + a", "a~ + a", "a + a~", "-a", "a - -a", "--a", "-a~", "a~", "a~~"});
+		final List<String> programs = List.of(new String[]{"a + a - a", "a + -a", "a+-a", "-a + a", "a˜ + a", "a + a˜", "-a", "a - -a", "--a", "-a˜", "a˜", "a˜˜"});
 
 		ArrayList<String> expected = new ArrayList();
 		{
