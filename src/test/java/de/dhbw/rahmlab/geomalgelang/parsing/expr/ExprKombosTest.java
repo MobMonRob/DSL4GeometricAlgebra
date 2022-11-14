@@ -18,7 +18,7 @@ import org.junit.jupiter.api.TestFactory;
  *
  * @author fabian
  */
-@Disabled
+// @Disabled
 public class ExprKombosTest extends AbstractParsingTest {
 
 	@TestFactory
@@ -35,11 +35,11 @@ public class ExprKombosTest extends AbstractParsingTest {
 		ArrayList<String> expected = new ArrayList();
 		{
 			String _1 = """
-			Addition
+			Subtraction
+				Addition
+					GlobalVariableReference
+					GlobalVariableReference
 				GlobalVariableReference
-				Subtraction
-					GlobalVariableReference
-					GlobalVariableReference
 			""";
 
 			String _2 = """
