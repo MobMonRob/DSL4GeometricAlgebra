@@ -43,7 +43,6 @@ public class AppTest {
 		GeomAlgeParser.ProgramContext programContext = parser.program();
 		GeomAlgeParser.ExprContext exprContext = programContext.expr();
 
-		// Warum geht das eine Schied und das andere nicht?
 		BaseNode rootNode = ExprTransform.generateAST(exprContext, geomAlgeLangContext);
 		GeomAlgeAntlrTestRig.processDiagnostic(program);
 	}
