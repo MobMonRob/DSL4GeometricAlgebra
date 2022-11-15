@@ -8,6 +8,8 @@ import de.dhbw.rahmlab.geomalgelang.parsing.astConstruction.ExprTransform;
 import de.dhbw.rahmlab.geomalgelang.truffle.GeomAlgeLangContext;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.technical.BaseNode;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.DiagnosticErrorListener;
+import org.antlr.v4.runtime.atn.PredictionMode;
 
 /**
  *
@@ -35,6 +37,15 @@ public final class ParsingService {
 		lexer.addErrorListener(SyntaxErrorListener.INSTANCE);
 
 		return lexer;
+	}
+
+	public static GeomAlgeParser getDiagnosticParser(GeomAlgeLexer lexer) {
+		CommonTokenStream commonTokenStream = new CommonTokenStream(lexer);
+		GeomAlgeParser parser = new GeomAlgeParser(commonTokenStream);
+		parser.addErrorListener(new DiagnosticErrorListener());
+		parser.getInterpreter().setPredictionMode(PredictionMode.LL_EXACT_AMBIG_DETECTION);
+
+		return parser;
 	}
 
 	public static GeomAlgeParser getParser(GeomAlgeLexer lexer) {

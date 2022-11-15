@@ -31,6 +31,7 @@ public class AntlrTestRig extends TestRig {
 		super.printTree = true;
 		super.trace = true;
 		super.diagnostics = true;
+		super.SLL = false; // Overwrites diagnostics
 		super.showTokens = true;
 
 		// Standard
@@ -38,6 +39,10 @@ public class AntlrTestRig extends TestRig {
 
 		// To be set somewhere else
 		super.startRuleName = null;
+	}
+
+	public void setDiagnostics(boolean value) {
+		super.diagnostics = value;
 	}
 
 	public void useGui(boolean value) {

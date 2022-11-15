@@ -17,14 +17,26 @@ import org.antlr.v4.runtime.CharStream;
 public class GeomAlgeAntlrTestRig {
 
 	public static void process(String program) throws Exception {
-		process(program, "program");
+		process(program, "program", false);
 	}
 
-	public static void process(String program, String startRuleName) throws Exception {
+	public static void processDiagnostic(String program) throws Exception {
+		process(program, "program", true);
+	}
+
+	public static void process(String program, String startRuleName, boolean diagnostic) throws Exception {
 		CharStreamSupplier charStream = CharStreamSupplier.from(program);
 		GeomAlgeLexer lexer = ParsingService.getLexer(charStream);
-		GeomAlgeParser parser = ParsingService.getParser(lexer);
 		AntlrTestRig antlrTestRig = new AntlrTestRig();
+
+		GeomAlgeParser parser;
+		if (diagnostic) {
+			parser = ParsingService.getDiagnosticParser(lexer);
+			antlrTestRig.setDiagnostics(true);
+		} else {
+			parser = ParsingService.getParser(lexer);
+		}
+
 		antlrTestRig.process(lexer, parser, charStream, startRuleName);
 	}
 }

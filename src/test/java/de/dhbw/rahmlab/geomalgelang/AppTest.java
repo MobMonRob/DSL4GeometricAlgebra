@@ -15,6 +15,7 @@ import de.dhbw.rahmlab.geomalgelang.truffle.GeomAlgeLangContext;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.technical.BaseNode;
 import java.lang.reflect.Method;
 import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.DiagnosticErrorListener;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.atn.PredictionMode;
 import org.graalvm.polyglot.Context;
@@ -37,12 +38,13 @@ public class AppTest {
 
 		CharStreamSupplier charStream = CharStreamSupplier.from(program);
 		GeomAlgeLexer lexer = ParsingService.getLexer(charStream);
-		GeomAlgeParser parser = ParsingService.getParser(lexer);
+		GeomAlgeParser parser = ParsingService.getDiagnosticParser(lexer);
+
 		GeomAlgeParser.ProgramContext programContext = parser.program();
 		GeomAlgeParser.ExprContext exprContext = programContext.expr();
 
 		// Warum geht das eine Schied und das andere nicht?
 		BaseNode rootNode = ExprTransform.generateAST(exprContext, geomAlgeLangContext);
-		// GeomAlgeAntlrTestRig.process(program);
+		GeomAlgeAntlrTestRig.processDiagnostic(program);
 	}
 }
