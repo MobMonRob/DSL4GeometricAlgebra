@@ -8,6 +8,7 @@ import de.dhbw.rahmlab.geomalgelang.parsing.CharStreamSupplier;
 import de.dhbw.rahmlab.geomalgelang.parsing.ParsingService;
 import de.dhbw.rahmlab.geomalgelang.truffle.GeomAlgeLangContext;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.technical.BaseNode;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
@@ -60,6 +61,14 @@ public class Asserts {
 	public static Stream<DynamicTest> parsePrintAssertEquivalent(List<String> programs) {
 		final String expectedAstString = getAstString(programs.get(0));
 		return parsePrintAssert(programs, expectedAstString);
+	}
+
+	public record ProgramExpected(String program, String expected) {
+
+	}
+
+	public static Stream<DynamicTest> parsePrintAssert(List<ProgramExpected> programExpected) {
+		return DynamicTest.stream(programExpected.stream(), pe -> pe.program(), pe -> parsePrintAssert(pe.program(), pe.expected()));
 	}
 
 	public static Stream<DynamicTest> parsePrintAssert(List<String> programs, String expectedAstString) {

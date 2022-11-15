@@ -9,6 +9,7 @@ import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeLexer;
 import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParser;
 import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParser.ExprContext;
 import de.dhbw.rahmlab.geomalgelang.parsing.ParsingService;
+import de.dhbw.rahmlab.geomalgelang.parsing._util.AstStringBuilder;
 import de.dhbw.rahmlab.geomalgelang.parsing._util.GeomAlgeAntlrTestRig;
 import de.dhbw.rahmlab.geomalgelang.parsing.astConstruction.ExprTransform;
 import de.dhbw.rahmlab.geomalgelang.truffle.GeomAlgeLangContext;
@@ -29,7 +30,9 @@ public class AppTest {
 	// Ausführen mit Rechtsklick auf die Datei -> Run File
 	// Oder Shift + Fn + F6
 	public static void main(String[] args) throws Exception {
-		String program = "a -a";
+		String program = "a -b";
+		// String program = "a-b";
+		// String program = "a - b";
 
 		Context context = Context.create();
 		context.enter();
@@ -44,6 +47,9 @@ public class AppTest {
 		GeomAlgeParser.ExprContext exprContext = programContext.expr();
 
 		BaseNode rootNode = ExprTransform.generateAST(exprContext, geomAlgeLangContext);
+		String ast = AstStringBuilder.getAstString(rootNode);
+		System.out.println(ast);
+
 		GeomAlgeAntlrTestRig.processDiagnostic(program);
 	}
 }

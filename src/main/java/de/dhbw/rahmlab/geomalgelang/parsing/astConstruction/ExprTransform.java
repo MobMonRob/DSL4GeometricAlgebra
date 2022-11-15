@@ -60,14 +60,12 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 	}
 
 	@Override
-	public void exitBinaryOp(GeomAlgeParser.BinaryOpContext ctx) {
+	public void exitBinOp(GeomAlgeParser.BinOpContext ctx) {
 		// Sequence matters here!
 		BaseNode right = nodeStack.pop();
 		BaseNode left = nodeStack.pop();
 
 		BaseNode current = switch (ctx.op.getType()) {
-			// case GeomAlgeParser.SPACE ->
-			//	GeometricProductNodeGen.create(left, right);
 			case GeomAlgeParser.DOT_OPERATOR ->
 				InnerProductNodeGen.create(left, right);
 			case GeomAlgeParser.LOGICAL_AND ->
@@ -96,7 +94,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 	}
 
 	@Override
-	public void exitUnaryOpR(GeomAlgeParser.UnaryOpRContext ctx) {
+	public void exitUnOpR(GeomAlgeParser.UnOpRContext ctx) {
 		BaseNode left = nodeStack.pop();
 
 		BaseNode current = switch (ctx.op.getType()) {
@@ -121,10 +119,8 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		nodeStack.push(current);
 	}
 
-	// In ExprTransform the distinction between UnaryOpR and UnaryOpL is not necessary.
-	// Howewer it increases the readability of GeomAlgeParser.
 	@Override
-	public void exitUnaryOpL(GeomAlgeParser.UnaryOpLContext ctx) {
+	public void exitUnOpL(GeomAlgeParser.UnOpLContext ctx) {
 		BaseNode right = nodeStack.pop();
 
 		BaseNode current = switch (ctx.op.getType()) {

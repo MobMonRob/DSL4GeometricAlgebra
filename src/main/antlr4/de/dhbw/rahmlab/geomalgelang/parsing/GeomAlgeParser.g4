@@ -14,9 +14,9 @@ program
 ///////////////////////////////////////////////////////////////////////////
 
 expr
-	:	unOpExpr
+	:	nonOuterRecursiveExpr
+	|	unOpExpr
 	|	binOpExpr
-	|	nonOuterRecursiveExpr
 	;
 
 ///////////////////////////////////////////////////////////////////////////
@@ -24,22 +24,25 @@ expr
 ///////////////////////////////////////////////////////////////////////////
 
 unOpExpr
-	:	unOpLExpr
-	|	unOpRExpr
+	:	unOpRExpr //Precedence 6
+	|	unOpLExpr //Precedence 5
 	;
 
 // rightSideRecursive (sic)
 unOpLExpr
 	:	<assoc=right>
 		op=	HYPHEN_MINUS
-		(nonOuterRecursiveExpr | unOpExpr)
-		#UnaryOpL
+		(
+			nonOuterRecursiveExpr
+			|unOpExpr
+		)
+		#UnOpL
 	;
 
 // leftSideRecursive (sic)
 unOpRExpr
 	:	nonOuterRecursiveExpr
-		unOpRSymbolExpr
+		unOpRSymbolExpr //Without this seemingly redundant line occurs ambiguity
 	|	unOpRExpr
 		unOpRSymbolExpr
 	;
@@ -53,7 +56,7 @@ unOpRSymbolExpr
 			|SUPERSCRIPT_TWO
 			|CIRCUMFLEX_ACCENT
 			)
-		#UnaryOpR
+		#UnOpR
 	;
 
 ///////////////////////////////////////////////////////////////////////////
@@ -61,10 +64,14 @@ unOpRSymbolExpr
 ///////////////////////////////////////////////////////////////////////////
 
 binOpExpr
-	:	binOpEndExpr		#Dummy
+	:	nonOuterRecursiveExpr	#BinOpExprDummy //Closure
+	|	unOpExpr				#BinOpExprDummy //Closure
 	|	binOpExpr
 		SPACE*
-		binOpExpr		#GP //Precedence 4
+		(
+			nonOuterRecursiveExpr
+			|unOpRExpr
+		)					#GP		//Precedence 4
 	|	binOpExpr
 		SPACE*
 		op=	(DOT_OPERATOR
@@ -76,24 +83,19 @@ binOpExpr
 			|LOGICAL_OR
 			)
 		SPACE*
-		binOpExpr			#BinaryOp //Precedence 3
+		binOpExpr			#BinOp	//Precedence 3
 	|	binOpExpr
 		SPACE*
 		op=	SOLIDUS
 		SPACE*
-		binOpExpr			#BinaryOp //Precedence 2
+		binOpExpr			#BinOp	//Precedence 2
 	|	binOpExpr
 		SPACE*
 		op=	(PLUS_SIGN
 			|HYPHEN_MINUS
 			)
 		SPACE*
-		binOpExpr			#BinaryOp //Precedence 1
-	;
-
-binOpEndExpr
-	:	nonOuterRecursiveExpr
-	|	unOpExpr
+		binOpExpr			#BinOp	//Precedence 1
 	;
 
 ///////////////////////////////////////////////////////////////////////////
@@ -102,8 +104,8 @@ binOpEndExpr
 
 // literalExpr are the only nonRecursive Expr
 nonOuterRecursiveExpr
-	:	innerRecursiveExpr
-	|	literalExpr
+	:	literalExpr
+	|	innerRecursiveExpr
 	;
 
 innerRecursiveExpr

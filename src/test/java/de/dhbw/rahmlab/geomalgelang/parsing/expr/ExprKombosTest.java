@@ -28,6 +28,7 @@ public class ExprKombosTest extends AbstractParsingTest {
 		return parsePrintAssertSyntaxError(programs);
 	}
 
+	// ToDo: Refactor with Asserts.ProgramExpected like in MinusTest
 	@TestFactory
 	Stream<DynamicTest> expectSyntaxCorrect() {
 		final List<String> programs = List.of(new String[]{"a + a - a", "a + -a", "a+-a", "-a + a", "a˜ + a", "a + a˜", "-a", "a - -a", "--a", "-a˜", "a˜", "a˜˜"});

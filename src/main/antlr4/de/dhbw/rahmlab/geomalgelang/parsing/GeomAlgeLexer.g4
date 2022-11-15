@@ -14,77 +14,67 @@ lexer grammar GeomAlgeLexer;
 // Symbols for binaryOp's
 ///////////////////////////////////////////////////////////////////////////
 
-// Precedence 3
 // geometric_product
 // \u0020
 SPACE
 	: ' '
 	;
 
-// Precedence 3
 // inner_product
 // \u22C5
 DOT_OPERATOR
 	: '⋅'
 	;
 
-// Precedence 3
 // outer_product
 // \u2227
 LOGICAL_AND
 	: '∧'
 	;
 
-// Precedence 1
 // addition
 // \u002B
 PLUS_SIGN
 	: '+'
 	;
 
-// Precedence 1
 // subtraction
+// Also negate unOpL
 // \u002D
 HYPHEN_MINUS
 	: '-'
 	;
 
-// Precedence 3
 // meet (intersection)
 // \u2229
 INTERSECTION
 	: '∩'
 	;
 
-// Precedence 3
 // join (union)
 // \u222A
 UNION
 	: '∪'
 	;
 
-// Precedence 3
 // right_contraction
 // \u230B
 R_FLOOR
 	: '⌋'
 	;
 
-// Precedence 3
 // left_contraction
 // \u230A
 L_FLOOR
 	: '⌊'
 	;
 
-// Precedence 3
 // regressive_product
 // \u2228
 LOGICAL_OR
 	: '∨'
 	;
 
-// Precedence 2
 // division (inverse geometric product)
 // \u002F
 SOLIDUS
@@ -92,63 +82,45 @@ SOLIDUS
 	;
 
 ///////////////////////////////////////////////////////////////////////////
-// Symbols for unaryOp's left sided
-///////////////////////////////////////////////////////////////////////////
-
-// Precedence 4
-// negate
-// \u2212
-//MINUS_SIGN
-//	: '−'
-//	;
-
-///////////////////////////////////////////////////////////////////////////
 // Symbols for unaryOp's right sided
 ///////////////////////////////////////////////////////////////////////////
 
-// Precedence 4
 // general_inverse
 // \u207B\u00B9
 SUPERSCRIPT_MINUS__SUPERSCRIPT_ONE
 	: '⁻¹'
 	;
 
-// Precedence 4
 // dual
 // \u002A
 ASTERISK
 	: '*'
 	;
 
-// Precedence 4
 // reverse
 // \u02DC
 SMALL_TILDE
 	: '˜'
 	;
 
-// Precedence 4
 // clifford conjugate
 // \u2020
 DAGGER
 	: '†'
 	;
 
-// Precedence 4
 // undual
 // \u207B\u002A
 SUPERSCRIPT_MINUS__ASTERISK
 	: '⁻*'
 	;
 
-// Precedence 4
 // square
 // \u00B2
 SUPERSCRIPT_TWO
 	: '²'
 	;
 
-// Precedence 4
 // involute
 // \u005E
 CIRCUMFLEX_ACCENT
@@ -158,8 +130,6 @@ CIRCUMFLEX_ACCENT
 ///////////////////////////////////////////////////////////////////////////
 // Symbols for composite operators
 ///////////////////////////////////////////////////////////////////////////
-
-// Precedence 4
 
 // \u003C
 LESS_THAN_SIGN

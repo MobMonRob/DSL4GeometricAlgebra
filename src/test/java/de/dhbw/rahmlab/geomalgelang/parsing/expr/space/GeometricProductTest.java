@@ -5,6 +5,7 @@
 package de.dhbw.rahmlab.geomalgelang.parsing.expr.space;
 
 import de.dhbw.rahmlab.geomalgelang.parsing.AbstractParsingTest;
+import de.dhbw.rahmlab.geomalgelang.parsing._util.Asserts.ProgramExpected;
 import static de.dhbw.rahmlab.geomalgelang.parsing._util.Asserts.parsePrintAssert;
 import static de.dhbw.rahmlab.geomalgelang.parsing._util.Asserts.parsePrintAssertSyntaxError;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.unaryOps.*;
@@ -46,8 +47,9 @@ public class GeometricProductTest extends AbstractParsingTest {
 		return spaces;
 	}
 
-	static final ArrayList<String> spaces = generateSpaces(3); //3
+	static final ArrayList<String> spaces = generateSpaces(3);
 
+	/*
 	static final String unOpLSymbol = "-";
 
 	static ExampleSet generateUnOpLExpr() {
@@ -62,7 +64,7 @@ public class GeometricProductTest extends AbstractParsingTest {
 		ExampleSet unOpLExpr = new ExampleSet("unOpL", Negate.class.getSimpleName(), unOpLExamples);
 		return unOpLExpr;
 	}
-
+	 */
 	static final String unOpRSymbol = "˜";
 
 	static ExampleSet generateUnOpRExpr() {
@@ -78,13 +80,13 @@ public class GeometricProductTest extends AbstractParsingTest {
 		return unOpRExpr;
 	}
 
-	static final ExampleSet unOpLExpr = generateUnOpLExpr();
+	// static final ExampleSet unOpLExpr = generateUnOpLExpr();
 	static final ExampleSet unOpRExpr = generateUnOpRExpr();
 
 	static List<ExampleSet> generateAllExpr() {
 		ArrayList<ExampleSet> allExprList = new ArrayList();
 		allExprList.addAll(atomicExpr);
-		allExprList.add(unOpLExpr);
+		// allExprList.add(unOpLExpr);
 		allExprList.add(unOpRExpr);
 		return allExprList;
 	}
@@ -135,8 +137,24 @@ public class GeometricProductTest extends AbstractParsingTest {
 		return tests.stream();
 	}
 
-	record ProgramExpected(String program, String expected) {
+	@TestFactory
+	Stream<DynamicTest> R1_3_syntaxCorrectGP() {
+		List<ProgramExpected> PEs = new ArrayList();
 
+		{
+			ProgramExpected pe = new ProgramExpected(
+				"(a)(b)(c)",
+				"""
+				GeometricProduct
+					GeometricProduct
+						GlobalVariableReference
+						GlobalVariableReference
+					GlobalVariableReference
+				""");
+			PEs.add(pe);
+		}
+
+		return parsePrintAssert(PEs);
 	}
 
 	@TestFactory
@@ -180,14 +198,7 @@ public class GeometricProductTest extends AbstractParsingTest {
 			PEs.add(pe);
 		}
 
-		ArrayList<DynamicTest> testCases = new ArrayList();
-		for (var pe : PEs) {
-			final String currentProgram = pe.program();
-			final String currentExpected = pe.expected();
-			testCases.add(DynamicTest.dynamicTest(currentProgram, () -> parsePrintAssert(currentProgram, currentExpected)));
-		}
-
-		return testCases.stream();
+		return parsePrintAssert(PEs);
 	}
 
 	@TestFactory
