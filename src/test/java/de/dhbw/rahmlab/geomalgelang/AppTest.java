@@ -28,7 +28,7 @@ public class AppTest {
 	// Ausführen mit Rechtsklick auf die Datei -> Run File
 	// Oder Shift + Fn + F6
 	public static void main(String[] args) throws Exception {
-		String program = "a +b";
+		String program = "a -a";
 
 		Context context = Context.create();
 		context.enter();
@@ -41,7 +41,8 @@ public class AppTest {
 		GeomAlgeParser.ProgramContext programContext = parser.program();
 		GeomAlgeParser.ExprContext exprContext = programContext.expr();
 
-		// BaseNode rootNode = ExprTransform.execute(exprContext, geomAlgeLangContext);
-		GeomAlgeAntlrTestRig.process(program);
+		// Warum geht das eine Schied und das andere nicht?
+		BaseNode rootNode = ExprTransform.generateAST(exprContext, geomAlgeLangContext);
+		// GeomAlgeAntlrTestRig.process(program);
 	}
 }

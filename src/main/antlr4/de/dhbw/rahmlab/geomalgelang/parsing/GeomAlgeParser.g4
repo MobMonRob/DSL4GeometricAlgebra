@@ -63,8 +63,8 @@ unOpRSymbolExpr
 binOpExpr
 	:	binOpEndExpr		#Dummy
 	|	binOpExpr
-		SPACE+
-		binOpExpr			#GP //Precedence 4
+		SPACE*
+		binOpExpr		#GP //Precedence 4
 	|	binOpExpr
 		SPACE*
 		op=	(DOT_OPERATOR

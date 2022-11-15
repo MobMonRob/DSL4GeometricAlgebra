@@ -6,6 +6,7 @@ package de.dhbw.rahmlab.geomalgelang.parsing.expr.space;
 
 import de.dhbw.rahmlab.geomalgelang.parsing.AbstractParsingTest;
 import static de.dhbw.rahmlab.geomalgelang.parsing._util.Asserts.parsePrintAssert;
+import static de.dhbw.rahmlab.geomalgelang.parsing._util.Asserts.parsePrintAssertSyntaxError;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.unaryOps.*;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.variableLike.*;
 import java.io.UnsupportedEncodingException;
@@ -45,7 +46,7 @@ public class GeometricProductTest extends AbstractParsingTest {
 		return spaces;
 	}
 
-	static final ArrayList<String> spaces = generateSpaces(3);
+	static final ArrayList<String> spaces = generateSpaces(3); //3
 
 	static final String unOpLSymbol = "-";
 
@@ -132,5 +133,66 @@ public class GeometricProductTest extends AbstractParsingTest {
 		}
 
 		return tests.stream();
+	}
+
+	record ProgramExpected(String program, String expected) {
+
+	}
+
+	@TestFactory
+	Stream<DynamicTest> R1_3_syntaxCorrectNotGP() {
+		List<ProgramExpected> PEs = new ArrayList();
+
+		{
+			ProgramExpected pe = new ProgramExpected(
+				"aa",
+				"""
+				GlobalVariableReference
+				""");
+			PEs.add(pe);
+		}
+		{
+			ProgramExpected pe = new ProgramExpected(
+				"aa˜",
+				"""
+				Reverse
+					GlobalVariableReference
+				""");
+			PEs.add(pe);
+		}
+		{
+			ProgramExpected pe = new ProgramExpected(
+				"-aa",
+				"""
+				Negate
+					GlobalVariableReference
+				""");
+			PEs.add(pe);
+		}
+		{
+			ProgramExpected pe = new ProgramExpected(
+				"-aa˜",
+				"""
+				Negate
+					Reverse
+						GlobalVariableReference
+				""");
+			PEs.add(pe);
+		}
+
+		ArrayList<DynamicTest> testCases = new ArrayList();
+		for (var pe : PEs) {
+			final String currentProgram = pe.program();
+			final String currentExpected = pe.expected();
+			testCases.add(DynamicTest.dynamicTest(currentProgram, () -> parsePrintAssert(currentProgram, currentExpected)));
+		}
+
+		return testCases.stream();
+	}
+
+	@TestFactory
+	Stream<DynamicTest> R1_3_syntaxError() {
+		final List<String> programs = List.of(new String[]{"a2.0", "a2.0˜", "2.02.0", "2.02.0˜", "-a2.0", "-2.02.0", "-a2.0˜", "-2.02.0˜"});
+		return parsePrintAssertSyntaxError(programs);
 	}
 }

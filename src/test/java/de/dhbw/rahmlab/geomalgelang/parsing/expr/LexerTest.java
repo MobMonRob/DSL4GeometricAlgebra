@@ -16,7 +16,7 @@ import org.junit.jupiter.api.TestFactory;
  *
  * @author fabian
  */
-@Disabled
+// @Disabled
 public class LexerTest extends AbstractParsingTest {
 
 	@TestFactory

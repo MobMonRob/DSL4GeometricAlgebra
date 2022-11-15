@@ -82,7 +82,7 @@ public class Asserts {
 			expectedAstString = expectedAstString + "\n";
 		}
 		final String programMessage = generateProgramMessage(program);
-		//System.out.print(programMessage);
+		// System.out.print(programMessage);
 
 		String actualAstString = getAstString(program, maxActualAstStringDepth, programMessage);
 
