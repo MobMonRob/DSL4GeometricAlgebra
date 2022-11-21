@@ -27,12 +27,40 @@ public class MinusTest extends AbstractParsingTest {
 		ProgramExpected pe;
 
 		pe = new ProgramExpected(
+			"a-b",
+			"""
+			GeometricProduct
+				GlobalVariableReference
+				Negate
+					GlobalVariableReference
+			""");
+		pes.add(pe);
+
+		pe = new ProgramExpected(
 			"a -b",
 			"""
 			GeometricProduct
 				GlobalVariableReference
 				Negate
 					GlobalVariableReference
+			""");
+		pes.add(pe);
+
+		pe = new ProgramExpected(
+			"a - b",
+			"""
+			Subtraction
+				GlobalVariableReference
+				GlobalVariableReference
+			""");
+		pes.add(pe);
+
+		pe = new ProgramExpected(
+			"a- b",
+			"""
+			Subtraction
+				GlobalVariableReference
+				GlobalVariableReference
 			""");
 		pes.add(pe);
 
