@@ -68,10 +68,7 @@ binOpExpr
 	|	unOpExpr				#BinOpExprDummy //Closure
 	|	binOpExpr
 		SPACE*
-		(
-			nonOuterRecursiveExpr
-			|unOpRExpr
-		)					#GP		//Precedence 4
+		binOpExpr			#GP		//Precedence 4
 	|	binOpExpr
 		SPACE*
 		op=	(DOT_OPERATOR

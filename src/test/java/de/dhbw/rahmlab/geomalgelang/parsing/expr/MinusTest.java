@@ -22,54 +22,53 @@ public class MinusTest extends AbstractParsingTest {
 
 	@TestFactory
 	Stream<DynamicTest> expectSyntaxCorrect() {
-		List<ProgramExpected> PEs = new ArrayList();
+		List<ProgramExpected> pes = new ArrayList();
 
-		{
-			ProgramExpected pe = new ProgramExpected(
-				"a -b",
-				"""
-				Subtraction
+		ProgramExpected pe;
+
+		pe = new ProgramExpected(
+			"a -b",
+			"""
+			GeometricProduct
+				GlobalVariableReference
+				Negate
 					GlobalVariableReference
+			""");
+		pes.add(pe);
+
+		pe = new ProgramExpected(
+			"a - -b",
+			"""
+			Subtraction
+				GlobalVariableReference
+				Negate
 					GlobalVariableReference
-				""");
-			PEs.add(pe);
-		}
-		{
-			ProgramExpected pe = new ProgramExpected(
-				"a - -b",
-				"""
-				Subtraction
-					GlobalVariableReference
-					Negate
-						GlobalVariableReference
-				""");
-			PEs.add(pe);
-		}
-		{
-			ProgramExpected pe = new ProgramExpected(
-				"a -b / c",
-				"""
-				Subtraction
-					GlobalVariableReference
-					Division
-						GlobalVariableReference
-						GlobalVariableReference
-				""");
-			PEs.add(pe);
-		}
-		{
-			ProgramExpected pe = new ProgramExpected(
-				"-a b",
-				"""
+			""");
+		pes.add(pe);
+
+		pe = new ProgramExpected(
+			"a -b / c",
+			"""
+			Division
 				GeometricProduct
+					GlobalVariableReference
 					Negate
 						GlobalVariableReference
-					GlobalVariableReference
-				""");
-			PEs.add(pe);
-		}
+				GlobalVariableReference
+			""");
+		pes.add(pe);
 
-		return parsePrintAssert(PEs);
+		pe = new ProgramExpected(
+			"-a b",
+			"""
+			GeometricProduct
+				Negate
+					GlobalVariableReference
+				GlobalVariableReference
+			""");
+		pes.add(pe);
+
+		return parsePrintAssert(pes);
 	}
 
 	@TestFactory
