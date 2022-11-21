@@ -139,66 +139,63 @@ public class GeometricProductTest extends AbstractParsingTest {
 
 	@TestFactory
 	Stream<DynamicTest> R1_3_syntaxCorrectGP() {
-		List<ProgramExpected> PEs = new ArrayList();
+		List<ProgramExpected> pes = new ArrayList();
 
-		{
-			ProgramExpected pe = new ProgramExpected(
-				"(a)(b)(c)",
-				"""
+		ProgramExpected pe;
+
+		pe = new ProgramExpected(
+			"(a)(b)(c)",
+			"""
+			GeometricProduct
 				GeometricProduct
-					GeometricProduct
-						GlobalVariableReference
-						GlobalVariableReference
 					GlobalVariableReference
-				""");
-			PEs.add(pe);
-		}
+					GlobalVariableReference
+				GlobalVariableReference
+			""");
+		pes.add(pe);
 
-		return parsePrintAssert(PEs);
+		return parsePrintAssert(pes);
 	}
 
 	@TestFactory
 	Stream<DynamicTest> R1_3_syntaxCorrectNotGP() {
-		List<ProgramExpected> PEs = new ArrayList();
+		List<ProgramExpected> pes = new ArrayList();
 
-		{
-			ProgramExpected pe = new ProgramExpected(
-				"aa",
-				"""
+		ProgramExpected pe;
+
+		pe = new ProgramExpected(
+			"aa",
+			"""
+			GlobalVariableReference
+			""");
+		pes.add(pe);
+
+		pe = new ProgramExpected(
+			"aa˜",
+			"""
+			Reverse
 				GlobalVariableReference
-				""");
-			PEs.add(pe);
-		}
-		{
-			ProgramExpected pe = new ProgramExpected(
-				"aa˜",
-				"""
+			""");
+		pes.add(pe);
+
+		pe = new ProgramExpected(
+			"-aa",
+			"""
+			Negate
+				GlobalVariableReference
+			""");
+		pes.add(pe);
+
+		pe = new ProgramExpected(
+			"-aa˜",
+			"""
+			Negate
 				Reverse
 					GlobalVariableReference
-				""");
-			PEs.add(pe);
-		}
-		{
-			ProgramExpected pe = new ProgramExpected(
-				"-aa",
-				"""
-				Negate
-					GlobalVariableReference
-				""");
-			PEs.add(pe);
-		}
-		{
-			ProgramExpected pe = new ProgramExpected(
-				"-aa˜",
-				"""
-				Negate
-					Reverse
-						GlobalVariableReference
-				""");
-			PEs.add(pe);
-		}
+			""");
+		pes.add(pe);
 
-		return parsePrintAssert(PEs);
+		return parsePrintAssert(pes);
 	}
 
 	@TestFactory
