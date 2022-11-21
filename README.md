@@ -85,7 +85,7 @@ Hint: Operator precedence determines how operators are parsed concerning each ot
 | 3          | &#x22C5;         | \cdot    | \u22C5  | inner product | multivector1.ip(multivector2, RIGHT_CONTRACTION) | Decreasing dimensions or contracting a subspace. In the default configuration equal to left contraction (corresponding to Ganja.js). But this looks to be incompatible with some formulas in [Kleppe], which work only with the usage of right contraction. In CLUscript this corresponds to ".". |
 | 3          | &#x2227;         | \wedge   | \u2227  | outer product (join) | multivector1.op(multivector2), not used for double, for tuple3d it makes sense but actually no implementation is available | joining linearily independend vectors/two disjoint subspaces |
 | 1          | &#x002B;         | +        | \u002B  | sum | multivector1.add(multivector2) | |
-| 1          | &#x2212;         | &#x2212; | \u2212  | difference | multivector1.sub(multivector2) | |
+| 1          | &#x002D;         | -        | \u002D  | difference | multivector1.sub(multivector2) | |
 
 #### Additional operators (for more convenience only)
 | precedence | symbol   | latex            | unicode | description | implementation | CLUscript |
@@ -103,7 +103,7 @@ The unary operators have the highest precedence, so they are executed before any
 #### Base monadic operators
 | precedence | symbol           | latex                         | unicode      | description | implementation | CLUscript |
 | :--------: | :--------------: | ----------------------------- | ------------ | ----------- | -------------- | :------- |
-| 5          | &#x2212;         | &#x2212;                      | \u2212       | negate | (-1 cast to multivector).gp(multivector) | - |
+| 5          | &#x002D;         | -                             | \u002D       | negate | (-1 cast to multivector).gp(multivector) | - |
 | 6          | &#x207B;&#x00B9; | \textsuperscript{-1}          | \u207B\u00B9 | general inverse | multivector.generalInverse() | ! |
 | 6          | &#x002A;         | \textsuperscript{\*}          | \u002A       | dual | multivector.dual() | |
 | 6          | &#x02DC;         | \textsuperscript{\tilde}      | \u02DC       | reverse/adjoint: reverse all multiplications (a sign change operation) | multivector.reverse() | &#732; |
