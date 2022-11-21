@@ -152,7 +152,7 @@ The implementation can be based on a method of the api class CGAMultivector or b
 
 | symbol                                             | description | implementation |
 | :------------------------------------------------- | ----------- | -------------- |
-| CGAPoint(tuple3d)                                     | creates a conformal point from a tuple3d | createPoint(new CGAMultivector(tuple3d)) |
+| point(tuple3d, weight)                             | creates a conformal point from a tuple3d in IPNS representation | new CGARoundPointIPNS(new CGAE3Vector(Tuple3d p), new CGAScalar(double weight) |
 | CGADualPointPair(tuple3d1, tuple3d2)                  | creates a conformal dual point pair from two tuple3d objects. | createDualPointPair(new CGAMultivector(tuple3d1), new CGAMultivector(tuple3d2)) |
 | CGADualLine(tuple3d1, tuple3d2)                       | creates a conformal line from a tuple3d representing a point and an other tuple3d other representing a direction or a second point. | createDualLine(new CGAMultivector(tuple3d), new CGAMultivector(tuple3d)) |
 | CGADualSphere(tuple3d1, tuple3d2, tuple3d3, tuple3d4) | creates a conformal sphere from four 3d-tuple | createDualSphere(new CGAMultivector(tuple3d1), new CGAMultivector(tuple3d2), new CGAMultivector(tuple3d3), new CGAMultivector(tuple3d4)) |
