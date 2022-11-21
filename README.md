@@ -146,9 +146,7 @@ There exist three types of involution operations: Space inversion, reversion and
 
 #### Additional functions (2) to define geometric objects (for more convenience only)
 
-Outer product null space representations are called dual. Corresponding regular expressions are in the inner product null space representations. Be careful in the "older" literature this is often defined reverse.
-
-The implementation can be based on a method of the api class CGAMultivector or by implementing the same method in the language itself. In the first case methods implementations with Multivector arguments or Tuple3/double can be used. In the second case tuple3d/double objects have to be casted to multivector and a multivector arguments based implementation has to be created in the language itself.
+Some methods creates geometric objects in inner- and some in outer- product null space representation. Not all combinations are needed. Only the ones which are useful for easy createn objects in the conformal space based on euclean parameters are implemented.
 
 | symbol                                             | description | implementation |
 | :------------------------------------------------- | ----------- | -------------- |
