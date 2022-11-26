@@ -56,15 +56,15 @@ All of these types are automatically casted into a multivector inside the langua
 ### CGA types
 | Name | implementation class | hints |
 | :-------- | :---- | ------|
-| CGAMVec<representation> | de.orat.math.cga.impl1.CGA1Multivector | All types set from outside the language can be casted to this Multivector class. But there are more specific implementations which can be used for more efficiency. |
-| CGAScalar<representation> | de.orat.math.api.CGAScalar extends CGAMVec| |
-| CGAVecE3<representation> | extends CGAMVec |
-| CGASphere<representation> | extends CGAMVec |
-| CGAPointPair<representation> | extends CGAMVec |
-| CGACircle<representation> | extends CGAMVec |
-| CGAPoint<representation> | extends CGAMVec |
+| CGAMVec&#x003C;representation&#x003E; | de.orat.math.cga.impl1.CGA1Multivector | All types set from outside the language can be casted to this Multivector class. But there are more specific implementations which can be used for more efficiency. |
+| CGAScalar&#x003C;representation&#x003E;| de.orat.math.api.CGAScalar extends CGAMVec| |
+| CGAVecE3&#x003C;representation&#x003E;| extends CGAMVec |
+| CGASphere&#x003C;representation&#x003E;| extends CGAMVec |
+| CGAPointPair&#x003C;representation&#x003E; | extends CGAMVec |
+| CGACircle&#x003C;representation&#x003E;| extends CGAMVec |
+| CGAPoint&#x003C;representation&#x003E; | extends CGAMVec |
 
-&#x003C;representation&#x003E = IPNS | OPNs
+&#x003C;representation&#x003E; = IPNS | OPNs
   
 ## Operators
 Hint: Operator precedence determines how operators are parsed concerning each other. Operators with higher precedence become the operands of operators with lower precedence.
