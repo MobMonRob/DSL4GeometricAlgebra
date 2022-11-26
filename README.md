@@ -242,4 +242,4 @@ A Semikolumn (;) at the end of a statement results in not visualizing the corres
 | rejection | (A &#x2227; B) B&#x207B;&#x00B9; | Rejection of A from B |
 | duality | (A &#x230B; B)* = A ∧ B* | |
 | duality | (A ∧ B)* = A &#x230B; B* | |
-|| A &#x230B; (B &#x230B; C) = (A &#x230B; B) &#x230B; C ||
+|| A &#x230B; (B &#x230B; C) = (A ∧ B) &#x230B; C ||
