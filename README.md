@@ -240,3 +240,4 @@ A Semikolumn (;) at the end of a statement results in not visualizing the corres
 | intersection | (A &#8745; B)* = B* &#8743; A* | Intersection = outer product in the dual representation; B* &#8743; A* means computing the union of everything which is not B and everything that is not A. The dual of that must be what have A and B in common.|
 | projection | (A&#x230B;B) B&#x207B;&#x00B9; | Projection of A onto B |
 | rejection | (A&#x2227;B) B&#x207B;&#x00B9; | Rejection of A from B |
+| duality | (A ··· B)∗ = A ∧ B∗ | |
