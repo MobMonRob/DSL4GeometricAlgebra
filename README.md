@@ -56,13 +56,13 @@ All of these types are automatically casted into a multivector inside the langua
 ### CGA types
 | Name | implementation class | hints |
 | :-------- | :---- | ------|
-| CGAMVec&#x003C;representation&#x003E; | de.orat.math.cga.impl1.CGA1Multivector | All types set from outside the language can be casted to this Multivector class. But there are more specific implementations which can be used for more efficiency. |
-| CGAScalar&#x003C;representation&#x003E;| de.orat.math.api.CGAScalar extends CGAMVec| |
-| CGAVecE3&#x003C;representation&#x003E;| extends CGAMVec |
-| CGASphere&#x003C;representation&#x003E;| extends CGAMVec |
-| CGAPointPair&#x003C;representation&#x003E; | extends CGAMVec |
-| CGACircle&#x003C;representation&#x003E;| extends CGAMVec |
-| CGAPoint&#x003C;representation&#x003E; | extends CGAMVec |
+| CGAMVec&#x003C;representation&#x003E; | de.orat.math.cga.api.CGAMultivector | All types set from outside the language can be casted to this Multivector class. But there are more specific implementations which can be used for more efficiency. |
+| CGAScalar&#x003C;representation&#x003E;| de.orat.math.api.CGAScalar extends CGAMultivector| |
+| CGAVecE3&#x003C;representation&#x003E;| extends CGAMultivector |
+| CGASphere&#x003C;representation&#x003E;| extends CGAMultivector |
+| CGAPointPair&#x003C;representation&#x003E; | extends CGAMultivector |
+| CGACircle&#x003C;representation&#x003E;| extends CGAMultivector |
+| CGAPoint&#x003C;representation&#x003E; | extends CGAMultivector |
 
 &#x003C;representation&#x003E; = IPNS | OPNs
   
