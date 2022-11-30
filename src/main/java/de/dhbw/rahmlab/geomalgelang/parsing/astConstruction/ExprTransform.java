@@ -223,4 +223,13 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 			throw new AssertionError(ex);
 		}
 	}
+
+	@Override
+	public void enterCall(GeomAlgeParser.CallContext ctx) {
+		// this.nodeStack
+	}
+
+	@Override
+	public void exitCall(GeomAlgeParser.CallContext ctx) {
+	}
 }

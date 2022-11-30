@@ -30,7 +30,8 @@ public class AppTest {
 	// Ausführen mit Rechtsklick auf die Datei -> Run File
 	// Oder Shift + Fn + F6
 	public static void main(String[] args) throws Exception {
-		String program = "a -b";
+		String program = "a(abc,ef)";
+		// String program = "a -b";
 		// String program = "a-b";
 		// String program = "a - b";
 
