@@ -235,3 +235,4 @@ A Semikolumn (;) at the end of a statement results in not visualizing the corres
 | duality | (A &#x230B; B)* = A ∧ B* | |
 | duality | (A ∧ B)* = A &#x230B; B* | |
 || A &#x230B; (B &#x230B; C) = (A ∧ B) &#x230B; C ||
+|| (A &#x230B; B) &#x230B; C = A ∧ (B &#x230B; C) | if C contains A|
