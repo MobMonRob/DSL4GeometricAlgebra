@@ -15,20 +15,22 @@ import de.dhbw.rahmlab.geomalgelang.truffle.runtime.ExecutionValidation;
  *
  * @author fabian
  */
-public class GeomAlgeLangRootNode extends RootNode {
+public class ProgramRootNode extends RootNode {
 
-	private final BaseNode bodyNode;
+	@Child
+	private BaseNode bodyNode;
+
 	private final ExecutionValidation executionValidation;
 
-	public GeomAlgeLangRootNode(TruffleLanguage<?> language, FrameDescriptor frameDescriptor, BaseNode node, ExecutionValidation executionValidation) {
+	public ProgramRootNode(TruffleLanguage<?> language, FrameDescriptor frameDescriptor, BaseNode bodyNode, ExecutionValidation executionValidation) {
 		super(language, frameDescriptor);
-		this.bodyNode = node;
+		this.bodyNode = bodyNode;
 		this.executionValidation = executionValidation;
 	}
 
 	@Override
 	public Object execute(VirtualFrame frame) {
-		executionValidation.validate();
-		return bodyNode.executeGeneric(frame);
+		this.executionValidation.validate();
+		return this.bodyNode.executeGeneric(frame);
 	}
 }
