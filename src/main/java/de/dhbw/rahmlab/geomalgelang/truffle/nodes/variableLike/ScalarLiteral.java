@@ -9,14 +9,14 @@ import com.oracle.truffle.api.dsl.NodeField;
 import com.oracle.truffle.api.dsl.Specialization;
 import de.dhbw.rahmlab.geomalgelang.cga.Current_ICGAMultivector_Processor;
 import de.dhbw.rahmlab.geomalgelang.cga.ICGAMultivector;
-import de.dhbw.rahmlab.geomalgelang.truffle.nodes.technical.BaseNode;
+import de.dhbw.rahmlab.geomalgelang.truffle.nodes.technical.ExpressionBaseNode;
 
 /**
  *
  * @author fabian
  */
 @NodeField(name = "innerDouble", type = Double.class)
-public abstract class ScalarLiteral extends BaseNode {
+public abstract class ScalarLiteral extends ExpressionBaseNode {
 
 	protected abstract double getInnerDouble();
 

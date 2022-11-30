@@ -16,7 +16,7 @@ public abstract class Addition extends BinaryOp {
 
 	@Specialization
 	@Override
-	public ICGAMultivector execute(ICGAMultivector left, ICGAMultivector right) {
+	protected ICGAMultivector execute(ICGAMultivector left, ICGAMultivector right) {
 		throw new UnsupportedOperationException();
 	}
 }

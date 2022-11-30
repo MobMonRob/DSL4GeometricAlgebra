@@ -7,7 +7,7 @@ package de.dhbw.rahmlab.geomalgelang.truffle.nodes.technical;
 import com.oracle.truffle.api.dsl.NodeChild;
 import com.oracle.truffle.api.dsl.NodeChildren;
 import de.dhbw.rahmlab.geomalgelang.cga.ICGAMultivector;
-import de.dhbw.rahmlab.geomalgelang.truffle.nodes.technical.BaseNode;
+import de.dhbw.rahmlab.geomalgelang.truffle.nodes.technical.ExpressionBaseNode;
 
 /**
  *
@@ -15,7 +15,7 @@ import de.dhbw.rahmlab.geomalgelang.truffle.nodes.technical.BaseNode;
  */
 @NodeChildren({
 	@NodeChild("leftNode")})
-public abstract class UnaryOp extends BaseNode {
+public abstract class UnaryOp extends ExpressionBaseNode {
 
 	protected abstract ICGAMultivector execute(ICGAMultivector input);
 }

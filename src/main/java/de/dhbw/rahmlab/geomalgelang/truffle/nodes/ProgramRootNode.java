@@ -8,7 +8,7 @@ import com.oracle.truffle.api.TruffleLanguage;
 import com.oracle.truffle.api.frame.FrameDescriptor;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.RootNode;
-import de.dhbw.rahmlab.geomalgelang.truffle.nodes.technical.BaseNode;
+import de.dhbw.rahmlab.geomalgelang.truffle.nodes.technical.ExpressionBaseNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.runtime.ExecutionValidation;
 
 /**
@@ -18,11 +18,11 @@ import de.dhbw.rahmlab.geomalgelang.truffle.runtime.ExecutionValidation;
 public class ProgramRootNode extends RootNode {
 
 	@Child
-	private BaseNode bodyNode;
+	private ExpressionBaseNode bodyNode;
 
 	private final ExecutionValidation executionValidation;
 
-	public ProgramRootNode(TruffleLanguage<?> language, FrameDescriptor frameDescriptor, BaseNode bodyNode, ExecutionValidation executionValidation) {
+	public ProgramRootNode(TruffleLanguage<?> language, FrameDescriptor frameDescriptor, ExpressionBaseNode bodyNode, ExecutionValidation executionValidation) {
 		super(language, frameDescriptor);
 		this.bodyNode = bodyNode;
 		this.executionValidation = executionValidation;

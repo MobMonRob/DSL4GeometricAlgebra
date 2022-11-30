@@ -11,14 +11,14 @@ import de.dhbw.rahmlab.geomalgelang.cga.CGAMultivector_Processor_Generic;
 import de.dhbw.rahmlab.geomalgelang.cga.CGA_constants_extended;
 import de.dhbw.rahmlab.geomalgelang.cga.Current_ICGAMultivector_Processor;
 import de.dhbw.rahmlab.geomalgelang.cga.ICGAMultivector;
-import de.dhbw.rahmlab.geomalgelang.truffle.nodes.technical.BaseNode;
+import de.dhbw.rahmlab.geomalgelang.truffle.nodes.technical.ExpressionBaseNode;
 
 /**
  *
  * @author fabian
  */
 @NodeField(name = "innerKind", type = Constant.Kind.class)
-public abstract class Constant extends BaseNode {
+public abstract class Constant extends ExpressionBaseNode {
 
 	static CGAMultivector_Processor_Generic cga = Current_ICGAMultivector_Processor.cga_processor;
 	static CGA_constants_extended cga2 = new CGA_constants_extended(cga);
@@ -43,7 +43,7 @@ public abstract class Constant extends BaseNode {
 	private ICGAMultivector innerMultivector = null;
 
 	@Specialization
-	public ICGAMultivector getValue() {
+	protected ICGAMultivector getValue() {
 		if (this.innerMultivector == null) {
 			innerMultivector = switch (getInnerKind()) {
 				case base_vector_origin ->

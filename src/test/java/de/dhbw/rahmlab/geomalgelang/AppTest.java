@@ -13,7 +13,7 @@ import de.dhbw.rahmlab.geomalgelang.parsing._util.AstStringBuilder;
 import de.dhbw.rahmlab.geomalgelang.parsing._util.GeomAlgeAntlrTestRig;
 import de.dhbw.rahmlab.geomalgelang.parsing.astConstruction.ExprTransform;
 import de.dhbw.rahmlab.geomalgelang.truffle.GeomAlgeLangContext;
-import de.dhbw.rahmlab.geomalgelang.truffle.nodes.technical.BaseNode;
+import de.dhbw.rahmlab.geomalgelang.truffle.nodes.technical.ExpressionBaseNode;
 import java.lang.reflect.Method;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.DiagnosticErrorListener;
@@ -47,7 +47,7 @@ public class AppTest {
 		GeomAlgeParser.ProgramContext programContext = parser.program();
 		GeomAlgeParser.ExprContext exprContext = programContext.expr();
 
-		BaseNode rootNode = ExprTransform.generateAST(exprContext, geomAlgeLangContext);
+		ExpressionBaseNode rootNode = ExprTransform.generateAST(exprContext, geomAlgeLangContext);
 		String ast = AstStringBuilder.getAstString(rootNode);
 		System.out.println(ast);
 

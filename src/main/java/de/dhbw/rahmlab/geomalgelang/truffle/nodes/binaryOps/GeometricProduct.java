@@ -19,7 +19,7 @@ public abstract class GeometricProduct extends BinaryOp {
 
 	@Specialization
 	@Override
-	public ICGAMultivector execute(ICGAMultivector left, ICGAMultivector right) {
+	protected ICGAMultivector execute(ICGAMultivector left, ICGAMultivector right) {
 		return Current_ICGAMultivector_Processor.cga_processor.geometric_product(left, right);
 	}
 }

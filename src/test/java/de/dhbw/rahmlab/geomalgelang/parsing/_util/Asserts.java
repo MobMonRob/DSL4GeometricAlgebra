@@ -7,7 +7,7 @@ package de.dhbw.rahmlab.geomalgelang.parsing._util;
 import de.dhbw.rahmlab.geomalgelang.parsing.CharStreamSupplier;
 import de.dhbw.rahmlab.geomalgelang.parsing.ParsingService;
 import de.dhbw.rahmlab.geomalgelang.truffle.GeomAlgeLangContext;
-import de.dhbw.rahmlab.geomalgelang.truffle.nodes.technical.BaseNode;
+import de.dhbw.rahmlab.geomalgelang.truffle.nodes.technical.ExpressionBaseNode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -40,7 +40,7 @@ public class Asserts {
 
 		String actualAstString = null;
 		try {
-			BaseNode baseNode = ParsingService.getAST(CharStreamSupplier.from(program), new GeomAlgeLangContext());
+			ExpressionBaseNode baseNode = ParsingService.getAST(CharStreamSupplier.from(program), new GeomAlgeLangContext());
 			actualAstString = AstStringBuilder.getAstString(baseNode);
 		} catch (ParseCancellationException e) {
 			// Thrown by SytaxErrorListener indicating a syntax error
@@ -105,7 +105,7 @@ public class Asserts {
 	private static String getAstString(String program, int maxActualAstStringDepth, final String programMessage) {
 		String actualAstString = null;
 		try {
-			BaseNode baseNode = ParsingService.getAST(CharStreamSupplier.from(program), new GeomAlgeLangContext());
+			ExpressionBaseNode baseNode = ParsingService.getAST(CharStreamSupplier.from(program), new GeomAlgeLangContext());
 			actualAstString = AstStringBuilder.getAstString(baseNode, maxActualAstStringDepth);
 		} catch (ParseCancellationException e) {
 			// Thrown by SytaxErrorListener indicating a syntax error

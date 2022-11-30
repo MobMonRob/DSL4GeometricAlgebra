@@ -8,7 +8,7 @@ import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParser;
 import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParserBaseListener;
 import de.dhbw.rahmlab.geomalgelang.truffle.GeomAlgeLangContext;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.binaryOps.*;
-import de.dhbw.rahmlab.geomalgelang.truffle.nodes.technical.BaseNode;
+import de.dhbw.rahmlab.geomalgelang.truffle.nodes.technical.ExpressionBaseNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.unaryOps.*;
 import de.dhbw.rahmlab.geomalgelang.truffle.nodes.variableLike.*;
 import java.text.DecimalFormat;
@@ -31,7 +31,7 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
  */
 public class ExprTransform extends GeomAlgeParserBaseListener {
 
-	private final Deque<BaseNode> nodeStack = new ArrayDeque<>();
+	private final Deque<ExpressionBaseNode> nodeStack = new ArrayDeque<>();
 	private final GeomAlgeLangContext geomAlgeLangContext;
 
 	private ExprTransform(GeomAlgeLangContext geomAlgeLangContext) {
@@ -39,22 +39,22 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		this.geomAlgeLangContext = geomAlgeLangContext;
 	}
 
-	public static BaseNode generateAST(GeomAlgeParser.ExprContext exprCtx, GeomAlgeLangContext geomAlgeLangContext) {
+	public static ExpressionBaseNode generateAST(GeomAlgeParser.ExprContext exprCtx, GeomAlgeLangContext geomAlgeLangContext) {
 		ExprTransform exprTransform = new ExprTransform(geomAlgeLangContext);
 
 		ParseTreeWalker.DEFAULT.walk(exprTransform, exprCtx);
 
-		BaseNode rootNode = exprTransform.nodeStack.getFirst();
+		ExpressionBaseNode rootNode = exprTransform.nodeStack.getFirst();
 		return rootNode;
 	}
 
 	@Override
 	public void exitGP(GeomAlgeParser.GPContext ctx) {
 		// Sequence matters here!
-		BaseNode right = nodeStack.pop();
-		BaseNode left = nodeStack.pop();
+		ExpressionBaseNode right = nodeStack.pop();
+		ExpressionBaseNode left = nodeStack.pop();
 
-		BaseNode current = GeometricProductNodeGen.create(left, right);
+		ExpressionBaseNode current = GeometricProductNodeGen.create(left, right);
 
 		nodeStack.push(current);
 	}
@@ -62,10 +62,10 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 	@Override
 	public void exitBinOp(GeomAlgeParser.BinOpContext ctx) {
 		// Sequence matters here!
-		BaseNode right = nodeStack.pop();
-		BaseNode left = nodeStack.pop();
+		ExpressionBaseNode right = nodeStack.pop();
+		ExpressionBaseNode left = nodeStack.pop();
 
-		BaseNode current = switch (ctx.op.getType()) {
+		ExpressionBaseNode current = switch (ctx.op.getType()) {
 			case GeomAlgeParser.DOT_OPERATOR ->
 				InnerProductNodeGen.create(left, right);
 			case GeomAlgeParser.LOGICAL_AND ->
@@ -95,9 +95,9 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 
 	@Override
 	public void exitUnOpR(GeomAlgeParser.UnOpRContext ctx) {
-		BaseNode left = nodeStack.pop();
+		ExpressionBaseNode left = nodeStack.pop();
 
-		BaseNode current = switch (ctx.op.getType()) {
+		ExpressionBaseNode current = switch (ctx.op.getType()) {
 			case GeomAlgeParser.SUPERSCRIPT_MINUS__SUPERSCRIPT_ONE ->
 				GeneralInverseNodeGen.create(left);
 			case GeomAlgeParser.ASTERISK ->
@@ -121,9 +121,9 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 
 	@Override
 	public void exitUnOpL(GeomAlgeParser.UnOpLContext ctx) {
-		BaseNode right = nodeStack.pop();
+		ExpressionBaseNode right = nodeStack.pop();
 
-		BaseNode current = switch (ctx.op.getType()) {
+		ExpressionBaseNode current = switch (ctx.op.getType()) {
 			case GeomAlgeParser.HYPHEN_MINUS ->
 				NegateNodeGen.create(right);
 			default ->
@@ -135,7 +135,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 
 	@Override
 	public void exitGradeExtraction(GeomAlgeParser.GradeExtractionContext ctx) {
-		BaseNode inner = nodeStack.pop();
+		ExpressionBaseNode inner = nodeStack.pop();
 
 		int grade = switch (ctx.grade.getType()) {
 			case GeomAlgeParser.SUBSCRIPT_ZERO ->
@@ -154,14 +154,14 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 				throw new UnsupportedOperationException();
 		};
 
-		BaseNode current = GradeExtractionNodeGen.create(inner, grade);
+		ExpressionBaseNode current = GradeExtractionNodeGen.create(inner, grade);
 
 		nodeStack.push(current);
 	}
 
 	@Override
 	public void exitLiteralConstant(GeomAlgeParser.LiteralConstantContext ctx) {
-		BaseNode current = switch (ctx.type.getType()) {
+		ExpressionBaseNode current = switch (ctx.type.getType()) {
 			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_ZERO ->
 				ConstantNodeGen.create(Constant.Kind.base_vector_origin);
 			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_SMALL_I ->

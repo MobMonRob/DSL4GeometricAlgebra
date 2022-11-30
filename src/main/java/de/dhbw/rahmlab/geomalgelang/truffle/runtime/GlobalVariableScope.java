@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package de.dhbw.rahmlab.geomalgelang.truffle.runtime;
 
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
@@ -25,10 +21,6 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 
-/**
- *
- * @author fabian
- */
 @ExportLibrary(InteropLibrary.class)
 public final class GlobalVariableScope implements TruffleObject {
 

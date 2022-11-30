@@ -10,16 +10,16 @@ import com.oracle.truffle.api.dsl.Specialization;
 import de.dhbw.rahmlab.geomalgelang.truffle.GeomAlgeLang;
 import de.dhbw.rahmlab.geomalgelang.truffle.GeomAlgeLangContext;
 import de.dhbw.rahmlab.geomalgelang.truffle.GeomAlgeLangException;
-import de.dhbw.rahmlab.geomalgelang.truffle.nodes.technical.BaseNode;
+import de.dhbw.rahmlab.geomalgelang.truffle.nodes.technical.ExpressionBaseNode;
 
 /**
  *
  * @author fabian
  */
 @NodeField(name = "name", type = String.class)
-public abstract class GlobalVariableReference extends BaseNode {
+public abstract class GlobalVariableReference extends ExpressionBaseNode {
 
-	public abstract String getName();
+	protected abstract String getName();
 
 	protected final GeomAlgeLangContext context = ContextReference.create(GeomAlgeLang.class).get(this);
 

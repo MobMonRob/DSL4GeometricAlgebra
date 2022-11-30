@@ -6,7 +6,7 @@ package de.dhbw.rahmlab.geomalgelang.parsing;
 
 import de.dhbw.rahmlab.geomalgelang.parsing.astConstruction.ExprTransform;
 import de.dhbw.rahmlab.geomalgelang.truffle.GeomAlgeLangContext;
-import de.dhbw.rahmlab.geomalgelang.truffle.nodes.technical.BaseNode;
+import de.dhbw.rahmlab.geomalgelang.truffle.nodes.technical.ExpressionBaseNode;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.DiagnosticErrorListener;
 import org.antlr.v4.runtime.atn.PredictionMode;
@@ -21,12 +21,12 @@ public final class ParsingService {
 
 	}
 
-	public static BaseNode getAST(CharStreamSupplier program, GeomAlgeLangContext geomAlgeLangContext) {
+	public static ExpressionBaseNode getAST(CharStreamSupplier program, GeomAlgeLangContext geomAlgeLangContext) {
 		GeomAlgeParser parser = ParsingService.getParser(program);
 		// Due to unknown reasons, parser.expr() won't throw syntax errors properly.
 		GeomAlgeParser.ProgramContext programContext = parser.program();
 		GeomAlgeParser.ExprContext exprContext = programContext.expr();
-		BaseNode rootNode = ExprTransform.generateAST(exprContext, geomAlgeLangContext);
+		ExpressionBaseNode rootNode = ExprTransform.generateAST(exprContext, geomAlgeLangContext);
 
 		return rootNode;
 	}
