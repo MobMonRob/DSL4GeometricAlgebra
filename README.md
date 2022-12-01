@@ -179,6 +179,7 @@ Some methods creates geometric objects in inner- and some in outer- product null
 | &#x00F1;         |               | \u00F1       | corresponding to origin vector in Doran & Lasenby | -2&#x03B5;&#8320; |
 | &#x0045;&#x2080; |               | \u0045\u2080 | Minkovsky bi-vector | &#x03B5;&#7522; &#x2227; &#x03B5;&#8320;|
 | &#x0045;&#x2083; |               | \u0045\u2083 | Euclidean pseudoscalar | &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083;     |
+| I                | I             |              | Pseudoscalar | &#x03B5;&#x2080; &#x2227; &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083; &#x2227; &#x03B5;&#x2083; |
 
 ### Syntax
 
