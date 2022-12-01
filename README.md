@@ -236,4 +236,4 @@ A Semikolumn (;) at the end of a statement results in not visualizing the corres
 | duality | (A ∧ B)* = A &#x230B; B* | |
 || A &#x230B; (B &#x230B; C) = (A ∧ B) &#x230B; C ||
 || (A &#x230B; B) &#x230B; C = A ∧ (B &#x230B; C) | if C contains A|
-|down projection| ((X ∧ (inf ∧ e0)) (inf ∧ e0)| extracts the pure euclidean part of the given multivector |
+|down projection| (inf ∧ e0) &#x230B (X ∧ (inf ∧ e0))| extracts the pure euclidean part of the given multivector |
