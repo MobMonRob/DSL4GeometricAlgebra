@@ -166,6 +166,8 @@ Some methods creates geometric objects in inner- and some in outer- product null
 | &#x03B5;&#x2081; | \textepsilon | \u03B5\u2081 | base vector representing x direction | createEx(1d) |
 | &#x03B5;&#x2082; | \textepsilon | \u03B5\u2082 | base vector representing y direction | createEy(1d) |
 | &#x03B5;&#x2083; | \textepsilon | \u03B5\u2083 | base vector representing z direction | createEz(1d) |
+| &#x03B5;&#x208A; | \textepsilon | \u03B5\u208A |  |  | 
+| &#x03B5;&#x208B; | \textepsilon | \u03B5\u208B |  |  | 
 
 ### Further symbols
 | symbol           | latex         | Unicode      | description | implementation |
