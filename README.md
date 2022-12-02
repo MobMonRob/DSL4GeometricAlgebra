@@ -186,7 +186,7 @@ Some methods creates geometric objects in inner- and some in outer- product null
 A Semikolumn (;) at the end of a statement results in not visualizing the corresponding geometric object.
 
 ## Important formulae
-### Formulae to create conformal geometric objects
+### Formulae to compose conformal geometric objects
 
 #### Geometric objects in outer product null space representation
 | description | formula | grade |
