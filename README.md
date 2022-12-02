@@ -207,7 +207,6 @@ A Semikolumn (;) at the end of a statement results in not visualizing the corres
 | Circle from two conformal spheres (s1, s2) | s1&#8743;s2 | 2 |
 | Line from two conformal planes (p1, p2) | p1&#8743;p2 | 2 |
 | Point pair from  three conformal spheres (s1, s2, s3) | s1&#8743;s2&#8743;s3 | 3 |
-| Point(sphere) from four conformal points (p1, p2, p3, p4) | p1&#8743;p2&#8743;p3 &#8743;p4 | 4 |
 
 ### Formulae to decompose conformal object representations
 | description | formula |
