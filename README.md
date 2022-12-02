@@ -181,9 +181,10 @@ Some methods creates geometric objects in inner- and some in outer- product null
 | &#x0045;&#x2083; |               | \u0045\u2083 | Euclidean pseudoscalar | &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083;     |
 | &#x0045;         |               | \u0045       | Pseudoscalar | &#x03B5;&#x2080; &#x2227; &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083; &#x2227; &#x03B5;&#x1D62; |
 
-### Syntax
+### Useful equations
 
-A Semikolumn (;) at the end of a statement results in not visualizing the corresponding geometric object.
+&#x03B5;&#x2080;&#x0045;=-&#x03B5;&#x2080, &#x0045;&#x03B5;&#x2080;=-1, &#x03B5;&#x1D62;&#x0045;=&#x03B5;&#x1D62;, &#x2080;&#x0045;&#x1D62;&#x0045;=-&#x1D62;&#x0045;, &#x0045; = 1
+
 
 ## Important formulae
 ### Formulae to compose conformal geometric objects
