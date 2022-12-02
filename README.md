@@ -191,12 +191,11 @@ A Semikolumn (;) at the end of a statement results in not visualizing the corres
 #### Geometric objects in outer product null space representation (dual)
 | description | formula | grade |
 | :---------- | :------ | :----|
-| Sphere(point) from four conformal points (p1, p2, p3, p4) | p1&#8743;p2&#8743;p3 &#8743;p4| 4 |
-| Plane from three conformal points (p1, p2, p3) | p1&#8743;p2&#8743;p3&#8743;&#x03B5;&#7522;| 4 |
-| Circle from three conformal Points (p1, p2, p3) | p1&#8743;p2&#8743;p3 | 3 |
+| Point pair from  two conformal points (p1, p2) | p1&#8743;p2&#8743;&#x03B5;&#7522; | 2 |
 | Line from two conformal planes (p1, p2) | p1&#8743;p2 | 3 |
-| Point pair from  two conformal points (p1, p2) | p1&#8743;p2 | 2 |
-| Point from euclidian vector (x) | x+0.5x&sup2;&#x03B5;&#7522;+&#x03B5;&#8320; | 1 |
+| Circle from three conformal Points (p1, p2, p3) | p1&#8743;p2&#8743;p3 | 3 |
+| Plane from three conformal points (p1, p2, p3) | p1&#8743;p2&#8743;p3&#8743;&#x03B5;&#7522;| 4 |
+| Sphere(point) from four conformal points (p1, p2, p3, p4) | p1&#8743;p2&#8743;p3 &#8743;p4| 4 |
 
 #### Geometric objects in inner product null space representation
 | description | formula | grade |
