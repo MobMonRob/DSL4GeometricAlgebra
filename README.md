@@ -183,7 +183,7 @@ Some methods creates geometric objects in inner- and some in outer- product null
 
 ### Useful equations
 
-&#x03B5;&#x2080;&#x0045;&#x2080;=-&#x03B5;&#x2080;, &#x0045;&#x2080;&#x03B5;&#x2080;=&#x03B5;&#x2080;, &#x03B5;&#x1D62;&#x0045;&#x2080;=&#x03B5;&#x1D62;, &#x0045;&#x1D62;&#x0045;=-&#x1D62;&#x0045;, &#x0045;&#x00B2;=1
+&#x03B5;&#x2080;&#x0045;&#x2080;=-&#x03B5;&#x2080;, &#x0045;&#x2080;&#x03B5;&#x2080;=&#x03B5;&#x2080;, &#x03B5;&#x1D62;&#x0045;&#x2080;=&#x03B5;&#x1D62;, &#x0045;&#x1D62;&#x03B5;&#x1D62;=-&#x1D62;&#x0045;, &#x0045;&#x00B2;=1
 
 
 ## Important formulae
