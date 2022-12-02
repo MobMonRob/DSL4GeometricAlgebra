@@ -193,7 +193,7 @@ Some methods creates geometric objects in inner- and some in outer- product null
 | description | formula | grade | class |
 | :---------- | :------ | :----| :-------- |
 | Point pair from  two conformal points (p1, p2) | p1&#8743;p2 | 2 | round |
-| Finite-infinite point pair from  one conformal point (p) | p&#8743;&#x03B5;&#7522; | 2 | flat |
+| (Flat) Finite-infinite point pair from  one conformal point (p) | p&#8743;&#x03B5;&#7522; | 2 | flat |
 | Circle from three conformal Points (p1, p2, p3) | p1&#8743;p2&#8743;p3 | 3 |  round |
 | Line from two conformal planes (p1, p2) | p1&#8743;p2&#8743;&#x03B5;&#7522; | 3 | flat |
 | Sphere from four conformal points (p1, p2, p3, p4) | p1&#8743;p2&#8743;p3&#8743;p4| 4 |  round |
