@@ -199,6 +199,8 @@ Some methods creates geometric objects in inner- and some in outer- product null
 | Sphere from four conformal points (p1, p2, p3, p4) | p1&#8743;p2&#8743;p3&#8743;p4| 4 |  round |
 | Plane from three conformal points (p1, p2, p3) | p1&#8743;p2&#8743;p3&#8743;&#x03B5;&#7522;| 4 | flat |
 
+The conformal points in the table above have to be given in inner product null space represenation.
+
 #### Geometric objects in inner product null space representation (dual)
 | description | formula | grade |
 | :---------- | :------ | :----|
