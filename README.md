@@ -190,14 +190,14 @@ Some methods creates geometric objects in inner- and some in outer- product null
 ### Formulae to compose conformal geometric objects
 
 #### Geometric objects in outer product null space representation
-| description | formula | grade |
-| :---------- | :------ | :----|
-| Point pair from  two conformal points (p1, p2) | p1&#8743;p2 | 2 |
-| Finite-flat point pair from  one conformal point (p) | p&#8743;&#x03B5;&#7522; | 2 |
-| Circle from three conformal Points (p1, p2, p3) | p1&#8743;p2&#8743;p3 | 3 |
-| Line from two conformal planes (p1, p2) | p1&#8743;p2&#8743;&#x03B5;&#7522; | 3 |
-| Sphere(point) from four conformal points (p1, p2, p3, p4) | p1&#8743;p2&#8743;p3 &#8743;p4| 4 |
-| Plane from three conformal points (p1, p2, p3) | p1&#8743;p2&#8743;p3&#8743;&#x03B5;&#7522;| 4 |
+| description | formula | grade | class |
+| :---------- | :------ | :----| :-------- |
+| Point pair from  two conformal points (p1, p2) | p1&#8743;p2 | 2 | round |
+| Finite-flat point pair from  one conformal point (p) | p&#8743;&#x03B5;&#7522; | 2 | flat |
+| Circle from three conformal Points (p1, p2, p3) | p1&#8743;p2&#8743;p3 | 3 |  round |
+| Line from two conformal planes (p1, p2) | p1&#8743;p2&#8743;&#x03B5;&#7522; | 3 | flat |
+| Sphere from four conformal points (p1, p2, p3, p4) | p1&#8743;p2&#8743;p3 &#8743;p4| 4 |  round |
+| Plane from three conformal points (p1, p2, p3) | p1&#8743;p2&#8743;p3&#8743;&#x03B5;&#7522;| 4 | flat |
 
 #### Geometric objects in inner product null space representation (dual)
 | description | formula | grade |
