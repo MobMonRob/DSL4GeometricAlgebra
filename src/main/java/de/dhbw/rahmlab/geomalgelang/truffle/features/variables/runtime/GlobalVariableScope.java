@@ -41,7 +41,7 @@ public final class GlobalVariableScope implements TruffleObject {
 		}
 	}
 
-	public ICGAMultivector getVariable(String name) throws NoSuchElementException {
+	public ICGAMultivector getValueOfVariable(String name) throws NoSuchElementException {
 		return this.variables.get(name).orElseThrow();
 	}
 

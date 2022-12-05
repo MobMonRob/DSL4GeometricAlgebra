@@ -11,35 +11,36 @@ import com.oracle.truffle.api.library.CachedLibrary;
 import com.oracle.truffle.api.nodes.ExplodeLoop;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionCalls.runtime.UndefinedNameException;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.functions.nodes.expr.FunctionReference;
 
 public abstract class FunctionCall extends ExpressionBaseNode {
 
-	@SuppressWarnings("FieldMayBeFinal")
 	@Child
-	private ExpressionBaseNode functionNode;
+	private FunctionReference functionReference;
 
 	@Children
-	private final ExpressionBaseNode[] argumentNodes;
+	private final ExpressionBaseNode[] arguments;
 
-	protected FunctionCall(ExpressionBaseNode function, ExpressionBaseNode[] arguments) {
+	protected FunctionCall(FunctionReference functionReference, ExpressionBaseNode[] arguments) {
 		super();
-		this.functionNode = function;
-		this.argumentNodes = arguments;
+		this.functionReference = functionReference;
+		this.arguments = arguments;
 	}
 
 	@Specialization
 	@ExplodeLoop
 	protected Object call(VirtualFrame frame, @CachedLibrary(limit = "2") InteropLibrary library) {
 		// Type: Function
-		Object function = this.functionNode.executeGeneric(frame);
+		Object function = this.functionReference.executeGeneric(frame);
 
 		// CompilerAsserts.compilationConstant(this.arguments.length);
-		Object[] argumentValues = new Object[this.argumentNodes.length];
-		for (int i = 0; i < this.argumentNodes.length; ++i) {
-			argumentValues[i] = this.argumentNodes[i].executeGeneric(frame);
+		Object[] argumentValues = new Object[this.arguments.length];
+		for (int i = 0; i < this.arguments.length; ++i) {
+			argumentValues[i] = this.arguments[i].executeGeneric(frame);
 		}
 
 		try {
+			// Indirect execution in order to utilize graal optimizations.
 			return library.execute(function, argumentValues);
 		} catch (ArityException | UnsupportedTypeException | UnsupportedMessageException e) {
 			throw UndefinedNameException.undefinedFunction(this, function);

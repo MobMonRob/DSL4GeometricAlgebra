@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package de.dhbw.rahmlab.geomalgelang;
 
 import de.dhbw.rahmlab.geomalgelang.parsing.CharStreamSupplier;
@@ -21,16 +17,12 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.atn.PredictionMode;
 import org.graalvm.polyglot.Context;
 
-/**
- *
- * @author fabian
- */
 public class AppTest {
 
 	// Ausführen mit Rechtsklick auf die Datei -> Run File
 	// Oder Shift + Fn + F6
 	public static void main(String[] args) throws Exception {
-		String program = "a(abc,ef)";
+		String program = "Involute(abc,-b)";
 		// String program = "a -b";
 		// String program = "a-b";
 		// String program = "a - b";

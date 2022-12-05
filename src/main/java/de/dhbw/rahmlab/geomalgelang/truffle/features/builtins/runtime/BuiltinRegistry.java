@@ -31,9 +31,10 @@ public class BuiltinRegistry {
 			.mapToObj(i -> new ReadFunctionArgument(i))
 			.toArray(ReadFunctionArgument[]::new);
 
-		BuiltinFunctionBody builtinFunctionBody = factory.createNode((Object[]) functionArguments);
+		BuiltinFunctionBody builtinFunctionBody = factory.createNode((Object) functionArguments);
 		FunctionRootNode functionRootNode = new FunctionRootNode(truffleLanguage, builtinFunctionBody);
-		Function function = new Function(functionRootNode);
+		String name = factory.getNodeClass().getSimpleName();
+		Function function = new Function(functionRootNode, name);
 
 		this.builtins.put(function.name, function);
 	}

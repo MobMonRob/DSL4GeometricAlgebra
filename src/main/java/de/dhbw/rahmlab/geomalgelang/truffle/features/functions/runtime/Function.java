@@ -16,9 +16,9 @@ public final class Function implements TruffleObject {
 
 	public final RootCallTarget rootCallTarget;
 
-	public Function(FunctionRootNode functionRootNode) {
+	public Function(FunctionRootNode functionRootNode, String name) {
 		this.rootCallTarget = functionRootNode.getCallTarget();
-		this.name = functionRootNode.getName();
+		this.name = name;
 	}
 
 	@ExportMessage

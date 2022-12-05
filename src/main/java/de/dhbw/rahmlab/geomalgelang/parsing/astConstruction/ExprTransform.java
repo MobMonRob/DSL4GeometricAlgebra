@@ -1,5 +1,6 @@
 package de.dhbw.rahmlab.geomalgelang.parsing.astConstruction;
 
+import com.oracle.truffle.api.frame.VirtualFrame;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.variables.nodes.expr.*;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.literals.nodes.expr.*;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.operators.nodes.expr.binaryOps.*;
@@ -8,6 +9,9 @@ import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParser;
 import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParserBaseListener;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.builtins.nodes.expr.*;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.functionCalls.nodes.expr.*;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.functions.nodes.expr.*;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
@@ -219,12 +223,41 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		}
 	}
 
+	private static class EnterCallMarker extends ExpressionBaseNode {
+
+		@Override
+		public Object executeGeneric(VirtualFrame frame) {
+			throw new UnsupportedOperationException();
+		}
+	}
+
+	private static final EnterCallMarker enterCallMarker = new EnterCallMarker();
+
 	@Override
 	public void enterCall(GeomAlgeParser.CallContext ctx) {
-		// this.nodeStack
+		this.nodeStack.push(enterCallMarker);
 	}
 
 	@Override
 	public void exitCall(GeomAlgeParser.CallContext ctx) {
+		Deque<ExpressionBaseNode> arguments = new ArrayDeque<>();
+		ExpressionBaseNode currentArgument = this.nodeStack.pop();
+		for (; currentArgument != enterCallMarker; currentArgument = this.nodeStack.pop()) {
+			// rightmost argument will be pushed first
+			// therefore ordered properly at the end
+			arguments.push(currentArgument);
+		}
+		ExpressionBaseNode[] argumentsArray = arguments.toArray(ExpressionBaseNode[]::new);
+
+		String functionName = ctx.name.getText();
+
+		// Sobald es Funktionsdefinitionen gibt:
+		// Kann auch sein: Referenz auf statische / globale Funktion
+		// Oder auch, falls Funktionen höherer Ordung unterstützt: Variable vom Typ Funktion
+		GlobalBuiltinReference globalBuiltinReference = GlobalBuiltinReferenceNodeGen.create(functionName, this.geomAlgeLangContext);
+
+		FunctionCall functionCall = FunctionCallNodeGen.create(globalBuiltinReference, argumentsArray);
+
+		this.nodeStack.push(functionCall);
 	}
 }

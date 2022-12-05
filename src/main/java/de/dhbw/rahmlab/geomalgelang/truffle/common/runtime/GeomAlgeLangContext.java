@@ -10,7 +10,7 @@ public final class GeomAlgeLangContext {
 
 	public GeomAlgeLangContext() {
 		this.globalVariableScope = new GlobalVariableScope();
-		this.builtinRegistry = null;
+		this.builtinRegistry = new BuiltinRegistry(null);;
 	}
 
 	public GeomAlgeLangContext(GeomAlgeLang truffleLanguage) {
