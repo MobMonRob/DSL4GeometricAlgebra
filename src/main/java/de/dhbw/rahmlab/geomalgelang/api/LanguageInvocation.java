@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package de.dhbw.rahmlab.geomalgelang.api;
 
 import de.dhbw.rahmlab.geomalgelang.cga.CGAMultivector_Processor_Generic;
@@ -17,10 +13,6 @@ import org.graalvm.polyglot.Source;
 import org.graalvm.polyglot.SourceSection;
 import org.graalvm.polyglot.Value;
 
-/**
- *
- * @author fabian
- */
 public class LanguageInvocation {
 
 	public static <T> ICGAMultivector invoke(String program, Map<String, ICGAMultivector> inputVars, ICGAMultivector_Processor_Concrete<T> concreteProcessor) throws IOException {

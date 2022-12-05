@@ -5,8 +5,8 @@
 package de.dhbw.rahmlab.geomalgelang.parsing;
 
 import de.dhbw.rahmlab.geomalgelang.parsing.astConstruction.ExprTransform;
-import de.dhbw.rahmlab.geomalgelang.truffle.GeomAlgeLangContext;
-import de.dhbw.rahmlab.geomalgelang.truffle.nodes.technical.ExpressionBaseNode;
+import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLangContext;
+import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.DiagnosticErrorListener;
 import org.antlr.v4.runtime.atn.PredictionMode;

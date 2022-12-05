@@ -1,22 +1,18 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package de.dhbw.rahmlab.geomalgelang.parsing.astConstruction;
 
+import de.dhbw.rahmlab.geomalgelang.truffle.features.variables.nodes.expr.*;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.literals.nodes.expr.*;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.operators.nodes.expr.binaryOps.*;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.operators.nodes.expr.unaryOps.*;
 import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParser;
 import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParserBaseListener;
-import de.dhbw.rahmlab.geomalgelang.truffle.GeomAlgeLangContext;
-import de.dhbw.rahmlab.geomalgelang.truffle.nodes.binaryOps.*;
-import de.dhbw.rahmlab.geomalgelang.truffle.nodes.technical.ExpressionBaseNode;
-import de.dhbw.rahmlab.geomalgelang.truffle.nodes.unaryOps.*;
-import de.dhbw.rahmlab.geomalgelang.truffle.nodes.variableLike.*;
+import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLangContext;
+import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.util.ArrayDeque;
 import java.util.Deque;
-import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 /**
@@ -27,7 +23,6 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
  * The nodeStack cache works, because ANTLR ParseTree is traversed Depth-First. For visuals refer to:
  * https://saumitra.me/blog/antlr4-visitor-vs-listener-pattern/
  *
- * @author fabian
  */
 public class ExprTransform extends GeomAlgeParserBaseListener {
 
