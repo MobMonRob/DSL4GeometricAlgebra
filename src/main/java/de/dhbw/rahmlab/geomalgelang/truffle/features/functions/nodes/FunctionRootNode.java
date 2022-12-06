@@ -13,7 +13,7 @@ public final class FunctionRootNode extends RootNode {
 	private FunctionBody functionBodyNode;
 
 	public FunctionRootNode(GeomAlgeLang truffleLanguage, FunctionBody functionBodyNode) {
-		super(truffleLanguage, new FrameDescriptor());
+		super(truffleLanguage); // , new FrameDescriptor()
 		this.functionBodyNode = functionBodyNode;
 	}
 

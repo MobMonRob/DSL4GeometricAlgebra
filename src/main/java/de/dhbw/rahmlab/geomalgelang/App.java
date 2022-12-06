@@ -27,8 +27,9 @@ public class App {
 	private static void invocationTest() throws Exception {
 		CGAMultivector_Processor_CGAMultivector cgaMultivector_Processor_CGAMultivector = new CGAMultivector_Processor_CGAMultivector();
 
-		String program = "a b";
-		// String program = "involute(a,-b)";
+		// String program = "a b";
+		String program = "involute(a,b b)";
+		// String program = "involute()"; // passt
 
 		Map<String, ICGAMultivector> inputVars = new HashMap<>();
 		ICGAMultivector a = new ICGAMultivector(cgaMultivector_Processor_CGAMultivector.create(5.0));

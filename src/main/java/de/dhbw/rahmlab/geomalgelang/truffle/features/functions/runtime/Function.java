@@ -1,24 +1,31 @@
 package de.dhbw.rahmlab.geomalgelang.truffle.features.functions.runtime;
 
 import com.oracle.truffle.api.RootCallTarget;
+import com.oracle.truffle.api.dsl.Cached;
+import com.oracle.truffle.api.dsl.ReportPolymorphism;
+import com.oracle.truffle.api.dsl.Specialization;
 import com.oracle.truffle.api.interop.InteropLibrary;
 import com.oracle.truffle.api.interop.TruffleObject;
 import com.oracle.truffle.api.library.ExportLibrary;
 import com.oracle.truffle.api.library.ExportMessage;
 import com.oracle.truffle.api.nodes.DirectCallNode;
+import com.oracle.truffle.api.nodes.IndirectCallNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functions.nodes.FunctionRootNode;
-import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.InputValidation;
 
 @ExportLibrary(InteropLibrary.class)
 public final class Function implements TruffleObject {
 
 	public final String name;
 
-	public final FunctionRootNode functionRootNode;
+	protected final FunctionRootNode functionRootNode;
 
 	public Function(FunctionRootNode functionRootNode, String name) {
 		this.functionRootNode = functionRootNode;
 		this.name = name;
+	}
+
+	public RootCallTarget getCallTarget() {
+		return functionRootNode.getCallTarget();
 	}
 
 	@ExportMessage
@@ -26,15 +33,23 @@ public final class Function implements TruffleObject {
 		return true;
 	}
 
+	@ReportPolymorphism
 	@ExportMessage
-	protected Object execute(Object[] arguments) {
-		for (Object argument : arguments) {
-			InputValidation.ensureIsCGA(argument);
+	abstract static class Execute {
+
+		@Specialization(limit = "2", guards = "function.getCallTarget() == cachedTarget")
+		protected static Object doDirect(Function function, Object[] arguments,
+			@Cached("function.getCallTarget()") RootCallTarget cachedTarget,
+			@Cached("create(cachedTarget)") DirectCallNode callNode) {
+
+			return callNode.call(arguments);
 		}
 
-		RootCallTarget rootCallTarget = this.functionRootNode.getCallTarget();
-		DirectCallNode directCallNode = DirectCallNode.create(rootCallTarget);
+		@Specialization(replaces = "doDirect")
+		protected static Object doIndirect(Function function, Object[] arguments,
+			@Cached IndirectCallNode callNode) {
 
-		return directCallNode.call(arguments);
+			return callNode.call(function.getCallTarget(), arguments);
+		}
 	}
 }
