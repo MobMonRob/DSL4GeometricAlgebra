@@ -27,13 +27,17 @@ public class BuiltinRegistry {
 	}
 
 	private void installBuildin(NodeFactory<? extends BuiltinFunctionBody> factory) {
+		String name = factory.getNodeClass().getSimpleName().toLowerCase();
+		installBuildin(name, factory);
+	}
+
+	private void installBuildin(String name, NodeFactory<? extends BuiltinFunctionBody> factory) {
 		ReadFunctionArgument[] functionArguments = IntStream.range(0, factory.getExecutionSignature().size())
 			.mapToObj(i -> new ReadFunctionArgument(i))
 			.toArray(ReadFunctionArgument[]::new);
 
 		BuiltinFunctionBody builtinFunctionBody = factory.createNode((Object) functionArguments);
 		FunctionRootNode functionRootNode = new FunctionRootNode(truffleLanguage, builtinFunctionBody);
-		String name = factory.getNodeClass().getSimpleName();
 		Function function = new Function(functionRootNode, name);
 
 		this.builtins.put(function.name, function);
