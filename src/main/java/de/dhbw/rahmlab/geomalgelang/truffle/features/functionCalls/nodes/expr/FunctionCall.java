@@ -9,19 +9,20 @@ import com.oracle.truffle.api.interop.UnsupportedMessageException;
 import com.oracle.truffle.api.interop.UnsupportedTypeException;
 import com.oracle.truffle.api.library.CachedLibrary;
 import com.oracle.truffle.api.nodes.ExplodeLoop;
-import de.dhbw.rahmlab.geomalgelang.truffle.features.functionCalls.runtime.UndefinedNameException;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
-import de.dhbw.rahmlab.geomalgelang.truffle.features.functions.nodes.expr.FunctionReference;
+import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLangException;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.functions.nodes.exprSuperClasses.AbstractFunctionReference;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.functions.runtime.Function;
 
 public abstract class FunctionCall extends ExpressionBaseNode {
 
 	@Child
-	private FunctionReference functionReference;
+	private AbstractFunctionReference functionReference;
 
 	@Children
 	private final ExpressionBaseNode[] arguments;
 
-	protected FunctionCall(FunctionReference functionReference, ExpressionBaseNode[] arguments) {
+	protected FunctionCall(AbstractFunctionReference functionReference, ExpressionBaseNode[] arguments) {
 		super();
 		this.functionReference = functionReference;
 		this.arguments = arguments;
@@ -30,8 +31,8 @@ public abstract class FunctionCall extends ExpressionBaseNode {
 	@Specialization
 	@ExplodeLoop
 	protected Object call(VirtualFrame frame, @CachedLibrary(limit = "2") InteropLibrary library) {
-		// Type: Function
-		Object function = this.functionReference.executeGeneric(frame);
+		// If function does not exist at all: exception expected here
+		Function function = (Function) this.functionReference.executeGeneric(frame);
 
 		// CompilerAsserts.compilationConstant(this.arguments.length);
 		Object[] argumentValues = new Object[this.arguments.length];
@@ -42,8 +43,11 @@ public abstract class FunctionCall extends ExpressionBaseNode {
 		try {
 			// Indirect execution in order to utilize graal optimizations.
 			return library.execute(function, argumentValues);
-		} catch (ArityException | UnsupportedTypeException | UnsupportedMessageException e) {
-			throw UndefinedNameException.undefinedFunction(this, function);
+		} catch (ArityException e) {
+			String message = "Wrong argument count in functionCall of: " + this.functionReference.getName() + "\n" + e.toString();
+			throw new GeomAlgeLangException(message);
+		} catch (UnsupportedTypeException | UnsupportedMessageException e) {
+			throw new GeomAlgeLangException(e.toString());
 		}
 	}
 }

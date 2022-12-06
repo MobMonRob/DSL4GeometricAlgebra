@@ -19,26 +19,28 @@ public class BuiltinRegistry {
 
 	public BuiltinRegistry(GeomAlgeLang truffleLanguage) {
 		this.truffleLanguage = truffleLanguage;
-		installBuildins();
+		installBuiltins();
 	}
 
-	private void installBuildins() {
-		this.installBuildin(InvoluteFactory.getInstance());
+	private void installBuiltins() {
+		this.installBuiltin(InvoluteFactory.getInstance());
 	}
 
-	private void installBuildin(NodeFactory<? extends BuiltinFunctionBody> factory) {
+	private void installBuiltin(NodeFactory<? extends BuiltinFunctionBody> factory) {
 		String name = factory.getNodeClass().getSimpleName().toLowerCase();
-		installBuildin(name, factory);
+		installBuiltin(name, factory);
 	}
 
-	private void installBuildin(String name, NodeFactory<? extends BuiltinFunctionBody> factory) {
-		ReadFunctionArgument[] functionArguments = IntStream.range(0, factory.getExecutionSignature().size())
+	private void installBuiltin(String name, NodeFactory<? extends BuiltinFunctionBody> factory) {
+		final int arity = factory.getExecutionSignature().size();
+
+		ReadFunctionArgument[] functionArguments = IntStream.range(0, arity)
 			.mapToObj(i -> new ReadFunctionArgument(i))
 			.toArray(ReadFunctionArgument[]::new);
 
 		BuiltinFunctionBody builtinFunctionBody = factory.createNode((Object) functionArguments);
 		FunctionRootNode functionRootNode = new FunctionRootNode(truffleLanguage, builtinFunctionBody);
-		Function function = new Function(functionRootNode, name);
+		Function function = new Function(functionRootNode, name, arity);
 
 		this.builtins.put(function.name, function);
 	}

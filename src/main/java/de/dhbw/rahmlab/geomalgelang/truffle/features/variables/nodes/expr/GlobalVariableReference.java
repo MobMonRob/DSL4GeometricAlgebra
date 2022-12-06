@@ -20,7 +20,7 @@ public abstract class GlobalVariableReference extends ExpressionBaseNode {
 		String variableId = this.getName();
 		var value = context.globalVariableScope.getValueOfVariable(variableId);
 		if (value == null) {
-			throw new GeomAlgeLangException(this, this.getClass().getSimpleName() + ": " + "'" + variableId + "' is not defined");
+			throw new GeomAlgeLangException(this.getClass().getSimpleName() + ": " + "'" + variableId + "' is not defined", this);
 		}
 		return value;
 	}

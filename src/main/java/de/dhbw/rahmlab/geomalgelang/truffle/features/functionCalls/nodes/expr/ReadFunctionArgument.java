@@ -19,7 +19,7 @@ public class ReadFunctionArgument extends ExpressionBaseNode {
 			return args[index];
 		} else {
 			// The function was called with fewer actual arguments than formal arguments.
-			throw new GeomAlgeLangException(this, "The function was called with " + args.length + " arguments, but needs at least " + (index + 1) + ".");
+			throw new GeomAlgeLangException("The function was called with " + args.length + " arguments, but needs at least " + (index + 1) + ".", this);
 		}
 	}
 }
