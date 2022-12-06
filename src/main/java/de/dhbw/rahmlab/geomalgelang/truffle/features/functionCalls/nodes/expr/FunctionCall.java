@@ -11,18 +11,18 @@ import com.oracle.truffle.api.library.CachedLibrary;
 import com.oracle.truffle.api.nodes.ExplodeLoop;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLangException;
-import de.dhbw.rahmlab.geomalgelang.truffle.features.functions.nodes.exprSuperClasses.AbstractFunctionReference;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.functions.nodes.exprSuperClasses.FunctionReferenceBaseNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functions.runtime.Function;
 
 public abstract class FunctionCall extends ExpressionBaseNode {
 
 	@Child
-	private AbstractFunctionReference functionReference;
+	private FunctionReferenceBaseNode functionReference;
 
 	@Children
 	private final ExpressionBaseNode[] arguments;
 
-	protected FunctionCall(AbstractFunctionReference functionReference, ExpressionBaseNode[] arguments) {
+	protected FunctionCall(FunctionReferenceBaseNode functionReference, ExpressionBaseNode[] arguments) {
 		super();
 		this.functionReference = functionReference;
 		this.arguments = arguments;

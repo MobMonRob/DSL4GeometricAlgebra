@@ -3,11 +3,11 @@ package de.dhbw.rahmlab.geomalgelang.truffle.features.functions.nodes.exprSuperC
 import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functions.runtime.Function;
 
-public abstract class AbstractFunctionReference extends ExpressionBaseNode {
+public abstract class FunctionReferenceBaseNode extends ExpressionBaseNode {
 
 	protected final String name;
 
-	protected AbstractFunctionReference(String name) {
+	protected FunctionReferenceBaseNode(String name) {
 		this.name = name;
 	}
 

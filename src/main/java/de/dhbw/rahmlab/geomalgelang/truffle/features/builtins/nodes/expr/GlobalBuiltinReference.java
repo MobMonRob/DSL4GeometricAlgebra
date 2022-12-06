@@ -2,10 +2,10 @@ package de.dhbw.rahmlab.geomalgelang.truffle.features.builtins.nodes.expr;
 
 import com.oracle.truffle.api.dsl.Specialization;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLangContext;
-import de.dhbw.rahmlab.geomalgelang.truffle.features.functions.nodes.exprSuperClasses.AbstractFunctionReference;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.functions.nodes.exprSuperClasses.FunctionReferenceBaseNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functions.runtime.Function;
 
-public abstract class GlobalBuiltinReference extends AbstractFunctionReference {
+public abstract class GlobalBuiltinReference extends FunctionReferenceBaseNode {
 
 	protected final Function builtin;
 
