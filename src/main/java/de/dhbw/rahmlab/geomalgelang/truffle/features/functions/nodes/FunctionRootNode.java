@@ -1,5 +1,6 @@
 package de.dhbw.rahmlab.geomalgelang.truffle.features.functions.nodes;
 
+import com.oracle.truffle.api.frame.FrameDescriptor;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.RootNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLang;
@@ -12,7 +13,7 @@ public final class FunctionRootNode extends RootNode {
 	private FunctionBody functionBodyNode;
 
 	public FunctionRootNode(GeomAlgeLang truffleLanguage, FunctionBody functionBodyNode) {
-		super(truffleLanguage);
+		super(truffleLanguage, new FrameDescriptor());
 		this.functionBodyNode = functionBodyNode;
 	}
 

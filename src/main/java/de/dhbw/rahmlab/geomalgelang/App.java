@@ -28,6 +28,7 @@ public class App {
 		CGAMultivector_Processor_CGAMultivector cgaMultivector_Processor_CGAMultivector = new CGAMultivector_Processor_CGAMultivector();
 
 		String program = "a b";
+		// String program = "involute(a,-b)";
 
 		Map<String, ICGAMultivector> inputVars = new HashMap<>();
 		ICGAMultivector a = new ICGAMultivector(cgaMultivector_Processor_CGAMultivector.create(5.0));

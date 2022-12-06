@@ -14,10 +14,10 @@ public final class Function implements TruffleObject {
 
 	public final String name;
 
-	public final RootCallTarget rootCallTarget;
+	public final FunctionRootNode functionRootNode;
 
 	public Function(FunctionRootNode functionRootNode, String name) {
-		this.rootCallTarget = functionRootNode.getCallTarget();
+		this.functionRootNode = functionRootNode;
 		this.name = name;
 	}
 
@@ -32,7 +32,9 @@ public final class Function implements TruffleObject {
 			InputValidation.ensureIsCGA(argument);
 		}
 
-		DirectCallNode directCallNode = DirectCallNode.create(this.rootCallTarget);
+		RootCallTarget rootCallTarget = this.functionRootNode.getCallTarget();
+		DirectCallNode directCallNode = DirectCallNode.create(rootCallTarget);
+
 		return directCallNode.call(arguments);
 	}
 }
