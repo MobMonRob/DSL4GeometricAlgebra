@@ -1,10 +1,10 @@
-package de.dhbw.rahmlab.geomalgelang.truffle.features.builtinsFunctionDefinitions.runtime;
+package de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionDefinitions.runtime;
 
 import com.oracle.truffle.api.dsl.NodeFactory;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLang;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLangException;
-import de.dhbw.rahmlab.geomalgelang.truffle.features.builtinsFunctionDefinitions.nodes.expr.*;
-import de.dhbw.rahmlab.geomalgelang.truffle.features.builtinsFunctionDefinitions.nodes.exprSuperClasses.BuiltinFunctionBody;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionDefinitions.nodes.expr.*;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionDefinitions.nodes.exprSuperClasses.BuiltinFunctionBody;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.runtime.Function;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.FunctionRootNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.FunctionArgumentReader;

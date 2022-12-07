@@ -1,9 +1,9 @@
-package de.dhbw.rahmlab.geomalgelang.truffle.features.builtinsFunctionDefinitions.nodes.expr;
+package de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionDefinitions.nodes.expr;
 
 import com.oracle.truffle.api.dsl.Specialization;
 import de.dhbw.rahmlab.geomalgelang.cga.Current_ICGAMultivector_Processor;
 import de.dhbw.rahmlab.geomalgelang.cga.ICGAMultivector;
-import de.dhbw.rahmlab.geomalgelang.truffle.features.builtinsFunctionDefinitions.nodes.exprSuperClasses.BuiltinFunctionBody;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionDefinitions.nodes.exprSuperClasses.BuiltinFunctionBody;
 
 public abstract class Involute extends BuiltinFunctionBody {
 
