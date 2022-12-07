@@ -1,4 +1,4 @@
-package de.dhbw.rahmlab.geomalgelang.truffle.features.functions.runtime;
+package de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.runtime;
 
 import com.oracle.truffle.api.RootCallTarget;
 import com.oracle.truffle.api.dsl.Cached;
@@ -11,7 +11,7 @@ import com.oracle.truffle.api.library.ExportLibrary;
 import com.oracle.truffle.api.library.ExportMessage;
 import com.oracle.truffle.api.nodes.DirectCallNode;
 import com.oracle.truffle.api.nodes.IndirectCallNode;
-import de.dhbw.rahmlab.geomalgelang.truffle.features.functions.nodes.FunctionRootNode;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.FunctionRootNode;
 
 @ExportLibrary(InteropLibrary.class)
 public final class Function implements TruffleObject {

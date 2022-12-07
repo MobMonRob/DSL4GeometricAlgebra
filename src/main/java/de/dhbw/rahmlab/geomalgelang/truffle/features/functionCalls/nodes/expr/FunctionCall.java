@@ -11,8 +11,8 @@ import com.oracle.truffle.api.library.CachedLibrary;
 import com.oracle.truffle.api.nodes.ExplodeLoop;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLangException;
-import de.dhbw.rahmlab.geomalgelang.truffle.features.functions.nodes.exprSuperClasses.FunctionReferenceBaseNode;
-import de.dhbw.rahmlab.geomalgelang.truffle.features.functions.runtime.Function;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.functionCalls.nodes.exprSuperClasses.FunctionReferenceBaseNode;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.runtime.Function;
 
 public abstract class FunctionCall extends ExpressionBaseNode {
 

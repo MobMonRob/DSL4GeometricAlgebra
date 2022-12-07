@@ -1,7 +1,7 @@
-package de.dhbw.rahmlab.geomalgelang.truffle.features.functions.nodes.exprSuperClasses;
+package de.dhbw.rahmlab.geomalgelang.truffle.features.functionCalls.nodes.exprSuperClasses;
 
 import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
-import de.dhbw.rahmlab.geomalgelang.truffle.features.functions.runtime.Function;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.runtime.Function;
 
 public abstract class FunctionReferenceBaseNode extends ExpressionBaseNode {
 

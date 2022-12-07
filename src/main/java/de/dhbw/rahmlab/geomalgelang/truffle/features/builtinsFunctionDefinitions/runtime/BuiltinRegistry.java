@@ -1,13 +1,13 @@
-package de.dhbw.rahmlab.geomalgelang.truffle.features.builtins.runtime;
+package de.dhbw.rahmlab.geomalgelang.truffle.features.builtinsFunctionDefinitions.runtime;
 
 import com.oracle.truffle.api.dsl.NodeFactory;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLang;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLangException;
-import de.dhbw.rahmlab.geomalgelang.truffle.features.builtins.nodes.exprSuperClasses.BuiltinFunctionBody;
-import de.dhbw.rahmlab.geomalgelang.truffle.features.functions.runtime.Function;
-import de.dhbw.rahmlab.geomalgelang.truffle.features.functions.nodes.FunctionRootNode;
-import de.dhbw.rahmlab.geomalgelang.truffle.features.functionCalls.nodes.expr.ReadFunctionArgument;
-import de.dhbw.rahmlab.geomalgelang.truffle.features.builtins.nodes.expr.builtins.*;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.builtinsFunctionDefinitions.nodes.expr.*;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.builtinsFunctionDefinitions.nodes.exprSuperClasses.BuiltinFunctionBody;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.runtime.Function;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.FunctionRootNode;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.FunctionArgumentReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.IntStream;
@@ -34,9 +34,9 @@ public class BuiltinRegistry {
 	private void installBuiltin(String name, NodeFactory<? extends BuiltinFunctionBody> factory) {
 		final int arity = factory.getExecutionSignature().size();
 
-		ReadFunctionArgument[] functionArguments = IntStream.range(0, arity)
-			.mapToObj(i -> new ReadFunctionArgument(i))
-			.toArray(ReadFunctionArgument[]::new);
+		FunctionArgumentReader[] functionArguments = IntStream.range(0, arity)
+			.mapToObj(i -> new FunctionArgumentReader(i))
+			.toArray(FunctionArgumentReader[]::new);
 
 		BuiltinFunctionBody builtinFunctionBody = factory.createNode((Object) functionArguments);
 		FunctionRootNode functionRootNode = new FunctionRootNode(truffleLanguage, builtinFunctionBody);

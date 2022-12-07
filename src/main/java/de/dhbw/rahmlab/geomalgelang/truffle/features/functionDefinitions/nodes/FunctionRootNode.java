@@ -1,10 +1,10 @@
-package de.dhbw.rahmlab.geomalgelang.truffle.features.functions.nodes;
+package de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes;
 
 import com.oracle.truffle.api.frame.FrameDescriptor;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.RootNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLang;
-import de.dhbw.rahmlab.geomalgelang.truffle.features.functions.nodes.exprSuperClasses.FunctionBody;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.exprSuperClasses.FunctionBody;
 
 public final class FunctionRootNode extends RootNode {
 

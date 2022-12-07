@@ -1,19 +1,18 @@
-package de.dhbw.rahmlab.geomalgelang.truffle.features.functionCalls.nodes.expr;
+package de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
+import com.oracle.truffle.api.nodes.Node;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLangException;
-import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 
-public class ReadFunctionArgument extends ExpressionBaseNode {
+public class FunctionArgumentReader extends Node {
 
 	private final int index;
 
-	public ReadFunctionArgument(int index) {
+	public FunctionArgumentReader(int index) {
 		this.index = index;
 	}
 
-	@Override
-	public Object executeGeneric(VirtualFrame frame) {
+	public Object executeReadFunctionArgument(VirtualFrame frame) {
 		Object[] args = frame.getArguments();
 		if (index < args.length) {
 			return args[index];

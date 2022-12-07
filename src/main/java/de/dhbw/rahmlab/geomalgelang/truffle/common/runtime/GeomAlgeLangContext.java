@@ -1,6 +1,6 @@
 package de.dhbw.rahmlab.geomalgelang.truffle.common.runtime;
 
-import de.dhbw.rahmlab.geomalgelang.truffle.features.builtins.runtime.BuiltinRegistry;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.builtinsFunctionDefinitions.runtime.BuiltinRegistry;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.variables.runtime.GlobalVariableScope;
 
 public final class GeomAlgeLangContext {
