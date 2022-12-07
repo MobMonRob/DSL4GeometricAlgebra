@@ -15,9 +15,7 @@ options { tokenVocab=GeomAlgeLexer; }
 ///////////////////////////////////////////////////////////////////////////
 
 program
-	:	SPACE*
-		expr
-		SPACE*
+	:	expr
 		(EOF | NEWLINE)
 	;
 
@@ -26,7 +24,9 @@ program
 ///////////////////////////////////////////////////////////////////////////
 
 expr
-	:	nonOuterRecursiveExpr
+	:	SPACE+ expr
+	|	expr SPACE+
+	|	nonOuterRecursiveExpr
 	|	unOpExpr
 	|	binOpExpr
 	;
@@ -154,17 +154,13 @@ literalExpr
 
 parenExpr
 	:	L_PARENTHESIS
-		SPACE*
 		expr
-		SPACE*
 		R_PARENTHESIS
 	;
 
 gradeExtractionExpr
 	:	LESS_THAN_SIGN
-		SPACE*
 		expr
-		SPACE*
 		GREATER_THAN_SIGN
 		grade=	(SUBSCRIPT_ZERO
 				|SUBSCRIPT_ONE
