@@ -13,6 +13,7 @@
 		<skipTests>true</skipTests>
 		<graalvm.version>22.0.0.2</graalvm.version>
 		<antlr.version>4.11.1</antlr.version>
+		<truffleGenSourceDir>${project.build.directory}/generated-sources/truffle-dsl-processor/gen/</truffleGenSourceDir>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -126,7 +127,7 @@
 						<arg>org.graalvm.truffle/com.oracle.truffle.api.interop=ALL-UNNAMED</arg>
 					</compilerArgs>
 					<!-- Workaround to make netbeans recognize generated source files from truffle. -->
-					<generatedSourcesDirectory>${project.build.directory}/generated-sources/truffle-dsl-processor/gen</generatedSourcesDirectory>
+					<generatedSourcesDirectory>${truffleGenSourceDir}</generatedSourcesDirectory>
 					<!-- -->
 					<annotationProcessorPaths>
 						<!-- Prevents conflicts between truffle and antlr-runtime. -->
@@ -163,6 +164,24 @@
 						</manifest>
 					</archive>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>3.3.0</version>
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>${truffleGenSourceDir}</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
