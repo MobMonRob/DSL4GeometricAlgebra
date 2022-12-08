@@ -37,16 +37,16 @@ public abstract class FunctionCall extends ExpressionBaseNode {
 		Function function = this.functionReference.executeGeneric(frame);
 
 		// CompilerAsserts.compilationConstant(this.arguments.length);
-		Object[] argumentValues = new Object[this.arguments.length];
+		TruffleBox<CGAMultivector>[] argumentValues = new TruffleBox[this.arguments.length];
 		for (int i = 0; i < this.arguments.length; ++i) {
-			argumentValues[i] = this.arguments[i].executeGeneric(frame);
+			argumentValues[i] = new TruffleBox<CGAMultivector>(this.arguments[i].executeGeneric(frame));
 		}
 
 		try {
 			// Indirect execution in order to utilize graal optimizations.
 			// invokes FunctionRootNode::execute
-			Object returnValue = library.execute(function, argumentValues);
-			return ((TruffleBox<CGAMultivector>) returnValue).inner;
+			Object returnValue = library.execute(function, (Object) argumentValues);
+			return (CGAMultivector) ((TruffleBox) returnValue).inner;
 		} catch (ArityException e) {
 			String message = "Wrong argument count in functionCall of: " + this.functionReference.getName() + "\n" + e.toString();
 			throw new GeomAlgeLangException(message);

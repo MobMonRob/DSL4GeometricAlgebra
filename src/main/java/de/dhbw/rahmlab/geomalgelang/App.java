@@ -28,8 +28,7 @@ public class App {
 		// String program = "involuten(a b)";
 		// String program = "involute()";
 		// String program = "involute(a,b)";
-		// String program = "involute(a b)";
-		String program = "a b";
+		String program = "involute(a b)";
 
 		Map<String, CGAMultivector> inputVars = new HashMap<>();
 		CGAMultivector a = new CGAMultivector(5.0);

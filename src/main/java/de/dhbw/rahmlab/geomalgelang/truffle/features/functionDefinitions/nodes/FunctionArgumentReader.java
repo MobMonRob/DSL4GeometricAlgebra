@@ -2,7 +2,9 @@ package de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.Node;
+import de.dhbw.rahmlab.geomalgelang.cga.TruffleBox;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLangException;
+import de.orat.math.cga.api.CGAMultivector;
 
 public class FunctionArgumentReader extends Node {
 
@@ -12,13 +14,25 @@ public class FunctionArgumentReader extends Node {
 		this.index = index;
 	}
 
-	public Object executeReadFunctionArgument(VirtualFrame frame) {
+	public CGAMultivector executeReadFunctionArgument(VirtualFrame frame) {
 		Object[] args = frame.getArguments();
-		if (index < args.length) {
-			return args[index];
-		} else {
-			// The function was called with fewer actual arguments than formal arguments.
-			throw new GeomAlgeLangException("The function was called with " + args.length + " arguments, but needs at least " + (index + 1) + ".", this);
+
+		// class Function already ensures correct arity
+		Object arg = args[index];
+
+		if (arg instanceof Object[]) {
+			Object[] actualArgs = (Object[]) arg;
+			if (actualArgs.length > 0) {
+				Object actualArg = actualArgs[0];
+				if (actualArg instanceof TruffleBox) {
+					TruffleBox truffleBox = (TruffleBox) actualArg;
+					if (truffleBox.inner instanceof CGAMultivector) {
+						return (CGAMultivector) truffleBox.inner;
+					}
+				}
+			}
 		}
+
+		throw new GeomAlgeLangException("FunctionArgumentReader failed", this);
 	}
 }

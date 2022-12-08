@@ -6,9 +6,10 @@ import de.orat.math.cga.api.CGAMultivector;
 public abstract class InputValidation {
 
 	public static CGAMultivector ensureIsCGA(Object object) throws IllegalArgumentException {
-		if (object instanceof TruffleBox truffleBox) {
-			if (truffleBox.inner instanceof CGAMultivector multivector) {
-				return multivector;
+		if (object instanceof TruffleBox) {
+			TruffleBox truffleBox = (TruffleBox) object;
+			if (truffleBox.inner instanceof CGAMultivector) {
+				return (CGAMultivector) truffleBox.inner;
 			}
 
 			String expectedInnerClassName = CGAMultivector.class.getSimpleName();
