@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package de.dhbw.rahmlab.geomalgelang.parsing;
 
 import de.dhbw.rahmlab.geomalgelang.parsing.astConstruction.ExprTransform;
@@ -11,10 +7,6 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.DiagnosticErrorListener;
 import org.antlr.v4.runtime.atn.PredictionMode;
 
-/**
- *
- * @author fabian
- */
 public final class ParsingService {
 
 	private ParsingService() {

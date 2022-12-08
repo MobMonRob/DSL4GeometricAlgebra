@@ -9,10 +9,12 @@ import com.oracle.truffle.api.interop.UnsupportedMessageException;
 import com.oracle.truffle.api.interop.UnsupportedTypeException;
 import com.oracle.truffle.api.library.CachedLibrary;
 import com.oracle.truffle.api.nodes.ExplodeLoop;
+import de.dhbw.rahmlab.geomalgelang.cga.TruffleBox;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLangException;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionCalls.nodes.exprSuperClasses.FunctionReferenceBaseNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.runtime.Function;
+import de.orat.math.cga.api.CGAMultivector;
 
 public abstract class FunctionCall extends ExpressionBaseNode {
 
@@ -30,9 +32,9 @@ public abstract class FunctionCall extends ExpressionBaseNode {
 
 	@Specialization
 	@ExplodeLoop
-	protected Object call(VirtualFrame frame, @CachedLibrary(limit = "2") InteropLibrary library) {
+	protected CGAMultivector call(VirtualFrame frame, @CachedLibrary(limit = "2") InteropLibrary library) {
 		// If function does not exist at all: exception expected here
-		Function function = (Function) this.functionReference.executeGeneric(frame);
+		Function function = this.functionReference.executeGeneric(frame);
 
 		// CompilerAsserts.compilationConstant(this.arguments.length);
 		Object[] argumentValues = new Object[this.arguments.length];
@@ -42,7 +44,9 @@ public abstract class FunctionCall extends ExpressionBaseNode {
 
 		try {
 			// Indirect execution in order to utilize graal optimizations.
-			return library.execute(function, argumentValues);
+			// invokes FunctionRootNode::execute
+			Object returnValue = library.execute(function, argumentValues);
+			return ((TruffleBox<CGAMultivector>) returnValue).inner;
 		} catch (ArityException e) {
 			String message = "Wrong argument count in functionCall of: " + this.functionReference.getName() + "\n" + e.toString();
 			throw new GeomAlgeLangException(message);

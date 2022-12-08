@@ -1,18 +1,18 @@
 package de.dhbw.rahmlab.geomalgelang.truffle.common.runtime;
 
-import de.dhbw.rahmlab.geomalgelang.cga.Current_ICGAMultivector_Processor;
-import de.dhbw.rahmlab.geomalgelang.cga.ICGAMultivector;
+import de.dhbw.rahmlab.geomalgelang.cga.TruffleBox;
+import de.orat.math.cga.api.CGAMultivector;
 
 public abstract class InputValidation {
 
-	public static ICGAMultivector ensureIsCGA(Object object) throws IllegalArgumentException {
-		if (object instanceof ICGAMultivector) {
-			if (Current_ICGAMultivector_Processor.cga_processor.isCGA((ICGAMultivector) object)) {
-				return (ICGAMultivector) object;
+	public static CGAMultivector ensureIsCGA(Object object) throws IllegalArgumentException {
+		if (object instanceof TruffleBox truffleBox) {
+			if (truffleBox.inner instanceof CGAMultivector multivector) {
+				return multivector;
 			}
 
-			String expectedInnerClassName = Current_ICGAMultivector_Processor.cga_processor.create(1d).getInner().getClass().getSimpleName();
-			String actualInnerClassName = ((ICGAMultivector) object).getInner().getClass().getSimpleName();
+			String expectedInnerClassName = CGAMultivector.class.getSimpleName();
+			String actualInnerClassName = truffleBox.inner.getClass().getSimpleName();
 
 			throw new GeomAlgeLangException("Got \"" + actualInnerClassName + "\" but expected \"" + expectedInnerClassName + "\"");
 		}

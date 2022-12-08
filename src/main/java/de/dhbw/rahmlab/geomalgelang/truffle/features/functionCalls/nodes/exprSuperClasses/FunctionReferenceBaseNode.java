@@ -1,9 +1,11 @@
 package de.dhbw.rahmlab.geomalgelang.truffle.features.functionCalls.nodes.exprSuperClasses;
 
-import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
+import com.oracle.truffle.api.dsl.Specialization;
+import com.oracle.truffle.api.frame.VirtualFrame;
+import com.oracle.truffle.api.nodes.Node;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.runtime.Function;
 
-public abstract class FunctionReferenceBaseNode extends ExpressionBaseNode {
+public abstract class FunctionReferenceBaseNode extends Node {
 
 	protected final String name;
 
@@ -15,5 +17,8 @@ public abstract class FunctionReferenceBaseNode extends ExpressionBaseNode {
 		return this.name;
 	}
 
+	// @Specialization
 	protected abstract Function getFunction();
+
+	public abstract Function executeGeneric(VirtualFrame frame);
 }

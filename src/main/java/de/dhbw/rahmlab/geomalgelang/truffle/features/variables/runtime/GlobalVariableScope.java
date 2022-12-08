@@ -10,10 +10,11 @@ import com.oracle.truffle.api.interop.UnsupportedMessageException;
 import com.oracle.truffle.api.interop.UnsupportedTypeException;
 import com.oracle.truffle.api.library.ExportLibrary;
 import com.oracle.truffle.api.library.ExportMessage;
-import de.dhbw.rahmlab.geomalgelang.cga.ICGAMultivector;
+import de.dhbw.rahmlab.geomalgelang.cga.TruffleBox;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLang;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLangException;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.InputValidation;
+import de.orat.math.cga.api.CGAMultivector;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,21 +28,21 @@ public final class GlobalVariableScope implements TruffleObject {
 
 	// Once validated by ExecutionValidation invoked by GeomAlgeLangRootNode, it would make sense to remove the Optional.
 	// Maybe we could use two different GlobalVariableScopes. One before and one after validation.
-	public final Map<String, Optional<ICGAMultivector>> variables = new HashMap<>();
+	public final Map<String, Optional<CGAMultivector>> variables = new HashMap<>();
 
 	public boolean newVariable(String name) {
 		Object existingValue = this.variables.putIfAbsent(name, Optional.empty());
 		return existingValue == null;
 	}
 
-	public void assignVariable(String name, ICGAMultivector value) throws GeomAlgeLangException {
+	public void assignVariable(String name, CGAMultivector value) throws GeomAlgeLangException {
 		Object existingValue = this.variables.replace(name, Optional.of(value));
 		if (existingValue == null) {
 			throw new GeomAlgeLangException("\"" + name + "\" is not a known variable!");
 		}
 	}
 
-	public ICGAMultivector getValueOfVariable(String name) throws NoSuchElementException {
+	public CGAMultivector getValueOfVariable(String name) throws NoSuchElementException {
 		return this.variables.get(name).orElseThrow();
 	}
 
@@ -57,7 +58,7 @@ public final class GlobalVariableScope implements TruffleObject {
 	@ExportMessage
 	@TruffleBoundary
 	public void writeMember(String member, Object value) throws UnsupportedMessageException, UnknownIdentifierException, UnsupportedTypeException {
-		ICGAMultivector cga = InputValidation.ensureIsCGA(value);
+		CGAMultivector cga = InputValidation.ensureIsCGA(value);
 		this.assignVariable(member, cga);
 	}
 

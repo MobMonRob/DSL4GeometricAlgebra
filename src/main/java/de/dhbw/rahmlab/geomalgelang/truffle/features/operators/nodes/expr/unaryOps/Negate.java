@@ -2,13 +2,13 @@ package de.dhbw.rahmlab.geomalgelang.truffle.features.operators.nodes.expr.unary
 
 import de.dhbw.rahmlab.geomalgelang.truffle.features.operators.nodes.exprSuperClasses.UnaryOp;
 import com.oracle.truffle.api.dsl.Specialization;
-import de.dhbw.rahmlab.geomalgelang.cga.ICGAMultivector;
+import de.orat.math.cga.api.CGAMultivector;
 
 public abstract class Negate extends UnaryOp {
 
 	@Specialization
 	@Override
-	protected ICGAMultivector execute(ICGAMultivector input) {
-		throw new UnsupportedOperationException();
+	protected CGAMultivector execute(CGAMultivector input) {
+		return input.negate();
 	}
 }

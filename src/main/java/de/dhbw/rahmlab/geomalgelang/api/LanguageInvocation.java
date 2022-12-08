@@ -1,9 +1,7 @@
 package de.dhbw.rahmlab.geomalgelang.api;
 
-import de.dhbw.rahmlab.geomalgelang.cga.CGAMultivector_Processor_Generic;
-import de.dhbw.rahmlab.geomalgelang.cga.Current_ICGAMultivector_Processor;
-import de.dhbw.rahmlab.geomalgelang.cga.ICGAMultivector;
-import de.dhbw.rahmlab.geomalgelang.cga.ICGAMultivector_Processor_Concrete;
+import de.dhbw.rahmlab.geomalgelang.cga.TruffleBox;
+import de.orat.math.cga.api.CGAMultivector;
 import java.io.IOException;
 import java.util.Map;
 import org.graalvm.polyglot.Context;
@@ -15,16 +13,13 @@ import org.graalvm.polyglot.Value;
 
 public class LanguageInvocation {
 
-	public static <T> ICGAMultivector invoke(String program, Map<String, ICGAMultivector> inputVars, ICGAMultivector_Processor_Concrete<T> concreteProcessor) throws IOException {
+	public static CGAMultivector invoke(String program, Map<String, CGAMultivector> inputVars) throws IOException {
 		Source source = Source.newBuilder("geomalgelang", program, "MATH")
 			.build();
-		ICGAMultivector answer = invoke(source, inputVars, concreteProcessor);
-		return answer;
+		return invoke(source, inputVars);
 	}
 
-	public static <T> ICGAMultivector invoke(Source source, Map<String, ICGAMultivector> inputVars, ICGAMultivector_Processor_Concrete<T> concreteProcessor) {
-		Current_ICGAMultivector_Processor.cga_processor = new CGAMultivector_Processor_Generic<T>(concreteProcessor);
-
+	public static CGAMultivector invoke(Source source, Map<String, CGAMultivector> inputVars) {
 		Engine engine = Engine.create("geomalgelang");
 
 		Context.Builder builder = Context.newBuilder("geomalgelang")
@@ -58,17 +53,16 @@ public class LanguageInvocation {
 		// Do it similar to simple language: launcher / SLmain.java
 		Value bindings = context.getBindings("geomalgelang"); //polyglotBindings
 
-		for (var var : inputVars.entrySet()) {
-			bindings.putMember(var.getKey(), var.getValue());
-		}
+		inputVars.forEach((name, value) -> {
+			bindings.putMember(name, new TruffleBox<>(value));
+		});
 
-		ICGAMultivector answer;
+		CGAMultivector answer;
 
 		try {
 			// later: execute with arguments XOR getMember "main" and execute it with arguments (instead of bindings.putMember)
 			Value result = program.execute();
-			answer = result.as(ICGAMultivector.class);
-			//answer = result.toString();
+			answer = ((TruffleBox<CGAMultivector>) result.as(TruffleBox.class)).inner;
 		} finally {
 			// Will be executed regardless if an exception is thrown or not
 			context.close();

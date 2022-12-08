@@ -11,6 +11,7 @@ import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParserBaseListener;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionCalls.nodes.expr.*;
+import de.orat.math.cga.api.CGAMultivector;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
@@ -107,7 +108,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 			case GeomAlgeParser.SUPERSCRIPT_MINUS__ASTERISK ->
 				UndualNodeGen.create(left);
 			case GeomAlgeParser.SUPERSCRIPT_TWO ->
-				SquareNodeGen.create(left);
+				GeometricProductNodeGen.create(left, left);
 			case GeomAlgeParser.CIRCUMFLEX_ACCENT ->
 				InvoluteNodeGen.create(left);
 			default ->
@@ -225,7 +226,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 	private static class EnterCallMarker extends ExpressionBaseNode {
 
 		@Override
-		public Object executeGeneric(VirtualFrame frame) {
+		public CGAMultivector executeGeneric(VirtualFrame frame) {
 			throw new UnsupportedOperationException();
 		}
 	}
