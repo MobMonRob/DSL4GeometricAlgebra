@@ -56,24 +56,16 @@ All of these types are automatically casted into a multivector inside the langua
 ### CGA types
 | Name | implementation class | hints |
 | :-------- | :---- | ------|
-| CGAMVec | de.orat.math.cga.impl1.CGA1Multivector | All types set from outside the language can be casted to this Multivector class. But there are more specific implementations which can be used for more efficiency. |
-| CGAScalar | de.orat.math.api.CGAScalar extends MVec| |
-| CGAVecE3 | extends CGAMVec |
-| CGASphere | extends CGAMVec |
-| CGAPointPair | extends CGAMVec |
-| CGACircle | extends CGAMVec |
-| CGAPoint | extends CGAMVec |
+| CGAMVec&#x003C;representation&#x003E; | de.orat.math.cga.api.CGAMultivector | All types set from outside the language can be casted to this Multivector class. But there are more specific implementations which can be used for more efficiency. |
+| CGAScalar&#x003C;representation&#x003E;| de.orat.math.api.CGAScalar extends CGAMultivector| |
+| CGAVecE3&#x003C;representation&#x003E;| extends CGAMultivector |
+| CGASphere&#x003C;representation&#x003E;| extends CGAMultivector |
+| CGAPointPair&#x003C;representation&#x003E; | extends CGAMultivector |
+| CGACircle&#x003C;representation&#x003E;| extends CGAMultivector |
+| CGAPoint&#x003C;representation&#x003E; | extends CGAMultivector |
 
-### PGA types
-| Name | implementation class | hints |
-| :-------- | :---- | ------|
-| PGAMVec | |
-
-### E3 types
-| Name | implementation class | hints |
-| :-------- | :---- | ------|
-| E3MVec | |
-
+&#x003C;representation&#x003E; = IPNS | OPNs
+  
 ## Operators
 Hint: Operator precedence determines how operators are parsed concerning each other. Operators with higher precedence become the operands of operators with lower precedence.
 
@@ -146,22 +138,17 @@ There exist three types of involution operations: Space inversion, reversion and
 
 #### Additional functions (2) to define geometric objects (for more convenience only)
 
-Outer product null space representations are called dual. Corresponding regular expressions are in the inner product null space representations. Be careful in the "older" literature this is often defined reverse.
-
-The implementation can be based on a method of the api class CGAMultivector or by implementing the same method in the language itself. In the first case methods implementations with Multivector arguments or Tuple3/double can be used. In the second case tuple3d/double objects have to be casted to multivector and a multivector arguments based implementation has to be created in the language itself.
+Some methods creates geometric objects in inner- and some in outer- product null space representation. Not all combinations are needed. Only the ones which are useful for easy createn objects in the conformal space based on euclean parameters are implemented.
 
 | symbol                                             | description | implementation |
 | :------------------------------------------------- | ----------- | -------------- |
-| CGAPoint(tuple3d)                                     | creates a conformal point from a tuple3d | createPoint(new CGAMultivector(tuple3d)) |
-| CGADualPointPair(tuple3d1, tuple3d2)                  | creates a conformal dual point pair from two tuple3d objects. | createDualPointPair(new CGAMultivector(tuple3d1), new CGAMultivector(tuple3d2)) |
-| CGADualLine(tuple3d1, tuple3d2)                       | creates a conformal line from a tuple3d representing a point and an other tuple3d other representing a direction or a second point. | createDualLine(new CGAMultivector(tuple3d), new CGAMultivector(tuple3d)) |
-| CGADualSphere(tuple3d1, tuple3d2, tuple3d3, tuple3d4) | creates a conformal sphere from four 3d-tuple | createDualSphere(new CGAMultivector(tuple3d1), new CGAMultivector(tuple3d2), new CGAMultivector(tuple3d3), new CGAMultivector(tuple3d4)) |
-| CGASphere(tuple3d, double)                            | creates a conformal sphere from a 3d-tuple and the radius | createSphere(new CGAMultivector(tuple3d), new CGAMultivector(double)) |
-| CGAPlane(tuple3d1, tuple3d2)                          | creates a conformal plane from a 3d-tuple defining a point on the plane and another 3d-tuple defining the normal vector | createPlane(new CGAMultivector(tuple3d1), new CGAMultivector(tuple3d2)) |
-| CGAPlane(tuple3d, double)                             | creates a conformal plane based on its normal vector and the distance to the origin (Hesse normal form) | createPlane(new CGAMultivector(tuple3d), new CGAMultivector(double)) |
-| CGADualPlane(tuple3d1, tuple3d2, tuple3d3)            | creates a conformal dual plane based on three points | createDualPlane(new CGAMultivector(tuple3d1), new CGAMultivector(tuple3d2), new CGAMultivector(tuple3d3)) |
-| CGADualCircle(tuple3d1, tuple3d2, tuple3d3)           | creates a conformal dual circle based on three points | createDualCircle(new CGAMultivector(tuple3d1), new CGAMultivector(tuple3d2) new CGAMultivector(tuple3d3)) |
-| CGADualPointPair(tuple3d1, tuple3d2)                  | create a conformal dual point pair based on three points | createDualPointPair(new CGAMultivector(tuple3d1), new CGAMultivector(tuple3d2)) |
+| point_ipns(point, weight), point(tuple3d)             | creates a conformal point from a tuple3d representing euclidean points, in IPNS representation, with a given weight or implicit with weight==1d. | new CGARoundPointIPNS(new CGAE3Vector(Tuple3d point), new CGAScalar(double weight) |
+| pointpair_opns(point1, weight1, point2, weight2), pointpair_opns(point1, point2)     | creates a conformal point pair in OPNS representation from two tuple3d objects representing euclidean points, with given weights or implicit with weight==1.| new CGAOrientedPointPairIPNS(new CGAE3Vector(Tuple3d point1),  new CGAScalar(double weight1), new CGAE3Vector(Tuple3d point2), new CGAScalar(double weight2) |
+| line_opns(point1, weight1, point2, weight2), line_opns(point1, point2) | creates a conformal line in OPNS representation, from a tuple3d representing an euclidean point and an other tuple3d representing a second point, with given weights or implicit with weight==1. | new CGALineOPNS(new CGAE3Vector(Tuple3d point1), new CGAScalar(double weight1), new CGAE3Vector(Tuple3d point2). new CGAScalar(double weight2)) |
+| sphere_ipns(point1, radius, weight), sphere_ipns(point, radius) | creates a conformal sphere in IPNS representation based on the euclidean parameters center and radius and optional a weight | new CGASphereIPNS(new CGAE3Vector(Tuple3d point1), new CGAScalar(double radius), new CGAScalar(double weight)) |
+| plane_ipns(normal, dist, weight), plane_ipns(normal, dist) | creates a conformal plane in IPNS representation, from a 3d-tuple defining the normal vector of the plane and another and a double defining the distance to the origin (Hesse-Normal-form) | new CGAPlaneIPNS(new CGAE3Vector(Tuple3d normal), new CGAScalar(double dist), new CGAScalar(double weight)) |
+| circle_opns(point1, weight1, point2, weight2, point3, weight3), circle_opns(point1, point2, point3)  | creates a conformal circle in OPNS representation, based on three points | new CGAOrientedCircleOPNS(new CGAE3Vector(Tuple3d point1), new CGAScalarVector(double weight1), new CGAE3Vector(Tuple3d point2), new CGAScalar(double weight2), new CGAE3Vector(Tuple3d point3), new CGAScalar(double weight3)) |
+| tangent_opns(point1, weight1, direction, weight2), tangent_opns(point1, weight1, direction, weight2)  | creates a tangent bivector in OPNS representation, based on a point and a direction | new CGATangentBivector(new CGAE3Vector(Tuple3d point), new CGAScalarVector(double weight1), new CGAE3Vector(Tuple3d direction), new CGAScalar(double weight2)) |
 
 #### Additional functions (3) to create transformations (for more convenience only)
 
@@ -180,34 +167,41 @@ The implementation can be based on a method of the api class CGAMultivector or b
 | &#x03B5;&#x2082; | \textepsilon | \u03B5\u2082 | base vector representing y direction | createEy(1d) |
 | &#x03B5;&#x2083; | \textepsilon | \u03B5\u2083 | base vector representing z direction | createEz(1d) |
 
-### Further symbols
+### Further symbols (for more convenience only)
 | symbol           | latex         | Unicode      | description | implementation |
 | :--------------: | ------------- | ------------ | ----------- | -------------- |
+| &#x03B5;&#x208A; | \textepsilon | \u03B5\u208A |  | &#x03B5;&#x2080; + 0.5&#x03B5;&#x1D62;  | 
+| &#x03B5;&#x208B; | \textepsilon | \u03B5\u208B |  | 0.5&#x03B5;&#x1D62; - &#x03B5;&#x2080; | 
 | &#x03C0;         | \pi           | \u03C0       | Ludolphs- or circle constant | Math.PI |
 | &#x221E;         |               | \u221E       | corresponding to infinity vector in Dorst, Fontijne & Mann 2007 | 2&#x03B5;&#8320;  |
 | &#x006F;         | o             | \u006F       | corresponding to origin vector in Dorst, Fontijne & Mann 2007 | 0.5&#x03B5;&#7522;  |
 | &#x006E;         | n             | \u006E       | corresponding to infinity vector in Doran & Lasenby | &#x03B5;&#7522;  |
 | &#x00F1;         |               | \u00F1       | corresponding to origin vector in Doran & Lasenby | -2&#x03B5;&#8320; |
 | &#x0045;&#x2080; |               | \u0045\u2080 | Minkovsky bi-vector | &#x03B5;&#7522; &#x2227; &#x03B5;&#8320;|
+| &#x0045;&#x2083; |               | \u0045\u2083 | Euclidean pseudoscalar | &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083;     |
+| &#x0045;         |               | \u0045       | Pseudoscalar | &#x03B5;&#x2080; &#x2227; &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083; &#x2227; &#x03B5;&#x1D62; |
 
-### Syntax
+### Useful equations
 
-A Semikolumn (;) at the end of a statement results in not visualizing the corresponding geometric object.
+&#x03B5;&#x2080;&#x0045;&#x2080;=-&#x03B5;&#x2080;, &#x0045;&#x2080;&#x03B5;&#x2080;=&#x03B5;&#x2080;, &#x03B5;&#x1D62;&#x0045;&#x2080;=&#x03B5;&#x1D62;, &#x0045;&#x2080;&#x03B5;&#x1D62;=-&#x03B5;&#x1D62;, &#x0045;&#x2080;&#x00B2;=1
+
 
 ## Important formulae
-### Formulae to create conformal geometric objects
+### Formulae to compose conformal geometric objects
 
-#### Geometric objects in outer product null space representation (dual)
-| description | formula | grade |
-| :---------- | :------ | :----|
-| Sphere(point) from four conformal points (p1, p2, p3, p4) | p1&#8743;p2&#8743;p3 &#8743;p4| 4 |
-| Plane from three conformal points (p1, p2, p3) | p1&#8743;p2&#8743;p3&#8743;&#x03B5;&#7522;| 4 |
-| Circle from three conformal Points (p1, p2, p3) | p1&#8743;p2&#8743;p3 | 3 |
-| Line from two conformal planes (p1, p2) | p1&#8743;p2 | 3 |
-| Point pair from  two conformal points (p1, p2) | p1&#8743;p2 | 2 |
-| Point from euclidian vector (x) | x+0.5x&sup2;&#x03B5;&#7522;+&#x03B5;&#8320; | 1 |
+#### Geometric objects in outer product null space representation
+| description | formula | grade | class |
+| :---------- | :------ | :----| :-------- |
+| Point pair from  two conformal points (p1, p2) | p1&#8743;p2 | 2 | round |
+| (Flat) Finite-infinite point pair or Flat point from  one conformal point (p) | p&#8743;&#x03B5;&#7522; | 2 | flat |
+| Circle from three conformal Points (p1, p2, p3) | p1&#8743;p2&#8743;p3 | 3 |  round |
+| Line from two conformal planes (p1, p2) | p1&#8743;p2&#8743;&#x03B5;&#7522; | 3 | flat |
+| Sphere from four conformal points (p1, p2, p3, p4) | p1&#8743;p2&#8743;p3&#8743;p4| 4 |  round |
+| Plane from three conformal points (p1, p2, p3) | p1&#8743;p2&#8743;p3&#8743;&#x03B5;&#7522;| 4 | flat |
 
-#### Geometric objects in inner product null space representation
+The conformal points in the table above have to be given in inner product null space represenation.
+
+#### Geometric objects in inner product null space representation (dual)
 | description | formula | grade |
 | :---------- | :------ | :----|
 | Point from euclidian vector (x) | x+0.5x&sup2;&#x03B5;&#7522;+&#x03B5;&#8320; | 1 |
@@ -216,7 +210,6 @@ A Semikolumn (;) at the end of a statement results in not visualizing the corres
 | Circle from two conformal spheres (s1, s2) | s1&#8743;s2 | 2 |
 | Line from two conformal planes (p1, p2) | p1&#8743;p2 | 2 |
 | Point pair from  three conformal spheres (s1, s2, s3) | s1&#8743;s2&#8743;s3 | 3 |
-| Point(sphere) from four conformal points (p1, p2, p3, p4) | p1&#8743;p2&#8743;p3 &#8743;p4 | 4 |
 
 ### Formulae to decompose conformal object representations
 | description | formula |
@@ -243,5 +236,10 @@ A Semikolumn (;) at the end of a statement results in not visualizing the corres
 | | A &#8743; B * C = A * (B &#8971; C) | |
 | | C * (B &#8743; A) = (C &#8970; B) * A | |
 | intersection | (A &#8745; B)* = B* &#8743; A* | Intersection = outer product in the dual representation; B* &#8743; A* means computing the union of everything which is not B and everything that is not A. The dual of that must be what have A and B in common.|
-| projection | (A&#x230B;B) B&#x207B;&#x00B9; | Projection of A onto B |
-| rejection | (A&#x2227;B) B&#x207B;&#x00B9; | Rejection of A from B |
+| projection | (A &#x230B; B) B&#x207B;&#x00B9; | Projection of A onto B |
+| rejection | (A &#x2227; B) B&#x207B;&#x00B9; | Rejection of A from B |
+| duality | (A &#x230B; B)* = A ∧ B* | |
+| duality | (A ∧ B)* = A &#x230B; B* | |
+|| A &#x230B; (B &#x230B; C) = (A ∧ B) &#x230B; C ||
+|| (A &#x230B; B) &#x230B; C = A ∧ (B &#x230B; C) | if C contains A|
+|down projection| (&#x03B5;&#x1D62; ∧ &#x03B5;&#x2080;) &#x230B; (X ∧ (&#x03B5;&#x1D62; ∧ &#x03B5;&#x2080;))| extracts the pure euclidean part of the given multivector |
