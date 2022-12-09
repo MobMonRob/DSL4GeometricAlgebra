@@ -25,6 +25,15 @@ public abstract class CGA_constants {
 	}
 
 	/////////////////////
+	public static CGAMultivector epsilon_plus() {
+		return base_vector_origin().add((new CGAMultivector(0.5)).gp(base_vector_infinity()));
+	}
+
+	public static CGAMultivector epsilon_minus() {
+		return ((new CGAMultivector(0.5)).gp(base_vector_infinity())).sub(base_vector_origin());
+	}
+
+	/////////////////////
 	public static CGAMultivector base_vector_infinity_dorst() {
 		return (new CGAMultivector(2.0)).gp(base_vector_origin());
 	}
@@ -48,5 +57,13 @@ public abstract class CGA_constants {
 
 	public static CGAMultivector minkovsky_bi_vector() {
 		return base_vector_infinity().op(base_vector_origin());
+	}
+
+	public static CGAMultivector euclidean_pseudoscalar() {
+		return (base_vector_x().op(base_vector_y())).op(base_vector_z());
+	}
+
+	public static CGAMultivector pseudoscalar() {
+		return (((base_vector_origin().op(base_vector_x())).op(base_vector_y())).op(base_vector_z())).op(base_vector_infinity());
 	}
 }

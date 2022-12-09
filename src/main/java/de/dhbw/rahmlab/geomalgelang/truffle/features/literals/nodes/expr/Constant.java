@@ -11,16 +11,20 @@ public abstract class Constant extends ExpressionBaseNode {
 
 	public static enum Kind {
 		base_vector_origin(CGA_constants.base_vector_origin()),
-		base_vector_origin_dorst(CGA_constants.base_vector_origin_dorst()),
-		base_vector_origin_doran(CGA_constants.base_vector_origin_doran()),
 		base_vector_infinity(CGA_constants.base_vector_infinity()),
-		base_vector_infinity_dorst(CGA_constants.base_vector_infinity_dorst()),
-		base_vector_infinity_doran(CGA_constants.base_vector_infinity_doran()),
 		base_vector_x(CGA_constants.base_vector_x()),
 		base_vector_y(CGA_constants.base_vector_y()),
 		base_vector_z(CGA_constants.base_vector_z()),
+		epsilon_plus(CGA_constants.epsilon_plus()),
+		epsilon_minus(CGA_constants.epsilon_minus()),
+		base_vector_infinity_dorst(CGA_constants.base_vector_infinity_dorst()),
+		base_vector_origin_dorst(CGA_constants.base_vector_origin_dorst()),
+		base_vector_infinity_doran(CGA_constants.base_vector_infinity_doran()),
+		base_vector_origin_doran(CGA_constants.base_vector_origin_doran()),
 		pi(CGA_constants.pi()),
-		minkovsky_bi_vector(CGA_constants.minkovsky_bi_vector());
+		minkovsky_bi_vector(CGA_constants.minkovsky_bi_vector()),
+		euclidean_pseudoscalar(CGA_constants.euclidean_pseudoscalar()),
+		pseudoscalar(CGA_constants.pseudoscalar());
 
 		private final CGAMultivector multivector;
 

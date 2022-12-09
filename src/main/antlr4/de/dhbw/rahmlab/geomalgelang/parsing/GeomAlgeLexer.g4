@@ -212,7 +212,15 @@ SMALL_EPSILON__SUBSCRIPT_THREE
 // Symbols for constants (non-trivially constructed)
 ///////////////////////////////////////////////////////////////////////////
 
-// pi
+SMALL_EPSILON__SUBSCRIPT_PLUS
+	: 'ε₊'
+	;
+
+SMALL_EPSILON__SUBSCRIPT_MINUS
+	: 'ε₋'
+	;
+
+	// pi
 // \u03C0
 SMALL_PI
 	: 'π'
@@ -246,6 +254,14 @@ SMALL_N_TILDE
 // \u0045\u2080
 CAPITAL_E__SUBSCRIPT_ZERO
 	: 'E₀'
+	;
+
+CAPITAL_E__SUBSCRIPT_THREE
+	: 'E₃'
+	;
+
+CAPITAL_E
+	: 'E'
 	;
 
 ///////////////////////////////////////////////////////////////////////////

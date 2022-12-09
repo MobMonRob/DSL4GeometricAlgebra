@@ -171,6 +171,10 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 				ConstantNodeGen.create(Constant.Kind.base_vector_y);
 			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_THREE ->
 				ConstantNodeGen.create(Constant.Kind.base_vector_z);
+			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_PLUS ->
+				ConstantNodeGen.create(Constant.Kind.epsilon_plus);
+			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_MINUS ->
+				ConstantNodeGen.create(Constant.Kind.epsilon_minus);
 			case GeomAlgeParser.SMALL_PI ->
 				ConstantNodeGen.create(Constant.Kind.pi);
 			case GeomAlgeParser.INFINITY ->
@@ -183,6 +187,10 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 				ConstantNodeGen.create(Constant.Kind.base_vector_origin_doran);
 			case GeomAlgeParser.CAPITAL_E__SUBSCRIPT_ZERO ->
 				ConstantNodeGen.create(Constant.Kind.minkovsky_bi_vector);
+			case GeomAlgeParser.CAPITAL_E__SUBSCRIPT_THREE ->
+				ConstantNodeGen.create(Constant.Kind.euclidean_pseudoscalar);
+			case GeomAlgeParser.CAPITAL_E ->
+				ConstantNodeGen.create(Constant.Kind.pseudoscalar);
 			default ->
 				throw new UnsupportedOperationException();
 		};
