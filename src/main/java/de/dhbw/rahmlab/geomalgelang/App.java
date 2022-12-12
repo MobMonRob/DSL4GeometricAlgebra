@@ -1,6 +1,7 @@
 package de.dhbw.rahmlab.geomalgelang;
 
-import de.dhbw.rahmlab.geomalgelang.api.LanguageInvocation;
+import de.dhbw.rahmlab.geomalgelang.api.Arguments;
+import de.dhbw.rahmlab.geomalgelang.api.Program;
 import de.orat.math.cga.api.CGAMultivector;
 import de.orat.math.cga.api.CGAScalar;
 import java.nio.charset.Charset;
@@ -28,23 +29,19 @@ public class App {
 		// String program = "a b";
 		// String program = "normalize(a b)";
 		// String program = "normalize()";
-		String program = "normalize(a b)";
+		String source = "normalize(a b)";
 
-		Map<String, CGAMultivector> inputVars = new HashMap<>();
-		CGAMultivector a = new CGAScalar(5.0);
-		inputVars.put("a", a);
-		inputVars.put("b", a);
+		System.out.println("program: " + source);
+		Program program = new Program(source);
+		Arguments arguments = new Arguments();
+		arguments
+			.scalar("a", 5.0)
+			.scalar("b", 5.0);
 
-		CGAMultivector answer = LanguageInvocation.invoke(program, inputVars);
-		String answerString = answer.toString();
-
-		System.out.println("program: " + program);
-		System.out.println("variable assignments: ");
-		inputVars.forEach((name, value) -> {
-			String varString = "\t" + name + " := " + value.toString();
-			System.out.println(varString);
-		});
-		System.out.println("answer: " + answerString);
+		CGAMultivector answer = program.invoke(arguments);
+		System.out.println("answer: " + answer.toString());
 		System.out.println();
+
+		program.deInit();
 	}
 }

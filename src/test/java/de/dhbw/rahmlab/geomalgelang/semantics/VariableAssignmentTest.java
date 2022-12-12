@@ -1,6 +1,7 @@
 package de.dhbw.rahmlab.geomalgelang.semantics;
 
-import de.dhbw.rahmlab.geomalgelang.api.LanguageInvocation;
+import de.dhbw.rahmlab.geomalgelang.api.Arguments;
+import de.dhbw.rahmlab.geomalgelang.api.Program;
 import de.dhbw.rahmlab.geomalgelang.cga.TruffleBox;
 import de.orat.math.cga.api.CGAMultivector;
 import java.io.IOException;
@@ -34,33 +35,37 @@ public class VariableAssignmentTest {
 	 */
 	@Test
 	void passedNonExistentVariable() throws IOException {
-		String program = "a";
-
-		Map<String, CGAMultivector> inputVars = new HashMap<>();
-		CGAMultivector a = new CGAMultivector(5.0);
-		inputVars.put("a", a);
-		inputVars.put("b", a);
+		String source = "a";
+		Program program = new Program(source);
+		Arguments arguments = new Arguments();
+		arguments
+			.scalar("a", 5.0)
+			.scalar("b", 5.0);
 
 		try {
-			LanguageInvocation.invoke(program, inputVars);
+			program.invoke(arguments);
 		} catch (PolyglotException e) {
 			//System.out.println(e);
 			return;
+		} finally {
+			program.deInit();
 		}
 		fail();
 	}
 
 	@Test
 	void passedNotAllVariables() throws IOException {
-		String program = "a";
-
-		Map<String, CGAMultivector> inputVars = new HashMap<>();
+		String source = "a";
+		Program program = new Program(source);
+		Arguments arguments = new Arguments();
 
 		try {
-			LanguageInvocation.invoke(program, inputVars);
+			program.invoke(arguments);
 		} catch (PolyglotException e) {
 			//System.out.println(e);
 			return;
+		} finally {
+			program.deInit();
 		}
 		fail();
 	}
