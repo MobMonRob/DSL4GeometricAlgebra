@@ -3,10 +3,7 @@ package de.dhbw.rahmlab.geomalgelang;
 import de.dhbw.rahmlab.geomalgelang.api.Arguments;
 import de.dhbw.rahmlab.geomalgelang.api.Program;
 import de.orat.math.cga.api.CGAMultivector;
-import de.orat.math.cga.api.CGAScalar;
 import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.Map;
 
 public class App {
 
@@ -26,12 +23,12 @@ public class App {
 	}
 
 	private static void invocationTest() throws Exception {
-		// String program = "a b";
-		// String program = "normalize(a b)";
-		// String program = "normalize()";
+		// String source = "a b";
+		// String source = "normalize(a b)";
+		// String source = "normalize()";
 		String source = "normalize(a b)";
 
-		System.out.println("program: " + source);
+		System.out.println("source: " + source);
 		Program program = new Program(source);
 		Arguments arguments = new Arguments();
 		arguments
