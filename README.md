@@ -122,19 +122,11 @@ There exist three types of involution operations: Space inversion, reversion and
 | symbol     | latex | description | implementation |
 | :--------- | ----- | ----------- | -------------- |
 | exp()      | \exp{} | exponential | multivector.exp() |
-| involute() |  | grade inversion | multivector.gradeInversion() |
-| abs()      |  | absolute value | Math.abs(multivector) |
-| sqrt()     |  | square root | Math.sqrt(double) |
-| atan2()    |  | arcus tansgens 2 | Math.atan2(double/scalar as multivector, double/scalar as multivector) |
-| negate14() |  | negate the signs of the vector- and 4-vector parts of an multivector. Usable to implement gerneral inverse. | multivector.negate14() |
-
-#### Additional functions (for more convenience only)
-| symbol                 | latex | description | implementation |
-| :--------------------- | ----- | ----------- | -------------- |
-| reverse(multivector)   |  \textsuperscript{\tilde} | reverse | multivector.reverse() |
-| conjugate(multivector) | \textsuperscript{\textdagger} | clifford conjugate | multivector.conjugate() |
 | normalize(multivector) | | normalize | multivector.unit() |
-| sqr(multivector)       | | square | multivector.gp(multivector) or multivector.sqr() |
+| abs()      |  | absolute value | Math.abs(CGAScalar) |
+| sqrt()     |  | square root | Math.sqrt(CGAScalar) |
+| atan2()    |  | arcus tansgens 2 | Math.atan2(CGAScalar, CGAScalar) |
+| negate14() |  | negate the signs of the vector- and 4-vector parts of an multivector. Usable to implement gerneral inverse. | multivector.negate14() |
 
 #### Additional functions (2) to define geometric objects (for more convenience only)
 
