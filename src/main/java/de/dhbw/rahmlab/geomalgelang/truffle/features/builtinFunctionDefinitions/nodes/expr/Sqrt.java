@@ -2,12 +2,13 @@ package de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionDefinitions
 
 import com.oracle.truffle.api.dsl.Specialization;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionDefinitions.nodes.exprSuperClasses.BuiltinFunctionBody;
-import de.orat.math.cga.api.CGAMultivector;
+import de.orat.math.cga.api.CGAScalar;
 
-public abstract class Involute extends BuiltinFunctionBody {
+public abstract class Sqrt extends BuiltinFunctionBody {
 
 	@Specialization
-	protected CGAMultivector execute(CGAMultivector input) {
-		return input.gradeInversion();
+	protected CGAScalar execute(CGAScalar input) {
+		double value = Math.sqrt(input.value());
+		return new CGAScalar(value);
 	}
 }
