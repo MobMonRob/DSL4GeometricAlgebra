@@ -47,7 +47,7 @@ public class Program {
 		context.close();
 	}
 
-	public Answer invoke(Arguments arguments) {
+	public Result invoke(Arguments arguments) {
 		System.out.println("variable assignments: ");
 		arguments.argsMap.forEach((name, value) -> {
 			String varString = "\t" + name + " := " + value.toString();
@@ -79,6 +79,6 @@ public class Program {
 			// context.close();
 		}
 
-		return new Answer(answer);
+		return new Result(answer);
 	}
 }

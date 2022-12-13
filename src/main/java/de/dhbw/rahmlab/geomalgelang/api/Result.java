@@ -8,11 +8,11 @@ import org.jogamp.vecmath.Point3d;
 import org.jogamp.vecmath.Quat4d;
 import org.jogamp.vecmath.Vector3d;
 
-public class Answer {
+public class Result {
 
 	protected final CGAMultivector inner;
 
-	protected Answer(CGAMultivector inner) {
+	protected Result(CGAMultivector inner) {
 		this.inner = inner;
 	}
 
