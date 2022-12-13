@@ -128,7 +128,7 @@ There exist three types of involution operations: Space inversion, reversion and
 | atan2()    |  | arcus tansgens 2 | new CGAScalar(Math.atan2(CGAScalar, CGAScalar)) |
 | negate14() |  | negate the signs of the vector- and 4-vector parts of an multivector. Usable to implement gerneral inverse. | multivector.negate14() |
 
-#### Additional functions (3) to create transformations (for more convenience only)
+#### Additional functions (2) to create transformations (for more convenience only)
 
 | symbol                   | description | implementation |
 | :----------------------- | ----------- | -------------- |
@@ -159,7 +159,7 @@ There exist three types of involution operations: Space inversion, reversion and
 | &#x0045;&#x2083; |               | \u0045\u2083 | Euclidean pseudoscalar | &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083;     |
 | &#x0045;         |               | \u0045       | Pseudoscalar | &#x03B5;&#x2080; &#x2227; &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083; &#x2227; &#x03B5;&#x1D62; |
 
-### Useful equations
+### Useful equations between above symbols
 
 &#x03B5;&#x2080;&#x0045;&#x2080;=-&#x03B5;&#x2080;, &#x0045;&#x2080;&#x03B5;&#x2080;=&#x03B5;&#x2080;, &#x03B5;&#x1D62;&#x0045;&#x2080;=&#x03B5;&#x1D62;, &#x0045;&#x2080;&#x03B5;&#x1D62;=-&#x03B5;&#x1D62;, &#x0045;&#x2080;&#x00B2;=1
 
