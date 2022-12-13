@@ -9,6 +9,6 @@ public abstract class Join extends BinaryOp {
 	@Specialization
 	@Override
 	protected CGAMultivector execute(CGAMultivector left, CGAMultivector right) {
-		throw new UnsupportedOperationException();
+		return left.join(right);
 	}
 }
