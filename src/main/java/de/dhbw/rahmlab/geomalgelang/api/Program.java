@@ -1,6 +1,6 @@
 package de.dhbw.rahmlab.geomalgelang.api;
 
-import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.TruffleBox;
+import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.CgaTruffleBox;
 import de.orat.math.cga.api.CGAMultivector;
 import java.io.IOException;
 import org.graalvm.polyglot.Context;
@@ -65,7 +65,7 @@ public class Program {
 		Value bindings = context.getBindings("geomalgelang"); //polyglotBindings
 
 		arguments.argsMap.forEach((name, value) -> {
-			bindings.putMember(name, new TruffleBox<>(value));
+			bindings.putMember(name, new CgaTruffleBox(value));
 		});
 
 		CGAMultivector answer;
@@ -73,7 +73,7 @@ public class Program {
 		try {
 			// later: execute with arguments XOR getMember "main" and execute it with arguments (instead of bindings.putMember)
 			Value result = program.execute();
-			answer = ((TruffleBox<CGAMultivector>) result.as(TruffleBox.class)).inner;
+			answer = result.as(CgaTruffleBox.class).inner;
 		} finally {
 			// Will be executed regardless if an exception is thrown or not
 			// context.close();

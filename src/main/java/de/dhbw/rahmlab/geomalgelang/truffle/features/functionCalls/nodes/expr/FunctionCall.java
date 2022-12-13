@@ -9,7 +9,7 @@ import com.oracle.truffle.api.interop.UnsupportedMessageException;
 import com.oracle.truffle.api.interop.UnsupportedTypeException;
 import com.oracle.truffle.api.library.CachedLibrary;
 import com.oracle.truffle.api.nodes.ExplodeLoop;
-import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.TruffleBox;
+import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.CgaTruffleBox;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLangException;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionCalls.nodes.exprSuperClasses.FunctionReferenceBaseNode;
@@ -37,16 +37,16 @@ public abstract class FunctionCall extends ExpressionBaseNode {
 		Function function = this.functionReference.executeGeneric(frame);
 
 		// CompilerAsserts.compilationConstant(this.arguments.length);
-		TruffleBox<CGAMultivector>[] argumentValues = new TruffleBox[this.arguments.length];
+		CgaTruffleBox[] argumentValues = new CgaTruffleBox[this.arguments.length];
 		for (int i = 0; i < this.arguments.length; ++i) {
-			argumentValues[i] = new TruffleBox<CGAMultivector>(this.arguments[i].executeGeneric(frame));
+			argumentValues[i] = new CgaTruffleBox(this.arguments[i].executeGeneric(frame));
 		}
 
 		try {
 			// Indirect execution in order to utilize graal optimizations.
 			// invokes FunctionRootNode::execute
-			Object returnValue = library.execute(function, (Object) argumentValues);
-			return (CGAMultivector) ((TruffleBox) returnValue).inner;
+			CgaTruffleBox returnValue = (CgaTruffleBox) library.execute(function, (Object) argumentValues);
+			return returnValue.inner;
 		} catch (ArityException e) {
 			String message = "Wrong argument count in functionCall of: " + this.functionReference.getName() + "\n" + e.toString();
 			throw new GeomAlgeLangException(message);

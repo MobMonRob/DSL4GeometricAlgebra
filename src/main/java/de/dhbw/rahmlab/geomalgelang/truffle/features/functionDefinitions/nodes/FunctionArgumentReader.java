@@ -2,7 +2,7 @@ package de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.Node;
-import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.TruffleBox;
+import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.CgaTruffleBox;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLangException;
 import de.orat.math.cga.api.CGAMultivector;
 
@@ -24,11 +24,9 @@ public class FunctionArgumentReader extends Node {
 			Object[] actualArgs = (Object[]) arg;
 			if (actualArgs.length > 0) {
 				Object actualArg = actualArgs[0];
-				if (actualArg instanceof TruffleBox) {
-					TruffleBox truffleBox = (TruffleBox) actualArg;
-					if (truffleBox.inner instanceof CGAMultivector) {
-						return (CGAMultivector) truffleBox.inner;
-					}
+				if (actualArg instanceof CgaTruffleBox) {
+					CgaTruffleBox truffleBox = (CgaTruffleBox) actualArg;
+					return truffleBox.inner;
 				}
 			}
 		}
