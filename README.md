@@ -121,28 +121,14 @@ There exist three types of involution operations: Space inversion, reversion and
 #### Base functions
 | symbol     | latex | description | implementation |
 | :--------- | ----- | ----------- | -------------- |
-| exp()      | \exp{} | exponential | multivector.exp() |
-| normalize(multivector) | | normalize | multivector.unit() |
+| exp()      | \exp{} | exponential | CGAMultivector.exp() |
+| normalize() | | normalize | CGAMultivector.normalize() |
 | abs()      |  | absolute value | Math.abs(CGAScalar) |
-| sqrt()     |  | square root | Math.sqrt(CGAScalar) |
-| atan2()    |  | arcus tansgens 2 | Math.atan2(CGAScalar, CGAScalar) |
+| sqrt()     |  | square root | new CGAScalar(Math.sqrt(CGAScalar)) |
+| atan2()    |  | arcus tansgens 2 | new CGAScalar(Math.atan2(CGAScalar, CGAScalar)) |
 | negate14() |  | negate the signs of the vector- and 4-vector parts of an multivector. Usable to implement gerneral inverse. | multivector.negate14() |
 
-#### Additional functions (2) to define geometric objects (for more convenience only)
-
-Some methods creates geometric objects in inner- and some in outer- product null space representation. Not all combinations are needed. Only the ones which are useful for easy createn objects in the conformal space based on euclean parameters are implemented.
-
-| symbol                                             | description | implementation |
-| :------------------------------------------------- | ----------- | -------------- |
-| point_ipns(point, weight), point(tuple3d)             | creates a conformal point from a tuple3d representing euclidean points, in IPNS representation, with a given weight or implicit with weight==1d. | new CGARoundPointIPNS(new CGAE3Vector(Tuple3d point), new CGAScalar(double weight) |
-| pointpair_opns(point1, weight1, point2, weight2), pointpair_opns(point1, point2)     | creates a conformal point pair in OPNS representation from two tuple3d objects representing euclidean points, with given weights or implicit with weight==1.| new CGAOrientedPointPairIPNS(new CGAE3Vector(Tuple3d point1),  new CGAScalar(double weight1), new CGAE3Vector(Tuple3d point2), new CGAScalar(double weight2) |
-| line_opns(point1, weight1, point2, weight2), line_opns(point1, point2) | creates a conformal line in OPNS representation, from a tuple3d representing an euclidean point and an other tuple3d representing a second point, with given weights or implicit with weight==1. | new CGALineOPNS(new CGAE3Vector(Tuple3d point1), new CGAScalar(double weight1), new CGAE3Vector(Tuple3d point2). new CGAScalar(double weight2)) |
-| sphere_ipns(point1, radius, weight), sphere_ipns(point, radius) | creates a conformal sphere in IPNS representation based on the euclidean parameters center and radius and optional a weight | new CGASphereIPNS(new CGAE3Vector(Tuple3d point1), new CGAScalar(double radius), new CGAScalar(double weight)) |
-| plane_ipns(normal, dist, weight), plane_ipns(normal, dist) | creates a conformal plane in IPNS representation, from a 3d-tuple defining the normal vector of the plane and another and a double defining the distance to the origin (Hesse-Normal-form) | new CGAPlaneIPNS(new CGAE3Vector(Tuple3d normal), new CGAScalar(double dist), new CGAScalar(double weight)) |
-| circle_opns(point1, weight1, point2, weight2, point3, weight3), circle_opns(point1, point2, point3)  | creates a conformal circle in OPNS representation, based on three points | new CGAOrientedCircleOPNS(new CGAE3Vector(Tuple3d point1), new CGAScalarVector(double weight1), new CGAE3Vector(Tuple3d point2), new CGAScalar(double weight2), new CGAE3Vector(Tuple3d point3), new CGAScalar(double weight3)) |
-| tangent_opns(point1, weight1, direction, weight2), tangent_opns(point1, weight1, direction, weight2)  | creates a tangent bivector in OPNS representation, based on a point and a direction | new CGATangentBivector(new CGAE3Vector(Tuple3d point), new CGAScalarVector(double weight1), new CGAE3Vector(Tuple3d direction), new CGAScalar(double weight2)) |
-
-#### Additional functions (3) to create transformations (for more convenience only)
+#### Additional functions (2) to create transformations (for more convenience only)
 
 | symbol                   | description | implementation |
 | :----------------------- | ----------- | -------------- |
@@ -173,7 +159,7 @@ Some methods creates geometric objects in inner- and some in outer- product null
 | &#x0045;&#x2083; |               | \u0045\u2083 | Euclidean pseudoscalar | &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083;     |
 | &#x0045;         |               | \u0045       | Pseudoscalar | &#x03B5;&#x2080; &#x2227; &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083; &#x2227; &#x03B5;&#x1D62; |
 
-### Useful equations
+### Useful equations between above symbols
 
 &#x03B5;&#x2080;&#x0045;&#x2080;=-&#x03B5;&#x2080;, &#x0045;&#x2080;&#x03B5;&#x2080;=&#x03B5;&#x2080;, &#x03B5;&#x1D62;&#x0045;&#x2080;=&#x03B5;&#x1D62;, &#x0045;&#x2080;&#x03B5;&#x1D62;=-&#x03B5;&#x1D62;, &#x0045;&#x2080;&#x00B2;=1
 
