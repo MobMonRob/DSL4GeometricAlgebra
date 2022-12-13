@@ -121,11 +121,11 @@ There exist three types of involution operations: Space inversion, reversion and
 #### Base functions
 | symbol     | latex | description | implementation |
 | :--------- | ----- | ----------- | -------------- |
-| exp()      | \exp{} | exponential | multivector.exp() |
-| normalize(multivector) | | normalize | multivector.unit() |
+| exp()      | \exp{} | exponential | CGAMultivector.exp() |
+| normalize() | | normalize | CGAMultivector.normalize() |
 | abs()      |  | absolute value | Math.abs(CGAScalar) |
-| sqrt()     |  | square root | Math.sqrt(CGAScalar) |
-| atan2()    |  | arcus tansgens 2 | Math.atan2(CGAScalar, CGAScalar) |
+| sqrt()     |  | square root | new CGAScalar(Math.sqrt(CGAScalar)) |
+| atan2()    |  | arcus tansgens 2 | new CGAScalar(Math.atan2(CGAScalar, CGAScalar)) |
 | negate14() |  | negate the signs of the vector- and 4-vector parts of an multivector. Usable to implement gerneral inverse. | multivector.negate14() |
 
 #### Additional functions (2) to define geometric objects (for more convenience only)
