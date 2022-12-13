@@ -2,7 +2,7 @@ package de.dhbw.rahmlab.geomalgelang.truffle.features.literals.nodes.expr;
 
 import com.oracle.truffle.api.dsl.NodeField;
 import com.oracle.truffle.api.dsl.Specialization;
-import de.dhbw.rahmlab.geomalgelang.cga.CGA_constants;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.literals.runtime.CGA_constants;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import de.orat.math.cga.api.CGAMultivector;
 

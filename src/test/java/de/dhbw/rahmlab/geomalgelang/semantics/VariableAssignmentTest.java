@@ -2,7 +2,7 @@ package de.dhbw.rahmlab.geomalgelang.semantics;
 
 import de.dhbw.rahmlab.geomalgelang.api.Arguments;
 import de.dhbw.rahmlab.geomalgelang.api.Program;
-import de.dhbw.rahmlab.geomalgelang.cga.TruffleBox;
+import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.TruffleBox;
 import de.orat.math.cga.api.CGAMultivector;
 import java.io.IOException;
 import java.util.HashMap;

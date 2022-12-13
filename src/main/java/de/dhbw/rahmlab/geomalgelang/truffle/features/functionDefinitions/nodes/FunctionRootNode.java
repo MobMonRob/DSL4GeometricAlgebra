@@ -3,7 +3,7 @@ package de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes;
 import com.oracle.truffle.api.frame.FrameDescriptor;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.RootNode;
-import de.dhbw.rahmlab.geomalgelang.cga.TruffleBox;
+import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.TruffleBox;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLang;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.exprSuperClasses.FunctionBody;
 import de.orat.math.cga.api.CGAMultivector;

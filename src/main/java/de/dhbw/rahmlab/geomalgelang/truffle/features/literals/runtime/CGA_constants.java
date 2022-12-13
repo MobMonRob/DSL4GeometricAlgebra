@@ -1,4 +1,4 @@
-package de.dhbw.rahmlab.geomalgelang.cga;
+package de.dhbw.rahmlab.geomalgelang.truffle.features.literals.runtime;
 
 import de.orat.math.cga.api.CGAMultivector;
 

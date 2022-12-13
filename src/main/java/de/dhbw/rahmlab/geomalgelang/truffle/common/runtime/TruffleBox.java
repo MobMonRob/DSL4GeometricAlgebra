@@ -1,4 +1,4 @@
-package de.dhbw.rahmlab.geomalgelang.cga;
+package de.dhbw.rahmlab.geomalgelang.truffle.common.runtime;
 
 import com.oracle.truffle.api.interop.TruffleObject;
 

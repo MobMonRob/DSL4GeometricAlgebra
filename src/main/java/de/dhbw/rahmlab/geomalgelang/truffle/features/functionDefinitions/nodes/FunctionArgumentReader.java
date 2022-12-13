@@ -2,7 +2,7 @@ package de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.Node;
-import de.dhbw.rahmlab.geomalgelang.cga.TruffleBox;
+import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.TruffleBox;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLangException;
 import de.orat.math.cga.api.CGAMultivector;
 

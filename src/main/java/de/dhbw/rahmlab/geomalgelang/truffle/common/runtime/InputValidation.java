@@ -1,6 +1,5 @@
 package de.dhbw.rahmlab.geomalgelang.truffle.common.runtime;
 
-import de.dhbw.rahmlab.geomalgelang.cga.TruffleBox;
 import de.orat.math.cga.api.CGAMultivector;
 
 public abstract class InputValidation {

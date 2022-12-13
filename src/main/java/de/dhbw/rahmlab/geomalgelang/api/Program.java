@@ -1,6 +1,6 @@
 package de.dhbw.rahmlab.geomalgelang.api;
 
-import de.dhbw.rahmlab.geomalgelang.cga.TruffleBox;
+import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.TruffleBox;
 import de.orat.math.cga.api.CGAMultivector;
 import java.io.IOException;
 import org.graalvm.polyglot.Context;
