@@ -1,6 +1,7 @@
 package de.dhbw.rahmlab.geomalgelang;
 
 import de.dhbw.rahmlab.geomalgelang.api.Arguments;
+import de.dhbw.rahmlab.geomalgelang.api.Answer;
 import de.dhbw.rahmlab.geomalgelang.api.Program;
 import de.orat.math.cga.api.CGAMultivector;
 import java.nio.charset.Charset;
@@ -35,8 +36,9 @@ public class App {
 			.scalar("a", 5.0)
 			.scalar("b", 5.0);
 
-		CGAMultivector answer = program.invoke(arguments);
-		System.out.println("answer: " + answer.toString());
+		Answer answer = program.invoke(arguments);
+		double answerScalar = answer.decomposeScalar();
+		System.out.println("answer: " + answerScalar);
 		System.out.println();
 
 		program.deInit();

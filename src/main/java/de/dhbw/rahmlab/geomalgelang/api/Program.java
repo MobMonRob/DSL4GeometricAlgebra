@@ -47,7 +47,7 @@ public class Program {
 		context.close();
 	}
 
-	public CGAMultivector invoke(Arguments arguments) {
+	public Answer invoke(Arguments arguments) {
 		System.out.println("variable assignments: ");
 		arguments.argsMap.forEach((name, value) -> {
 			String varString = "\t" + name + " := " + value.toString();
@@ -79,6 +79,6 @@ public class Program {
 			// context.close();
 		}
 
-		return answer;
+		return new Answer(answer);
 	}
 }
