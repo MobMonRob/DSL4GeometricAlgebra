@@ -110,6 +110,7 @@ public class Arguments {
 		return this;
 	}
 
+	@Deprecated
 	public Arguments rotator(String argName, Tuple3d point, double theta) {
 		throw new UnsupportedOperationException();
 	}

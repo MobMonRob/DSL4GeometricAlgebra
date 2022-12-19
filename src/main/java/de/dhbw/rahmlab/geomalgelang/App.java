@@ -24,23 +24,21 @@ public class App {
 	}
 
 	private static void invocationTest() throws Exception {
-		// String source = "a b";
-		// String source = "normalize(a b)";
-		// String source = "normalize()";
 		String source = "normalize(a b)";
 
 		System.out.println("source: " + source);
-		Program program = new Program(source);
-		Arguments arguments = new Arguments();
-		arguments
-			.scalar("a", 5.0)
-			.scalar("b", 5.0);
 
-		Result answer = program.invoke(arguments);
-		double answerScalar = answer.decomposeScalar();
-		System.out.println("answer: " + answerScalar);
-		System.out.println();
+		try (Program program = new Program(source)) {
+			Arguments arguments = new Arguments();
+			arguments
+				.scalar("a", 5.0)
+				.scalar("b", 5.0);
 
-		program.deInit();
+			Result answer = program.invoke(arguments);
+			double answerScalar = answer.decomposeScalar();
+
+			System.out.println("answer: " + answerScalar);
+			System.out.println();
+		}
 	}
 }

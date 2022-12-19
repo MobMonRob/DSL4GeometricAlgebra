@@ -26,7 +26,7 @@ public class VariableAssignmentTest {
 			//System.out.println(e);
 			return;
 		} finally {
-			program.deInit();
+			program.close();
 		}
 		fail();
 	}
@@ -43,7 +43,7 @@ public class VariableAssignmentTest {
 			//System.out.println(e);
 			return;
 		} finally {
-			program.deInit();
+			program.close();
 		}
 		fail();
 	}

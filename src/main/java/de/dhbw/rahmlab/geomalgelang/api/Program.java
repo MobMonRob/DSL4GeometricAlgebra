@@ -10,7 +10,7 @@ import org.graalvm.polyglot.Source;
 import org.graalvm.polyglot.SourceSection;
 import org.graalvm.polyglot.Value;
 
-public class Program {
+public class Program implements AutoCloseable {
 
 	protected Context context;
 	protected Value program;
@@ -43,7 +43,8 @@ public class Program {
 		}
 	}
 
-	public void deInit() {
+	@Override
+	public void close() {
 		context.close();
 	}
 
