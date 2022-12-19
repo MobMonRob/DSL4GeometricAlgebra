@@ -3,7 +3,6 @@ package de.dhbw.rahmlab.geomalgelang;
 import de.dhbw.rahmlab.geomalgelang.api.Arguments;
 import de.dhbw.rahmlab.geomalgelang.api.Result;
 import de.dhbw.rahmlab.geomalgelang.api.Program;
-import de.orat.math.cga.api.CGAMultivector;
 import java.nio.charset.Charset;
 
 public class App {
