@@ -73,14 +73,14 @@ Hint: Operator precedence determines how operators are parsed concerning each ot
 #### Base operators
 | precedence | symbol           | latex   | unicode | name | implementation | hints |
 | :--------: | :--------------: | ------- | ------- | ---- | -------------- | ----- |
-| 4          | &#x0020; (space) |         | \u0020  | geometric product | multivector1.gp(multivector2) | Exactly one space character is interpreted as the operator. |
+| 4          |  |         | \u0020  | geometric product | multivector1.gp(multivector2) | Exactly one space character is interpreted as the operator. |
 | 3          | &#x2227;         | \wedge  | \u2227  | outer product (join) | multivector1.op(multivector2), not used for double, for tuple3d it makes sense but actually no implementation is available | joining linearily independend vectors/two disjoint subspaces |
 | 1          | &#x002B;         | +       | \u002B  | sum | multivector1.add(multivector2) | |
 | 1          | &#x002D;         | -       | \u002D  | difference | multivector1.sub(multivector2) | |
-| 3          | &#x230B; | \llcorner        | \u230B  | right contraction | multivetor1.ip(multivector2, RIGHT_CONTRACTION) |  |
-| 3          | &#x230A; | \lrcorner        | \u230A  | left contraction | multivector1.ip(multivector1, LEFT_CONTRACTION); where the grade operator for negative grades is zero. This implies that `something of higher grade cannot be contracted onto something of lower grade`. | |
+| 3          | &#x230B; | \lfloor        | \u230B  | right contraction | multivetor1.ip(multivector2, RIGHT_CONTRACTION) |  |
+| 3          | &#x230A; | \rfloor        | \u230A  | left contraction | multivector1.ip(multivector1, LEFT_CONTRACTION); where the grade operator for negative grades is zero. This implies that `something of higher grade cannot be contracted onto something of lower grade`. | |
 | 3          | &#x2228; | \vee             | \u2228  | regressive product (meet or intersection) | multivector1.vee(multivector2) or (multivector1* &#8743; multivector2*)* |  |
-| 2          | &#x002F; | \StrikingThrough | \u002F  | division (inverse geometric product) | multivector1.div(multivector2) |  |
+| 2          | &#x002F; | / | \u002F  | division (inverse geometric product) | multivector1.div(multivector2) |  |
 
 #### Additional operators (for more convenience only)
 | precedence | symbol   | latex            | unicode | description | implementation | CLUscript |
