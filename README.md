@@ -82,7 +82,7 @@ Hint: Operator precedence determines how operators are parsed concerning each ot
 | 3          | &#x2228; | \vee             | \u2228  | regressive product (meet or intersection) | multivector1.vee(multivector2) or (multivector1* &#8743; multivector2*)* |  |
 | 2          | &#x002F; | / | \u002F  | division (inverse geometric product) | multivector1.div(multivector2) |  |
 
-#### Additional operators (for more convenience only)
+#### Additional optional operators
 | precedence | symbol   | latex            | unicode | description | implementation | CLUscript |
 | :--------: | :------: | ---------------- | ------- | ----------- | -------------- | :----- |
 | 3          | &#x22C5;         | \cdot   | \u22C5  | inner product | multivector1.ip(multivector2, RIGHT_CONTRACTION) | Decreasing dimensions or contracting a subspace. In the default configuration equal to left contraction (corresponding to Ganja.js). But this looks to be incompatible with some formulas in [Kleppe], which work only with the usage of right contraction. In CLUscript this corresponds to ".". |
@@ -98,7 +98,7 @@ The unary operators have the highest precedence, so they are executed before any
 | 5          | &#x2212;         | &#x2212;                      | \u2212       | negate | (-1 cast to multivector).gp(multivector) | - |
 | 6          | &#x207B;&#x00B9; | \textsuperscript{-1}          | \u207B\u00B9 | general inverse | multivector.generalInverse() | ! |
 | 6          | &#x002A;         | \textsuperscript{\*}          | \u002A       | dual | multivector.dual() | |
-| 6          | &#x02DC;         | \textsuperscript{\tilde}      | \u02DC       | reverse/adjoint: reverse all multiplications (a sign change operation) | multivector.reverse() | &#732; |
+| 6          | &#x02DC;         | \textsuperscript{$\tilde$}      | \u02DC       | reverse/adjoint: reverse all multiplications (a sign change operation) | multivector.reverse() | &#732; |
 | 6          | &#x2020;         | \textsuperscript{\textdagger} | \u2020       | clifford conjugate (a sign change operation) | multivector.conjugate() | |
 
 There exist three types of involution operations: Space inversion, reversion and the combination of both the clifford conjugation.
@@ -107,8 +107,8 @@ There exist three types of involution operations: Space inversion, reversion and
 | precedence | symbol           | latex                 | unicode      | description | implementation |
 | :--------: | :--------------: | --------------------- | ------------ | ----------- | -------------- |
 | 6          | &#x207B;&#x002A; | \textsuperscript{-\*} | \u207B\u002A | undual | multivector.undual() or -multivector.dual() |
-| 6          | &#x00B2;         |                       | \u00B2       | square | multivector.gp(multivector), sqr(double) |
-| 6          | &#x005E;         |                       | \u005E       | grade involution/inversion (a sign change operation) | multivector.gradeInversion(multivector) |
+| 6          | &#x00B2;         | \textsuperscript{2}                     | \u00B2       | square | multivector.gp(multivector), sqr(double) |
+| 6          | &#x005E;         | \textsuperscript{$\wedge$}                      | \u005E       | grade involution/inversion (a sign change operation) | multivector.gradeInversion(multivector) |
 
 
 ### Composite operators
