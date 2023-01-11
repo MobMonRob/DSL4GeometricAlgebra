@@ -64,7 +64,7 @@ All of these types are automatically casted into a multivector inside the langua
 | CGACircle&#x003C;representation&#x003E;| extends CGAMultivector |
 | CGAPoint&#x003C;representation&#x003E; | extends CGAMultivector |
 
-&#x003C;representation&#x003E; = IPNS | OPNs
+&#x003C;representation&#x003E; = IPNS | OPNS
   
 ## Operators
 Hint: Operator precedence determines how operators are parsed concerning each other. Operators with higher precedence become the operands of operators with lower precedence.
