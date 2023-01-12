@@ -119,14 +119,14 @@ There exist three types of involution operations: Space inversion, reversion and
 ### Buildin functions
 
 #### Base functions
-| symbol     | latex | description | implementation |
-| :--------- | ----- | ----------- | -------------- |
-| exp()      | \exp{} | exponential | CGAMultivector.exp() |
-| normalize() | | normalize | CGAMultivector.normalize() |
-| abs()      |  | absolute value | Math.abs(CGAScalar) |
-| sqrt()     |  | square root | new CGAScalar(Math.sqrt(CGAScalar)) |
-| atan2()    |  | arcus tansgens 2 | new CGAScalar(Math.atan2(CGAScalar, CGAScalar)) |
-| negate14() |  | negate the signs of the vector- and 4-vector parts of an multivector. Usable to implement gerneral inverse. | multivector.negate14() |
+| symbol     | description | implementation |
+| :--------- |  ----------- | -------------- |
+| exp()      |  exponential | CGAMultivector.exp() |
+| normalize() |  normalize | CGAMultivector.normalize() |
+| abs()      |   absolute value | Math.abs(CGAScalar) |
+| sqrt()     |   square root | new CGAScalar(Math.sqrt(CGAScalar)) |
+| atan2()    |  arcus tansgens 2 | new CGAScalar(Math.atan2(CGAScalar, CGAScalar)) |
+| negate14() |   negate the signs of the vector- and 4-vector parts of an multivector. Usable to implement gerneral inverse. | multivector.negate14() |
 
 #### Additional functions (2) to create transformations (for more convenience only)
 
@@ -153,7 +153,7 @@ There exist three types of involution operations: Space inversion, reversion and
 | &#x03C0;         | \pi           | \u03C0       | Ludolphs- or circle constant | Math.PI |
 | &#x221E;         | \infty            | \u221E       | corresponding to infinity vector in Dorst, Fontijne & Mann 2007 | 2&#x03B5;&#8320;  |
 | &#x006F;         | o             | \u006F       | corresponding to origin vector in Dorst, Fontijne & Mann 2007 | 0.5&#x03B5;&#7522;  |
-| &#x006E;         | n             | \u006E       | corresponding to infinity vector in Doran & Lasenby | &#x03B5;&#7522;  |
+| &#x006E;         | n             | \u006E       | corresponding to infinity vector in Doran & Lasenby | &#x03B5;&#7522;  | \tilde{n} 
 | &#x00F1;         |              | \u00F1       | corresponding to origin vector in Doran & Lasenby | -2&#x03B5;&#8320; |
 | &#x0045;&#x2080; |    E_0           | \u0045\u2080 | Minkovsky bi-vector | &#x03B5;&#7522; &#x2227; &#x03B5;&#8320;|
 | &#x0045;&#x2083; |    E_3           | \u0045\u2083 | Euclidean pseudoscalar | &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083;     |
