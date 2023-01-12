@@ -139,7 +139,7 @@ There exist three types of involution operations: Space inversion, reversion and
 #### Base vector symbols
 | symbol           | latex        | Unicode      | description | implementation |
 | :--------------: | ------------ | ------------ | ----------- | -------------- |
-| &#x03B5;&#x2080; | $\epsilon_0$ | \u03B5\u2080 | base vector representing the origin | createOrigin(1d) |
+| &#x03B5;&#x2080; | \epsilon_0 | \u03B5\u2080 | base vector representing the origin | createOrigin(1d) |
 | &#x03B5;&#x1D62; | $\epsilon_i$ | \u03B5\u1D62 | base vector representing the infinity | createInf(1d) |
 | &#x03B5;&#x2081; | $\epsilon_1$ | \u03B5\u2081 | base vector representing x direction | createEx(1d) |
 | &#x03B5;&#x2082; | $\epsilon_2$ | \u03B5\u2082 | base vector representing y direction | createEy(1d) |
