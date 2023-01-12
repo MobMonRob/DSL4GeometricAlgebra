@@ -140,24 +140,24 @@ There exist three types of involution operations: Space inversion, reversion and
 | symbol           | latex        | Unicode      | description | implementation |
 | :--------------: | ------------ | ------------ | ----------- | -------------- |
 | &#x03B5;&#x2080; | \epsilon_0 | \u03B5\u2080 | base vector representing the origin | createOrigin(1d) |
-| &#x03B5;&#x1D62; | $\epsilon_i$ | \u03B5\u1D62 | base vector representing the infinity | createInf(1d) |
-| &#x03B5;&#x2081; | $\epsilon_1$ | \u03B5\u2081 | base vector representing x direction | createEx(1d) |
-| &#x03B5;&#x2082; | $\epsilon_2$ | \u03B5\u2082 | base vector representing y direction | createEy(1d) |
-| &#x03B5;&#x2083; | $\epsilon_3$ | \u03B5\u2083 | base vector representing z direction | createEz(1d) |
+| &#x03B5;&#x1D62; | \epsilon_i | \u03B5\u1D62 | base vector representing the infinity | createInf(1d) |
+| &#x03B5;&#x2081; | \epsilon_1 | \u03B5\u2081 | base vector representing x direction | createEx(1d) |
+| &#x03B5;&#x2082; | \epsilon_2 | \u03B5\u2082 | base vector representing y direction | createEy(1d) |
+| &#x03B5;&#x2083; | \epsilon_3 | \u03B5\u2083 | base vector representing z direction | createEz(1d) |
 
 ### Further symbols (for more convenience only)
 | symbol           | latex         | Unicode      | description | implementation |
 | :--------------: | ------------- | ------------ | ----------- | -------------- |
-| &#x03B5;&#x208A; | $\epsilon_+$ | \u03B5\u208A |  | &#x03B5;&#x2080; + 0.5&#x03B5;&#x1D62;  | 
-| &#x03B5;&#x208B; | $\epsilon_-$ | \u03B5\u208B |  | 0.5&#x03B5;&#x1D62; - &#x03B5;&#x2080; | 
+| &#x03B5;&#x208A; | \epsilon_+ | \u03B5\u208A |  | &#x03B5;&#x2080; + 0.5&#x03B5;&#x1D62;  | 
+| &#x03B5;&#x208B; | \epsilon_- | \u03B5\u208B |  | 0.5&#x03B5;&#x1D62; - &#x03B5;&#x2080; | 
 | &#x03C0;         | \pi           | \u03C0       | Ludolphs- or circle constant | Math.PI |
-| &#x221E;         |               | \u221E       | corresponding to infinity vector in Dorst, Fontijne & Mann 2007 | 2&#x03B5;&#8320;  |
-| &#x006F;         | $o$             | \u006F       | corresponding to origin vector in Dorst, Fontijne & Mann 2007 | 0.5&#x03B5;&#7522;  |
-| &#x006E;         | $n$             | \u006E       | corresponding to infinity vector in Doran & Lasenby | &#x03B5;&#7522;  |
-| &#x00F1;         |               | \u00F1       | corresponding to origin vector in Doran & Lasenby | -2&#x03B5;&#8320; |
-| &#x0045;&#x2080; |               | \u0045\u2080 | Minkovsky bi-vector | &#x03B5;&#7522; &#x2227; &#x03B5;&#8320;|
-| &#x0045;&#x2083; |               | \u0045\u2083 | Euclidean pseudoscalar | &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083;     |
-| &#x0045;         |               | \u0045       | Pseudoscalar | &#x03B5;&#x2080; &#x2227; &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083; &#x2227; &#x03B5;&#x1D62; |
+| &#x221E;         | \infty            | \u221E       | corresponding to infinity vector in Dorst, Fontijne & Mann 2007 | 2&#x03B5;&#8320;  |
+| &#x006F;         | o             | \u006F       | corresponding to origin vector in Dorst, Fontijne & Mann 2007 | 0.5&#x03B5;&#7522;  |
+| &#x006E;         | n             | \u006E       | corresponding to infinity vector in Doran & Lasenby | &#x03B5;&#7522;  |
+| &#x00F1;         |              | \u00F1       | corresponding to origin vector in Doran & Lasenby | -2&#x03B5;&#8320; |
+| &#x0045;&#x2080; |    E_0           | \u0045\u2080 | Minkovsky bi-vector | &#x03B5;&#7522; &#x2227; &#x03B5;&#8320;|
+| &#x0045;&#x2083; |    E_3           | \u0045\u2083 | Euclidean pseudoscalar | &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083;     |
+| &#x0045;         |      E         | \u0045       | Pseudoscalar | &#x03B5;&#x2080; &#x2227; &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083; &#x2227; &#x03B5;&#x1D62; |
 
 ### Useful equations between above symbols
 
