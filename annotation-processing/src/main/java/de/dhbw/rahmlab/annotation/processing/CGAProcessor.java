@@ -25,12 +25,13 @@ public class CGAProcessor extends AbstractProcessor {
 	@Override
 	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
 		for (Element annotatedElement : roundEnv.getElementsAnnotatedWith(CGA.class)) {
+			// Wird schon sichergestellt durch @Target(ElementType.METHOD) in CGA.java
+			/*
 			if (annotatedElement.getKind() != ElementKind.METHOD) {
 				error(annotatedElement, "Annotation needs to be on METHOD, but was on %s.", annotatedElement.getKind().toString());
 				return true;
 			}
-
-			// sollte immer gehen, wegen @Target(ElementType.METHOD) in CGA.java
+			 */
 			ExecutableElement method = (ExecutableElement) annotatedElement;
 
 			// Hier bekomme ich jetzt raus, was ich brauche.
