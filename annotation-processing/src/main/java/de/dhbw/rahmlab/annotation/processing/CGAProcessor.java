@@ -35,12 +35,16 @@ public class CGAProcessor extends AbstractProcessor {
 				ExecutableElement method = (ExecutableElement) annotatedElement;
 
 				// Hier bekomme ich jetzt raus, was ich brauche.
+				Element enclosingElement = method.getEnclosingElement();
 				CGA cgaAnnotation = method.getAnnotation(CGA.class);
 				Set<Modifier> modifiers = method.getModifiers();
 				TypeMirror returnType = method.getReturnType();
 				Name name = method.getSimpleName();
 				List<? extends VariableElement> parameters = method.getParameters();
 
+				String enclosingElementKind = enclosingElement.getKind().toString();
+				String enclosingElementName = enclosingElement.getSimpleName().toString();
+				print("enclosingElement: " + enclosingElementKind + " " + enclosingElementName);
 				print("source: " + cgaAnnotation.source());
 				for (Modifier modifier : modifiers) {
 					// Ich mache alles einfach public
