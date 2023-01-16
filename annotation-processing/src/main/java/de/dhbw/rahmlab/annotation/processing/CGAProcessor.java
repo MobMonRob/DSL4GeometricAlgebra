@@ -13,6 +13,7 @@ import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
+import javax.tools.Diagnostic;
 import javax.tools.Diagnostic.Kind;
 
 @SupportedAnnotationTypes("de.dhbw.rahmlab.annotation.processing.CGA")
@@ -23,8 +24,8 @@ public class CGAProcessor extends AbstractProcessor {
 	@Override
 	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
 		for (Element annotatedElement : roundEnv.getElementsAnnotatedWith(CGA.class)) {
-			if (!(annotatedElement.getKind() != ElementKind.METHOD)) {
-				processingEnv.getMessager().printMessage(Kind.ERROR, "Annotation should be on method.");
+			if (annotatedElement.getKind() != ElementKind.METHOD) {
+				error(annotatedElement, "Annotation needs to be on METHOD, but was on %s.", annotatedElement.getKind().toString());
 				continue;
 			}
 
@@ -41,20 +42,20 @@ public class CGAProcessor extends AbstractProcessor {
 
 			String enclosingElementKind = enclosingElement.getKind().toString();
 			String enclosingElementName = enclosingElement.getSimpleName().toString();
-			print("enclosingElement: " + enclosingElementKind + " " + enclosingElementName);
-			print("source: " + cgaAnnotation.source());
+			warn("enclosingElement: " + enclosingElementKind + " " + enclosingElementName);
+			warn("source: " + cgaAnnotation.source());
 			for (Modifier modifier : modifiers) {
 				// Ich mache alles einfach public
 				// Oder aber checken, dass "public" enthalten ist und sonst Fehler
 				// Hier nur zur Doku
-				print("modifier: " + modifier.toString());
+				warn("modifier: " + modifier.toString());
 			}
-			print("returnType: " + returnType.toString());
-			print("name: " + name.toString());
+			warn("returnType: " + returnType.toString());
+			warn("name: " + name.toString());
 			for (VariableElement parameter : parameters) {
 				String paramType = parameter.asType().toString();
 				String paramName = parameter.getSimpleName().toString();
-				print("parameter: " + paramType + " " + paramName);
+				warn("parameter: " + paramType + " " + paramName);
 			}
 		}
 
@@ -62,7 +63,14 @@ public class CGAProcessor extends AbstractProcessor {
 		return true;
 	}
 
-	protected void print(String message) {
-		processingEnv.getMessager().printMessage(Kind.MANDATORY_WARNING, message);
+	protected void error(Element e, String message, Object... args) {
+		super.processingEnv.getMessager().printMessage(
+			Diagnostic.Kind.ERROR,
+			String.format(message, args),
+			e);
+	}
+
+	protected void warn(String message) {
+		super.processingEnv.getMessager().printMessage(Kind.MANDATORY_WARNING, message);
 	}
 }
