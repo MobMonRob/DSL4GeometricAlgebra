@@ -44,6 +44,7 @@ public class CGAProcessor extends AbstractProcessor {
 				print("source: " + cgaAnnotation.source());
 				for (Modifier modifier : modifiers) {
 					// Ich mache alles einfach public
+					// Oder aber checken, dass "public" enthalten ist und sonst Fehler
 					// Hier nur zur Doku
 					print("modifier: " + modifier.toString());
 				}
