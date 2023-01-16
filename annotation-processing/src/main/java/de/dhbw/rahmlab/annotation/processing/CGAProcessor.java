@@ -6,6 +6,7 @@ import java.util.Set;
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.Name;
@@ -21,44 +22,39 @@ public class CGAProcessor extends AbstractProcessor {
 
 	@Override
 	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-		// sollte höchstens ein Element haben wegen @SupportedAnnotationTypes("de.dhbw.rahmlab.annotation.processing.CGA")
-		for (TypeElement annotation : annotations) {
-			Set<? extends Element> annotatedElements = roundEnv.getElementsAnnotatedWith(annotation);
+		for (Element annotatedElement : roundEnv.getElementsAnnotatedWith(CGA.class)) {
+			if (!(annotatedElement.getKind() != ElementKind.METHOD)) {
+				processingEnv.getMessager().printMessage(Kind.ERROR, "Annotation should be on method.");
+				continue;
+			}
 
-			for (Element annotatedElement : annotatedElements) {
-				if (!(annotatedElement instanceof ExecutableElement)) {
-					processingEnv.getMessager().printMessage(Kind.ERROR, "Annotation should be on method.");
-					continue;
-				}
+			// sollte immer gehen, wegen @Target(ElementType.METHOD) in CGA.java
+			ExecutableElement method = (ExecutableElement) annotatedElement;
 
-				// sollte immer gehen, wegen @Target(ElementType.METHOD) in CGA.java
-				ExecutableElement method = (ExecutableElement) annotatedElement;
+			// Hier bekomme ich jetzt raus, was ich brauche.
+			Element enclosingElement = method.getEnclosingElement();
+			CGA cgaAnnotation = method.getAnnotation(CGA.class);
+			Set<Modifier> modifiers = method.getModifiers();
+			TypeMirror returnType = method.getReturnType();
+			Name name = method.getSimpleName();
+			List<? extends VariableElement> parameters = method.getParameters();
 
-				// Hier bekomme ich jetzt raus, was ich brauche.
-				Element enclosingElement = method.getEnclosingElement();
-				CGA cgaAnnotation = method.getAnnotation(CGA.class);
-				Set<Modifier> modifiers = method.getModifiers();
-				TypeMirror returnType = method.getReturnType();
-				Name name = method.getSimpleName();
-				List<? extends VariableElement> parameters = method.getParameters();
-
-				String enclosingElementKind = enclosingElement.getKind().toString();
-				String enclosingElementName = enclosingElement.getSimpleName().toString();
-				print("enclosingElement: " + enclosingElementKind + " " + enclosingElementName);
-				print("source: " + cgaAnnotation.source());
-				for (Modifier modifier : modifiers) {
-					// Ich mache alles einfach public
-					// Oder aber checken, dass "public" enthalten ist und sonst Fehler
-					// Hier nur zur Doku
-					print("modifier: " + modifier.toString());
-				}
-				print("returnType: " + returnType.toString());
-				print("name: " + name.toString());
-				for (VariableElement parameter : parameters) {
-					String paramType = parameter.asType().toString();
-					String paramName = parameter.getSimpleName().toString();
-					print("parameter: " + paramType + " " + paramName);
-				}
+			String enclosingElementKind = enclosingElement.getKind().toString();
+			String enclosingElementName = enclosingElement.getSimpleName().toString();
+			print("enclosingElement: " + enclosingElementKind + " " + enclosingElementName);
+			print("source: " + cgaAnnotation.source());
+			for (Modifier modifier : modifiers) {
+				// Ich mache alles einfach public
+				// Oder aber checken, dass "public" enthalten ist und sonst Fehler
+				// Hier nur zur Doku
+				print("modifier: " + modifier.toString());
+			}
+			print("returnType: " + returnType.toString());
+			print("name: " + name.toString());
+			for (VariableElement parameter : parameters) {
+				String paramType = parameter.asType().toString();
+				String paramName = parameter.getSimpleName().toString();
+				print("parameter: " + paramType + " " + paramName);
 			}
 		}
 
