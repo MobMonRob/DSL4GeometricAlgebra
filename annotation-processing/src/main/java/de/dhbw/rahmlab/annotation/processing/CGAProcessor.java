@@ -3,6 +3,8 @@ package de.dhbw.rahmlab.annotation.processing;
 import com.google.auto.service.AutoService;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
@@ -24,6 +26,20 @@ public class CGAProcessor extends AbstractProcessor {
 	// Gut wäre es wohl, wenn process innen nur ein try-catch hätte, das eine Exception in eine error Message umwandelt und process beendet.
 	@Override
 	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
+
+		List<CGAAnnotatedMethod> annotatedMethods = null;
+		try {
+			annotatedMethods = getAnnotatedMethods(annotations, roundEnv);
+		} catch (CGAAnnotationException ex) {
+			error(ex.element, ex.getMessage());
+			return true;
+		}
+
+		// The return boolean value should be true if your annotation processor has processed all the passed annotations, and you don't want them to be passed to other annotation processors down the list.
+		return true;
+	}
+
+	public List<CGAAnnotatedMethod> getAnnotatedMethods(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) throws CGAAnnotationException {
 		for (Element annotatedElement : roundEnv.getElementsAnnotatedWith(CGA.class)) {
 			// Wird schon sichergestellt durch @Target(ElementType.METHOD) in CGA.java
 			/*
@@ -34,35 +50,19 @@ public class CGAProcessor extends AbstractProcessor {
 			 */
 			ExecutableElement method = (ExecutableElement) annotatedElement;
 
-			// Hier bekomme ich jetzt raus, was ich brauche.
-			Element enclosingElement = method.getEnclosingElement();
-			CGA cgaAnnotation = method.getAnnotation(CGA.class);
-			Set<Modifier> modifiers = method.getModifiers();
-			TypeMirror returnType = method.getReturnType();
-			Name name = method.getSimpleName();
-			List<? extends VariableElement> parameters = method.getParameters();
+			CGAAnnotatedMethod classedMethod = new CGAAnnotatedMethod(method);
 
-			String enclosingElementKind = enclosingElement.getKind().toString();
-			String enclosingElementName = enclosingElement.getSimpleName().toString();
-			warn("enclosingElement: " + enclosingElementKind + " " + enclosingElementName);
-			warn("source: " + cgaAnnotation.source());
-			for (Modifier modifier : modifiers) {
-				// Ich mache alles einfach public
-				// Oder aber checken, dass "public" enthalten ist und sonst Fehler
-				// Hier nur zur Doku
-				warn("modifier: " + modifier.toString());
-			}
-			warn("returnType: " + returnType.toString());
-			warn("name: " + name.toString());
-			for (VariableElement parameter : parameters) {
-				String paramType = parameter.asType().toString();
-				String paramName = parameter.getSimpleName().toString();
-				warn("parameter: " + paramType + " " + paramName);
+			warn("enclosingInterfaceName: " + classedMethod.enclosingInterfaceName);
+			warn("enclosingPackageName: " + classedMethod.enclosingPackageName);
+			warn("source: " + classedMethod.cgaAnnotation.source());
+			warn("returnType: " + classedMethod.returnType);
+			warn("identifier: " + classedMethod.identifier);
+			for (CGAAnnotatedMethod.Parameter parameter : classedMethod.parameters) {
+				warn("parameter: " + parameter.type() + " --- " + parameter.identifier());
 			}
 		}
 
-		// The return boolean value should be true if your annotation processor has processed all the passed annotations, and you don't want them to be passed to other annotation processors down the list.
-		return true;
+		return null;
 	}
 
 	protected void error(Element e, String message, Object... args) {
