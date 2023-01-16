@@ -21,12 +21,13 @@ import javax.tools.Diagnostic.Kind;
 @AutoService(Processor.class)
 public class CGAProcessor extends AbstractProcessor {
 
+	// Gut wäre es wohl, wenn process innen nur ein try-catch hätte, das eine Exception in eine error Message umwandelt und process beendet.
 	@Override
 	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
 		for (Element annotatedElement : roundEnv.getElementsAnnotatedWith(CGA.class)) {
 			if (annotatedElement.getKind() != ElementKind.METHOD) {
 				error(annotatedElement, "Annotation needs to be on METHOD, but was on %s.", annotatedElement.getKind().toString());
-				continue;
+				return true;
 			}
 
 			// sollte immer gehen, wegen @Target(ElementType.METHOD) in CGA.java
