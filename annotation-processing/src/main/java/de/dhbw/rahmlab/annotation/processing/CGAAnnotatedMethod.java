@@ -30,7 +30,7 @@ public class CGAAnnotatedMethod {
 		this.methodElement = methodElement;
 		this.enclosingInterfaceQualifiedName = getEnclosingInterfaceQualifiedName(methodElement);
 		int nameSeparatorIndex = this.enclosingInterfaceQualifiedName.lastIndexOf(".");
-		this.enclosingInterfaceName = this.enclosingInterfaceQualifiedName.substring(nameSeparatorIndex, this.enclosingInterfaceQualifiedName.length());
+		this.enclosingInterfaceName = this.enclosingInterfaceQualifiedName.substring(nameSeparatorIndex + 1, this.enclosingInterfaceQualifiedName.length());
 		this.enclosingPackageName = this.enclosingInterfaceQualifiedName.substring(0, nameSeparatorIndex);
 		this.cgaMethodAnnotation = methodElement.getAnnotation(CGA.class);
 		ensureModifiersContainPublic(methodElement);

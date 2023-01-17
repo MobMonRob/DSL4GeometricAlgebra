@@ -33,8 +33,14 @@ public class CGAProcessor extends AbstractProcessor {
 		// Set would be more correct.
 		List<InterfaceGroupedCGAAnnotatedMethods> interfaceGroupedCGAAnnotatedMethods = computeInterfaceGroupedAnnotatedMethodsFrom(annotatedMethods);
 
+		generateCode(interfaceGroupedCGAAnnotatedMethods);
+
 		// The return boolean value should be true if your annotation processor has processed all the passed annotations, and you don't want them to be passed to other annotation processors down the list.
 		return true;
+	}
+
+	protected void generateCode(List<InterfaceGroupedCGAAnnotatedMethods> interfaceGroupedCGAAnnotatedMethods) {
+
 	}
 
 	protected List<InterfaceGroupedCGAAnnotatedMethods> computeInterfaceGroupedAnnotatedMethodsFrom(List<CGAAnnotatedMethod> annotatedMethods) {
@@ -73,6 +79,7 @@ public class CGAProcessor extends AbstractProcessor {
 
 			annotatedMethods.add(annotatedMethod);
 
+			warn("enclosingInterfaceQualifiedName: " + annotatedMethod.enclosingInterfaceQualifiedName);
 			warn("enclosingInterfaceName: " + annotatedMethod.enclosingInterfaceName);
 			warn("enclosingPackageName: " + annotatedMethod.enclosingPackageName);
 			warn("source: " + annotatedMethod.cgaMethodAnnotation.source());
