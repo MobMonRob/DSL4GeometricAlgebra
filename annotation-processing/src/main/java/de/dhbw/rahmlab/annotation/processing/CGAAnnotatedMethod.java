@@ -117,7 +117,7 @@ public class CGAAnnotatedMethod {
 				null;
 		};
 		if (answerDecompose == null) {
-			throw CGAAnnotationException.create(this.methodElement, "return type \"%s\" is not supported.", this.returnType);
+			throw CGAAnnotationException.create(this.methodElement, "Return type \"%s\" is not supported.", this.returnType);
 		}
 
 		List<CodeBlock> arguments = new ArrayList<>(this.parameters.size());
