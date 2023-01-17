@@ -18,6 +18,7 @@ public class CGAAnnotatedMethod {
 	}
 
 	protected final ExecutableElement methodElement;
+	public final String enclosingInterfaceQualifiedName;
 	public final String enclosingInterfaceName;
 	public final String enclosingPackageName;
 	public final CGA cgaMethodAnnotation;
@@ -27,8 +28,10 @@ public class CGAAnnotatedMethod {
 
 	public CGAAnnotatedMethod(ExecutableElement methodElement) throws CGAAnnotationException {
 		this.methodElement = methodElement;
-		this.enclosingInterfaceName = getEnclosingInterfaceName(methodElement);
-		this.enclosingPackageName = getEnclosingPackageName(methodElement);
+		this.enclosingInterfaceQualifiedName = getEnclosingInterfaceQualifiedName(methodElement);
+		int nameSeparatorIndex = this.enclosingInterfaceQualifiedName.lastIndexOf(".");
+		this.enclosingInterfaceName = this.enclosingInterfaceQualifiedName.substring(nameSeparatorIndex, this.enclosingInterfaceQualifiedName.length());
+		this.enclosingPackageName = this.enclosingInterfaceQualifiedName.substring(0, nameSeparatorIndex);
 		this.cgaMethodAnnotation = methodElement.getAnnotation(CGA.class);
 		ensureModifiersContainPublic(methodElement);
 		this.returnType = methodElement.getReturnType().toString();
@@ -56,6 +59,7 @@ public class CGAAnnotatedMethod {
 		}
 	}
 
+	/*
 	protected static String getEnclosingPackageName(ExecutableElement methodElement) throws CGAAnnotationException {
 		PackageElement enclosingPackage = null;
 
@@ -72,8 +76,8 @@ public class CGAAnnotatedMethod {
 
 		return enclosingPackage.getQualifiedName().toString();
 	}
-
-	protected static String getEnclosingInterfaceName(ExecutableElement methodElement) throws CGAAnnotationException {
+	 */
+	protected static String getEnclosingInterfaceQualifiedName(ExecutableElement methodElement) throws CGAAnnotationException {
 		TypeElement enclosingInterface = null;
 
 		Element directEnclosingElement = methodElement.getEnclosingElement();
@@ -85,6 +89,6 @@ public class CGAAnnotatedMethod {
 			CGAAnnotationException.create(methodElement, "Expected method to be enclosed by an INTERFACE, but was enclosed by %s", directEnclosingElementKind.toString());
 		}
 
-		return enclosingInterface.getSimpleName().toString();
+		return enclosingInterface.getQualifiedName().toString();
 	}
 }

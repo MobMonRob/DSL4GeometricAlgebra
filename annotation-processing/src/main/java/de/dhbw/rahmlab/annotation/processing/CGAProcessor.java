@@ -30,24 +30,30 @@ public class CGAProcessor extends AbstractProcessor {
 			return true;
 		}
 
-		Map<String, List<CGAAnnotatedMethod>> fileGroupedAnnotatedMethods = computeFileGroupedAnnotatedMethodsFrom(annotatedMethods);
+		// Set would be more correct.
+		List<InterfaceGroupedCGAAnnotatedMethods> interfaceGroupedCGAAnnotatedMethods = computeInterfaceGroupedAnnotatedMethodsFrom(annotatedMethods);
 
 		// The return boolean value should be true if your annotation processor has processed all the passed annotations, and you don't want them to be passed to other annotation processors down the list.
 		return true;
 	}
 
-	protected Map<String, List<CGAAnnotatedMethod>> computeFileGroupedAnnotatedMethodsFrom(List<CGAAnnotatedMethod> annotatedMethods) {
-		Map<String, List<CGAAnnotatedMethod>> fileGroupedAnnotatedMethods = annotatedMethods.stream().collect(groupingBy(am -> am.enclosingPackageName + "." + am.enclosingInterfaceName));
+	protected List<InterfaceGroupedCGAAnnotatedMethods> computeInterfaceGroupedAnnotatedMethodsFrom(List<CGAAnnotatedMethod> annotatedMethods) {
+		Map<String, List<CGAAnnotatedMethod>> interfaceGroupedAnnotatedMethods = annotatedMethods.stream()
+			.collect(groupingBy(am -> am.enclosingInterfaceQualifiedName));
 
-		for (String file : fileGroupedAnnotatedMethods.keySet()) {
+		for (String file : interfaceGroupedAnnotatedMethods.keySet()) {
 			warn("file: " + file);
-			for (CGAAnnotatedMethod method : fileGroupedAnnotatedMethods.get(file)) {
+			for (CGAAnnotatedMethod method : interfaceGroupedAnnotatedMethods.get(file)) {
 				warn("method: " + method.identifier);
 			}
 			warn("---");
 		}
 
-		return fileGroupedAnnotatedMethods;
+		List<InterfaceGroupedCGAAnnotatedMethods> interfaceGroupedCGAAnnotatedMethodsClasses = new ArrayList<>(interfaceGroupedAnnotatedMethods.entrySet().size());
+
+		interfaceGroupedAnnotatedMethods.forEach((f, ms) -> interfaceGroupedCGAAnnotatedMethodsClasses.add(new InterfaceGroupedCGAAnnotatedMethods(f, ms)));
+
+		return interfaceGroupedCGAAnnotatedMethodsClasses;
 	}
 
 	protected List<CGAAnnotatedMethod> computeAnnotatedMethodsFrom(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) throws CGAAnnotationException {
