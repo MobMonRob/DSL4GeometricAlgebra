@@ -1,20 +1,16 @@
 package de.dhbw.rahmlab.annotation.processing;
 
 import com.google.auto.service.AutoService;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import static java.util.stream.Collectors.groupingBy;
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.Modifier;
-import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
 import javax.tools.Diagnostic.Kind;
 
@@ -23,24 +19,42 @@ import javax.tools.Diagnostic.Kind;
 @AutoService(Processor.class)
 public class CGAProcessor extends AbstractProcessor {
 
-	// Gut wäre es wohl, wenn process innen nur ein try-catch hätte, das eine Exception in eine error Message umwandelt und process beendet.
 	@Override
 	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
 
 		List<CGAAnnotatedMethod> annotatedMethods = null;
 		try {
-			annotatedMethods = getAnnotatedMethods(annotations, roundEnv);
+			annotatedMethods = computeAnnotatedMethodsFrom(annotations, roundEnv);
 		} catch (CGAAnnotationException ex) {
 			error(ex.element, ex.getMessage());
 			return true;
 		}
 
+		Map<String, List<CGAAnnotatedMethod>> fileGroupedAnnotatedMethods = computeFileGroupedAnnotatedMethodsFrom(annotatedMethods);
+
 		// The return boolean value should be true if your annotation processor has processed all the passed annotations, and you don't want them to be passed to other annotation processors down the list.
 		return true;
 	}
 
-	public List<CGAAnnotatedMethod> getAnnotatedMethods(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) throws CGAAnnotationException {
-		for (Element annotatedElement : roundEnv.getElementsAnnotatedWith(CGA.class)) {
+	protected Map<String, List<CGAAnnotatedMethod>> computeFileGroupedAnnotatedMethodsFrom(List<CGAAnnotatedMethod> annotatedMethods) {
+		Map<String, List<CGAAnnotatedMethod>> fileGroupedAnnotatedMethods = annotatedMethods.stream().collect(groupingBy(am -> am.enclosingPackageName + "." + am.enclosingInterfaceName));
+
+		for (String file : fileGroupedAnnotatedMethods.keySet()) {
+			warn("file: " + file);
+			for (CGAAnnotatedMethod method : fileGroupedAnnotatedMethods.get(file)) {
+				warn("method: " + method.identifier);
+			}
+			warn("---");
+		}
+
+		return fileGroupedAnnotatedMethods;
+	}
+
+	protected List<CGAAnnotatedMethod> computeAnnotatedMethodsFrom(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) throws CGAAnnotationException {
+		Set<? extends Element> annotatedElements = roundEnv.getElementsAnnotatedWith(CGA.class);
+		List<CGAAnnotatedMethod> annotatedMethods = new ArrayList<>(annotatedElements.size());
+
+		for (Element annotatedElement : annotatedElements) {
 			// Wird schon sichergestellt durch @Target(ElementType.METHOD) in CGA.java
 			/*
 			if (annotatedElement.getKind() != ElementKind.METHOD) {
@@ -49,20 +63,22 @@ public class CGAProcessor extends AbstractProcessor {
 			}
 			 */
 			ExecutableElement method = (ExecutableElement) annotatedElement;
+			CGAAnnotatedMethod annotatedMethod = new CGAAnnotatedMethod(method);
 
-			CGAAnnotatedMethod classedMethod = new CGAAnnotatedMethod(method);
+			annotatedMethods.add(annotatedMethod);
 
-			warn("enclosingInterfaceName: " + classedMethod.enclosingInterfaceName);
-			warn("enclosingPackageName: " + classedMethod.enclosingPackageName);
-			warn("source: " + classedMethod.cgaAnnotation.source());
-			warn("returnType: " + classedMethod.returnType);
-			warn("identifier: " + classedMethod.identifier);
-			for (CGAAnnotatedMethod.Parameter parameter : classedMethod.parameters) {
+			warn("enclosingInterfaceName: " + annotatedMethod.enclosingInterfaceName);
+			warn("enclosingPackageName: " + annotatedMethod.enclosingPackageName);
+			warn("source: " + annotatedMethod.cgaMethodAnnotation.source());
+			warn("returnType: " + annotatedMethod.returnType);
+			warn("identifier: " + annotatedMethod.identifier);
+			for (CGAAnnotatedMethod.Parameter parameter : annotatedMethod.parameters) {
 				warn("parameter: " + parameter.type() + " --- " + parameter.identifier());
 			}
+			warn("---");
 		}
 
-		return null;
+		return annotatedMethods;
 	}
 
 	protected void error(Element e, String message, Object... args) {

@@ -20,7 +20,7 @@ public class CGAAnnotatedMethod {
 	protected final ExecutableElement methodElement;
 	public final String enclosingInterfaceName;
 	public final String enclosingPackageName;
-	public final CGA cgaAnnotation;
+	public final CGA cgaMethodAnnotation;
 	public final String returnType;
 	public final String identifier;
 	public final List<Parameter> parameters;
@@ -29,7 +29,7 @@ public class CGAAnnotatedMethod {
 		this.methodElement = methodElement;
 		this.enclosingInterfaceName = getEnclosingInterfaceName(methodElement);
 		this.enclosingPackageName = getEnclosingPackageName(methodElement);
-		this.cgaAnnotation = methodElement.getAnnotation(CGA.class);
+		this.cgaMethodAnnotation = methodElement.getAnnotation(CGA.class);
 		ensureModifiersContainPublic(methodElement);
 		this.returnType = methodElement.getReturnType().toString();
 		this.identifier = methodElement.getSimpleName().toString();
