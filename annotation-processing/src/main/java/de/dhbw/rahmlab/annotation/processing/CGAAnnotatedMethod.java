@@ -1,5 +1,8 @@
 package de.dhbw.rahmlab.annotation.processing;
 
+import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.CodeBlock;
+import com.squareup.javapoet.MethodSpec;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -29,7 +32,7 @@ public class CGAAnnotatedMethod {
 	public CGAAnnotatedMethod(ExecutableElement methodElement) throws CGAAnnotationException {
 		this.methodElement = methodElement;
 		this.enclosingInterfaceQualifiedName = getEnclosingInterfaceQualifiedName(methodElement);
-		int nameSeparatorIndex = this.enclosingInterfaceQualifiedName.lastIndexOf(".");
+		// int nameSeparatorIndex = this.enclosingInterfaceQualifiedName.lastIndexOf(".");
 		// this.enclosingInterfaceName = this.enclosingInterfaceQualifiedName.substring(nameSeparatorIndex + 1, this.enclosingInterfaceQualifiedName.length());
 		// this.enclosingPackageName = this.enclosingInterfaceQualifiedName.substring(0, nameSeparatorIndex);
 		this.cgaMethodAnnotation = methodElement.getAnnotation(CGA.class);
@@ -55,7 +58,7 @@ public class CGAAnnotatedMethod {
 		Set<Modifier> modifiers = methodElement.getModifiers();
 		boolean containsPublic = modifiers.contains(Modifier.PUBLIC);
 		if (!containsPublic) {
-			CGAAnnotationException.create(methodElement, "Method needs to be \"public\".");
+			throw CGAAnnotationException.create(methodElement, "Method needs to be \"public\".");
 		}
 	}
 
@@ -86,9 +89,61 @@ public class CGAAnnotatedMethod {
 		if (directEnclosingElementKind == ElementKind.INTERFACE) {
 			enclosingInterface = (TypeElement) directEnclosingElement;
 		} else {
-			CGAAnnotationException.create(methodElement, "Expected method to be enclosed by an INTERFACE, but was enclosed by %s", directEnclosingElementKind.toString());
+			throw CGAAnnotationException.create(methodElement, "Expected method to be enclosed by an INTERFACE, but was enclosed by %s", directEnclosingElementKind.toString());
 		}
 
 		return enclosingInterface.getQualifiedName().toString();
+	}
+
+	public MethodSpec generateCode() throws CGAAnnotationException {
+		ClassName programClass = ClassName.get("de.dhbw.rahmlab.geomalgelang.api", "Progam");
+		ClassName argumentsClass = ClassName.get("de.dhbw.rahmlab.geomalgelang.api", "Arguments");
+		ClassName resultClass = ClassName.get("de.dhbw.rahmlab.geomalgelang.api", "Result");
+
+		String answerDecompose = switch (this.returnType) {
+			case "double" ->
+				"decomposeScalar";
+			case "iCGATangentOrRound.EuclideanParameters" ->
+				"decomposeTangentOrRound";
+			case "iCGAFlat.EuclideanParameters" ->
+				"decomposeFlat";
+			case "Vector3d" ->
+				"decomposeAttitude";
+			case "Quat4d" ->
+				"decomposeRotor";
+			case "PointPair" ->
+				"decomposePointPair";
+			default ->
+				null;
+		};
+		if (answerDecompose == null) {
+			throw CGAAnnotationException.create(this.methodElement, "return type \"%s\" is not supported.", this.returnType);
+		}
+
+		List<CodeBlock> arguments = new ArrayList<>(this.parameters.size());
+		for (Parameter parameter : parameters) {
+			//
+		}
+
+		CodeBlock.Builder tryWithBodyBuilder = CodeBlock.builder()
+			.addStatement("$1T arguments = new $1T()", argumentsClass);
+		for (CodeBlock argument : arguments) {
+			tryWithBodyBuilder.addStatement(argument);
+		}
+		tryWithBodyBuilder
+			.addStatement("$T answer = program.invoke(arguments)", resultClass)
+			.addStatement("var answerDecomposed = answer.$L()", answerDecompose)
+			.addStatement("return answerDecomposed");
+		CodeBlock tryWithBody = tryWithBodyBuilder.build();
+
+		MethodSpec method = MethodSpec.overriding(methodElement)
+			.addStatement("String source = $S", this.cgaMethodAnnotation.source())
+			.addCode("try ($1T program = new $1T(source)) {\n", programClass)
+			.addCode("$>")
+			.addCode(tryWithBody)
+			.addCode("$<}")
+			.build();
+
+		return method;
 	}
 }

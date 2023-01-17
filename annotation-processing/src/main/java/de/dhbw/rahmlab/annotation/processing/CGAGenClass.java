@@ -1,12 +1,17 @@
 package de.dhbw.rahmlab.annotation.processing;
 
+import com.squareup.javapoet.FieldSpec;
+import com.squareup.javapoet.JavaFile;
+import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.TypeName;
+import com.squareup.javapoet.TypeSpec;
 import java.io.IOException;
-import java.io.Writer;
+import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.processing.Filer;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
-import javax.tools.JavaFileObject;
 
 public class CGAGenClass {
 
@@ -35,12 +40,36 @@ public class CGAGenClass {
 		this.annotatedMethods = annotatedMethods;
 	}
 
-	public void generateCode(Elements elementUtils, Filer filer) throws IOException {
+	public void generateCode(Elements elementUtils, Filer filer) throws IOException, CGAAnnotationException {
 		TypeElement implementingInterfaceName = elementUtils.getTypeElement(this.qualifiedInterfaceName);
 		String genClassName = implementingInterfaceName.getSimpleName() + SUFFIX;
 
-		JavaFileObject jfo = filer.createSourceFile(this.qualifiedInterfaceName + SUFFIX);
-		Writer writer = jfo.openWriter();
+		int nameSeparatorIndex = this.qualifiedInterfaceName.lastIndexOf(".");
+		String packageName = this.qualifiedInterfaceName.substring(0, nameSeparatorIndex) + ".gen";
 
+		List<MethodSpec> methods = new ArrayList<>(this.annotatedMethods.size());
+		for (CGAAnnotatedMethod annotatedMethod : this.annotatedMethods) {
+			MethodSpec method = annotatedMethod.generateCode();
+			methods.add(method);
+		}
+
+		FieldSpec instance = FieldSpec.builder(TypeName.get(implementingInterfaceName.asType()), "INSTANCE", Modifier.PUBLIC, Modifier.STATIC)
+			.initializer("new $L()", genClassName)
+			.build();
+
+		TypeSpec cgaGen = TypeSpec.classBuilder(genClassName)
+			.addModifiers(Modifier.PUBLIC)
+			.addSuperinterface(implementingInterfaceName.asType())
+			.addField(instance)
+			.addMethods(methods)
+			.build();
+
+		JavaFile javaFile = JavaFile.builder(packageName, cgaGen)
+			.build();
+
+		// javaFile.writeTo(filer);
+		javaFile.writeTo(System.out);
+		// JavaFileObject jfo = filer.createSourceFile(this.qualifiedInterfaceName + SUFFIX);
+		// Writer writer = jfo.openWriter();
 	}
 }

@@ -11,7 +11,7 @@ public class CGAAnnotationException extends Exception {
 		this.element = element;
 	}
 
-	public static void create(Element element, String message, Object... args) throws CGAAnnotationException {
-		throw new CGAAnnotationException(element, message, args);
+	public static CGAAnnotationException create(Element element, String message, Object... args) throws CGAAnnotationException {
+		return new CGAAnnotationException(element, message, args);
 	}
 }

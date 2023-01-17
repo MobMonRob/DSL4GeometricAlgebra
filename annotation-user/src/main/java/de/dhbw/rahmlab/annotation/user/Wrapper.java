@@ -8,5 +8,5 @@ public interface Wrapper {
 	double targetMethod1(double a, double b);
 
 	@CGA(source = "normalize(a b)")
-	int targetMethod2(int a, int b);
+	double targetMethod2(double a, double b);
 }

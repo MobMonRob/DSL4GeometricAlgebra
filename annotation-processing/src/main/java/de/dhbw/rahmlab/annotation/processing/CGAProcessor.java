@@ -25,21 +25,16 @@ public class CGAProcessor extends AbstractProcessor {
 
 	@Override
 	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-
-		List<CGAAnnotatedMethod> annotatedMethods = null;
 		try {
-			annotatedMethods = computeAnnotatedMethodsFrom(annotations, roundEnv);
+			List<CGAAnnotatedMethod> annotatedMethods = computeAnnotatedMethodsFrom(annotations, roundEnv);
+
+			// Set would be more correct.
+			List<CGAGenClass> cgaGenClasses = computeInterfaceGroupedAnnotatedMethodsFrom(annotatedMethods);
+
+			generateCode(cgaGenClasses);
 		} catch (CGAAnnotationException ex) {
 			error(ex.element, ex.getMessage());
-			return true;
-		}
-
-		// Set would be more correct.
-		List<CGAGenClass> cgaGenClasses = computeInterfaceGroupedAnnotatedMethodsFrom(annotatedMethods);
-
-		try {
-			generateCode(cgaGenClasses);
-		} catch (IOException ex) {
+		} catch (Exception ex) {
 			error(null, ex.getMessage());
 		}
 
@@ -47,7 +42,7 @@ public class CGAProcessor extends AbstractProcessor {
 		return true;
 	}
 
-	protected void generateCode(List<CGAGenClass> cgaGenClasses) throws IOException {
+	protected void generateCode(List<CGAGenClass> cgaGenClasses) throws IOException, CGAAnnotationException {
 		Elements elementUtils = super.processingEnv.getElementUtils();
 		Filer filer = super.processingEnv.getFiler();
 
