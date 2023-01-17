@@ -19,8 +19,8 @@ public class CGAAnnotatedMethod {
 
 	protected final ExecutableElement methodElement;
 	public final String enclosingInterfaceQualifiedName;
-	public final String enclosingInterfaceName;
-	public final String enclosingPackageName;
+	// public final String enclosingInterfaceName;
+	// public final String enclosingPackageName;
 	public final CGA cgaMethodAnnotation;
 	public final String returnType;
 	public final String identifier;
@@ -30,8 +30,8 @@ public class CGAAnnotatedMethod {
 		this.methodElement = methodElement;
 		this.enclosingInterfaceQualifiedName = getEnclosingInterfaceQualifiedName(methodElement);
 		int nameSeparatorIndex = this.enclosingInterfaceQualifiedName.lastIndexOf(".");
-		this.enclosingInterfaceName = this.enclosingInterfaceQualifiedName.substring(nameSeparatorIndex + 1, this.enclosingInterfaceQualifiedName.length());
-		this.enclosingPackageName = this.enclosingInterfaceQualifiedName.substring(0, nameSeparatorIndex);
+		// this.enclosingInterfaceName = this.enclosingInterfaceQualifiedName.substring(nameSeparatorIndex + 1, this.enclosingInterfaceQualifiedName.length());
+		// this.enclosingPackageName = this.enclosingInterfaceQualifiedName.substring(0, nameSeparatorIndex);
 		this.cgaMethodAnnotation = methodElement.getAnnotation(CGA.class);
 		ensureModifiersContainPublic(methodElement);
 		this.returnType = methodElement.getReturnType().toString();

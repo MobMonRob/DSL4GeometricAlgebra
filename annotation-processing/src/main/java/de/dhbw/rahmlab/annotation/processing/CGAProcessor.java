@@ -1,16 +1,20 @@
 package de.dhbw.rahmlab.annotation.processing;
 
 import com.google.auto.service.AutoService;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import static java.util.stream.Collectors.groupingBy;
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
 import javax.tools.Diagnostic.Kind;
 
@@ -31,19 +35,28 @@ public class CGAProcessor extends AbstractProcessor {
 		}
 
 		// Set would be more correct.
-		List<InterfaceGroupedCGAAnnotatedMethods> interfaceGroupedCGAAnnotatedMethods = computeInterfaceGroupedAnnotatedMethodsFrom(annotatedMethods);
+		List<CGAGenClass> cgaGenClasses = computeInterfaceGroupedAnnotatedMethodsFrom(annotatedMethods);
 
-		generateCode(interfaceGroupedCGAAnnotatedMethods);
+		try {
+			generateCode(cgaGenClasses);
+		} catch (IOException ex) {
+			error(null, ex.getMessage());
+		}
 
 		// The return boolean value should be true if your annotation processor has processed all the passed annotations, and you don't want them to be passed to other annotation processors down the list.
 		return true;
 	}
 
-	protected void generateCode(List<InterfaceGroupedCGAAnnotatedMethods> interfaceGroupedCGAAnnotatedMethods) {
+	protected void generateCode(List<CGAGenClass> cgaGenClasses) throws IOException {
+		Elements elementUtils = super.processingEnv.getElementUtils();
+		Filer filer = super.processingEnv.getFiler();
 
+		for (CGAGenClass cgaGenClass : cgaGenClasses) {
+			cgaGenClass.generateCode(elementUtils, filer);
+		}
 	}
 
-	protected List<InterfaceGroupedCGAAnnotatedMethods> computeInterfaceGroupedAnnotatedMethodsFrom(List<CGAAnnotatedMethod> annotatedMethods) {
+	protected List<CGAGenClass> computeInterfaceGroupedAnnotatedMethodsFrom(List<CGAAnnotatedMethod> annotatedMethods) {
 		Map<String, List<CGAAnnotatedMethod>> interfaceGroupedAnnotatedMethods = annotatedMethods.stream()
 			.collect(groupingBy(am -> am.enclosingInterfaceQualifiedName));
 
@@ -55,11 +68,11 @@ public class CGAProcessor extends AbstractProcessor {
 			warn("---");
 		}
 
-		List<InterfaceGroupedCGAAnnotatedMethods> interfaceGroupedCGAAnnotatedMethodsClasses = new ArrayList<>(interfaceGroupedAnnotatedMethods.entrySet().size());
+		List<CGAGenClass> cgaGenClasses = new ArrayList<>(interfaceGroupedAnnotatedMethods.entrySet().size());
 
-		interfaceGroupedAnnotatedMethods.forEach((f, ms) -> interfaceGroupedCGAAnnotatedMethodsClasses.add(new InterfaceGroupedCGAAnnotatedMethods(f, ms)));
+		interfaceGroupedAnnotatedMethods.forEach((f, ms) -> cgaGenClasses.add(new CGAGenClass(f, ms)));
 
-		return interfaceGroupedCGAAnnotatedMethodsClasses;
+		return cgaGenClasses;
 	}
 
 	protected List<CGAAnnotatedMethod> computeAnnotatedMethodsFrom(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) throws CGAAnnotationException {
@@ -80,8 +93,8 @@ public class CGAProcessor extends AbstractProcessor {
 			annotatedMethods.add(annotatedMethod);
 
 			warn("enclosingInterfaceQualifiedName: " + annotatedMethod.enclosingInterfaceQualifiedName);
-			warn("enclosingInterfaceName: " + annotatedMethod.enclosingInterfaceName);
-			warn("enclosingPackageName: " + annotatedMethod.enclosingPackageName);
+			// warn("enclosingInterfaceName: " + annotatedMethod.enclosingInterfaceName);
+			// warn("enclosingPackageName: " + annotatedMethod.enclosingPackageName);
 			warn("source: " + annotatedMethod.cgaMethodAnnotation.source());
 			warn("returnType: " + annotatedMethod.returnType);
 			warn("identifier: " + annotatedMethod.identifier);
