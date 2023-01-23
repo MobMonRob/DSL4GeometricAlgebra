@@ -4,13 +4,17 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
-import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 
@@ -126,6 +130,8 @@ public class CGAAnnotatedMethod {
 		String answerDecompose = switch (this.returnType) {
 			case "double" ->
 				"decomposeScalar";
+			case "java.lang.Double" ->
+				"asdfadsf";
 			case "iCGATangentOrRound.EuclideanParameters" ->
 				"decomposeTangentOrRound";
 			case "iCGAFlat.EuclideanParameters" ->
@@ -145,11 +151,82 @@ public class CGAAnnotatedMethod {
 		return answerDecompose;
 	}
 
-	protected List<CodeBlock> getArguments() {
-		List<CodeBlock> arguments = new ArrayList<>(this.parameters.size());
-		for (Parameter parameter : parameters) {
+	protected record DecomposedParameter(String cgaVarName, String cgaType, String javaType) {
+
+	}
+
+	protected List<CodeBlock> getArguments() throws CGAAnnotationException {
+		List<DecomposedParameter> decomposedParameters = decomposeParameters();
+
+		LinkedHashMap<String, List<DecomposedParameter>> cgaVarNameGroupedDecomposedParameters = groupDecomposedParameters(decomposedParameters);
+
+		cgaVarNameGroupedDecomposedParameters.forEach((cgaVarName, decomposedParameterList) -> {
 			//
-		}
+		});
+
+		List<CodeBlock> arguments = new ArrayList<>(this.parameters.size());
 		return arguments;
+	}
+
+	protected LinkedHashMap<String, List<DecomposedParameter>> groupDecomposedParameters(List<DecomposedParameter> decomposedParameters) throws CGAAnnotationException {
+		/*
+		HashMap<String, List<DecomposedParameter>> cgaVarNameGroupedDecomposedParameters = new LinkedHashMap<>();
+		String currentCgaVarName = decomposedParameters.isEmpty() ? null : decomposedParameters.get(0).cgaVarName;
+		List<DecomposedParameter> currentGroupedDecomposedParameters = new ArrayList<>();
+		for (DecomposedParameter decomposedParameter : decomposedParameters) {
+		if (decomposedParameter.cgaVarName.equals(currentCgaVarName)) {
+		currentGroupedDecomposedParameters.add(decomposedParameter);
+		} else {
+		var present = cgaVarNameGroupedDecomposedParameters.put(currentCgaVarName, currentGroupedDecomposedParameters);
+		if (present != null) {
+		throw CGAAnnotationException.create(this.methodElement, "Parameter name \"%s\" must only be declared sequentially, but wasn't.", decomposedParameter.cgaVarName);
+		}
+		currentCgaVarName = decomposedParameter.cgaVarName;
+		currentGroupedDecomposedParameters = new ArrayList<>();
+		currentGroupedDecomposedParameters.add(decomposedParameter);
+		}
+		}
+		if (currentCgaVarName != null) {
+		var present = cgaVarNameGroupedDecomposedParameters.put(currentCgaVarName, currentGroupedDecomposedParameters);
+		if (present != null) {
+		throw CGAAnnotationException.create(this.methodElement, "Parameter name \"%s\" must only be declared sequentially, but wasn't.", currentCgaVarName);
+		}
+		}
+		 */
+		/// Alternative:
+
+		// Assure  that same cgaVarNames occur only sequential.
+		{
+			HashSet<String> cgaVarNames = new HashSet<>();
+			for (DecomposedParameter decomposedParameter : decomposedParameters) {
+				boolean isNew = cgaVarNames.add(decomposedParameter.cgaVarName);
+				if (!isNew) {
+					throw CGAAnnotationException.create(this.methodElement, "Parameter name \"%s\" must only be declared sequentially, but wasn't.", decomposedParameter.cgaVarName);
+				}
+			}
+		}
+
+		// Group them.
+		LinkedHashMap<String, List<DecomposedParameter>> cgaVarNameGroupedDecomposedParameters = decomposedParameters.stream().collect(Collectors.groupingBy(dp -> dp.cgaVarName, LinkedHashMap::new, Collectors.toList()));
+
+		return cgaVarNameGroupedDecomposedParameters;
+	}
+
+	protected List<DecomposedParameter> decomposeParameters() throws CGAAnnotationException {
+		List<DecomposedParameter> decomposedParameters = new ArrayList<>(this.parameters.size());
+		for (Parameter parameter : this.parameters) {
+			String[] identifierSplit = parameter.identifier.split("_", 3);
+			if (identifierSplit.length < 2) {
+				throw CGAAnnotationException.create(this.methodElement, "Parameter name \"%s\" must contain at least one \"_\"", parameter.identifier);
+			}
+
+			String cgaVarName = identifierSplit[0];
+			String cgaType = identifierSplit[1];
+			String javaType = parameter.type;
+
+			DecomposedParameter decomposedParameter = new DecomposedParameter(cgaVarName, cgaType, javaType);
+			decomposedParameters.add(decomposedParameter);
+		}
+		return decomposedParameters;
 	}
 }
