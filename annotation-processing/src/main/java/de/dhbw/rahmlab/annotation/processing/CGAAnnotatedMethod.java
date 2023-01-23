@@ -100,6 +100,29 @@ public class CGAAnnotatedMethod {
 		ClassName argumentsClass = ClassName.get("de.dhbw.rahmlab.geomalgelang.api", "Arguments");
 		ClassName resultClass = ClassName.get("de.dhbw.rahmlab.geomalgelang.api", "Result");
 
+		CodeBlock.Builder tryWithBodyBuilder = CodeBlock.builder()
+			.addStatement("$1T arguments = new $1T()", argumentsClass);
+		for (CodeBlock argument : getArguments()) {
+			tryWithBodyBuilder.addStatement(argument);
+		}
+		tryWithBodyBuilder
+			.addStatement("$T answer = program.invoke(arguments)", resultClass)
+			.addStatement("var answerDecomposed = answer.$L()", getAnswerDecompose())
+			.addStatement("return answerDecomposed");
+		CodeBlock tryWithBody = tryWithBodyBuilder.build();
+
+		MethodSpec method = MethodSpec.overriding(methodElement)
+			.addStatement("String source = $S", this.cgaMethodAnnotation.source())
+			.addCode("try ($1T program = new $1T(source)) {\n", programClass)
+			.addCode("$>")
+			.addCode(tryWithBody)
+			.addCode("$<}")
+			.build();
+
+		return method;
+	}
+
+	protected String getAnswerDecompose() throws CGAAnnotationException {
 		String answerDecompose = switch (this.returnType) {
 			case "double" ->
 				"decomposeScalar";
@@ -119,31 +142,14 @@ public class CGAAnnotatedMethod {
 		if (answerDecompose == null) {
 			throw CGAAnnotationException.create(this.methodElement, "Return type \"%s\" is not supported.", this.returnType);
 		}
+		return answerDecompose;
+	}
 
+	protected List<CodeBlock> getArguments() {
 		List<CodeBlock> arguments = new ArrayList<>(this.parameters.size());
 		for (Parameter parameter : parameters) {
 			//
 		}
-
-		CodeBlock.Builder tryWithBodyBuilder = CodeBlock.builder()
-			.addStatement("$1T arguments = new $1T()", argumentsClass);
-		for (CodeBlock argument : arguments) {
-			tryWithBodyBuilder.addStatement(argument);
-		}
-		tryWithBodyBuilder
-			.addStatement("$T answer = program.invoke(arguments)", resultClass)
-			.addStatement("var answerDecomposed = answer.$L()", answerDecompose)
-			.addStatement("return answerDecomposed");
-		CodeBlock tryWithBody = tryWithBodyBuilder.build();
-
-		MethodSpec method = MethodSpec.overriding(methodElement)
-			.addStatement("String source = $S", this.cgaMethodAnnotation.source())
-			.addCode("try ($1T program = new $1T(source)) {\n", programClass)
-			.addCode("$>")
-			.addCode(tryWithBody)
-			.addCode("$<}")
-			.build();
-
-		return method;
+		return arguments;
 	}
 }
