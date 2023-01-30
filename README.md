@@ -86,7 +86,7 @@ Hint: Operator precedence determines how operators are parsed concerning each ot
 | precedence | symbol   | latex            | unicode | description | implementation | CLUscript |
 | :--------: | :------: | ---------------- | ------- | ----------- | -------------- | :----- |
 | 3          | &#x22C5;         | \cdot   | \u22C5  | inner product | multivector1.ip(multivector2, RIGHT_CONTRACTION) | Decreasing dimensions or contracting a subspace. In the default configuration equal to left contraction (corresponding to Ganja.js). But this looks to be incompatible with some formulas in [Kleppe], which work only with the usage of right contraction. In CLUscript this corresponds to ".". |
-| 3          | &#x2229; | \cap             | \u2229  | meet (intersection) | multivector1.meet(multivector2) | \& |
+| 3          | &#x2229; | \cap             | \u2229  | meet (intersection) = largest common subspace| multivector1.meet(multivector2) | \& |
 | 3          | &#x222A; | \cup             | \u222A  | join  (union) of two subspaces is there smallest superspace = smallest space containing them both | multivector1.join(multivector2) or multivector2* &#8901; multivector1 or (multivector2* &#8743; multivector1*)* | \| |
 
 ### Monadic/unary operators (placed all on right side)
