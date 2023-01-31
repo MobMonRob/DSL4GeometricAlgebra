@@ -95,7 +95,7 @@ The unary operators have the highest precedence, so they are executed before any
 #### Base monadic operators
 | precedence | symbol           | latex                         | unicode      | description | implementation | CLUscript |
 | :--------: | :--------------: | ----------------------------- | ------------ | ----------- | -------------- | :------- |
-| 5          | &#x2212;         | &#x2212;                      | \u2212       | negate | (-1 cast to multivector).gp(multivector) | - |
+| 5          | &#x002D;         | &#x2212;                      | \u002D       | negate | (-1 cast to multivector).gp(multivector) | - |
 | 6          | &#x207B;&#x00B9; | \textsuperscript{-1}          | \u207B\u00B9 | general inverse | multivector.generalInverse() | ! |
 | 6          | &#x002A;         | \textsuperscript{\*}          | \u002A       | dual | multivector.dual() | |
 | 6          | &#x02DC;         | \textsuperscript{$\tilde$}      | \u02DC       | reverse/adjoint: reverse all multiplications (a sign change operation) | multivector.reverse() | &#732; |
