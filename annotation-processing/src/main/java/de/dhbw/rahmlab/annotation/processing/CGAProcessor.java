@@ -1,7 +1,11 @@
 package de.dhbw.rahmlab.annotation.processing;
 
 import com.google.auto.service.AutoService;
+import de.dhbw.rahmlab.geomalgelang.api.Arguments;
+import de.dhbw.rahmlab.geomalgelang.api.Result;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +38,11 @@ public class CGAProcessor extends AbstractProcessor {
 		} catch (CGAAnnotationException ex) {
 			error(ex.element, ex.getMessage());
 		} catch (Exception ex) {
-			error(null, ex.getMessage());
+			StringWriter stringWriter = new StringWriter();
+			PrintWriter printWriter = new PrintWriter(stringWriter);
+			ex.printStackTrace(printWriter);
+			String message = stringWriter.toString();
+			error(null, message);
 		}
 
 		// The return boolean value should be true if your annotation processor has processed all the passed annotations, and you don't want them to be passed to other annotation processors down the list.
@@ -73,6 +81,12 @@ public class CGAProcessor extends AbstractProcessor {
 		Set<? extends Element> annotatedElements = roundEnv.getElementsAnnotatedWith(CGA.class);
 		List<CGAAnnotatedMethod> annotatedMethods = new ArrayList<>(annotatedElements.size());
 
+		TypeElement argumentsTypeElement = super.processingEnv.getElementUtils().getTypeElement(Arguments.class.getCanonicalName());
+		ClassRepresentation<Arguments> argumentsRepresentation = new ClassRepresentation<>(argumentsTypeElement);
+
+		TypeElement resultTypeElement = super.processingEnv.getElementUtils().getTypeElement(Result.class.getCanonicalName());
+		ClassRepresentation<Result> resultRepresentation = new ClassRepresentation<>(resultTypeElement);
+
 		for (Element annotatedElement : annotatedElements) {
 			// Wird schon sichergestellt durch @Target(ElementType.METHOD) in CGA.java
 			/*
@@ -82,7 +96,7 @@ public class CGAProcessor extends AbstractProcessor {
 			}
 			 */
 			ExecutableElement method = (ExecutableElement) annotatedElement;
-			CGAAnnotatedMethod annotatedMethod = new CGAAnnotatedMethod(method);
+			CGAAnnotatedMethod annotatedMethod = new CGAAnnotatedMethod(method, argumentsRepresentation, resultRepresentation);
 
 			annotatedMethods.add(annotatedMethod);
 

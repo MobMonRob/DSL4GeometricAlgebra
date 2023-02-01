@@ -3,6 +3,9 @@ package de.dhbw.rahmlab.annotation.processing;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
+import de.dhbw.rahmlab.annotation.processing.ClassRepresentation.MethodRepresentation;
+import de.dhbw.rahmlab.geomalgelang.api.Arguments;
+import de.dhbw.rahmlab.geomalgelang.api.Result;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -24,6 +27,10 @@ public class CGAAnnotatedMethod {
 
 	}
 
+	// Same for all instances. Could be static and assigned via dependency injection.
+	protected final ClassRepresentation<Arguments> argumentsRepresentation;
+	protected final ClassRepresentation<Result> resultRepresentation;
+
 	protected final ExecutableElement methodElement;
 	public final String enclosingInterfaceQualifiedName;
 	// public final String enclosingInterfaceName;
@@ -33,7 +40,9 @@ public class CGAAnnotatedMethod {
 	public final String identifier;
 	public final List<Parameter> parameters;
 
-	public CGAAnnotatedMethod(ExecutableElement methodElement) throws CGAAnnotationException {
+	public CGAAnnotatedMethod(ExecutableElement methodElement, ClassRepresentation<Arguments> argumentsRepresentation, ClassRepresentation<Result> resultRepresentation) throws CGAAnnotationException {
+		this.argumentsRepresentation = argumentsRepresentation;
+		this.resultRepresentation = resultRepresentation;
 		this.methodElement = methodElement;
 		this.enclosingInterfaceQualifiedName = getEnclosingInterfaceQualifiedName(methodElement);
 		// int nameSeparatorIndex = this.enclosingInterfaceQualifiedName.lastIndexOf(".");
@@ -100,6 +109,10 @@ public class CGAAnnotatedMethod {
 	}
 
 	public MethodSpec generateCode() throws CGAAnnotationException {
+		if (de.dhbw.rahmlab.geomalgelang.api.Program.class == null) {
+			throw CGAAnnotationException.create(null, "");
+		}
+
 		ClassName programClass = ClassName.get(de.dhbw.rahmlab.geomalgelang.api.Program.class);
 		ClassName argumentsClass = ClassName.get(de.dhbw.rahmlab.geomalgelang.api.Arguments.class);
 		ClassName resultClass = ClassName.get(de.dhbw.rahmlab.geomalgelang.api.Result.class);
@@ -127,30 +140,26 @@ public class CGAAnnotatedMethod {
 	}
 
 	protected String getAnswerDecompose() throws CGAAnnotationException {
-		// String DoubleName = ClassName.get(Double.class).canonicalName();
+		/*
+		ToDo: This is only needed once for all instances of CGAAnnotatedMethod. Reduce this Redundancy.
+		 */
+		List<MethodRepresentation> suppliers = this.resultRepresentation.publicMethods.stream()
+			.filter(m -> m.parameters().isEmpty())
+			.toList();
+		Map<String, String> returnTypeToMethodName = new HashMap<>(suppliers.size());
+		for (MethodRepresentation supplier : suppliers) {
+			// Only first method with given return type will be used
+			returnTypeToMethodName.putIfAbsent(supplier.returnType(), supplier.name());
+		}
 
-		String answerDecompose = switch (this.returnType) {
-			case "double" ->
-				"decomposeScalar";
-			case "java.lang.Double" ->
-				"asdfadsf";
-			case "iCGATangentOrRound.EuclideanParameters" ->
-				"decomposeTangentOrRound";
-			case "iCGAFlat.EuclideanParameters" ->
-				"decomposeFlat";
-			case "Vector3d" ->
-				"decomposeAttitude";
-			case "Quat4d" ->
-				"decomposeRotor";
-			case "PointPair" ->
-				"decomposePointPair";
-			default ->
-				null;
-		};
-		if (answerDecompose == null) {
+		// From here on the result is unique per instance.
+		returnTypeToMethodName.put(Double.class.getCanonicalName(), "weight");
+		String methodName = returnTypeToMethodName.get(this.returnType);
+		if (methodName == null) {
 			throw CGAAnnotationException.create(this.methodElement, "Return type \"%s\" is not supported.", this.returnType);
 		}
-		return answerDecompose;
+
+		return methodName;
 	}
 
 	protected record DecomposedParameter(String cgaVarName, String cgaType, String javaType) {
