@@ -20,5 +20,10 @@
 			<artifactId>annotation-processing</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>de.dhbw.rahmlab</groupId>
+			<artifactId>GeomAlgeLang</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 </project>

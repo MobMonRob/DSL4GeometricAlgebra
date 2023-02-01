@@ -100,9 +100,9 @@ public class CGAAnnotatedMethod {
 	}
 
 	public MethodSpec generateCode() throws CGAAnnotationException {
-		ClassName programClass = ClassName.get("de.dhbw.rahmlab.geomalgelang.api", "Progam");
-		ClassName argumentsClass = ClassName.get("de.dhbw.rahmlab.geomalgelang.api", "Arguments");
-		ClassName resultClass = ClassName.get("de.dhbw.rahmlab.geomalgelang.api", "Result");
+		ClassName programClass = ClassName.get(de.dhbw.rahmlab.geomalgelang.api.Program.class);
+		ClassName argumentsClass = ClassName.get(de.dhbw.rahmlab.geomalgelang.api.Arguments.class);
+		ClassName resultClass = ClassName.get(de.dhbw.rahmlab.geomalgelang.api.Result.class);
 
 		CodeBlock.Builder tryWithBodyBuilder = CodeBlock.builder()
 			.addStatement("$1T arguments = new $1T()", argumentsClass);
@@ -127,6 +127,8 @@ public class CGAAnnotatedMethod {
 	}
 
 	protected String getAnswerDecompose() throws CGAAnnotationException {
+		// String DoubleName = ClassName.get(Double.class).canonicalName();
+
 		String answerDecompose = switch (this.returnType) {
 			case "double" ->
 				"decomposeScalar";
