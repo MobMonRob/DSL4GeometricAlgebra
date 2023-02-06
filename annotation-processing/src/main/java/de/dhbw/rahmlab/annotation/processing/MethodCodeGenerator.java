@@ -100,21 +100,19 @@ public class MethodCodeGenerator {
 	}
 
 	protected List<MethodInvocationData> matchMethods(Map<String, List<DecomposedParameter>> cgaVarNameGroupedDecomposedParameters) throws CGAAnnotationException {
-		List<MethodInvocationData> methodInvocations = new ArrayList<>(cgaVarNameGroupedDecomposedParameters.size());
+		ArrayList<MethodInvocationData> methodInvocations = new ArrayList<>(cgaVarNameGroupedDecomposedParameters.size());
 		for (var cgaVarNameGroupedDecomposedParameter : cgaVarNameGroupedDecomposedParameters.entrySet()) {
-
 			String cgaVarName = cgaVarNameGroupedDecomposedParameter.getKey();
 			List<DecomposedParameter> parameters = cgaVarNameGroupedDecomposedParameter.getValue();
 			List<String> arguments = parameters.stream().map(a -> a.uncomposedParameter.identifier()).toList();
-			MethodRepresentation method = matchMethod(parameters, cgaVarName);
-
+			MethodRepresentation method = matchMethodFrom(parameters, cgaVarName);
 			MethodInvocationData argumentsMethodInvocationData = new MethodInvocationData(method, cgaVarName, arguments);
 			methodInvocations.add(argumentsMethodInvocationData);
 		}
 		return methodInvocations;
 	}
 
-	protected MethodRepresentation matchMethod(List<DecomposedParameter> callerParameters, String cgaVarName) throws CGAAnnotationException {
+	protected MethodRepresentation matchMethodFrom(List<DecomposedParameter> callerParameters, String cgaVarName) throws CGAAnnotationException {
 		// Safe assumption, List contains at least one parameter.
 		// Safe assumption all parameters of the list have the same cgaType.
 		String cgaType = callerParameters.get(0).cgaType;
