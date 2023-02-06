@@ -23,21 +23,6 @@ public class ClassCodeGenerator {
 	protected final List<MethodCodeGenerator> methodCodeGenerators;
 
 	public ClassCodeGenerator(String qualifiedInterfaceName, List<MethodCodeGenerator> methodCodeGenerators) {
-		/*
-		for (CGAAnnotatedMethod annotatedMethod : annotatedMethods) {
-			String currentQualifiedInterfaceName = annotatedMethod.enclosingInterfaceQualifiedName;
-
-			if (!(currentQualifiedInterfaceName.equals(qualifiedInterfaceName))) {
-				throw new IllegalArgumentException(
-					String.format(
-						"Method \"%s\" in \"%s\" cannot be added to InterfaceGroupedCGAAnnotatedMethods with qualifiedInterfaceName set to \"%s\". This is an error of the annotation processor programmer.",
-						annotatedMethod.identifier,
-						currentQualifiedInterfaceName,
-						qualifiedInterfaceName));
-			}
-		}
-		 */
-
 		this.qualifiedInterfaceName = qualifiedInterfaceName;
 		this.methodCodeGenerators = methodCodeGenerators;
 	}

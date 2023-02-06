@@ -11,7 +11,6 @@
 	<properties>
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>
-		<exec.mainClass>de.dhbw.rahmlab.annotation.processing.AnnotationProcessing</exec.mainClass>
 
 		<auto-service.version>1.0.1</auto-service.version>
 	</properties>

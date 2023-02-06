@@ -3,6 +3,8 @@ package de.dhbw.rahmlab.annotation.processing;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
+import de.dhbw.rahmlab.geomalgelang.api.Arguments;
+import de.dhbw.rahmlab.geomalgelang.api.Result;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -12,21 +14,21 @@ import java.util.stream.Collectors;
 public class MethodCodeGenerator {
 
 	protected final CGAAnnotatedMethod annotatedMethod;
+	protected final ClassRepresentation<Arguments> argumentsRepresentation;
+	protected final ClassRepresentation<Result> resultRepresentation;
 
-	public MethodCodeGenerator(CGAAnnotatedMethod annotatedMethod) {
+	public MethodCodeGenerator(CGAAnnotatedMethod annotatedMethod, ClassRepresentation<Arguments> argumentsRepresentation, ClassRepresentation<Result> resultRepresentation) {
 		this.annotatedMethod = annotatedMethod;
+		this.argumentsRepresentation = argumentsRepresentation;
+		this.resultRepresentation = resultRepresentation;
 	}
 
 	public MethodSpec generateCode() throws CGAAnnotationException {
-		if (de.dhbw.rahmlab.geomalgelang.api.Program.class == null) {
-			throw CGAAnnotationException.create(null, "");
-		}
-
 		ClassName programClass = ClassName.get(de.dhbw.rahmlab.geomalgelang.api.Program.class);
 		ClassName argumentsClass = ClassName.get(de.dhbw.rahmlab.geomalgelang.api.Arguments.class);
 		ClassName resultClass = ClassName.get(de.dhbw.rahmlab.geomalgelang.api.Result.class);
 
-		List<CodeBlock> arguments = getArguments();
+		List<CodeBlock> arguments = createArguments(computeMethodInvocations());
 
 		CodeBlock.Builder tryWithBodyBuilder = CodeBlock.builder()
 			.addStatement("$1T arguments = new $1T()", argumentsClass);
@@ -44,7 +46,7 @@ public class MethodCodeGenerator {
 		tryWithBodyBuilder.add("$<");
 		tryWithBodyBuilder
 			.addStatement("$T answer = program.invoke(arguments)", resultClass)
-			.addStatement("var answerDecomposed = answer.$L()", getAnswerDecompose())
+			.addStatement("var answerDecomposed = answer.$L()", computeDecompositionMethodName())
 			.addStatement("return answerDecomposed");
 		CodeBlock tryWithBody = tryWithBodyBuilder.build();
 
@@ -59,12 +61,8 @@ public class MethodCodeGenerator {
 		return method;
 	}
 
-	protected String getAnswerDecompose() throws CGAAnnotationException {
-		/*
-		if (this.returnType.equals("void")) {
-		}
-		 */
-		String methodName = this.annotatedMethod.resultRepresentation.returnTypeToMethodName.get(this.annotatedMethod.returnType);
+	protected String computeDecompositionMethodName() throws CGAAnnotationException {
+		String methodName = this.resultRepresentation.returnTypeToMethodName.get(this.annotatedMethod.returnType);
 		if (methodName == null) {
 			throw CGAAnnotationException.create(this.annotatedMethod.methodElement, "Return type \"%s\" is not supported.", this.annotatedMethod.returnType);
 		}
@@ -80,14 +78,8 @@ public class MethodCodeGenerator {
 
 	}
 
-	protected List<CodeBlock> getArguments() throws CGAAnnotationException {
-		List<DecomposedParameter> decomposedParameters = decomposeParameters();
-
-		LinkedHashMap<String, List<DecomposedParameter>> cgaVarNameGroupedDecomposedParameters = groupDecomposedParameters(decomposedParameters);
-
-		List<ArgumentsMethodInvocationData> methodInvocations = matchMethods(cgaVarNameGroupedDecomposedParameters);
-
-		List<CodeBlock> cgaConstructionMethodInvocations = new ArrayList<>(cgaVarNameGroupedDecomposedParameters.size());
+	protected List<CodeBlock> createArguments(List<ArgumentsMethodInvocationData> methodInvocations) {
+		List<CodeBlock> cgaConstructionMethodInvocations = new ArrayList<>(methodInvocations.size());
 		for (var methodInvocation : methodInvocations) {
 			CodeBlock.Builder cgaConstructionMethodInvocation = CodeBlock.builder();
 			cgaConstructionMethodInvocation.add(".$L($S", methodInvocation.method.name(), methodInvocation.cgaVarName);
@@ -101,12 +93,16 @@ public class MethodCodeGenerator {
 		return cgaConstructionMethodInvocations;
 	}
 
+	protected List<ArgumentsMethodInvocationData> computeMethodInvocations() throws CGAAnnotationException {
+		List<DecomposedParameter> decomposedParameters = decomposeParameters();
+		LinkedHashMap<String, List<DecomposedParameter>> cgaVarNameGroupedDecomposedParameters = groupDecomposedParameters(decomposedParameters);
+		List<ArgumentsMethodInvocationData> methodInvocations = matchMethods(cgaVarNameGroupedDecomposedParameters);
+		return methodInvocations;
+	}
+
 	protected List<ArgumentsMethodInvocationData> matchMethods(LinkedHashMap<String, List<DecomposedParameter>> cgaVarNameGroupedDecomposedParameters) throws CGAAnnotationException {
 		List<ArgumentsMethodInvocationData> methodInvocations = new ArrayList<>(cgaVarNameGroupedDecomposedParameters.size());
 		for (var cgaVarNameGroupedDecomposedParameter : cgaVarNameGroupedDecomposedParameters.entrySet()) {
-			// Evtl. wäre es sinnvoll, dass alles in eine passende Klasse auszulagern. Da wird man ja bekloppt.
-			// Evlt. wäre es sinnvoll, klar sprachlich zu unterscheiden zwischen Argumenten und Parametern.
-			//   Oder aber zwischen Parametern aus der annotierten Methode und denen aus den Methoden der Arguments Klasse.
 
 			String cgaVarName = cgaVarNameGroupedDecomposedParameter.getKey();
 			List<DecomposedParameter> arguments = cgaVarNameGroupedDecomposedParameter.getValue();
@@ -122,7 +118,7 @@ public class MethodCodeGenerator {
 		// Safe assumption, List contains at least one parameter.
 		// Safe assumption all parameters of the list have the same cgaType.
 		String cgaType = arguments.get(0).cgaType;
-		ClassRepresentation.MethodRepresentation method = this.annotatedMethod.argumentsRepresentation.methodNameToMethod.get(cgaType);
+		ClassRepresentation.MethodRepresentation method = this.argumentsRepresentation.methodNameToMethod.get(cgaType);
 		// Check matching method name.
 		if (method == null) {
 			throw CGAAnnotationException.create(this.annotatedMethod.methodElement, "No matching Methodname found for: %s", cgaType);
@@ -145,51 +141,11 @@ public class MethodCodeGenerator {
 	}
 
 	protected LinkedHashMap<String, List<DecomposedParameter>> groupDecomposedParameters(List<DecomposedParameter> decomposedParameters) throws CGAAnnotationException {
-		/*
-		HashMap<String, List<DecomposedParameter>> cgaVarNameGroupedDecomposedParameters = new LinkedHashMap<>();
-		String currentCgaVarName = decomposedParameters.isEmpty() ? null : decomposedParameters.get(0).cgaVarName;
-		List<DecomposedParameter> currentGroupedDecomposedParameters = new ArrayList<>();
-		for (DecomposedParameter decomposedParameter : decomposedParameters) {
-		if (decomposedParameter.cgaVarName.equals(currentCgaVarName)) {
-		currentGroupedDecomposedParameters.add(decomposedParameter);
-		} else {
-		var present = cgaVarNameGroupedDecomposedParameters.put(currentCgaVarName, currentGroupedDecomposedParameters);
-		if (present != null) {
-		throw CGAAnnotationException.create(this.methodElement, "Parameter name \"%s\" must only be declared sequentially, but wasn't.", decomposedParameter.cgaVarName);
-		}
-		currentCgaVarName = decomposedParameter.cgaVarName;
-		currentGroupedDecomposedParameters = new ArrayList<>();
-		currentGroupedDecomposedParameters.add(decomposedParameter);
-		}
-		}
-		if (currentCgaVarName != null) {
-		var present = cgaVarNameGroupedDecomposedParameters.put(currentCgaVarName, currentGroupedDecomposedParameters);
-		if (present != null) {
-		throw CGAAnnotationException.create(this.methodElement, "Parameter name \"%s\" must only be declared sequentially, but wasn't.", currentCgaVarName);
-		}
-		}
-		 */
-		/// Alternative:
-
-		// Assure  that same cgaVarNames occur only sequential.
-		// Not needed
-		/*
-		{
-			String previous = "";
-			HashSet<String> cgaVarNames = new HashSet<>();
-			for (DecomposedParameter decomposedParameter : decomposedParameters) {
-				boolean isNew = cgaVarNames.add(decomposedParameter.cgaVarName);
-				if (!isNew) {
-					throw CGAAnnotationException.create(this.methodElement, "Parameter name \"%s\" must only be declared sequentially, but wasn't.", decomposedParameter.cgaVarName);
-				}
-			}
-		}
-		 */
 		// Group cgaVarNames.
 		LinkedHashMap<String, List<DecomposedParameter>> cgaVarNameGroupedDecomposedParameters = decomposedParameters.stream().collect(Collectors.groupingBy(dp -> dp.cgaVarName, LinkedHashMap::new, Collectors.toList()));
 
 		// Check that cgaType of each cgaVarNameGroup is identical.
-		// Equal to: there is exactly one cgaTypeGroup within ech cgaVarNameGroup.
+		// Equal to: there is exactly one cgaTypeGroup within each cgaVarNameGroup.
 		for (Map.Entry<String, List<DecomposedParameter>> cgaVarNameGroup : cgaVarNameGroupedDecomposedParameters.entrySet()) {
 			Map<String, List<DecomposedParameter>> cgaTypeGroups = cgaVarNameGroup.getValue().stream()
 				.collect(Collectors.groupingBy(dp -> dp.cgaType));
