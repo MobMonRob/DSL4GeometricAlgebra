@@ -1,8 +1,6 @@
 package de.dhbw.rahmlab.annotation.processing;
 
 import com.google.auto.service.AutoService;
-import de.dhbw.rahmlab.geomalgelang.api.Arguments;
-import de.dhbw.rahmlab.geomalgelang.api.Result;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;

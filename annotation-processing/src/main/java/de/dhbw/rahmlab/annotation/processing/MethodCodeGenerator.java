@@ -54,8 +54,14 @@ public class MethodCodeGenerator {
 		argumentsClass = ClassName.get(de.dhbw.rahmlab.geomalgelang.api.Arguments.class);
 		resultClass = ClassName.get(de.dhbw.rahmlab.geomalgelang.api.Result.class);
 
+		treeStuff();
+
 		inited = true;
 		return new Factory();
+	}
+
+	protected static void treeStuff() {
+		//
 	}
 
 	public MethodSpec generateCode() throws CGAAnnotationException {
