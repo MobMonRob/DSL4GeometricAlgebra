@@ -12,34 +12,29 @@ import javax.lang.model.element.VariableElement;
 
 public class CGAAnnotatedMethod {
 
-	public record Parameter(String type, String identifier) {
-
-	}
-
 	protected final ExecutableElement methodElement;
 	public final String enclosingInterfaceQualifiedName;
 	public final CGA cgaMethodAnnotation;
-	public final String returnType;
-	public final String identifier;
-	public final List<Parameter> parameters;
+	public final MethodRepresentation methodRepresentation;
 
 	public CGAAnnotatedMethod(ExecutableElement methodElement) throws CGAAnnotationException {
 		this.methodElement = methodElement;
 		this.enclosingInterfaceQualifiedName = getEnclosingInterfaceQualifiedName(methodElement);
 		this.cgaMethodAnnotation = methodElement.getAnnotation(CGA.class);
 		ensureModifiersContainPublic(methodElement);
-		this.returnType = methodElement.getReturnType().toString();
-		this.identifier = methodElement.getSimpleName().toString();
-		this.parameters = getParameters(methodElement);
+		String returnType = methodElement.getReturnType().toString();
+		String identifier = methodElement.getSimpleName().toString();
+		List<ParameterRepresentation> parameters = getParameters(methodElement);
+		this.methodRepresentation = new MethodRepresentation(identifier, returnType, parameters);
 	}
 
-	protected static List<Parameter> getParameters(ExecutableElement methodElement) {
+	protected static List<ParameterRepresentation> getParameters(ExecutableElement methodElement) {
 		List<? extends VariableElement> variableElementParameters = methodElement.getParameters();
-		List<Parameter> parameters = new ArrayList<>(variableElementParameters.size());
+		List<ParameterRepresentation> parameters = new ArrayList<>(variableElementParameters.size());
 		for (VariableElement variableElementParameter : variableElementParameters) {
 			String type = variableElementParameter.asType().toString();
 			String name = variableElementParameter.getSimpleName().toString();
-			Parameter parameter = new Parameter(type, name);
+			ParameterRepresentation parameter = new ParameterRepresentation(type, name);
 			parameters.add(parameter);
 		}
 		return parameters;

@@ -12,14 +12,6 @@ import javax.lang.model.element.VariableElement;
 
 public class ClassRepresentation<T> {
 
-	public record ParameterRepresentation(String type, String name) {
-
-	}
-
-	public record MethodRepresentation(String name, String returnType, List<ParameterRepresentation> parameters) {
-
-	}
-
 	public final List<MethodRepresentation> publicMethods;
 
 	public final Map<String, String> returnTypeToMethodName;
@@ -36,7 +28,7 @@ public class ClassRepresentation<T> {
 		Map<String, MethodRepresentation> methodNameToMethod = new HashMap<>(publicMethods.size());
 		for (MethodRepresentation method : publicMethods) {
 			// Only first method with given name will be used.
-			methodNameToMethod.putIfAbsent(method.name, method);
+			methodNameToMethod.putIfAbsent(method.identifier(), method);
 		}
 
 		return methodNameToMethod;
@@ -49,7 +41,7 @@ public class ClassRepresentation<T> {
 		Map<String, String> returnTypeToMethodName = new HashMap<>(suppliers.size());
 		for (MethodRepresentation supplier : suppliers) {
 			// Only first method with given return type will be used
-			returnTypeToMethodName.putIfAbsent(supplier.returnType(), supplier.name());
+			returnTypeToMethodName.putIfAbsent(supplier.returnType(), supplier.identifier());
 		}
 
 		return returnTypeToMethodName;

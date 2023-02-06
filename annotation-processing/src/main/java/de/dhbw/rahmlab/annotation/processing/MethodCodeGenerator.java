@@ -24,23 +24,25 @@ public class MethodCodeGenerator {
 	}
 
 	public MethodSpec generateCode() throws CGAAnnotationException {
+		// Redundant to execute this for every MethodCodeGenerator
 		ClassName programClass = ClassName.get(de.dhbw.rahmlab.geomalgelang.api.Program.class);
 		ClassName argumentsClass = ClassName.get(de.dhbw.rahmlab.geomalgelang.api.Arguments.class);
 		ClassName resultClass = ClassName.get(de.dhbw.rahmlab.geomalgelang.api.Result.class);
 
-		List<CodeBlock> arguments = createArguments(computeMethodInvocations());
+		List<MethodInvocationData> argumentMethodInvocations = computeArgumentsMethodInvocations();
+		List<CodeBlock> argumentsMethodInvocationCode = createArgumentsMethodInvocationCode(argumentMethodInvocations);
 
 		CodeBlock.Builder tryWithBodyBuilder = CodeBlock.builder()
 			.addStatement("$1T arguments = new $1T()", argumentsClass);
-		if (arguments.size() >= 1) {
+		if (argumentsMethodInvocationCode.size() >= 1) {
 			tryWithBodyBuilder.add("arguments");
 		}
 		tryWithBodyBuilder.add("$>");
-		for (CodeBlock argument : arguments) {
+		for (CodeBlock argumentsMethodInvocation : argumentsMethodInvocationCode) {
 			tryWithBodyBuilder.add("\n");
-			tryWithBodyBuilder.add(argument);
+			tryWithBodyBuilder.add(argumentsMethodInvocation);
 		}
-		if (arguments.size() >= 1) {
+		if (argumentsMethodInvocationCode.size() >= 1) {
 			tryWithBodyBuilder.add(";\n");
 		}
 		tryWithBodyBuilder.add("$<");
@@ -62,27 +64,20 @@ public class MethodCodeGenerator {
 	}
 
 	protected String computeDecompositionMethodName() throws CGAAnnotationException {
-		String methodName = this.resultRepresentation.returnTypeToMethodName.get(this.annotatedMethod.returnType);
+		String returnType = this.annotatedMethod.methodRepresentation.returnType();
+		String methodName = this.resultRepresentation.returnTypeToMethodName.get(returnType);
 		if (methodName == null) {
-			throw CGAAnnotationException.create(this.annotatedMethod.methodElement, "Return type \"%s\" is not supported.", this.annotatedMethod.returnType);
+			throw CGAAnnotationException.create(this.annotatedMethod.methodElement, "Return type \"%s\" is not supported.", returnType);
 		}
 
 		return methodName;
 	}
 
-	protected record DecomposedParameter(String cgaVarName, String cgaType, String javaType, CGAAnnotatedMethod.Parameter uncomposedParameter) {
-
-	}
-
-	protected record ArgumentsMethodInvocationData(ClassRepresentation.MethodRepresentation method, String cgaVarName, List<DecomposedParameter> arguments) {
-
-	}
-
-	protected List<CodeBlock> createArguments(List<ArgumentsMethodInvocationData> methodInvocations) {
+	protected List<CodeBlock> createArgumentsMethodInvocationCode(List<MethodInvocationData> methodInvocations) {
 		List<CodeBlock> cgaConstructionMethodInvocations = new ArrayList<>(methodInvocations.size());
 		for (var methodInvocation : methodInvocations) {
 			CodeBlock.Builder cgaConstructionMethodInvocation = CodeBlock.builder();
-			cgaConstructionMethodInvocation.add(".$L($S", methodInvocation.method.name(), methodInvocation.cgaVarName);
+			cgaConstructionMethodInvocation.add(".$L($S", methodInvocation.method.identifier(), methodInvocation.cgaVarName);
 			for (DecomposedParameter argument : methodInvocation.arguments) {
 				cgaConstructionMethodInvocation.add(", $L", argument.uncomposedParameter.identifier());
 			}
@@ -93,37 +88,45 @@ public class MethodCodeGenerator {
 		return cgaConstructionMethodInvocations;
 	}
 
-	protected List<ArgumentsMethodInvocationData> computeMethodInvocations() throws CGAAnnotationException {
-		List<DecomposedParameter> decomposedParameters = decomposeParameters();
-		LinkedHashMap<String, List<DecomposedParameter>> cgaVarNameGroupedDecomposedParameters = groupDecomposedParameters(decomposedParameters);
-		List<ArgumentsMethodInvocationData> methodInvocations = matchMethods(cgaVarNameGroupedDecomposedParameters);
-		return methodInvocations;
+	protected record MethodInvocationData(MethodRepresentation method, String cgaVarName, List<DecomposedParameter> arguments) {
+
 	}
 
-	protected List<ArgumentsMethodInvocationData> matchMethods(LinkedHashMap<String, List<DecomposedParameter>> cgaVarNameGroupedDecomposedParameters) throws CGAAnnotationException {
-		List<ArgumentsMethodInvocationData> methodInvocations = new ArrayList<>(cgaVarNameGroupedDecomposedParameters.size());
+	protected List<MethodInvocationData> computeArgumentsMethodInvocations() throws CGAAnnotationException {
+		List<DecomposedParameter> decomposedParameters = decomposeParameters();
+		LinkedHashMap<String, List<DecomposedParameter>> cgaVarNameGroupedDecomposedParameters = groupDecomposedParameters(decomposedParameters);
+		List<MethodInvocationData> argumentsMethodInvocations = matchMethods(cgaVarNameGroupedDecomposedParameters);
+		return argumentsMethodInvocations;
+	}
+
+	protected record DecomposedParameter(String cgaVarName, String cgaType, String javaType, ParameterRepresentation uncomposedParameter) {
+
+	}
+
+	protected List<MethodInvocationData> matchMethods(Map<String, List<DecomposedParameter>> cgaVarNameGroupedDecomposedParameters) throws CGAAnnotationException {
+		List<MethodInvocationData> methodInvocations = new ArrayList<>(cgaVarNameGroupedDecomposedParameters.size());
 		for (var cgaVarNameGroupedDecomposedParameter : cgaVarNameGroupedDecomposedParameters.entrySet()) {
 
 			String cgaVarName = cgaVarNameGroupedDecomposedParameter.getKey();
 			List<DecomposedParameter> arguments = cgaVarNameGroupedDecomposedParameter.getValue();
-			ClassRepresentation.MethodRepresentation method = matchMethod(arguments, cgaVarName);
+			MethodRepresentation method = matchMethod(arguments, cgaVarName);
 
-			ArgumentsMethodInvocationData argumentsMethodInvocationData = new ArgumentsMethodInvocationData(method, cgaVarName, arguments);
+			MethodInvocationData argumentsMethodInvocationData = new MethodInvocationData(method, cgaVarName, arguments);
 			methodInvocations.add(argumentsMethodInvocationData);
 		}
 		return methodInvocations;
 	}
 
-	protected ClassRepresentation.MethodRepresentation matchMethod(List<DecomposedParameter> arguments, String cgaVarName) throws CGAAnnotationException {
+	protected MethodRepresentation matchMethod(List<DecomposedParameter> arguments, String cgaVarName) throws CGAAnnotationException {
 		// Safe assumption, List contains at least one parameter.
 		// Safe assumption all parameters of the list have the same cgaType.
 		String cgaType = arguments.get(0).cgaType;
-		ClassRepresentation.MethodRepresentation method = this.argumentsRepresentation.methodNameToMethod.get(cgaType);
+		MethodRepresentation method = this.argumentsRepresentation.methodNameToMethod.get(cgaType);
 		// Check matching method name.
 		if (method == null) {
 			throw CGAAnnotationException.create(this.annotatedMethod.methodElement, "No matching Methodname found for: %s", cgaType);
 		}
-		List<ClassRepresentation.ParameterRepresentation> parameters = method.parameters();
+		List<ParameterRepresentation> parameters = method.parameters();
 		// Check matching paramter and arguments count.
 		if (parameters.size() != 1 + arguments.size()) {
 			throw CGAAnnotationException.create(this.annotatedMethod.methodElement, "CGA type \"%s\" needs %d arguments, but only %d were given for cga variable \"%s\".", cgaType, parameters.size() - 1, arguments.size(), cgaVarName);
@@ -131,7 +134,7 @@ public class MethodCodeGenerator {
 		// Check equal types
 		int size = arguments.size();
 		for (int i = 0; i < size; ++i) {
-			ClassRepresentation.ParameterRepresentation parameter = method.parameters().get(i + 1);
+			ParameterRepresentation parameter = method.parameters().get(i + 1);
 			DecomposedParameter argument = arguments.get(i);
 			if (!argument.javaType.equals(parameter.type())) {
 				throw CGAAnnotationException.create(this.annotatedMethod.methodElement, "For cga variable \"%s\" at relative position %d: provided java type (\"%s\") differs from expected java type (\"%s\").", cgaVarName, i, argument.javaType, parameter.type());
@@ -158,8 +161,9 @@ public class MethodCodeGenerator {
 	}
 
 	protected List<DecomposedParameter> decomposeParameters() throws CGAAnnotationException {
-		List<DecomposedParameter> decomposedParameters = new ArrayList<>(this.annotatedMethod.parameters.size());
-		for (CGAAnnotatedMethod.Parameter parameter : this.annotatedMethod.parameters) {
+		List<ParameterRepresentation> parameters = this.annotatedMethod.methodRepresentation.parameters();
+		List<DecomposedParameter> decomposedParameters = new ArrayList<>(parameters.size());
+		for (ParameterRepresentation parameter : parameters) {
 			String[] identifierSplit = parameter.identifier().split("_", 3);
 			if (identifierSplit.length < 2) {
 				throw CGAAnnotationException.create(this.annotatedMethod.methodElement, "Parameter name \"%s\" must contain at least one \"_\"", parameter.identifier());

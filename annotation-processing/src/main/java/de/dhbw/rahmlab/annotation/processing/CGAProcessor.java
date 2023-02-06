@@ -109,17 +109,6 @@ public class CGAProcessor extends AbstractProcessor {
 			CGAAnnotatedMethod annotatedMethod = new CGAAnnotatedMethod(method);
 
 			annotatedMethods.add(annotatedMethod);
-
-			warn("enclosingInterfaceQualifiedName: " + annotatedMethod.enclosingInterfaceQualifiedName);
-			// warn("enclosingInterfaceName: " + annotatedMethod.enclosingInterfaceName);
-			// warn("enclosingPackageName: " + annotatedMethod.enclosingPackageName);
-			warn("source: " + annotatedMethod.cgaMethodAnnotation.source());
-			warn("returnType: " + annotatedMethod.returnType);
-			warn("identifier: " + annotatedMethod.identifier);
-			for (CGAAnnotatedMethod.Parameter parameter : annotatedMethod.parameters) {
-				warn("parameter: (" + parameter.type() + ") " + parameter.identifier());
-			}
-			warn("---");
 		}
 
 		return annotatedMethods;
