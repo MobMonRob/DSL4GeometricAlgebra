@@ -49,7 +49,8 @@ public class CGAGenClass {
 
 		List<MethodSpec> methods = new ArrayList<>(this.annotatedMethods.size());
 		for (CGAAnnotatedMethod annotatedMethod : this.annotatedMethods) {
-			MethodSpec method = annotatedMethod.generateCode();
+			CGAAnnotatedMethodCodeGenerator codeGnerator = new CGAAnnotatedMethodCodeGenerator(annotatedMethod);
+			MethodSpec method = codeGnerator.generateCode();
 			methods.add(method);
 		}
 
