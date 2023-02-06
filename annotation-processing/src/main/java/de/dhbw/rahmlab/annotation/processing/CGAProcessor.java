@@ -16,7 +16,6 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
 import javax.tools.Diagnostic.Kind;
@@ -31,10 +30,9 @@ public class CGAProcessor extends AbstractProcessor {
 		try {
 			List<CGAAnnotatedMethod> annotatedMethods = computeAnnotatedMethodsFrom(annotations, roundEnv);
 
-			// Set would be more correct.
-			List<CGAGenClass> cgaGenClasses = computeInterfaceGroupedAnnotatedMethodsFrom(annotatedMethods);
+			List<ClassCodeGenerator> classCodeGenerators = computeClassCodeGeneratorsFrom(annotatedMethods);
 
-			generateCode(cgaGenClasses);
+			generateCode(classCodeGenerators);
 		} catch (CGAAnnotationException ex) {
 			error(ex.element, ex.getMessage());
 		} catch (Exception ex) {
@@ -49,16 +47,16 @@ public class CGAProcessor extends AbstractProcessor {
 		return true;
 	}
 
-	protected void generateCode(List<CGAGenClass> cgaGenClasses) throws IOException, CGAAnnotationException {
+	protected void generateCode(List<ClassCodeGenerator> classCodeGenerators) throws IOException, CGAAnnotationException {
 		Elements elementUtils = super.processingEnv.getElementUtils();
 		Filer filer = super.processingEnv.getFiler();
 
-		for (CGAGenClass cgaGenClass : cgaGenClasses) {
-			cgaGenClass.generateCode(elementUtils, filer);
+		for (ClassCodeGenerator classCodeGenerator : classCodeGenerators) {
+			classCodeGenerator.generateCode(elementUtils, filer);
 		}
 	}
 
-	protected List<CGAGenClass> computeInterfaceGroupedAnnotatedMethodsFrom(List<CGAAnnotatedMethod> annotatedMethods) {
+	protected List<ClassCodeGenerator> computeClassCodeGeneratorsFrom(List<CGAAnnotatedMethod> annotatedMethods) {
 		Map<String, List<CGAAnnotatedMethod>> interfaceGroupedAnnotatedMethods = annotatedMethods.stream()
 			.collect(groupingBy(am -> am.enclosingInterfaceQualifiedName));
 
@@ -70,25 +68,36 @@ public class CGAProcessor extends AbstractProcessor {
 			warn("---");
 		}
 
-		List<CGAGenClass> cgaGenClasses = new ArrayList<>(interfaceGroupedAnnotatedMethods.entrySet().size());
+		List<ClassCodeGenerator> classCodeGenerators = new ArrayList<>(interfaceGroupedAnnotatedMethods.size());
+		for (var methodGroupEntry : interfaceGroupedAnnotatedMethods.entrySet()) {
+			String qualifiedInterfaceName = methodGroupEntry.getKey();
+			var methodGroup = methodGroupEntry.getValue();
+			List<MethodCodeGenerator> methodCodeGenerators = new ArrayList<>(methodGroup.size());
+			for (CGAAnnotatedMethod cgaAnnotatedMethod : methodGroup) {
+				MethodCodeGenerator methodCodeGenerator = new MethodCodeGenerator(cgaAnnotatedMethod);
+				methodCodeGenerators.add(methodCodeGenerator);
+			}
+			ClassCodeGenerator classCodeGenerator = new ClassCodeGenerator(qualifiedInterfaceName, methodCodeGenerators);
+			classCodeGenerators.add(classCodeGenerator);
+		}
 
-		interfaceGroupedAnnotatedMethods.forEach((f, ms) -> cgaGenClasses.add(new CGAGenClass(f, ms)));
-
-		return cgaGenClasses;
+		return classCodeGenerators;
 	}
 
 	protected List<CGAAnnotatedMethod> computeAnnotatedMethodsFrom(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) throws CGAAnnotationException {
 		Set<? extends Element> annotatedElements = roundEnv.getElementsAnnotatedWith(CGA.class);
 		List<CGAAnnotatedMethod> annotatedMethods = new ArrayList<>(annotatedElements.size());
 
-		TypeElement argumentsTypeElement = super.processingEnv.getElementUtils().getTypeElement(Arguments.class.getCanonicalName());
+		Elements elementUtils = super.processingEnv.getElementUtils();
+
+		TypeElement argumentsTypeElement = elementUtils.getTypeElement(Arguments.class.getCanonicalName());
 		ClassRepresentation<Arguments> argumentsRepresentation = new ClassRepresentation<>(argumentsTypeElement);
 
-		TypeElement resultTypeElement = super.processingEnv.getElementUtils().getTypeElement(Result.class.getCanonicalName());
+		TypeElement resultTypeElement = elementUtils.getTypeElement(Result.class.getCanonicalName());
 		ClassRepresentation<Result> resultRepresentation = new ClassRepresentation<>(resultTypeElement);
 
 		for (Element annotatedElement : annotatedElements) {
-			// Wird schon sichergestellt durch @Target(ElementType.METHOD) in CGA.java
+			// Already assured by @Target(ElementType.METHOD) in CGA.java
 			/*
 			if (annotatedElement.getKind() != ElementKind.METHOD) {
 				error(annotatedElement, "Annotation needs to be on METHOD, but was on %s.", annotatedElement.getKind().toString());

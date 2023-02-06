@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class CGAAnnotatedMethodCodeGenerator {
+public class MethodCodeGenerator {
 
 	protected final CGAAnnotatedMethod annotatedMethod;
 
-	public CGAAnnotatedMethodCodeGenerator(CGAAnnotatedMethod annotatedMethod) {
+	public MethodCodeGenerator(CGAAnnotatedMethod annotatedMethod) {
 		this.annotatedMethod = annotatedMethod;
 	}
 

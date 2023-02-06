@@ -13,16 +13,17 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 
-public class CGAGenClass {
+public class ClassCodeGenerator {
 
-	protected static final String SUFFIX = "Gen";
+	protected static final String CLASS_SUFFIX = "Gen";
+	protected static final String PACKAGE_SUFFIX = ".gen";
 
 	protected final String qualifiedInterfaceName;
 
-	// Set would be more correct.
-	protected final List<CGAAnnotatedMethod> annotatedMethods;
+	protected final List<MethodCodeGenerator> methodCodeGenerators;
 
-	public CGAGenClass(String qualifiedInterfaceName, List<CGAAnnotatedMethod> annotatedMethods) {
+	public ClassCodeGenerator(String qualifiedInterfaceName, List<MethodCodeGenerator> methodCodeGenerators) {
+		/*
 		for (CGAAnnotatedMethod annotatedMethod : annotatedMethods) {
 			String currentQualifiedInterfaceName = annotatedMethod.enclosingInterfaceQualifiedName;
 
@@ -35,22 +36,22 @@ public class CGAGenClass {
 						qualifiedInterfaceName));
 			}
 		}
+		 */
 
 		this.qualifiedInterfaceName = qualifiedInterfaceName;
-		this.annotatedMethods = annotatedMethods;
+		this.methodCodeGenerators = methodCodeGenerators;
 	}
 
 	public void generateCode(Elements elementUtils, Filer filer) throws IOException, CGAAnnotationException {
 		TypeElement implementingInterfaceName = elementUtils.getTypeElement(this.qualifiedInterfaceName);
-		String genClassName = implementingInterfaceName.getSimpleName() + SUFFIX;
+		String genClassName = implementingInterfaceName.getSimpleName() + CLASS_SUFFIX;
 
 		int nameSeparatorIndex = this.qualifiedInterfaceName.lastIndexOf(".");
-		String packageName = this.qualifiedInterfaceName.substring(0, nameSeparatorIndex) + ".gen";
+		String packageName = this.qualifiedInterfaceName.substring(0, nameSeparatorIndex) + PACKAGE_SUFFIX;
 
-		List<MethodSpec> methods = new ArrayList<>(this.annotatedMethods.size());
-		for (CGAAnnotatedMethod annotatedMethod : this.annotatedMethods) {
-			CGAAnnotatedMethodCodeGenerator codeGnerator = new CGAAnnotatedMethodCodeGenerator(annotatedMethod);
-			MethodSpec method = codeGnerator.generateCode();
+		List<MethodSpec> methods = new ArrayList<>(this.methodCodeGenerators.size());
+		for (MethodCodeGenerator methodCodeGenerator : this.methodCodeGenerators) {
+			MethodSpec method = methodCodeGenerator.generateCode();
 			methods.add(method);
 		}
 
