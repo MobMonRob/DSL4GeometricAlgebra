@@ -5,6 +5,8 @@ import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import de.dhbw.rahmlab.geomalgelang.api.Arguments;
 import de.dhbw.rahmlab.geomalgelang.api.Result;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -12,6 +14,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
+import org.linchimin.efficient_trie.PrefixTrie;
+import org.linchimin.efficient_trie.TrieNode;
 
 public class MethodCodeGenerator {
 
@@ -61,7 +65,22 @@ public class MethodCodeGenerator {
 	}
 
 	protected static void treeStuff() {
-		//
+		List<MethodRepresentation> publicMethods = argumentsRepresentation.publicMethods;
+		List<String> identifiers = publicMethods.stream()
+			.map(method -> method.identifier())
+			.toList();
+		// identifiers.forEach(id -> System.out.println(id));
+
+		TrieNode.setSupportedChars("ATabcdefghijklmnopqrstuvwxyz_");
+
+		PrefixTrie<MethodRepresentation> pt = new PrefixTrie(identifiers, publicMethods);
+		boolean allAdded = pt.isAllAdded();
+		System.out.println("allAdded: " + allAdded);
+		Instant i1 = Instant.now();
+		TrieNode<MethodRepresentation> node = pt.getNodeWithLongestCommonPart("line_opnsZZZasd");
+		Instant i2 = Instant.now();
+		System.out.println(ChronoUnit.MICROS.between(i1, i2));
+		System.out.println(node.toString());
 	}
 
 	public MethodSpec generateCode() throws CGAAnnotationException {
