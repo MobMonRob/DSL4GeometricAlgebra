@@ -10,25 +10,55 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.util.Elements;
 
 public class MethodCodeGenerator {
 
 	protected final CGAAnnotatedMethod annotatedMethod;
-	protected final ClassRepresentation<Arguments> argumentsRepresentation;
-	protected final ClassRepresentation<Result> resultRepresentation;
 
-	public MethodCodeGenerator(CGAAnnotatedMethod annotatedMethod, ClassRepresentation<Arguments> argumentsRepresentation, ClassRepresentation<Result> resultRepresentation) {
+	protected static ClassRepresentation<Arguments> argumentsRepresentation;
+	protected static ClassRepresentation<Result> resultRepresentation;
+	protected static ClassName programClass;
+	protected static ClassName argumentsClass;
+	protected static ClassName resultClass;
+	private static boolean inited = false;
+
+	public static class Factory {
+
+		private Factory() {
+
+		}
+
+		public MethodCodeGenerator create(CGAAnnotatedMethod annotatedMethod) {
+			return new MethodCodeGenerator(annotatedMethod);
+		}
+	}
+
+	private MethodCodeGenerator(CGAAnnotatedMethod annotatedMethod) {
 		this.annotatedMethod = annotatedMethod;
-		this.argumentsRepresentation = argumentsRepresentation;
-		this.resultRepresentation = resultRepresentation;
+	}
+
+	public static synchronized Factory init(Elements elementUtils) {
+		if (inited) {
+			throw new RuntimeException("MethodCodeGenerator was already inited. Can be inited only once.");
+		}
+
+		TypeElement argumentsTypeElement = elementUtils.getTypeElement(Arguments.class.getCanonicalName());
+		argumentsRepresentation = new ClassRepresentation<>(argumentsTypeElement);
+
+		TypeElement resultTypeElement = elementUtils.getTypeElement(Result.class.getCanonicalName());
+		resultRepresentation = new ClassRepresentation<>(resultTypeElement);
+
+		programClass = ClassName.get(de.dhbw.rahmlab.geomalgelang.api.Program.class);
+		argumentsClass = ClassName.get(de.dhbw.rahmlab.geomalgelang.api.Arguments.class);
+		resultClass = ClassName.get(de.dhbw.rahmlab.geomalgelang.api.Result.class);
+
+		inited = true;
+		return new Factory();
 	}
 
 	public MethodSpec generateCode() throws CGAAnnotationException {
-		// Redundant to execute this for every MethodCodeGenerator
-		ClassName programClass = ClassName.get(de.dhbw.rahmlab.geomalgelang.api.Program.class);
-		ClassName argumentsClass = ClassName.get(de.dhbw.rahmlab.geomalgelang.api.Arguments.class);
-		ClassName resultClass = ClassName.get(de.dhbw.rahmlab.geomalgelang.api.Result.class);
-
 		List<MethodInvocationData> argumentMethodInvocations = computeArgumentsMethodInvocations();
 		List<CodeBlock> argumentsMethodInvocationCode = createArgumentsMethodInvocationCode(argumentMethodInvocations);
 
