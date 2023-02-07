@@ -93,25 +93,8 @@ public class MethodCodeGenerator {
 	}
 
 	protected static void treeStuff() {
-
 		List<MethodRepresentation> publicMethods = argumentsRepresentation.publicMethods;
-		List<String> identifiers = publicMethods.stream()
-			.map(method -> method.identifier())
-			.toList();
-		// identifiers.forEach(id -> System.out.println(id));
 
-		/*
-		TrieNode.setSupportedChars("ATabcdefghijklmnopqrstuvwxyz_");
-
-		PrefixTrie<MethodRepresentation> pt = new PrefixTrie(identifiers, publicMethods);
-		boolean allAdded = pt.isAllAdded();
-		System.out.println("allAdded: " + allAdded);
-		Instant i1 = Instant.now();
-		TrieNode<MethodRepresentation> node = pt.getNodeWithLongestCommonPart("line_opnsZZZasd");
-		Instant i2 = Instant.now();
-		System.out.println(ChronoUnit.MICROS.between(i1, i2));
-		System.out.println(node.toString());
-		 */
 		Instant j1 = Instant.now();
 		InvertedRadixTree<MethodRepresentation> tree = new ConcurrentInvertedRadixTree<>(new DefaultCharArrayNodeFactory());
 		for (MethodRepresentation method : publicMethods) {

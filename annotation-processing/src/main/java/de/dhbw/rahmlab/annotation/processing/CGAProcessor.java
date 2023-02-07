@@ -2,8 +2,6 @@ package de.dhbw.rahmlab.annotation.processing;
 
 import com.google.auto.service.AutoService;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +13,6 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
-import javax.tools.Diagnostic;
 
 @SupportedAnnotationTypes("de.dhbw.rahmlab.annotation.processing.CGA")
 @SupportedSourceVersion(SourceVersion.RELEASE_17)
