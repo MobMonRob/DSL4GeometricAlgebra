@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 
-public class MethodCodeGenerator {
+public class CGAMethodCodeGenerator {
 
 	protected final CGAAnnotatedMethod annotatedMethod;
 
@@ -39,7 +39,7 @@ public class MethodCodeGenerator {
 
 		}
 
-		public MethodCodeGenerator create(CGAAnnotatedMethod annotatedMethod) {
+		public CGAMethodCodeGenerator create(CGAAnnotatedMethod annotatedMethod) {
 			factoryLock.lock();
 			try {
 				if (this != factory) {
@@ -49,11 +49,11 @@ public class MethodCodeGenerator {
 				factoryLock.unlock();
 			}
 
-			return new MethodCodeGenerator(annotatedMethod);
+			return new CGAMethodCodeGenerator(annotatedMethod);
 		}
 	}
 
-	private MethodCodeGenerator(CGAAnnotatedMethod annotatedMethod) {
+	private CGAMethodCodeGenerator(CGAAnnotatedMethod annotatedMethod) {
 		this.annotatedMethod = annotatedMethod;
 	}
 
@@ -110,7 +110,7 @@ public class MethodCodeGenerator {
 		System.out.println("key: " + value.getKey());
 	}
 
-	public MethodSpec generateCode() throws CGAAnnotationException {
+	public MethodSpec generateCode() throws AnnotationException {
 		List<MethodInvocationData> argumentMethodInvocations = computeArgumentsMethodInvocations();
 		List<CodeBlock> argumentsMethodInvocationCode = createArgumentsMethodInvocationCode(argumentMethodInvocations);
 
@@ -145,11 +145,11 @@ public class MethodCodeGenerator {
 		return method;
 	}
 
-	protected String computeDecompositionMethodName() throws CGAAnnotationException {
+	protected String computeDecompositionMethodName() throws AnnotationException {
 		String returnType = this.annotatedMethod.methodRepresentation.returnType();
 		String methodName = this.resultRepresentation.returnTypeToMethodName.get(returnType);
 		if (methodName == null) {
-			throw CGAAnnotationException.create(this.annotatedMethod.methodElement, "Return type \"%s\" is not supported.", returnType);
+			throw AnnotationException.create(this.annotatedMethod.methodElement, "Return type \"%s\" is not supported.", returnType);
 		}
 
 		return methodName;
@@ -170,7 +170,7 @@ public class MethodCodeGenerator {
 		return cgaConstructionMethodInvocations;
 	}
 
-	protected List<MethodInvocationData> computeArgumentsMethodInvocations() throws CGAAnnotationException {
+	protected List<MethodInvocationData> computeArgumentsMethodInvocations() throws AnnotationException {
 		List<DecomposedParameter> decomposedParameters = decomposeParameters();
 		LinkedHashMap<String, List<DecomposedParameter>> cgaVarNameGroupedDecomposedParameters = groupDecomposedParameters(decomposedParameters);
 		List<MethodInvocationData> argumentsMethodInvocations = matchMethods(cgaVarNameGroupedDecomposedParameters);
@@ -181,7 +181,7 @@ public class MethodCodeGenerator {
 
 	}
 
-	protected List<MethodInvocationData> matchMethods(Map<String, List<DecomposedParameter>> cgaVarNameGroupedDecomposedParameters) throws CGAAnnotationException {
+	protected List<MethodInvocationData> matchMethods(Map<String, List<DecomposedParameter>> cgaVarNameGroupedDecomposedParameters) throws AnnotationException {
 		ArrayList<MethodInvocationData> methodInvocations = new ArrayList<>(cgaVarNameGroupedDecomposedParameters.size());
 		for (var cgaVarNameGroupedDecomposedParameter : cgaVarNameGroupedDecomposedParameters.entrySet()) {
 			String cgaVarName = cgaVarNameGroupedDecomposedParameter.getKey();
@@ -194,19 +194,19 @@ public class MethodCodeGenerator {
 		return methodInvocations;
 	}
 
-	protected MethodRepresentation matchMethodFrom(List<DecomposedParameter> callerParameters, String cgaVarName) throws CGAAnnotationException {
+	protected MethodRepresentation matchMethodFrom(List<DecomposedParameter> callerParameters, String cgaVarName) throws AnnotationException {
 		// Safe assumption, List contains at least one parameter.
 		// Safe assumption all parameters of the list have the same cgaType.
 		String cgaType = callerParameters.get(0).cgaType;
 		MethodRepresentation callee = this.argumentsRepresentation.methodNameToMethod.get(cgaType);
 		// Check matching method name.
 		if (callee == null) {
-			throw CGAAnnotationException.create(this.annotatedMethod.methodElement, "No matching Methodname found for: %s", cgaType);
+			throw AnnotationException.create(this.annotatedMethod.methodElement, "No matching Methodname found for: %s", cgaType);
 		}
 		List<ParameterRepresentation> calleeParameters = callee.parameters();
 		// Check matching paramter and arguments count.
 		if (calleeParameters.size() != 1 + callerParameters.size()) {
-			throw CGAAnnotationException.create(this.annotatedMethod.methodElement, "CGA type \"%s\" needs %d arguments, but only %d were given for cga variable \"%s\".", cgaType, calleeParameters.size() - 1, callerParameters.size(), cgaVarName);
+			throw AnnotationException.create(this.annotatedMethod.methodElement, "CGA type \"%s\" needs %d arguments, but only %d were given for cga variable \"%s\".", cgaType, calleeParameters.size() - 1, callerParameters.size(), cgaVarName);
 		}
 		// Check equal types
 		int size = callerParameters.size();
@@ -214,13 +214,13 @@ public class MethodCodeGenerator {
 			ParameterRepresentation parameter = callee.parameters().get(i + 1);
 			DecomposedParameter argument = callerParameters.get(i);
 			if (!argument.javaType.equals(parameter.type())) {
-				throw CGAAnnotationException.create(this.annotatedMethod.methodElement, "For cga variable \"%s\" at relative position %d: provided java type (\"%s\") differs from expected java type (\"%s\").", cgaVarName, i, argument.javaType, parameter.type());
+				throw AnnotationException.create(this.annotatedMethod.methodElement, "For cga variable \"%s\" at relative position %d: provided java type (\"%s\") differs from expected java type (\"%s\").", cgaVarName, i, argument.javaType, parameter.type());
 			}
 		}
 		return callee;
 	}
 
-	protected LinkedHashMap<String, List<DecomposedParameter>> groupDecomposedParameters(List<DecomposedParameter> decomposedParameters) throws CGAAnnotationException {
+	protected LinkedHashMap<String, List<DecomposedParameter>> groupDecomposedParameters(List<DecomposedParameter> decomposedParameters) throws AnnotationException {
 		// Group cgaVarNames.
 		LinkedHashMap<String, List<DecomposedParameter>> cgaVarNameGroupedDecomposedParameters = decomposedParameters.stream().collect(Collectors.groupingBy(dp -> dp.cgaVarName, LinkedHashMap::new, Collectors.toList()));
 
@@ -230,7 +230,7 @@ public class MethodCodeGenerator {
 			Map<String, List<DecomposedParameter>> cgaTypeGroups = cgaVarNameGroup.getValue().stream()
 				.collect(Collectors.groupingBy(dp -> dp.cgaType));
 			if (cgaTypeGroups.size() != 1) {
-				throw CGAAnnotationException.create(this.annotatedMethod.methodElement, "CGA type name must be equal for all occurences of the same cga parameter but were not for the cga parameter with name \"%s\".", cgaVarNameGroup.getKey());
+				throw AnnotationException.create(this.annotatedMethod.methodElement, "CGA type name must be equal for all occurences of the same cga parameter but were not for the cga parameter with name \"%s\".", cgaVarNameGroup.getKey());
 			}
 		}
 
@@ -241,13 +241,13 @@ public class MethodCodeGenerator {
 
 	}
 
-	protected List<DecomposedParameter> decomposeParameters() throws CGAAnnotationException {
+	protected List<DecomposedParameter> decomposeParameters() throws AnnotationException {
 		List<ParameterRepresentation> parameters = this.annotatedMethod.methodRepresentation.parameters();
 		List<DecomposedParameter> decomposedParameters = new ArrayList<>(parameters.size());
 		for (ParameterRepresentation parameter : parameters) {
 			String[] identifierSplit = parameter.identifier().split("_", 3);
 			if (identifierSplit.length < 2) {
-				throw CGAAnnotationException.create(this.annotatedMethod.methodElement, "Parameter name \"%s\" must contain at least one \"_\"", parameter.identifier());
+				throw AnnotationException.create(this.annotatedMethod.methodElement, "Parameter name \"%s\" must contain at least one \"_\"", parameter.identifier());
 			}
 
 			String cgaVarName = identifierSplit[0];

@@ -20,14 +20,14 @@ public class ClassCodeGenerator {
 
 	protected final String qualifiedInterfaceName;
 
-	protected final List<MethodCodeGenerator> methodCodeGenerators;
+	protected final List<CGAMethodCodeGenerator> methodCodeGenerators;
 
-	public ClassCodeGenerator(String qualifiedInterfaceName, List<MethodCodeGenerator> methodCodeGenerators) {
+	public ClassCodeGenerator(String qualifiedInterfaceName, List<CGAMethodCodeGenerator> methodCodeGenerators) {
 		this.qualifiedInterfaceName = qualifiedInterfaceName;
 		this.methodCodeGenerators = methodCodeGenerators;
 	}
 
-	public void generateCode(Elements elementUtils, Filer filer) throws IOException, CGAAnnotationException {
+	public void generateCode(Elements elementUtils, Filer filer) throws IOException, AnnotationException {
 		TypeElement implementingInterfaceName = elementUtils.getTypeElement(this.qualifiedInterfaceName);
 		String genClassName = implementingInterfaceName.getSimpleName() + CLASS_SUFFIX;
 
@@ -35,7 +35,7 @@ public class ClassCodeGenerator {
 		String packageName = this.qualifiedInterfaceName.substring(0, nameSeparatorIndex) + PACKAGE_SUFFIX;
 
 		List<MethodSpec> methods = new ArrayList<>(this.methodCodeGenerators.size());
-		for (MethodCodeGenerator methodCodeGenerator : this.methodCodeGenerators) {
+		for (CGAMethodCodeGenerator methodCodeGenerator : this.methodCodeGenerators) {
 			MethodSpec method = methodCodeGenerator.generateCode();
 			methods.add(method);
 		}

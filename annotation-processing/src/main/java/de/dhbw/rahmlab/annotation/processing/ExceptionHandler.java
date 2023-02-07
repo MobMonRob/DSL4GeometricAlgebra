@@ -16,13 +16,13 @@ public class ExceptionHandler {
 
 	public interface Executable {
 
-		void execute() throws CGAAnnotationException, Exception;
+		void execute() throws AnnotationException, Exception;
 	}
 
 	public void handle(Executable executable) {
 		try {
 			executable.execute();
-		} catch (CGAAnnotationException ex) {
+		} catch (AnnotationException ex) {
 			error(ex.element, ex.getMessage());
 		} catch (Exception ex) {
 			StringWriter stringWriter = new StringWriter();

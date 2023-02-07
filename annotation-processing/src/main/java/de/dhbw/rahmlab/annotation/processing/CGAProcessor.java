@@ -24,7 +24,7 @@ public class CGAProcessor extends AbstractProcessor {
 	protected ExceptionHandler exceptionHandler;
 
 	// Mitigates issues with Netbeans realtime codeanalysis.
-	private static MethodCodeGenerator.Factory methodCodeGeneratorFactory = null;
+	private static CGAMethodCodeGenerator.Factory methodCodeGeneratorFactory = null;
 
 	@Override
 	public synchronized void init(ProcessingEnvironment processingEnv) {
@@ -33,7 +33,7 @@ public class CGAProcessor extends AbstractProcessor {
 		this.filer = processingEnv.getFiler();
 		this.exceptionHandler = new ExceptionHandler(processingEnv.getMessager());
 		this.exceptionHandler.handle(() -> {
-			methodCodeGeneratorFactory = MethodCodeGenerator.init(this.elementUtils, methodCodeGeneratorFactory);
+			methodCodeGeneratorFactory = CGAMethodCodeGenerator.init(this.elementUtils, methodCodeGeneratorFactory);
 		});
 	}
 
@@ -50,18 +50,18 @@ public class CGAProcessor extends AbstractProcessor {
 		return true;
 	}
 
-	protected void generateCode(List<ClassCodeGenerator> classCodeGenerators) throws IOException, CGAAnnotationException {
+	protected void generateCode(List<ClassCodeGenerator> classCodeGenerators) throws IOException, AnnotationException {
 		for (ClassCodeGenerator classCodeGenerator : classCodeGenerators) {
 			classCodeGenerator.generateCode(this.elementUtils, this.filer);
 		}
 	}
 
-	protected List<ClassCodeGenerator> computeClassCodeGeneratorsFrom(Map<String, List<CGAAnnotatedMethod>> interfaceGroupedAnnotatedMethods) throws CGAAnnotationException {
+	protected List<ClassCodeGenerator> computeClassCodeGeneratorsFrom(Map<String, List<CGAAnnotatedMethod>> interfaceGroupedAnnotatedMethods) throws AnnotationException {
 		List<ClassCodeGenerator> classCodeGenerators = new ArrayList<>(interfaceGroupedAnnotatedMethods.size());
 		for (var methodGroupEntry : interfaceGroupedAnnotatedMethods.entrySet()) {
 			String qualifiedInterfaceName = methodGroupEntry.getKey();
 			var methodGroup = methodGroupEntry.getValue();
-			List<MethodCodeGenerator> methodCodeGenerators = computeMethodCodeGenerators(methodGroup);
+			List<CGAMethodCodeGenerator> methodCodeGenerators = computeMethodCodeGenerators(methodGroup);
 			ClassCodeGenerator classCodeGenerator = new ClassCodeGenerator(qualifiedInterfaceName, methodCodeGenerators);
 			classCodeGenerators.add(classCodeGenerator);
 		}
@@ -69,10 +69,10 @@ public class CGAProcessor extends AbstractProcessor {
 		return classCodeGenerators;
 	}
 
-	protected List<MethodCodeGenerator> computeMethodCodeGenerators(List<CGAAnnotatedMethod> methodGroup) {
-		List<MethodCodeGenerator> methodCodeGenerators = new ArrayList<>(methodGroup.size());
+	protected List<CGAMethodCodeGenerator> computeMethodCodeGenerators(List<CGAAnnotatedMethod> methodGroup) {
+		List<CGAMethodCodeGenerator> methodCodeGenerators = new ArrayList<>(methodGroup.size());
 		for (CGAAnnotatedMethod cgaAnnotatedMethod : methodGroup) {
-			MethodCodeGenerator methodCodeGenerator = methodCodeGeneratorFactory.create(cgaAnnotatedMethod);
+			CGAMethodCodeGenerator methodCodeGenerator = methodCodeGeneratorFactory.create(cgaAnnotatedMethod);
 			methodCodeGenerators.add(methodCodeGenerator);
 		}
 		return methodCodeGenerators;
@@ -84,7 +84,7 @@ public class CGAProcessor extends AbstractProcessor {
 		return interfaceGroupedAnnotatedMethods;
 	}
 
-	protected List<CGAAnnotatedMethod> computeAnnotatedMethodsFrom(RoundEnvironment roundEnv) throws CGAAnnotationException {
+	protected List<CGAAnnotatedMethod> computeAnnotatedMethodsFrom(RoundEnvironment roundEnv) throws AnnotationException {
 		Set<? extends Element> annotatedElements = roundEnv.getElementsAnnotatedWith(CGA.class);
 		List<CGAAnnotatedMethod> annotatedMethods = new ArrayList<>(annotatedElements.size());
 

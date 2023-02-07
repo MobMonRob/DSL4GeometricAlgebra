@@ -17,9 +17,10 @@ public class CGAAnnotatedMethod {
 	public final CGA cgaMethodAnnotation;
 	public final MethodRepresentation methodRepresentation;
 
-	public CGAAnnotatedMethod(ExecutableElement methodElement) throws CGAAnnotationException {
+	public CGAAnnotatedMethod(ExecutableElement methodElement) throws AnnotationException {
 		this.methodElement = methodElement;
 		this.enclosingInterfaceQualifiedName = getEnclosingInterfaceQualifiedName(methodElement);
+		// Only the following line prevents genericity of this class. Thus still prefixed with "CGA".
 		this.cgaMethodAnnotation = methodElement.getAnnotation(CGA.class);
 		ensureModifiersContainPublic(methodElement);
 		String returnType = methodElement.getReturnType().toString();
@@ -40,15 +41,15 @@ public class CGAAnnotatedMethod {
 		return parameters;
 	}
 
-	protected static void ensureModifiersContainPublic(ExecutableElement methodElement) throws CGAAnnotationException {
+	protected static void ensureModifiersContainPublic(ExecutableElement methodElement) throws AnnotationException {
 		Set<Modifier> modifiers = methodElement.getModifiers();
 		boolean containsPublic = modifiers.contains(Modifier.PUBLIC);
 		if (!containsPublic) {
-			throw CGAAnnotationException.create(methodElement, "Method needs to be \"public\".");
+			throw AnnotationException.create(methodElement, "Method needs to be \"public\".");
 		}
 	}
 
-	protected static String getEnclosingInterfaceQualifiedName(ExecutableElement methodElement) throws CGAAnnotationException {
+	protected static String getEnclosingInterfaceQualifiedName(ExecutableElement methodElement) throws AnnotationException {
 		Element directEnclosingElement = methodElement.getEnclosingElement();
 		ElementKind directEnclosingElementKind = directEnclosingElement.getKind();
 
@@ -56,7 +57,7 @@ public class CGAAnnotatedMethod {
 		if (directEnclosingElementKind == ElementKind.INTERFACE) {
 			enclosingInterface = (TypeElement) directEnclosingElement;
 		} else {
-			throw CGAAnnotationException.create(methodElement, "Expected method to be enclosed by an INTERFACE, but was enclosed by \"%s\"", directEnclosingElementKind.toString());
+			throw AnnotationException.create(methodElement, "Expected method to be enclosed by an INTERFACE, but was enclosed by \"%s\"", directEnclosingElementKind.toString());
 		}
 
 		return enclosingInterface.getQualifiedName().toString();
