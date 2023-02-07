@@ -1,5 +1,9 @@
 package de.dhbw.rahmlab.annotation.processing;
 
+import com.googlecode.concurrenttrees.common.KeyValuePair;
+import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
+import com.googlecode.concurrenttrees.radixinverted.ConcurrentInvertedRadixTree;
+import com.googlecode.concurrenttrees.radixinverted.InvertedRadixTree;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
@@ -11,14 +15,11 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
-import org.linchimin.efficient_trie.PrefixTrie;
-import org.linchimin.efficient_trie.TrieNode;
 
 public class MethodCodeGenerator {
 
@@ -63,9 +64,6 @@ public class MethodCodeGenerator {
 			if ((factory != null) && (oldFactory != factory)) {
 				throw new RuntimeException("MethodCodeGenerator was already inited. Can be reinited only with the original factory object.");
 			}
-			if (factory == null) {
-				factory = new Factory();
-			}
 		} finally {
 			factoryLock.unlock();
 		}
@@ -82,16 +80,27 @@ public class MethodCodeGenerator {
 
 		treeStuff();
 
+		// Ensures subsequent initing will work even if an exception is thrown in the init() method.
+		factoryLock.lock();
+		try {
+			if (factory == null) {
+				factory = new Factory();
+			}
+		} finally {
+			factoryLock.unlock();
+		}
 		return factory;
 	}
 
 	protected static void treeStuff() {
+
 		List<MethodRepresentation> publicMethods = argumentsRepresentation.publicMethods;
 		List<String> identifiers = publicMethods.stream()
 			.map(method -> method.identifier())
 			.toList();
 		// identifiers.forEach(id -> System.out.println(id));
 
+		/*
 		TrieNode.setSupportedChars("ATabcdefghijklmnopqrstuvwxyz_");
 
 		PrefixTrie<MethodRepresentation> pt = new PrefixTrie(identifiers, publicMethods);
@@ -102,6 +111,20 @@ public class MethodCodeGenerator {
 		Instant i2 = Instant.now();
 		System.out.println(ChronoUnit.MICROS.between(i1, i2));
 		System.out.println(node.toString());
+		 */
+		Instant j1 = Instant.now();
+		InvertedRadixTree<MethodRepresentation> tree = new ConcurrentInvertedRadixTree<>(new DefaultCharArrayNodeFactory());
+		for (MethodRepresentation method : publicMethods) {
+			tree.put(method.identifier(), method);
+		}
+		Instant j2 = Instant.now();
+		System.out.println("time1[us]: " + ChronoUnit.MICROS.between(j1, j2));
+
+		Instant i1 = Instant.now();
+		KeyValuePair<MethodRepresentation> value = tree.getKeyValuePairForLongestKeyPrefixing("line_opn");
+		Instant i2 = Instant.now();
+		System.out.println("time2[us]: " + ChronoUnit.MICROS.between(i1, i2));
+		System.out.println("key: " + value.getKey());
 	}
 
 	public MethodSpec generateCode() throws CGAAnnotationException {

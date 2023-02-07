@@ -16,7 +16,6 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
-import javax.tools.Diagnostic.Kind;
 
 @SupportedAnnotationTypes("de.dhbw.rahmlab.annotation.processing.CGA")
 @SupportedSourceVersion(SourceVersion.RELEASE_17)
@@ -25,7 +24,8 @@ public class CGAProcessor extends AbstractProcessor {
 
 	protected Elements elementUtils;
 	protected Filer filer;
-	protected Messager messager;
+	protected ExceptionHandler exceptionHandler;
+
 	// Mitigates issues with Netbeans realtime codeanalysis.
 	private static MethodCodeGenerator.Factory methodCodeGeneratorFactory = null;
 
@@ -34,28 +34,20 @@ public class CGAProcessor extends AbstractProcessor {
 		super.init(processingEnv);
 		this.elementUtils = processingEnv.getElementUtils();
 		this.filer = processingEnv.getFiler();
-		this.messager = processingEnv.getMessager();
-		methodCodeGeneratorFactory = MethodCodeGenerator.init(this.elementUtils, methodCodeGeneratorFactory);
+		this.exceptionHandler = new ExceptionHandler(processingEnv.getMessager());
+		this.exceptionHandler.handle(() -> {
+			methodCodeGeneratorFactory = MethodCodeGenerator.init(this.elementUtils, methodCodeGeneratorFactory);
+		});
 	}
 
 	@Override
 	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-		try {
+		this.exceptionHandler.handle(() -> {
 			List<CGAAnnotatedMethod> annotatedMethods = computeAnnotatedMethodsFrom(roundEnv);
 			Map<String, List<CGAAnnotatedMethod>> interfaceGroupedAnnotatedMethods = computeInterfaceGroupedAnnotatedMethodsFrom(annotatedMethods);
 			List<ClassCodeGenerator> classCodeGenerators = computeClassCodeGeneratorsFrom(interfaceGroupedAnnotatedMethods);
 			generateCode(classCodeGenerators);
-
-		} catch (CGAAnnotationException ex) {
-			error(ex.element, ex.getMessage());
-
-		} catch (Exception ex) {
-			StringWriter stringWriter = new StringWriter();
-			PrintWriter printWriter = new PrintWriter(stringWriter);
-			ex.printStackTrace(printWriter);
-			String message = stringWriter.toString();
-			error(null, message);
-		}
+		});
 
 		// The return boolean value should be true if your annotation processor has processed all the passed annotations, and you don't want them to be passed to other annotation processors down the list.
 		return true;
@@ -114,16 +106,5 @@ public class CGAProcessor extends AbstractProcessor {
 		}
 
 		return annotatedMethods;
-	}
-
-	protected void error(Element e, String message, Object... args) {
-		this.messager.printMessage(
-			Diagnostic.Kind.ERROR,
-			String.format(message, args),
-			e);
-	}
-
-	protected void warn(String message) {
-		this.messager.printMessage(Kind.MANDATORY_WARNING, message);
 	}
 }
