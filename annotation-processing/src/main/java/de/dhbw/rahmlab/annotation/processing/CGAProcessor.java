@@ -26,7 +26,7 @@ public class CGAProcessor extends AbstractProcessor {
 	protected Elements elementUtils;
 	protected Filer filer;
 	protected Messager messager;
-	protected MethodCodeGenerator.Factory methodCodeGeneratorFactory = null;
+	private MethodCodeGenerator.Factory methodCodeGeneratorFactory = null;
 
 	@Override
 	public synchronized void init(ProcessingEnvironment processingEnv) {
