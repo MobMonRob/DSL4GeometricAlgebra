@@ -12,6 +12,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
@@ -28,6 +30,7 @@ public class MethodCodeGenerator {
 	protected static ClassName argumentsClass;
 	protected static ClassName resultClass;
 	private static Factory factory = null;
+	private final static Lock factoryLock = new ReentrantLock();
 
 	public static class Factory {
 
@@ -36,6 +39,15 @@ public class MethodCodeGenerator {
 		}
 
 		public MethodCodeGenerator create(CGAAnnotatedMethod annotatedMethod) {
+			factoryLock.lock();
+			try {
+				if (this != factory) {
+					throw new RuntimeException("Factory expired.");
+				}
+			} finally {
+				factoryLock.unlock();
+			}
+
 			return new MethodCodeGenerator(annotatedMethod);
 		}
 	}
@@ -44,12 +56,18 @@ public class MethodCodeGenerator {
 		this.annotatedMethod = annotatedMethod;
 	}
 
-	public static synchronized Factory init(Elements elementUtils, Factory oldFactory) {
-		if ((factory != null) && (oldFactory != factory)) {
-			throw new RuntimeException("MethodCodeGenerator was already inited. Can be reinited only with the original factory object.");
-		}
-		if (factory == null) {
-			factory = new Factory();
+	// oldFactory is a compromise to mitigate issues with Netbeans realtime codeanalysis while ensuring the first invoker holds control over subsequent reinits.
+	public static Factory init(Elements elementUtils, Factory oldFactory) {
+		factoryLock.lock();
+		try {
+			if ((factory != null) && (oldFactory != factory)) {
+				throw new RuntimeException("MethodCodeGenerator was already inited. Can be reinited only with the original factory object.");
+			}
+			if (factory == null) {
+				factory = new Factory();
+			}
+		} finally {
+			factoryLock.unlock();
 		}
 
 		TypeElement argumentsTypeElement = elementUtils.getTypeElement(Arguments.class.getCanonicalName());

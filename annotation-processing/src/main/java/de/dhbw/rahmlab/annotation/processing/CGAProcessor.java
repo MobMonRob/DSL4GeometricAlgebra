@@ -26,6 +26,7 @@ public class CGAProcessor extends AbstractProcessor {
 	protected Elements elementUtils;
 	protected Filer filer;
 	protected Messager messager;
+	// Mitigates issues with Netbeans realtime codeanalysis.
 	private static MethodCodeGenerator.Factory methodCodeGeneratorFactory = null;
 
 	@Override
@@ -34,7 +35,7 @@ public class CGAProcessor extends AbstractProcessor {
 		this.elementUtils = processingEnv.getElementUtils();
 		this.filer = processingEnv.getFiler();
 		this.messager = processingEnv.getMessager();
-		methodCodeGeneratorFactory = MethodCodeGenerator.init(this.elementUtils, this.methodCodeGeneratorFactory);
+		methodCodeGeneratorFactory = MethodCodeGenerator.init(this.elementUtils, methodCodeGeneratorFactory);
 	}
 
 	@Override
@@ -82,7 +83,7 @@ public class CGAProcessor extends AbstractProcessor {
 	protected List<MethodCodeGenerator> computeMethodCodeGenerators(List<CGAAnnotatedMethod> methodGroup) {
 		List<MethodCodeGenerator> methodCodeGenerators = new ArrayList<>(methodGroup.size());
 		for (CGAAnnotatedMethod cgaAnnotatedMethod : methodGroup) {
-			MethodCodeGenerator methodCodeGenerator = this.methodCodeGeneratorFactory.create(cgaAnnotatedMethod);
+			MethodCodeGenerator methodCodeGenerator = methodCodeGeneratorFactory.create(cgaAnnotatedMethod);
 			methodCodeGenerators.add(methodCodeGenerator);
 		}
 		return methodCodeGenerators;
