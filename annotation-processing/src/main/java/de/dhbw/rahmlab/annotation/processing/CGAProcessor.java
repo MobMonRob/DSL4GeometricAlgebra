@@ -26,7 +26,7 @@ public class CGAProcessor extends AbstractProcessor {
 	protected Elements elementUtils;
 	protected Filer filer;
 	protected Messager messager;
-	protected MethodCodeGenerator.Factory methodCodeGeneratorFactory;
+	protected MethodCodeGenerator.Factory methodCodeGeneratorFactory = null;
 
 	@Override
 	public synchronized void init(ProcessingEnvironment processingEnv) {
@@ -34,8 +34,7 @@ public class CGAProcessor extends AbstractProcessor {
 		this.elementUtils = processingEnv.getElementUtils();
 		this.filer = processingEnv.getFiler();
 		this.messager = processingEnv.getMessager();
-		this.methodCodeGeneratorFactory = MethodCodeGenerator.init(this.elementUtils);
-
+		this.methodCodeGeneratorFactory = MethodCodeGenerator.init(this.elementUtils, this.methodCodeGeneratorFactory);
 	}
 
 	@Override

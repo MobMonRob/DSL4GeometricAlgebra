@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
@@ -26,7 +27,7 @@ public class MethodCodeGenerator {
 	protected static ClassName programClass;
 	protected static ClassName argumentsClass;
 	protected static ClassName resultClass;
-	private static boolean inited = false;
+	private static Factory factory = null;
 
 	public static class Factory {
 
@@ -43,9 +44,12 @@ public class MethodCodeGenerator {
 		this.annotatedMethod = annotatedMethod;
 	}
 
-	public static synchronized Factory init(Elements elementUtils) {
-		if (inited) {
-			throw new RuntimeException("MethodCodeGenerator was already inited. Can be inited only once.");
+	public static synchronized Factory init(Elements elementUtils, Factory oldFactory) {
+		if ((factory != null) && (oldFactory != factory)) {
+			throw new RuntimeException("MethodCodeGenerator was already inited. Can be reinited only with the original factory object.");
+		}
+		if (factory == null) {
+			factory = new Factory();
 		}
 
 		TypeElement argumentsTypeElement = elementUtils.getTypeElement(Arguments.class.getCanonicalName());
@@ -60,8 +64,7 @@ public class MethodCodeGenerator {
 
 		treeStuff();
 
-		inited = true;
-		return new Factory();
+		return factory;
 	}
 
 	protected static void treeStuff() {
