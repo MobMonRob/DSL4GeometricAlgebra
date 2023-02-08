@@ -64,30 +64,30 @@ All of these types are automatically casted into a multivector inside the langua
 | CGACircle&#x003C;representation&#x003E;| extends CGAMultivector |
 | CGAPoint&#x003C;representation&#x003E; | extends CGAMultivector |
 
-&#x003C;representation&#x003E; = IPNS | OPNs
-  
+&#x003C;representation&#x003E; = IPNS | OPNS
+
 ## Operators
 Hint: Operator precedence determines how operators are parsed concerning each other. Operators with higher precedence become the operands of operators with lower precedence.
 
 ### Dual operators
 #### Base operators
-| precedence | symbol           | latex    | unicode | name | implementation | hints |
-| :--------: | :--------------: | -------- | ------- | ---- | -------------- | ----- |
-| 4          | &#x0020; (space) |          | \u0020  | geometric product | multivector1.gp(multivector2) | Zero or more space characters are interpreted as the operator. |
-| 3          | &#x22C5;         | \cdot    | \u22C5  | inner product | multivector1.ip(multivector2, RIGHT_CONTRACTION) | Decreasing dimensions or contracting a subspace. In the default configuration equal to left contraction (corresponding to Ganja.js). But this looks to be incompatible with some formulas in [Kleppe], which work only with the usage of right contraction. In CLUscript this corresponds to ".". |
-| 3          | &#x2227;         | \wedge   | \u2227  | outer product (join) | multivector1.op(multivector2), not used for double, for tuple3d it makes sense but actually no implementation is available | joining linearily independend vectors/two disjoint subspaces |
-| 1          | &#x002B;         | +        | \u002B  | sum | multivector1.add(multivector2) | |
-| 1          | &#x002D;         | -        | \u002D  | difference | multivector1.sub(multivector2) | |
+| precedence | symbol           | latex   | unicode | name | implementation | hints |
+| :--------: | :--------------: | ------- | ------- | ---- | -------------- | ----- |
+| 4          |                  |         | \u0020  | geometric product | multivector1.gp(multivector2) | Zero or more space characters are interpreted as the operator. |
+| 3          | &#x2227;         | \wedge  | \u2227  | outer product (join, span) | multivector1.op(multivector2), not used for double, for tuple3d it makes sense but actually no implementation is available | joining linearily independend vectors/two disjoint subspaces |
+| 1          | &#x002B;         | +       | \u002B  | sum | multivector1.add(multivector2) | |
+| 1          | &#x002D;         | -       | \u002D  | difference | multivector1.sub(multivector2) | |
+| 3          | &#x230B; | \lfloor        | \u230B  | right contraction | multivetor1.ip(multivector2, RIGHT_CONTRACTION) |  |
+| 3          | &#x230A; | \rfloor        | \u230A  | left contraction | multivector1.ip(multivector1, LEFT_CONTRACTION); where the grade operator for negative grades is zero. This implies that `something of higher grade cannot be contracted onto something of lower grade`. | |
+| 3          | &#x2228; | \vee             | \u2228  | regressive product (intersection) | multivector1.vee(multivector2) or (multivector1* &#8743; multivector2*)* |  |
+| 2          | &#x002F; | / | \u002F  | division (inverse geometric product) | multivector1.div(multivector2) |  |
 
-#### Additional operators (for more convenience only)
+#### Additional optional operators
 | precedence | symbol   | latex            | unicode | description | implementation | CLUscript |
 | :--------: | :------: | ---------------- | ------- | ----------- | -------------- | :----- |
-| 3          | &#x2229; | \cap             | \u2229  | meet (intersection) | multivector1.meet(multivector2) | \& |
-| 3          | &#x222A; | \cup             | \u222A  | join  (union) | multivector1.join(multivector2) or multivector2* &#8901; multivector1 or (multivector2* &#8743; multivector1*)* | \| |
-| 3          | &#x230B; | \llcorner        | \u230B  | right contraction | multivetor1.ip(multivector2, RIGHT_CONTRACTION) |  |
-| 3          | &#x230A; | \lrcorner        | \u230A  | left contraction | multivector1.ip(multivector1, LEFT_CONTRACTION); where the grade operator for negative grades is zero. This implies that `something of higher grade cannot be contracted onto something of lower grade`. | |
-| 3          | &#x2228; | \vee             | \u2228  | regressive product (meet or intersection) | multivector1.vee(multivector2) or (multivector1* &#8743; multivector2*)* |  |
-| 2          | &#x002F; | \StrikingThrough | \u002F  | division (inverse geometric product) | multivector1.div(multivector2) |  |
+| 3          | &#x22C5;         | \cdot   | \u22C5  | inner product | multivector1.ip(multivector2, RIGHT_CONTRACTION) | Decreasing dimensions or contracting a subspace. In the default configuration equal to left contraction (corresponding to Ganja.js). But this looks to be incompatible with some formulas in [Kleppe], which work only with the usage of right contraction. In CLUscript this corresponds to ".". |
+| 3          | &#x2229; | \cap             | \u2229  | meet (intersection) = largest common subspace| multivector1.meet(multivector2) | \& |
+| 3          | &#x222A; | \cup             | \u222A  | join  (union) of two subspaces is there smallest superspace = smallest space containing them both | multivector1.join(multivector2) or multivector2* &#8901; multivector1 or (multivector2* &#8743; multivector1*)* | \| |
 
 ### Monadic/unary operators (placed all on right side)
 The unary operators have the highest precedence, so they are executed before any other operations. The '-' os the only left-side operator. All the others are right-sided. Except dual/undual the operators cancel itself so if your write X&#732;&#732; no reverse is executed.
@@ -95,10 +95,10 @@ The unary operators have the highest precedence, so they are executed before any
 #### Base monadic operators
 | precedence | symbol           | latex                         | unicode      | description | implementation | CLUscript |
 | :--------: | :--------------: | ----------------------------- | ------------ | ----------- | -------------- | :------- |
-| 5          | &#x002D;         | -                             | \u002D       | negate | (-1 cast to multivector).gp(multivector) | - |
+| 5          | &#x002D;         | &#x2212;                      | \u002D       | negate | (-1 cast to multivector).gp(multivector) | - |
 | 6          | &#x207B;&#x00B9; | \textsuperscript{-1}          | \u207B\u00B9 | general inverse | multivector.generalInverse() | ! |
 | 6          | &#x002A;         | \textsuperscript{\*}          | \u002A       | dual | multivector.dual() | |
-| 6          | &#x02DC;         | \textsuperscript{\tilde}      | \u02DC       | reverse/adjoint: reverse all multiplications (a sign change operation) | multivector.reverse() | &#732; |
+| 6          | &#x02DC;         | \textsuperscript{$\tilde$}      | \u02DC       | reverse/adjoint: reverse all multiplications (a sign change operation) | multivector.reverse() | &#732; |
 | 6          | &#x2020;         | \textsuperscript{\textdagger} | \u2020       | clifford conjugate (a sign change operation) | multivector.conjugate() | |
 
 There exist three types of involution operations: Space inversion, reversion and the combination of both the clifford conjugation.
@@ -107,8 +107,8 @@ There exist three types of involution operations: Space inversion, reversion and
 | precedence | symbol           | latex                 | unicode      | description | implementation |
 | :--------: | :--------------: | --------------------- | ------------ | ----------- | -------------- |
 | 6          | &#x207B;&#x002A; | \textsuperscript{-\*} | \u207B\u002A | undual | multivector.undual() or -multivector.dual() |
-| 6          | &#x00B2;         |                       | \u00B2       | square | multivector.gp(multivector), sqr(double) |
-| 6          | &#x005E;         |                       | \u005E       | grade involution/inversion (a sign change operation) | multivector.gradeInversion(multivector) |
+| 6          | &#x00B2;         | \textsuperscript{2}                     | \u00B2       | square | multivector.gp(multivector), sqr(double) |
+| 6          | &#x005E;         | \textsuperscript{$\wedge$}                      | \u005E       | grade involution/inversion (a sign change operation) | multivector.gradeInversion(multivector) |
 
 
 ### Composite operators
@@ -119,14 +119,14 @@ There exist three types of involution operations: Space inversion, reversion and
 ### Buildin functions
 
 #### Base functions
-| symbol     | latex | description | implementation |
-| :--------- | ----- | ----------- | -------------- |
-| exp()      | \exp{} | exponential | CGAMultivector.exp() |
-| normalize() | | normalize | CGAMultivector.normalize() |
-| abs()      |  | absolute value | Math.abs(CGAScalar) |
-| sqrt()     |  | square root | new CGAScalar(Math.sqrt(CGAScalar)) |
-| atan2()    |  | arcus tansgens 2 | new CGAScalar(Math.atan2(CGAScalar, CGAScalar)) |
-| negate14() |  | negate the signs of the vector- and 4-vector parts of an multivector. Usable to implement gerneral inverse. | multivector.negate14() |
+| symbol     | description | implementation |
+| :--------- |  ----------- | -------------- |
+| exp()      |  exponential | CGAMultivector.exp() |
+| normalize() |  normalize | CGAMultivector.normalize() |
+| abs()      |   absolute value | Math.abs(CGAScalar) |
+| sqrt()     |   square root | new CGAScalar(Math.sqrt(CGAScalar)) |
+| atan2()    |  arcus tansgens 2 | new CGAScalar(Math.atan2(CGAScalar, CGAScalar)) |
+| negate14() |   negate the signs of the vector- and 4-vector parts of an multivector. Usable to implement gerneral inverse. | multivector.negate14() |
 
 #### Additional functions (2) to create transformations (for more convenience only)
 
@@ -139,29 +139,29 @@ There exist three types of involution operations: Space inversion, reversion and
 #### Base vector symbols
 | symbol           | latex        | Unicode      | description | implementation |
 | :--------------: | ------------ | ------------ | ----------- | -------------- |
-| &#x03B5;&#x2080; | \textepsilon | \u03B5\u2080 | base vector representing the origin | createOrigin(1d) |
-| &#x03B5;&#x1D62; | \textepsilon | \u03B5\u1D62 | base vector representing the infinity | createInf(1d) |
-| &#x03B5;&#x2081; | \textepsilon | \u03B5\u2081 | base vector representing x direction | createEx(1d) |
-| &#x03B5;&#x2082; | \textepsilon | \u03B5\u2082 | base vector representing y direction | createEy(1d) |
-| &#x03B5;&#x2083; | \textepsilon | \u03B5\u2083 | base vector representing z direction | createEz(1d) |
+| &#x03B5;&#x2080; | \epsilon_0 | \u03B5\u2080 | base vector representing the origin | createOrigin(1d) |
+| &#x03B5;&#x1D62; | \epsilon_i | \u03B5\u1D62 | base vector representing the infinity | createInf(1d) |
+| &#x03B5;&#x2081; | \epsilon_1 | \u03B5\u2081 | base vector representing x direction | createEx(1d) |
+| &#x03B5;&#x2082; | \epsilon_2 | \u03B5\u2082 | base vector representing y direction | createEy(1d) |
+| &#x03B5;&#x2083; | \epsilon_3 | \u03B5\u2083 | base vector representing z direction | createEz(1d) |
 
 ### Further symbols (for more convenience only)
 | symbol           | latex         | Unicode      | description | implementation |
 | :--------------: | ------------- | ------------ | ----------- | -------------- |
-| &#x03B5;&#x208A; | \textepsilon | \u03B5\u208A |  | &#x03B5;&#x2080; + 0.5&#x03B5;&#x1D62;  | 
-| &#x03B5;&#x208B; | \textepsilon | \u03B5\u208B |  | 0.5&#x03B5;&#x1D62; - &#x03B5;&#x2080; | 
+| &#x03B5;&#x208A; | \epsilon_+ | \u03B5\u208A |  | &#x03B5;&#x2080; + 0.5&#x03B5;&#x1D62;  |
+| &#x03B5;&#x208B; | \epsilon_- | \u03B5\u208B |  | 0.5&#x03B5;&#x1D62; - &#x03B5;&#x2080; |
 | &#x03C0;         | \pi           | \u03C0       | Ludolphs- or circle constant | Math.PI |
-| &#x221E;         |               | \u221E       | corresponding to infinity vector in Dorst, Fontijne & Mann 2007 | 2&#x03B5;&#8320;  |
+| &#x221E;         | \infty            | \u221E       | corresponding to infinity vector in Dorst, Fontijne & Mann 2007 | 2&#x03B5;&#8320;  |
 | &#x006F;         | o             | \u006F       | corresponding to origin vector in Dorst, Fontijne & Mann 2007 | 0.5&#x03B5;&#7522;  |
 | &#x006E;         | n             | \u006E       | corresponding to infinity vector in Doran & Lasenby | &#x03B5;&#7522;  |
-| &#x00F1;         |               | \u00F1       | corresponding to origin vector in Doran & Lasenby | -2&#x03B5;&#8320; |
-| &#x0045;&#x2080; |               | \u0045\u2080 | Minkovsky bi-vector | &#x03B5;&#7522; &#x2227; &#x03B5;&#8320;|
-| &#x0045;&#x2083; |               | \u0045\u2083 | Euclidean pseudoscalar | &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083;     |
-| &#x0045;         |               | \u0045       | Pseudoscalar | &#x03B5;&#x2080; &#x2227; &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083; &#x2227; &#x03B5;&#x1D62; |
+| &#x00F1;         |   \tilde{n}            | \u00F1       | corresponding to origin vector in Doran & Lasenby | -2&#x03B5;&#8320; |
+| &#x0045;&#x2080; |    E_0           | \u0045\u2080 | Minkovsky bi-vector | &#x03B5;&#7522; &#x2227; &#x03B5;&#8320;|
+| &#x0045;&#x2083; |    E_3           | \u0045\u2083 | Euclidean pseudoscalar | &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083;     |
+| &#x0045;         |      E         | \u0045       | Pseudoscalar | &#x03B5;&#x2080; &#x2227; &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083; &#x2227; &#x03B5;&#x1D62; |
 
 ### Useful equations between above symbols
 
-&#x03B5;&#x2080;&#x0045;&#x2080;=-&#x03B5;&#x2080;, &#x0045;&#x2080;&#x03B5;&#x2080;=&#x03B5;&#x2080;, &#x03B5;&#x1D62;&#x0045;&#x2080;=&#x03B5;&#x1D62;, &#x0045;&#x2080;&#x03B5;&#x1D62;=-&#x03B5;&#x1D62;, &#x0045;&#x2080;&#x00B2;=1
+&#x03B5;&#x2080;&#x0045;&#x2080;=-&#x03B5;&#x2080;, &#x0045;&#x2080;&#x03B5;&#x2080;=&#x03B5;&#x2080;, &#x03B5;&#x1D62;&#x0045;&#x2080;=&#x03B5;&#x1D62;, &#x0045;&#x2080;&#x03B5;&#x1D62;=-&#x03B5;&#x1D62;, &#x0045;&#x2080;&#x00B2;=1, &#x03B5;&#x2080;&#x00B2;=&#x03B5;&#x1D62;&#x00B2;=0, &#x03B5;&#x208A;&#x00B2;=1, &#x03B5;&#x208B;&#x00B2;=-1, &#x03B5;&#x208A;&#x22C5;&#x03B5;&#x208B;=0
 
 
 ## Important formulae
@@ -221,3 +221,4 @@ The conformal points in the table above have to be given in inner product null s
 || A &#x230B; (B &#x230B; C) = (A ∧ B) &#x230B; C ||
 || (A &#x230B; B) &#x230B; C = A ∧ (B &#x230B; C) | if C contains A|
 |down projection| (&#x03B5;&#x1D62; ∧ &#x03B5;&#x2080;) &#x230B; (X ∧ (&#x03B5;&#x1D62; ∧ &#x03B5;&#x2080;))| extracts the pure euclidean part of the given multivector |
+|| $P=\frac{1}{2}(\epsilon_0+L \epsilon_0 L))$ | Determines an arbitrary point $P$ on a line $L$ by reflecion of $\epsilon_0$ on the line. The midpoint between $\epsilon_0$ and its reflection $L \epsilon_0 L$, lays on the line $L$. This is equivalent to projecting the point $\epsilon_0$ onto the line $L$. |
