@@ -23,11 +23,11 @@ public class CGAMethodCodeGenerator {
 
 	protected final CGAAnnotatedMethod annotatedMethod;
 
-	protected static ClassRepresentation<Arguments> argumentsRepresentation;
-	protected static ClassRepresentation<Result> resultRepresentation;
-	protected static ClassName programClass;
-	protected static ClassName argumentsClass;
-	protected static ClassName resultClass;
+	private static ClassRepresentation<Arguments> argumentsRepresentation;
+	private static ClassRepresentation<Result> resultRepresentation;
+	private static ClassName programClass;
+	private static ClassName argumentsClass;
+	private static ClassName resultClass;
 
 	public static class Factory {
 
