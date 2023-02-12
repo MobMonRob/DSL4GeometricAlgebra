@@ -33,7 +33,7 @@ public class CGAProcessor extends AbstractProcessor {
 		this.filer = processingEnv.getFiler();
 		this.exceptionHandler = new ExceptionHandler(processingEnv.getMessager());
 		this.exceptionHandler.handle(() -> {
-			methodCodeGeneratorFactory = CGAMethodCodeGenerator.init(this.elementUtils, methodCodeGeneratorFactory);
+			methodCodeGeneratorFactory = CGAMethodCodeGenerator.Factory.init(this.elementUtils, methodCodeGeneratorFactory);
 		});
 	}
 

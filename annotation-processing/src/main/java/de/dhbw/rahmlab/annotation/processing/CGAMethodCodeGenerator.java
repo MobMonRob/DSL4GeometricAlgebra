@@ -30,13 +30,35 @@ public class CGAMethodCodeGenerator {
 	protected static ClassName programClass;
 	protected static ClassName argumentsClass;
 	protected static ClassName resultClass;
-	private static Factory factory = null;
-	private final static Lock factoryLock = new ReentrantLock();
 
 	public static class Factory {
 
+		private static Factory factory = null;
+		private final static Lock factoryLock = new ReentrantLock();
+
 		private Factory() {
 
+		}
+
+		// oldFactory is a compromise to mitigate issues with Netbeans realtime codeanalysis while ensuring the first invoker holds control over subsequent reinits.
+		public static Factory init(Elements elementUtils, Factory oldFactory) {
+			factoryLock.lock();
+			try {
+				if ((factory != null) && (oldFactory != factory)) {
+					throw new RuntimeException("MethodCodeGenerator was already inited. Can be reinited only with the original factory object.");
+				}
+
+				CGAMethodCodeGenerator.init(elementUtils);
+
+				// Ensures subsequent initing will work even if an exception is thrown in the init() method on the first invokation.
+				if (factory == null) {
+					factory = new Factory();
+				}
+
+				return factory;
+			} finally {
+				factoryLock.unlock();
+			}
 		}
 
 		public CGAMethodCodeGenerator create(CGAAnnotatedMethod annotatedMethod) {
@@ -45,11 +67,11 @@ public class CGAMethodCodeGenerator {
 				if (this != factory) {
 					throw new RuntimeException("Factory expired.");
 				}
+
+				return new CGAMethodCodeGenerator(annotatedMethod);
 			} finally {
 				factoryLock.unlock();
 			}
-
-			return new CGAMethodCodeGenerator(annotatedMethod);
 		}
 	}
 
@@ -57,17 +79,7 @@ public class CGAMethodCodeGenerator {
 		this.annotatedMethod = annotatedMethod;
 	}
 
-	// oldFactory is a compromise to mitigate issues with Netbeans realtime codeanalysis while ensuring the first invoker holds control over subsequent reinits.
-	public static Factory init(Elements elementUtils, Factory oldFactory) {
-		factoryLock.lock();
-		try {
-			if ((factory != null) && (oldFactory != factory)) {
-				throw new RuntimeException("MethodCodeGenerator was already inited. Can be reinited only with the original factory object.");
-			}
-		} finally {
-			factoryLock.unlock();
-		}
-
+	private static void init(Elements elementUtils) {
 		TypeElement argumentsTypeElement = elementUtils.getTypeElement(Arguments.class.getCanonicalName());
 		argumentsRepresentation = new ClassRepresentation<>(argumentsTypeElement);
 
@@ -79,17 +91,6 @@ public class CGAMethodCodeGenerator {
 		resultClass = ClassName.get(de.dhbw.rahmlab.geomalgelang.api.Result.class);
 
 		treeStuff();
-
-		// Ensures subsequent initing will work even if an exception is thrown in the init() method.
-		factoryLock.lock();
-		try {
-			if (factory == null) {
-				factory = new Factory();
-			}
-		} finally {
-			factoryLock.unlock();
-		}
-		return factory;
 	}
 
 	protected static void treeStuff() {
