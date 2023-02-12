@@ -9,5 +9,5 @@ public interface Wrapper {
 	double targetMethod1(double a_scalar, double b_scalar);
 
 	@CGA(source = "a")
-	double targetMethod2(Point3d a_lineTest_1, Point3d a_lineTest_2);
+	double targetMethod2(Point3d a_pointpair_opns_1, Point3d a_pointpair_opns_2);
 }

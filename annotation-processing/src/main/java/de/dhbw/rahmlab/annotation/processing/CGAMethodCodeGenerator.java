@@ -15,8 +15,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
@@ -34,44 +32,28 @@ public class CGAMethodCodeGenerator {
 	public static class Factory {
 
 		private static Factory factory = null;
-		private final static Lock factoryLock = new ReentrantLock();
 
 		private Factory() {
 
 		}
 
-		// oldFactory is a compromise to mitigate issues with Netbeans realtime codeanalysis while ensuring the first invoker holds control over subsequent reinits.
-		public static Factory init(Elements elementUtils, Factory oldFactory) {
-			factoryLock.lock();
-			try {
-				if ((factory != null) && (oldFactory != factory)) {
-					throw new RuntimeException("MethodCodeGenerator was already inited. Can be reinited only with the original factory object.");
-				}
-
-				CGAMethodCodeGenerator.init(elementUtils);
-
-				// Ensures subsequent initing will work even if an exception is thrown in the init() method on the first invokation.
-				if (factory == null) {
-					factory = new Factory();
-				}
-
-				return factory;
-			} finally {
-				factoryLock.unlock();
+		public static synchronized Factory init(Elements elementUtils) throws AnnotationException {
+			if (factory != null) {
+				throw AnnotationException.create(null, "CGAMethodCodeGenerator.Factory was already inited. Can be inited only once.");
 			}
+
+			CGAMethodCodeGenerator.init(elementUtils);
+
+			// Ensures subsequent initing will work even if an exception is thrown in the init() method on the first invokation.
+			if (factory == null) {
+				factory = new Factory();
+			}
+
+			return factory;
 		}
 
 		public CGAMethodCodeGenerator create(CGAAnnotatedMethod annotatedMethod) {
-			factoryLock.lock();
-			try {
-				if (this != factory) {
-					throw new RuntimeException("Factory expired.");
-				}
-
-				return new CGAMethodCodeGenerator(annotatedMethod);
-			} finally {
-				factoryLock.unlock();
-			}
+			return new CGAMethodCodeGenerator(annotatedMethod);
 		}
 	}
 

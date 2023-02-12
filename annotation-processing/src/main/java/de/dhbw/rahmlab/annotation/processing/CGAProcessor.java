@@ -23,7 +23,6 @@ public class CGAProcessor extends AbstractProcessor {
 	protected Filer filer;
 	protected ExceptionHandler exceptionHandler;
 
-	// Mitigates issues with Netbeans realtime codeanalysis.
 	private static CGAMethodCodeGenerator.Factory methodCodeGeneratorFactory = null;
 
 	@Override
@@ -33,7 +32,13 @@ public class CGAProcessor extends AbstractProcessor {
 		this.filer = processingEnv.getFiler();
 		this.exceptionHandler = new ExceptionHandler(processingEnv.getMessager());
 		this.exceptionHandler.handle(() -> {
-			methodCodeGeneratorFactory = CGAMethodCodeGenerator.Factory.init(this.elementUtils, methodCodeGeneratorFactory);
+			try {
+				methodCodeGeneratorFactory = CGAMethodCodeGenerator.Factory.init(this.elementUtils);
+
+				// Mitigates issues with Netbeans realtime codeanalysis.
+			} catch (AnnotationException ex) {
+				this.exceptionHandler.warn(ex.element, ex.getMessage());
+			}
 		});
 	}
 

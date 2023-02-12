@@ -11,7 +11,7 @@ public class AnnotationException extends Exception {
 		this.element = element;
 	}
 
-	public static AnnotationException create(Element element, String message, Object... args) throws AnnotationException {
+	public static AnnotationException create(Element element, String message, Object... args) {
 		return new AnnotationException(element, message, args);
 	}
 }
