@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
@@ -15,64 +17,81 @@ import javax.lang.model.element.VariableElement;
 
 public class ClassRepresentation<T> {
 
-	public final List<MethodRepresentation> publicMethods;
+	public final List<OverloadableMethodRepresentation> publicMethods;
 
-	public final Map<String, String> returnTypeToMethodName;
+	public final Map<String, List<OverloadableMethodRepresentation>> returnTypeToMethods;
 
-	public final Map<String, MethodRepresentation> methodNameToMethod;
+	public final Map<String, OverloadableMethodRepresentation> methodNameToMethod;
 
-	// Achtung: Hier gibt es ebenfalls nur eine Überladung. Evtl. List<MethodRepresentation>
-	public final InvertedRadixTree<MethodRepresentation> methodsPrefixTrie;
+	public final InvertedRadixTree<OverloadableMethodRepresentation> methodsPrefixTrie;
 
 	public ClassRepresentation(TypeElement typeElement) {
 		this.publicMethods = generatePublicMethods(typeElement);
-		this.returnTypeToMethodName = generateReturnTypeToMethodName(this.publicMethods);
+		this.returnTypeToMethods = generateReturnTypeToMethods(this.publicMethods);
 		this.methodNameToMethod = generateMethodNameToMethod(this.publicMethods);
 		this.methodsPrefixTrie = generateMethodsPrefixTrie(this.publicMethods);
 	}
 
-	private static InvertedRadixTree<MethodRepresentation> generateMethodsPrefixTrie(List<MethodRepresentation> publicMethods) {
-		InvertedRadixTree<MethodRepresentation> methodsPrefixTrie = new ConcurrentInvertedRadixTree<>(new DefaultCharArrayNodeFactory());
+	protected static InvertedRadixTree<OverloadableMethodRepresentation> generateMethodsPrefixTrie(List<OverloadableMethodRepresentation> publicMethods) {
+		InvertedRadixTree<OverloadableMethodRepresentation> methodsPrefixTrie = new ConcurrentInvertedRadixTree<>(new DefaultCharArrayNodeFactory());
 
-		for (MethodRepresentation method : publicMethods) {
-			methodsPrefixTrie.put(method.identifier(), method);
+		for (OverloadableMethodRepresentation method : publicMethods) {
+			methodsPrefixTrie.put(method.identifier, method);
 		}
 
 		return methodsPrefixTrie;
 	}
 
-	private static Map<String, MethodRepresentation> generateMethodNameToMethod(List<MethodRepresentation> publicMethods) {
-		Map<String, MethodRepresentation> methodNameToMethod = new HashMap<>(publicMethods.size());
-		for (MethodRepresentation method : publicMethods) {
-			// Only first method with given name will be used.
-			methodNameToMethod.putIfAbsent(method.identifier(), method);
+	protected static Map<String, OverloadableMethodRepresentation> generateMethodNameToMethod(List<OverloadableMethodRepresentation> publicMethods) {
+		Map<String, OverloadableMethodRepresentation> methodNameToMethod = new HashMap<>(publicMethods.size());
+		for (OverloadableMethodRepresentation inputMethod : publicMethods) {
+			methodNameToMethod.put(inputMethod.identifier, inputMethod);
 		}
 
 		return methodNameToMethod;
 	}
 
-	private static Map<String, String> generateReturnTypeToMethodName(List<MethodRepresentation> publicMethods) {
-		List<MethodRepresentation> suppliers = publicMethods.stream()
-			.filter(m -> m.parameters().isEmpty())
-			.toList();
-		Map<String, String> returnTypeToMethodName = new HashMap<>(suppliers.size());
-		for (MethodRepresentation supplier : suppliers) {
-			// Only first method with given return type will be used
-			returnTypeToMethodName.putIfAbsent(supplier.returnType(), supplier.identifier());
+	protected static Map<String, List<OverloadableMethodRepresentation>> generateReturnTypeToMethods(List<OverloadableMethodRepresentation> publicMethods) {
+		Map<String, Map<String, OverloadableMethodRepresentation>> returnTypeToIdentifierToMethod = new HashMap<>();
+		for (var inputMethod : publicMethods) {
+			String identifier = inputMethod.identifier;
+			List<MethodRepresentation> overloads = inputMethod.getOverloadsView();
+			for (var overload : overloads) {
+				String returnType = overload.returnType();
+				Map<String, OverloadableMethodRepresentation> identifierToMethod = returnTypeToIdentifierToMethod.get(returnType);
+				if (identifierToMethod == null) {
+					identifierToMethod = new HashMap<>();
+					returnTypeToIdentifierToMethod.put(returnType, identifierToMethod);
+				}
+				OverloadableMethodRepresentation method = identifierToMethod.get(identifier);
+				if (method == null) {
+					method = new OverloadableMethodRepresentation(identifier);
+					identifierToMethod.put(identifier, method);
+				}
+				method.addOverload(overload);
+			}
 		}
 
-		return returnTypeToMethodName;
+		Map<String, List<OverloadableMethodRepresentation>> returnTypeToMethods = new HashMap<>();
+		for (var entry : returnTypeToIdentifierToMethod.entrySet()) {
+			String returnType = entry.getKey();
+			Map<String, OverloadableMethodRepresentation> identifierToMethod = entry.getValue();
+			List<OverloadableMethodRepresentation> methods = identifierToMethod.entrySet().stream().map(e -> e.getValue()).toList();
+			returnTypeToMethods.put(returnType, methods);
+		}
+
+		return returnTypeToMethods;
 	}
 
-	private static List<MethodRepresentation> generatePublicMethods(TypeElement typeElement) {
+	protected static List<OverloadableMethodRepresentation> generatePublicMethods(TypeElement typeElement) {
 		List<ExecutableElement> methodElements = typeElement.getEnclosedElements().stream()
 			.filter(element -> element.getKind() == ElementKind.METHOD)
 			.filter(element -> element.getModifiers().contains(Modifier.PUBLIC))
 			.map(element -> (ExecutableElement) element)
 			.toList();
-		List<MethodRepresentation> publicMethods = new ArrayList<>(methodElements.size());
+		Map<String, MethodRepresentation> methodNameToMethod = new HashMap<>(methodElements.size());
 		for (var methodElement : methodElements) {
-			String methodName = methodElement.getSimpleName().toString();
+			String identifier = methodElement.getSimpleName().toString();
 			String returnType = methodElement.getReturnType().toString();
 			List<? extends VariableElement> parameterElements = methodElement.getParameters();
 			List<ParameterRepresentation> parameters = new ArrayList<>(parameterElements.size());
@@ -83,10 +102,16 @@ public class ClassRepresentation<T> {
 				parameters.add(parameter);
 			}
 
-			MethodRepresentation method = new MethodRepresentation(methodName, returnType, parameters);
-			publicMethods.add(method);
+			MethodRepresentation method = new MethodRepresentation(identifier, returnType, parameters);
+			methodNameToMethod.put(identifier, method);
 		}
 
-		return publicMethods;
+		Map<String, List<Entry<String, MethodRepresentation>>> methodsGroups = methodNameToMethod.entrySet().stream()
+			.collect(Collectors.groupingBy(entry -> entry.getKey()));
+		return methodsGroups.entrySet().stream().map(methodGroup -> {
+			String identifier = methodGroup.getKey();
+			List<MethodRepresentation> overloads = methodGroup.getValue().stream().map(e -> e.getValue()).toList();
+			return new OverloadableMethodRepresentation(identifier, overloads);
+		}).toList();
 	}
 }

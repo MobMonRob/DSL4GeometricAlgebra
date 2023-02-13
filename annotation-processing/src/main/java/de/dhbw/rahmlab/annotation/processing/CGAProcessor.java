@@ -74,7 +74,7 @@ public class CGAProcessor extends AbstractProcessor {
 		return classCodeGenerators;
 	}
 
-	protected List<CGAMethodCodeGenerator> computeMethodCodeGenerators(List<CGAAnnotatedMethod> methodGroup) {
+	protected List<CGAMethodCodeGenerator> computeMethodCodeGenerators(List<CGAAnnotatedMethod> methodGroup) throws AnnotationException {
 		List<CGAMethodCodeGenerator> methodCodeGenerators = new ArrayList<>(methodGroup.size());
 		for (CGAAnnotatedMethod cgaAnnotatedMethod : methodGroup) {
 			CGAMethodCodeGenerator methodCodeGenerator = methodCodeGeneratorFactory.create(cgaAnnotatedMethod);

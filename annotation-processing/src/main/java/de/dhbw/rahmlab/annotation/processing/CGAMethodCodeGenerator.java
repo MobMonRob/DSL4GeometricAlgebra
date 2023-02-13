@@ -50,18 +50,33 @@ public class CGAMethodCodeGenerator {
 			return factory;
 		}
 
-		public CGAMethodCodeGenerator create(CGAAnnotatedMethod annotatedMethod) {
+		public CGAMethodCodeGenerator create(CGAAnnotatedMethod annotatedMethod) throws AnnotationException {
 			return new CGAMethodCodeGenerator(annotatedMethod);
 		}
 	}
 
-	private CGAMethodCodeGenerator(CGAAnnotatedMethod annotatedMethod) {
+	private CGAMethodCodeGenerator(CGAAnnotatedMethod annotatedMethod) throws AnnotationException {
 		this.annotatedMethod = annotatedMethod;
 	}
 
 	private static void init(Elements elementUtils) {
 		TypeElement argumentsTypeElement = elementUtils.getTypeElement(Arguments.class.getCanonicalName());
 		argumentsRepresentation = new ClassRepresentation<>(argumentsTypeElement);
+		List<MethodRepresentation> flattenedPublicMethods = argumentsRepresentation.publicMethods.stream()
+			.flatMap(m -> m.getOverloadsView().stream())
+			.toList();
+		String stringTypeName = String.class.getCanonicalName();
+		for (var method : flattenedPublicMethods) {
+			List<ParameterRepresentation> parameters = method.parameters();
+			int parametersSize = parameters.size();
+			if (parametersSize < 1) {
+				throw new IllegalArgumentException(String.format("Expected parameters.size() to be at least 1 for all overloads of \"%s\", but was %s for one.", method.identifier(), parametersSize));
+			}
+			String type = parameters.get(0).type();
+			if (!type.equals(stringTypeName)) {
+				throw new IllegalArgumentException(String.format("Expected first parameter of method \"%s\" of type \"%s\", but was of type \"%s\".", method.identifier(), stringTypeName, type));
+			}
+		}
 
 		TypeElement resultTypeElement = elementUtils.getTypeElement(Result.class.getCanonicalName());
 		resultRepresentation = new ClassRepresentation<>(resultTypeElement);
@@ -107,13 +122,26 @@ public class CGAMethodCodeGenerator {
 	}
 
 	protected String computeDecompositionMethodName() throws AnnotationException {
-		String returnType = this.annotatedMethod.methodRepresentation.returnType();
-		String methodName = resultRepresentation.returnTypeToMethodName.get(returnType);
-		if (methodName == null) {
+		MethodRepresentation method = this.annotatedMethod.methodRepresentation;
+		String returnType = method.returnType();
+
+		List<OverloadableMethodRepresentation> methods = resultRepresentation.returnTypeToMethods.get(returnType);
+		if (methods == null) {
 			throw AnnotationException.create(this.annotatedMethod.methodElement, "Return type \"%s\" is not supported.", returnType);
 		}
 
-		return methodName;
+		// Parameters are currently not supported.
+		List<MethodRepresentation> flattenedMethods = methods.stream()
+			.flatMap(m -> m.getOverloadsView().stream())
+			.filter(m -> m.parameters().isEmpty())
+			.toList();
+
+		if (flattenedMethods.size() != 1) {
+			throw AnnotationException.create(this.annotatedMethod.methodElement, "Found %s methods without parameters matching returnType \"%s\", but expected 1.", flattenedMethods.size(), returnType);
+		}
+		String identifier = flattenedMethods.get(0).identifier();
+
+		return identifier;
 	}
 
 	protected List<CodeBlock> createArgumentsMethodInvocationCode(List<MethodInvocationData> methodInvocations) {
@@ -160,37 +188,50 @@ public class CGAMethodCodeGenerator {
 		Iterator<DecomposedParameter> groupIterator = callerParameters.iterator();
 		// Safe assumption that callerParameters contains at least 1 element (groupDecomposedParameters()).
 		String remainingVarName = groupIterator.next().remainingVarName;
-		KeyValuePair<MethodRepresentation> cgaConstructorMethod = argumentsRepresentation.methodsPrefixTrie.getKeyValuePairForLongestKeyPrefixing(remainingVarName);
+		KeyValuePair<OverloadableMethodRepresentation> cgaConstructorMethod = argumentsRepresentation.methodsPrefixTrie.getKeyValuePairForLongestKeyPrefixing(remainingVarName);
 		if (cgaConstructorMethod == null) {
 			throw AnnotationException.create(this.annotatedMethod.methodElement, "No matching Methodname found for: %s", remainingVarName);
 		}
-		String matchingPrefix = cgaConstructorMethod.getKey().toString();
+		String methodName = cgaConstructorMethod.getKey().toString();
 		boolean allSamePrefixed = toStream(groupIterator)
-			.map(dp -> dp.remainingVarName.startsWith(matchingPrefix))
+			.map(dp -> dp.remainingVarName.startsWith(methodName))
 			.allMatch(b -> b == true);
 		if (!allSamePrefixed) {
 			throw AnnotationException.create(this.annotatedMethod.methodElement, "Methodname must be equal for all occurences of the same cga parameter but were not for the cga parameter with name \"%s\".", cgaVarName);
 		}
 
-		MethodRepresentation callee = cgaConstructorMethod.getValue();
-		List<ParameterRepresentation> calleeParameters = callee.parameters();
+		OverloadableMethodRepresentation callees = cgaConstructorMethod.getValue();
 
-		// Check matching parameter and arguments count.
-		if (calleeParameters.size() != 1 + callerParameters.size()) {
-			throw AnnotationException.create(this.annotatedMethod.methodElement, "Methodname \"%s\" needs %d arguments, but only %d were given for cga variable \"%s\".", callee.identifier(), calleeParameters.size() - 1, callerParameters.size(), cgaVarName);
+		// Cannot check equal returnType because is same for all (Refer to Arguments class).
+		// Same identifier and parameter count and parameter types sequence implies identical method.
+		int expectedCalleeParameterSize = 1 + callerParameters.size();
+		List<MethodRepresentation> calleesWithMatchingParameterSize = callees.getOverloadsView().stream()
+			.filter(m -> m.parameters().size() == expectedCalleeParameterSize)
+			.toList();
+		// Check matching caller and callee parameter size.
+		if (calleesWithMatchingParameterSize.isEmpty()) {
+			throw AnnotationException.create(this.annotatedMethod.methodElement, "Available overloads of method \"%s\" do not match the parameter count (%s) given for the variable \"%s\"", methodName, callerParameters.size(), cgaVarName);
 		}
 
 		// Check equal types
-		int size = callerParameters.size();
-		for (int i = 0; i < size; ++i) {
-			ParameterRepresentation parameter = callee.parameters().get(i + 1);
-			DecomposedParameter argument = callerParameters.get(i);
-			if (!argument.javaType.equals(parameter.type())) {
-				throw AnnotationException.create(this.annotatedMethod.methodElement, "For cga variable \"%s\" at relative position %d: provided java type (\"%s\") differs from expected java type (\"%s\").", cgaVarName, i, argument.javaType, parameter.type());
-			}
+		int callerParametersSize = callerParameters.size();
+		List<MethodRepresentation> matchedCallee = calleesWithMatchingParameterSize.stream()
+			.filter(callee -> {
+				for (int i = 0; i < callerParametersSize; ++i) {
+					String calleeParameterType = callee.parameters().get(i + 1).type();
+					String callerParameterType = callerParameters.get(i).javaType;
+					if (!calleeParameterType.equals(callerParameterType)) {
+						return false;
+					}
+				}
+				return true;
+			}).toList();
+		if (matchedCallee.size() < 1) {
+			throw AnnotationException.create(this.annotatedMethod.methodElement, "Available overloads of method \"%s\" do not match the parameter types given for the variable \"%s\"", methodName, cgaVarName);
 		}
+		// >1 not possible, because "Same identifier and parameter count and parameter types sequence implies identical method." implies that there can be at most 1 such method.
 
-		return callee;
+		return matchedCallee.get(0);
 	}
 
 	protected static <T> Stream<T> toStream(Iterator<T> iterator) {
