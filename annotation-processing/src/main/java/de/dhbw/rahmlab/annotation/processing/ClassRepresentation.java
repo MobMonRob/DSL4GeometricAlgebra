@@ -1,5 +1,8 @@
 package de.dhbw.rahmlab.annotation.processing;
 
+import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
+import com.googlecode.concurrenttrees.radixinverted.ConcurrentInvertedRadixTree;
+import com.googlecode.concurrenttrees.radixinverted.InvertedRadixTree;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,10 +21,24 @@ public class ClassRepresentation<T> {
 
 	public final Map<String, MethodRepresentation> methodNameToMethod;
 
+	// Achtung: Hier gibt es ebenfalls nur eine Überladung. Evtl. List<MethodRepresentation>
+	public final InvertedRadixTree<MethodRepresentation> methodsPrefixTrie;
+
 	public ClassRepresentation(TypeElement typeElement) {
 		this.publicMethods = generatePublicMethods(typeElement);
 		this.returnTypeToMethodName = generateReturnTypeToMethodName(this.publicMethods);
 		this.methodNameToMethod = generateMethodNameToMethod(this.publicMethods);
+		this.methodsPrefixTrie = generateMethodsPrefixTrie(this.publicMethods);
+	}
+
+	private static InvertedRadixTree<MethodRepresentation> generateMethodsPrefixTrie(List<MethodRepresentation> publicMethods) {
+		InvertedRadixTree<MethodRepresentation> methodsPrefixTrie = new ConcurrentInvertedRadixTree<>(new DefaultCharArrayNodeFactory());
+
+		for (MethodRepresentation method : publicMethods) {
+			methodsPrefixTrie.put(method.identifier(), method);
+		}
+
+		return methodsPrefixTrie;
 	}
 
 	private static Map<String, MethodRepresentation> generateMethodNameToMethod(List<MethodRepresentation> publicMethods) {

@@ -1,21 +1,19 @@
 package de.dhbw.rahmlab.annotation.processing;
 
 import com.googlecode.concurrenttrees.common.KeyValuePair;
-import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
-import com.googlecode.concurrenttrees.radixinverted.ConcurrentInvertedRadixTree;
-import com.googlecode.concurrenttrees.radixinverted.InvertedRadixTree;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import de.dhbw.rahmlab.geomalgelang.api.Arguments;
 import de.dhbw.rahmlab.geomalgelang.api.Result;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 
@@ -71,26 +69,6 @@ public class CGAMethodCodeGenerator {
 		programClass = ClassName.get(de.dhbw.rahmlab.geomalgelang.api.Program.class);
 		argumentsClass = ClassName.get(de.dhbw.rahmlab.geomalgelang.api.Arguments.class);
 		resultClass = ClassName.get(de.dhbw.rahmlab.geomalgelang.api.Result.class);
-
-		treeStuff();
-	}
-
-	protected static void treeStuff() {
-		List<MethodRepresentation> publicMethods = argumentsRepresentation.publicMethods;
-
-		Instant j1 = Instant.now();
-		InvertedRadixTree<MethodRepresentation> tree = new ConcurrentInvertedRadixTree<>(new DefaultCharArrayNodeFactory());
-		for (MethodRepresentation method : publicMethods) {
-			tree.put(method.identifier(), method);
-		}
-		Instant j2 = Instant.now();
-		System.out.println("time1[us]: " + ChronoUnit.MICROS.between(j1, j2));
-
-		Instant i1 = Instant.now();
-		KeyValuePair<MethodRepresentation> value = tree.getKeyValuePairForLongestKeyPrefixing("line_opn");
-		Instant i2 = Instant.now();
-		System.out.println("time2[us]: " + ChronoUnit.MICROS.between(i1, i2));
-		System.out.println("key: " + value.getKey());
 	}
 
 	public MethodSpec generateCode() throws AnnotationException {
@@ -130,7 +108,7 @@ public class CGAMethodCodeGenerator {
 
 	protected String computeDecompositionMethodName() throws AnnotationException {
 		String returnType = this.annotatedMethod.methodRepresentation.returnType();
-		String methodName = this.resultRepresentation.returnTypeToMethodName.get(returnType);
+		String methodName = resultRepresentation.returnTypeToMethodName.get(returnType);
 		if (methodName == null) {
 			throw AnnotationException.create(this.annotatedMethod.methodElement, "Return type \"%s\" is not supported.", returnType);
 		}
@@ -178,19 +156,30 @@ public class CGAMethodCodeGenerator {
 	}
 
 	protected MethodRepresentation matchMethodFrom(List<DecomposedParameter> callerParameters, String cgaVarName) throws AnnotationException {
-		// Safe assumption, List contains at least one parameter.
-		// Safe assumption all parameters of the list have the same cgaType.
-		String cgaType = callerParameters.get(0).cgaType;
-		MethodRepresentation callee = this.argumentsRepresentation.methodNameToMethod.get(cgaType);
-		// Check matching method name.
-		if (callee == null) {
-			throw AnnotationException.create(this.annotatedMethod.methodElement, "No matching Methodname found for: %s", cgaType);
+		// Check that cgaConstructorMethod of the whole group is identical.
+		Iterator<DecomposedParameter> groupIterator = callerParameters.iterator();
+		// Safe assumption that callerParameters contains at least 1 element (groupDecomposedParameters()).
+		String remainingVarName = groupIterator.next().remainingVarName;
+		KeyValuePair<MethodRepresentation> cgaConstructorMethod = argumentsRepresentation.methodsPrefixTrie.getKeyValuePairForLongestKeyPrefixing(remainingVarName);
+		if (cgaConstructorMethod == null) {
+			throw AnnotationException.create(this.annotatedMethod.methodElement, "No matching Methodname found for: %s", remainingVarName);
 		}
+		String matchingPrefix = cgaConstructorMethod.getKey().toString();
+		boolean allSamePrefixed = toStream(groupIterator)
+			.map(dp -> dp.remainingVarName.startsWith(matchingPrefix))
+			.allMatch(b -> b == true);
+		if (!allSamePrefixed) {
+			throw AnnotationException.create(this.annotatedMethod.methodElement, "Methodname must be equal for all occurences of the same cga parameter but were not for the cga parameter with name \"%s\".", cgaVarName);
+		}
+
+		MethodRepresentation callee = cgaConstructorMethod.getValue();
 		List<ParameterRepresentation> calleeParameters = callee.parameters();
-		// Check matching paramter and arguments count.
+
+		// Check matching parameter and arguments count.
 		if (calleeParameters.size() != 1 + callerParameters.size()) {
-			throw AnnotationException.create(this.annotatedMethod.methodElement, "CGA type \"%s\" needs %d arguments, but only %d were given for cga variable \"%s\".", cgaType, calleeParameters.size() - 1, callerParameters.size(), cgaVarName);
+			throw AnnotationException.create(this.annotatedMethod.methodElement, "Methodname \"%s\" needs %d arguments, but only %d were given for cga variable \"%s\".", callee.identifier(), calleeParameters.size() - 1, callerParameters.size(), cgaVarName);
 		}
+
 		// Check equal types
 		int size = callerParameters.size();
 		for (int i = 0; i < size; ++i) {
@@ -200,27 +189,22 @@ public class CGAMethodCodeGenerator {
 				throw AnnotationException.create(this.annotatedMethod.methodElement, "For cga variable \"%s\" at relative position %d: provided java type (\"%s\") differs from expected java type (\"%s\").", cgaVarName, i, argument.javaType, parameter.type());
 			}
 		}
+
 		return callee;
+	}
+
+	protected static <T> Stream<T> toStream(Iterator<T> iterator) {
+		return StreamSupport.stream(((Iterable<T>) () -> iterator).spliterator(), false);
 	}
 
 	protected LinkedHashMap<String, List<DecomposedParameter>> groupDecomposedParameters(List<DecomposedParameter> decomposedParameters) throws AnnotationException {
 		// Group cgaVarNames.
 		LinkedHashMap<String, List<DecomposedParameter>> cgaVarNameGroupedDecomposedParameters = decomposedParameters.stream().collect(Collectors.groupingBy(dp -> dp.cgaVarName, LinkedHashMap::new, Collectors.toList()));
 
-		// Check that cgaType of each cgaVarNameGroup is identical.
-		// Equal to: there is exactly one cgaTypeGroup within each cgaVarNameGroup.
-		for (Map.Entry<String, List<DecomposedParameter>> cgaVarNameGroup : cgaVarNameGroupedDecomposedParameters.entrySet()) {
-			Map<String, List<DecomposedParameter>> cgaTypeGroups = cgaVarNameGroup.getValue().stream()
-				.collect(Collectors.groupingBy(dp -> dp.cgaType));
-			if (cgaTypeGroups.size() != 1) {
-				throw AnnotationException.create(this.annotatedMethod.methodElement, "CGA type name must be equal for all occurences of the same cga parameter but were not for the cga parameter with name \"%s\".", cgaVarNameGroup.getKey());
-			}
-		}
-
 		return cgaVarNameGroupedDecomposedParameters;
 	}
 
-	protected record DecomposedParameter(String cgaVarName, String cgaType, String javaType, ParameterRepresentation uncomposedParameter) {
+	protected record DecomposedParameter(String cgaVarName, String remainingVarName, String javaType, ParameterRepresentation uncomposedParameter) {
 
 	}
 
@@ -228,16 +212,16 @@ public class CGAMethodCodeGenerator {
 		List<ParameterRepresentation> parameters = this.annotatedMethod.methodRepresentation.parameters();
 		List<DecomposedParameter> decomposedParameters = new ArrayList<>(parameters.size());
 		for (ParameterRepresentation parameter : parameters) {
-			String[] identifierSplit = parameter.identifier().split("_", 3);
+			String[] identifierSplit = parameter.identifier().split("_", 2);
 			if (identifierSplit.length < 2) {
 				throw AnnotationException.create(this.annotatedMethod.methodElement, "Parameter name \"%s\" must contain at least one \"_\"", parameter.identifier());
 			}
 
 			String cgaVarName = identifierSplit[0];
-			String cgaType = identifierSplit[1];
+			String remainingVarName = identifierSplit[1];
 			String javaType = parameter.type();
 
-			DecomposedParameter decomposedParameter = new DecomposedParameter(cgaVarName, cgaType, javaType, parameter);
+			DecomposedParameter decomposedParameter = new DecomposedParameter(cgaVarName, remainingVarName, javaType, parameter);
 			decomposedParameters.add(decomposedParameter);
 		}
 		return decomposedParameters;
