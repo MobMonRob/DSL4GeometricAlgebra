@@ -16,6 +16,10 @@ public class Result {
 		this.inner = inner;
 	}
 
+	public Double decomposeSquaredWeight() {
+		return inner.squaredWeight();
+	}
+
 	public double decomposeScalar() {
 		return inner.decomposeScalar();
 	}
