@@ -6,12 +6,15 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.processing.Filer;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
+import javax.tools.JavaFileObject;
 
 public class ClassCodeGenerator {
 
@@ -54,9 +57,19 @@ public class ClassCodeGenerator {
 		JavaFile javaFile = JavaFile.builder(packageName, cgaGen)
 			.build();
 
-		// javaFile.writeTo(filer);
+		System.out.println("packageName: " + packageName);
+		System.out.println("genClassName: " + genClassName);
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		//javaFile.writeTo(filer);
 		javaFile.writeTo(System.out);
-		// JavaFileObject jfo = filer.createSourceFile(this.qualifiedInterfaceName + SUFFIX);
-		// Writer writer = jfo.openWriter();
+		/*
+		JavaFileObject jfo = filer.createSourceFile(packageName + "." + genClassName);
+		Writer writer = jfo.openWriter();
+		//javaFile.writeTo(writer);
+		PrintWriter out = new PrintWriter(writer);
+		out.println("hello");
+		 */
 	}
 }

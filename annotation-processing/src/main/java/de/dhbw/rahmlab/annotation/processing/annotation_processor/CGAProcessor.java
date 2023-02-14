@@ -4,6 +4,9 @@ import de.dhbw.rahmlab.annotation.processing.api.CGA;
 import com.google.auto.service.AutoService;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -15,8 +18,6 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 
-@SupportedAnnotationTypes("de.dhbw.rahmlab.annotation.processing.CGA")
-@SupportedSourceVersion(SourceVersion.RELEASE_17)
 @AutoService(Processor.class)
 public class CGAProcessor extends AbstractProcessor {
 
@@ -25,6 +26,18 @@ public class CGAProcessor extends AbstractProcessor {
 	protected ExceptionHandler exceptionHandler;
 
 	private static CGAMethodCodeGenerator.Factory methodCodeGeneratorFactory = null;
+
+	protected static final Set<String> supportedAnnotationTypes = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(new String[]{CGA.class.getCanonicalName()})));
+
+	@Override
+	public Set<String> getSupportedAnnotationTypes() {
+		return supportedAnnotationTypes;
+	}
+
+	@Override
+	public SourceVersion getSupportedSourceVersion() {
+		return SourceVersion.RELEASE_17;
+	}
 
 	@Override
 	public synchronized void init(ProcessingEnvironment processingEnv) {
