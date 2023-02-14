@@ -59,10 +59,7 @@ public class ClassCodeGenerator {
 
 		System.out.println("packageName: " + packageName);
 		System.out.println("genClassName: " + genClassName);
-		System.out.println();
-		System.out.println();
-		System.out.println();
-		//javaFile.writeTo(filer);
+		javaFile.writeTo(filer);
 		javaFile.writeTo(System.out);
 		/*
 		JavaFileObject jfo = filer.createSourceFile(packageName + "." + genClassName);

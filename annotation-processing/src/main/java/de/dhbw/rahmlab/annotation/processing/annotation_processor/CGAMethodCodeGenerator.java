@@ -4,8 +4,11 @@ import com.googlecode.concurrenttrees.common.KeyValuePair;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.TypeName;
 import de.dhbw.rahmlab.geomalgelang.api.Arguments;
 import de.dhbw.rahmlab.geomalgelang.api.Result;
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -15,6 +18,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 
 public class CGAMethodCodeGenerator {
@@ -26,6 +30,7 @@ public class CGAMethodCodeGenerator {
 	private static ClassName programClass;
 	private static ClassName argumentsClass;
 	private static ClassName resultClass;
+	private static TypeName IOExceptionTypeName;
 
 	public static class Factory {
 
@@ -84,6 +89,8 @@ public class CGAMethodCodeGenerator {
 		programClass = ClassName.get(de.dhbw.rahmlab.geomalgelang.api.Program.class);
 		argumentsClass = ClassName.get(de.dhbw.rahmlab.geomalgelang.api.Arguments.class);
 		resultClass = ClassName.get(de.dhbw.rahmlab.geomalgelang.api.Result.class);
+
+		IOExceptionTypeName = TypeName.get(elementUtils.getTypeElement(IOException.class.getCanonicalName()).asType());
 	}
 
 	public MethodSpec generateCode() throws AnnotationException {
@@ -111,6 +118,7 @@ public class CGAMethodCodeGenerator {
 		CodeBlock tryWithBody = tryWithBodyBuilder.build();
 
 		MethodSpec method = MethodSpec.overriding(this.annotatedMethod.methodElement)
+			.addException(IOExceptionTypeName)
 			.addStatement("String source = $S", this.annotatedMethod.cgaMethodAnnotation.source())
 			.addCode("try ($1T program = new $1T(source)) {\n", programClass)
 			.addCode("$>")
