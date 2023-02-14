@@ -59,14 +59,17 @@ public class ClassCodeGenerator {
 			.indent("\t")
 			.build();
 
+		javaFile.writeTo(filer);
+
+		/*
 		System.out.println("packageName: " + packageName);
 		System.out.println("genClassName: " + genClassName);
-		javaFile.writeTo(filer);
 		javaFile.writeTo(System.out);
+		 */
+		//
 		/*
 		JavaFileObject jfo = filer.createSourceFile(packageName + "." + genClassName);
 		Writer writer = jfo.openWriter();
-		//javaFile.writeTo(writer);
 		PrintWriter out = new PrintWriter(writer);
 		out.println("hello");
 		 */
