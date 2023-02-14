@@ -1,4 +1,4 @@
-package de.dhbw.rahmlab.annotation.processing;
+package de.dhbw.rahmlab.annotation.processing.api;
 
 import java.lang.annotation.*;
 

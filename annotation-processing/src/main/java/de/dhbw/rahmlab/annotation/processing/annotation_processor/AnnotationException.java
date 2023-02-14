@@ -1,4 +1,4 @@
-package de.dhbw.rahmlab.annotation.processing;
+package de.dhbw.rahmlab.annotation.processing.annotation_processor;
 
 import javax.lang.model.element.Element;
 

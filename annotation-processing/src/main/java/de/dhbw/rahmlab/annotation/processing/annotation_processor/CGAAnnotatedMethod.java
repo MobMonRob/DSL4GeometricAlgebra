@@ -1,5 +1,6 @@
-package de.dhbw.rahmlab.annotation.processing;
+package de.dhbw.rahmlab.annotation.processing.annotation_processor;
 
+import de.dhbw.rahmlab.annotation.processing.api.CGA;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;

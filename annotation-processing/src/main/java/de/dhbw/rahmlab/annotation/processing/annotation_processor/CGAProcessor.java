@@ -1,5 +1,6 @@
-package de.dhbw.rahmlab.annotation.processing;
+package de.dhbw.rahmlab.annotation.processing.annotation_processor;
 
+import de.dhbw.rahmlab.annotation.processing.api.CGA;
 import com.google.auto.service.AutoService;
 import java.io.IOException;
 import java.util.ArrayList;

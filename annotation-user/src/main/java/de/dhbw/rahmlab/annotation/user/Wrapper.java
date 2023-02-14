@@ -1,6 +1,6 @@
 package de.dhbw.rahmlab.annotation.user;
 
-import de.dhbw.rahmlab.annotation.processing.CGA;
+import de.dhbw.rahmlab.annotation.processing.api.CGA;
 import org.jogamp.vecmath.Tuple3d;
 
 public interface Wrapper {
