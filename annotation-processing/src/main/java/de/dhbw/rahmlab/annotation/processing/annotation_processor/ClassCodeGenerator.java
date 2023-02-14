@@ -17,46 +17,48 @@ import javax.lang.model.util.Elements;
 import javax.tools.JavaFileObject;
 
 public class ClassCodeGenerator {
-
+	
 	protected static final String CLASS_SUFFIX = "Gen";
 	protected static final String PACKAGE_SUFFIX = ".gen";
-
+	
 	protected final String qualifiedInterfaceName;
-
+	
 	protected final List<CGAMethodCodeGenerator> methodCodeGenerators;
-
+	
 	public ClassCodeGenerator(String qualifiedInterfaceName, List<CGAMethodCodeGenerator> methodCodeGenerators) {
 		this.qualifiedInterfaceName = qualifiedInterfaceName;
 		this.methodCodeGenerators = methodCodeGenerators;
 	}
-
+	
 	public void generateCode(Elements elementUtils, Filer filer) throws IOException, AnnotationException {
 		TypeElement implementingInterfaceName = elementUtils.getTypeElement(this.qualifiedInterfaceName);
 		String genClassName = implementingInterfaceName.getSimpleName() + CLASS_SUFFIX;
-
+		
 		int nameSeparatorIndex = this.qualifiedInterfaceName.lastIndexOf(".");
 		String packageName = this.qualifiedInterfaceName.substring(0, nameSeparatorIndex) + PACKAGE_SUFFIX;
-
+		
 		List<MethodSpec> methods = new ArrayList<>(this.methodCodeGenerators.size());
 		for (CGAMethodCodeGenerator methodCodeGenerator : this.methodCodeGenerators) {
 			MethodSpec method = methodCodeGenerator.generateCode();
 			methods.add(method);
 		}
-
+		
 		FieldSpec instance = FieldSpec.builder(TypeName.get(implementingInterfaceName.asType()), "INSTANCE", Modifier.PUBLIC, Modifier.STATIC)
 			.initializer("new $L()", genClassName)
 			.build();
-
+		
 		TypeSpec cgaGen = TypeSpec.classBuilder(genClassName)
 			.addModifiers(Modifier.PUBLIC)
 			.addSuperinterface(implementingInterfaceName.asType())
 			.addField(instance)
 			.addMethods(methods)
 			.build();
-
+		
 		JavaFile javaFile = JavaFile.builder(packageName, cgaGen)
+			.skipJavaLangImports(true)
+			.indent("\t")
 			.build();
-
+		
 		System.out.println("packageName: " + packageName);
 		System.out.println("genClassName: " + genClassName);
 		javaFile.writeTo(filer);
