@@ -2,13 +2,13 @@ package de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionDefinitions
 
 import com.oracle.truffle.api.dsl.Specialization;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionDefinitions.nodes.exprSuperClasses.BuiltinFunctionBody;
-import de.orat.math.cga.api.CGAScalar;
+import de.orat.math.cga.api.CGAScalarOPNS;
 
 public abstract class Abs extends BuiltinFunctionBody {
 
 	@Specialization
-	protected CGAScalar execute(CGAScalar input) {
+	protected CGAScalarOPNS execute(CGAScalarOPNS input) {
 		double value = Math.abs(input.value());
-		return new CGAScalar(value);
+		return new CGAScalarOPNS(value);
 	}
 }
