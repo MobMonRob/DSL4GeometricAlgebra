@@ -2,7 +2,6 @@ package de.dhbw.rahmlab.geomalgelang.api;
 
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.CgaTruffleBox;
 import de.orat.math.cga.api.CGAMultivector;
-import java.io.IOException;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Engine;
 import org.graalvm.polyglot.PolyglotException;
@@ -15,8 +14,8 @@ public class Program implements AutoCloseable {
 	protected Context context;
 	protected Value program;
 
-	public Program(String source) throws IOException {
-		this(Source.newBuilder("geomalgelang", source, "MATH").build());
+	public Program(String source) {
+		this(Source.create("geomalgelang", source));
 	}
 
 	public Program(Source source) {
