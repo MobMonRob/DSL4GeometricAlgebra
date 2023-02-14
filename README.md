@@ -11,7 +11,7 @@ Extract the downloaded archive to an arbitrary location.
 
 ### Netbeans configuration
 Add a new java platform with the name "GraalVM 17". \
-Within the Netbeans 15 IDE you can do this if you follow these steps:
+Within the Netbeans 16 IDE you can do this if you follow these steps:
 - open project properties via right-click on the project
 - navigate to Build / Compile
 - click "Manage Java Platforms..."
@@ -33,7 +33,11 @@ or navigate to this point via the Tools main menu.
 The project depends on the vecmath library in the refactured version of jogamp. Your can find this library [here](https://jogamp.org/deployment/java3d/1.7.1-build-20200222/vecmath.jar). Unfortunately there is no maven repository available. That is why you need to download the jar file manually and add it as a local depency of the project. To do this in the nebeans ide: Right-click on the depencies of the project and add the dependency manually. The group id is "org.jogamp.java3d", the artifactId is "vecmath" and the type is "jar". \
 Alternatively clone it from [GitHub](https://github.com/JogAmp/vecmath/tree/dev1.7.1), update the compiler version in it's pom.xml and build it.
 
-Clone [GeometricAlgebra](https://github.com/orat/GeometricAlgebra/tree/181f2d7492b2c612339427d34a75271717edc06a) and [ConformalGeometricAlgebra](https://github.com/orat/ConformalGeometricAlgebra/tree/00ad2c32f311074e6b31ebd337da622bb099b9c2) and build those projects to have them available in your local Maven cache.
+Clone and checkout
+1. [GeometricAlgebra](https://github.com/orat/GeometricAlgebra) (commit `d3398497d2b8827a04bd411f8c1d8c7882e3d95d`)
+2. [ConformalGeometricAlgebra](https://github.com/orat/ConformalGeometricAlgebra) (commit `b4167730834de81c0f3cd6726089293aff8728df`)
+
+and build those projects to have them available in your local Maven cache.
 
 ## Run
 In order to run the example invokation in the package 'de.dhbw.rahmlab.geomalgelang.App' make sure you successfully executed the steps [GraalVM Setup](https://github.com/MobMonRob/DSL4GeometricAlgebra#graalvm-setup) and [Dependencies Setup](https://github.com/MobMonRob/DSL4GeometricAlgebra#dependencies-setup) beforehand. \
