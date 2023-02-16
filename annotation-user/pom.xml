@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>de.dhbw.rahmlab</groupId>
+	<artifactId>annotation-user</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
+	<properties>
+		<maven.compiler.source>17</maven.compiler.source>
+		<maven.compiler.target>17</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<exec.mainClass>de.dhbw.rahmlab.annotation.user.AnnotationUser</exec.mainClass>
+		<annotation-processing.version>1.0-SNAPSHOT</annotation-processing.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>de.dhbw.rahmlab</groupId>
+			<artifactId>annotation-processing</artifactId>
+			<version>${annotation-processing.version}</version>
+			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<artifactId>*</artifactId>
+					<groupId>*</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>de.dhbw.rahmlab</groupId>
+			<artifactId>GeomAlgeLang</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.10.1</version>
+				<configuration>
+					<generatedSourcesDirectory>${project.build.directory}/generated-sources/annotation-processing</generatedSourcesDirectory>
+					<annotationProcessorPaths>
+
+						<path>
+							<groupId>de.dhbw.rahmlab</groupId>
+							<artifactId>annotation-processing</artifactId>
+							<version>${annotation-processing.version}</version>
+						</path>
+
+					</annotationProcessorPaths>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>de.dhbw.rahmlab</groupId>
+						<artifactId>annotation-processing</artifactId>
+						<version>${annotation-processing.version}</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+		</plugins>
+	</build>
+</project>
