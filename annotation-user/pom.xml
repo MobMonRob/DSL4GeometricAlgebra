@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	
 	<parent>
 		<groupId>de.dhbw.rahmlab</groupId>
 		<artifactId>AnnotationPOC</artifactId>
@@ -19,7 +20,9 @@
 			<groupId>de.dhbw.rahmlab</groupId>
 			<artifactId>annotation-processing</artifactId>
 			<version>${project.parent.version}</version>
+			<scope>provided</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>de.dhbw.rahmlab</groupId>
 			<artifactId>GeomAlgeLang</artifactId>
@@ -27,32 +30,34 @@
 		</dependency>
 	</dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.10.1</version>
-				<configuration>
-					<generatedSourcesDirectory>${project.build.directory}/generated-sources/annotation-processing</generatedSourcesDirectory>
-					<annotationProcessorPaths>
+	<!--
+<build>
+	<plugins>
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-compiler-plugin</artifactId>
+			<version>3.10.1</version>
+			<configuration>
+				<generatedSourcesDirectory>${project.build.directory}/generated-sources/annotation-processing</generatedSourcesDirectory>
+				<annotationProcessorPaths>
 
-						<path>
-							<groupId>de.dhbw.rahmlab</groupId>
-							<artifactId>annotation-processing</artifactId>
-							<version>${project.parent.version}</version>
-						</path>
-
-					</annotationProcessorPaths>
-				</configuration>
-				<dependencies>
-					<dependency>
+					<path>
 						<groupId>de.dhbw.rahmlab</groupId>
 						<artifactId>annotation-processing</artifactId>
 						<version>${project.parent.version}</version>
-					</dependency>
-				</dependencies>
-			</plugin>
-		</plugins>
-	</build>
+					</path>
+
+				</annotationProcessorPaths>
+			</configuration>
+			<dependencies>
+				<dependency>
+					<groupId>de.dhbw.rahmlab</groupId>
+					<artifactId>annotation-processing</artifactId>
+					<version>${project.parent.version}</version>
+				</dependency>
+			</dependencies>
+		</plugin>
+	</plugins>
+</build>
+	-->
 </project>

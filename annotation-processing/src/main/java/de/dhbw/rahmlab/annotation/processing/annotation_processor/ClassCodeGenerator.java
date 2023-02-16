@@ -6,15 +6,12 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.processing.Filer;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
-import javax.tools.JavaFileObject;
 
 public class ClassCodeGenerator {
 
@@ -47,31 +44,18 @@ public class ClassCodeGenerator {
 			.initializer("new $L()", genClassName)
 			.build();
 
-		TypeSpec cgaGen = TypeSpec.classBuilder(genClassName)
+		TypeSpec cgaGenClass = TypeSpec.classBuilder(genClassName)
 			.addModifiers(Modifier.PUBLIC)
 			.addSuperinterface(implementingInterfaceName.asType())
 			.addField(instance)
 			.addMethods(methods)
 			.build();
 
-		JavaFile javaFile = JavaFile.builder(packageName, cgaGen)
+		JavaFile javaFile = JavaFile.builder(packageName, cgaGenClass)
 			.skipJavaLangImports(true)
 			.indent("\t")
 			.build();
 
 		javaFile.writeTo(filer);
-
-		/*
-		System.out.println("packageName: " + packageName);
-		System.out.println("genClassName: " + genClassName);
-		javaFile.writeTo(System.out);
-		 */
-		//
-		/*
-		JavaFileObject jfo = filer.createSourceFile(packageName + "." + genClassName);
-		Writer writer = jfo.openWriter();
-		PrintWriter out = new PrintWriter(writer);
-		out.println("hello");
-		 */
 	}
 }
