@@ -13,22 +13,24 @@ public class Program implements AutoCloseable {
 
 	protected Context context;
 	protected Value program;
+	protected static final String LANGUAGE_ID = "geomalgelang";
 
 	public Program(String source) {
-		this(Source.create("geomalgelang", source));
+		this(Source.create(LANGUAGE_ID, source));
 	}
 
 	public Program(Source source) {
-		Engine engine = Engine.create("geomalgelang");
+		Engine engine = Engine.create(LANGUAGE_ID);
 
-		Context.Builder builder = Context.newBuilder("geomalgelang")
+		Context.Builder builder = Context.newBuilder(LANGUAGE_ID)
 			.allowAllAccess(true)
 			.engine(engine);
 
 		this.context = builder.build();
+		this.context.initialize(LANGUAGE_ID);
 
 		try {
-			program = context.parse(source);
+			program = this.context.parse(source);
 			// parsing succeeded
 		} catch (PolyglotException e) {
 			if (e.isSyntaxError()) {
@@ -37,14 +39,14 @@ public class Program implements AutoCloseable {
 			} else {
 				// other guest error detected
 			}
-			context.close();
+			this.context.close();
 			throw e;
 		}
 	}
 
 	@Override
 	public void close() {
-		context.close();
+		this.context.close();
 	}
 
 	public Result invoke(Arguments arguments) {
@@ -62,7 +64,7 @@ public class Program implements AutoCloseable {
 		// Env is available in GeomAlgeLang.java
 		// program.invokeMember(identifier, arguments); // Alternative for main() function
 		// Do it similar to simple language: launcher / SLmain.java
-		Value bindings = context.getBindings("geomalgelang"); //polyglotBindings
+		Value bindings = this.context.getBindings("geomalgelang"); //polyglotBindings
 
 		arguments.argsMap.forEach((name, value) -> {
 			bindings.putMember(name, new CgaTruffleBox(value));
@@ -72,7 +74,7 @@ public class Program implements AutoCloseable {
 
 		try {
 			// later: execute with arguments XOR getMember "main" and execute it with arguments (instead of bindings.putMember)
-			Value result = program.execute();
+			Value result = this.program.execute();
 			answer = result.as(CgaTruffleBox.class).inner;
 		} finally {
 			// Will be executed regardless if an exception is thrown or not

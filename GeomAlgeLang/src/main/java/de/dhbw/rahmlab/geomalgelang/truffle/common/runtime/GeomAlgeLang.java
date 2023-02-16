@@ -17,15 +17,16 @@ import java.io.IOException;
 	version = "0.0.1")
 public class GeomAlgeLang extends TruffleLanguage<GeomAlgeLangContext> {
 
-	private final GeomAlgeLangContext context;
+	private GeomAlgeLangContext context;
 
 	public GeomAlgeLang() {
 		super();
-		this.context = new GeomAlgeLangContext(this);
+		// this.context = new GeomAlgeLangContext(this);
 	}
 
 	@Override
 	protected GeomAlgeLangContext createContext(Env env) {
+		this.context = new GeomAlgeLangContext(this);
 		return this.context;
 	}
 
