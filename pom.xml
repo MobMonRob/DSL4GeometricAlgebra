@@ -8,6 +8,7 @@
 	<modules>
 		<module>annotation-user</module>
 		<module>annotation-processing</module>
+		<module>GeomAlgeLang</module>
 	</modules>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
