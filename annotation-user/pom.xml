@@ -21,6 +21,12 @@
 			<artifactId>annotation-processing</artifactId>
 			<version>${project.parent.version}</version>
 			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<artifactId>*</artifactId>
+					<groupId>*</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
