@@ -1,6 +1,5 @@
 package de.dhbw.rahmlab.geomalgelang.api;
 
-import com.oracle.truffle.api.interop.TruffleObject;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.CgaTruffleBox;
 import de.orat.math.cga.api.CGAMultivector;
 import org.graalvm.polyglot.Context;
@@ -51,10 +50,10 @@ public class Program implements AutoCloseable {
 	}
 
 	public Result invoke(Arguments arguments) {
-		System.out.println("variable assignments: ");
+		/// System.out.println("variable assignments: ");
 		arguments.argsMap.forEach((name, value) -> {
 			String varString = "\t" + name + " := " + value.toString();
-			System.out.println(varString);
+			// System.out.println(varString);
 		});
 
 		// https://www.graalvm.org/truffle/javadoc/com/oracle/truffle/api/interop/InteropLibrary.html
@@ -65,7 +64,7 @@ public class Program implements AutoCloseable {
 		// Env is available in GeomAlgeLang.java
 		// program.invokeMember(identifier, arguments); // Alternative for main() function
 		// Do it similar to simple language: launcher / SLmain.java
-		Value bindings = this.context.getBindings("geomalgelang"); //polyglotBindings
+		Value bindings = this.context.getBindings(LANGUAGE_ID); //polyglotBindings
 
 		arguments.argsMap.forEach((name, value) -> {
 			bindings.putMember(name, new CgaTruffleBox(value));
