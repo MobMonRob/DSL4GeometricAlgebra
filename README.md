@@ -71,7 +71,8 @@ All of these types are automatically casted into a multivector inside the langua
 &#x003C;representation&#x003E; = IPNS | OPNS
 
 ## Operators
-Hint: Operator precedence determines how operators are parsed concerning each other. Operators with higher precedence become the operands of operators with lower precedence.
+Hint: Operator precedence determines how operators are parsed concerning each other. A higher precedence number
+results in a higher binding strength. Thus operators with higher precedence become the operands of operators with lower precedence.
 
 ### 2-ary operators
 #### Base 2-ary operators
