@@ -1,6 +1,6 @@
-package de.dhbw.rahmlab.annotation.processing.annotation_processor;
+package de.dhbw.rahmlab.geomalgelang.annotation.processing;
 
-import de.dhbw.rahmlab.annotation.processing.api.CGA;
+import de.dhbw.rahmlab.geomalgelang.api.annotation.CGA;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;

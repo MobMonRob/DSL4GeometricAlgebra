@@ -1,4 +1,4 @@
-package de.dhbw.rahmlab.annotation.processing.api;
+package de.dhbw.rahmlab.geomalgelang.api.annotation;
 
 import java.lang.annotation.*;
 

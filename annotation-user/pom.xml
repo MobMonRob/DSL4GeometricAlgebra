@@ -30,34 +30,32 @@
 		</dependency>
 	</dependencies>
 
-	<!--
-<build>
-	<plugins>
-		<plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-compiler-plugin</artifactId>
-			<version>3.10.1</version>
-			<configuration>
-				<generatedSourcesDirectory>${project.build.directory}/generated-sources/annotation-processing</generatedSourcesDirectory>
-				<annotationProcessorPaths>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.10.1</version>
+				<configuration>
+					<generatedSourcesDirectory>${project.build.directory}/generated-sources/annotation-processing</generatedSourcesDirectory>
+					<annotationProcessorPaths>
 
-					<path>
+						<path>
+							<groupId>de.dhbw.rahmlab</groupId>
+							<artifactId>annotation-processing</artifactId>
+							<version>${project.parent.version}</version>
+						</path>
+
+					</annotationProcessorPaths>
+				</configuration>
+				<dependencies>
+					<dependency>
 						<groupId>de.dhbw.rahmlab</groupId>
 						<artifactId>annotation-processing</artifactId>
 						<version>${project.parent.version}</version>
-					</path>
-
-				</annotationProcessorPaths>
-			</configuration>
-			<dependencies>
-				<dependency>
-					<groupId>de.dhbw.rahmlab</groupId>
-					<artifactId>annotation-processing</artifactId>
-					<version>${project.parent.version}</version>
-				</dependency>
-			</dependencies>
-		</plugin>
-	</plugins>
-</build>
-	-->
+					</dependency>
+				</dependencies>
+			</plugin>
+		</plugins>
+	</build>
 </project>

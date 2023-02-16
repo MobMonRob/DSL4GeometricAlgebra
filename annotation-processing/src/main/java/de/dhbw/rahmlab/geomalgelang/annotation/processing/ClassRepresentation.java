@@ -1,4 +1,4 @@
-package de.dhbw.rahmlab.annotation.processing.annotation_processor;
+package de.dhbw.rahmlab.geomalgelang.annotation.processing;
 
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
 import com.googlecode.concurrenttrees.radixinverted.ConcurrentInvertedRadixTree;

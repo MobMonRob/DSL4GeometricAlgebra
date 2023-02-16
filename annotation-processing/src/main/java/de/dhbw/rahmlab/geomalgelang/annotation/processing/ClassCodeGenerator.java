@@ -1,4 +1,4 @@
-package de.dhbw.rahmlab.annotation.processing.annotation_processor;
+package de.dhbw.rahmlab.geomalgelang.annotation.processing;
 
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
