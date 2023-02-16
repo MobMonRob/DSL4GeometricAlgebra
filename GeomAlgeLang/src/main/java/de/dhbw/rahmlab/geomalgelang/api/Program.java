@@ -1,5 +1,6 @@
 package de.dhbw.rahmlab.geomalgelang.api;
 
+import com.oracle.truffle.api.interop.TruffleObject;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.CgaTruffleBox;
 import de.orat.math.cga.api.CGAMultivector;
 import org.graalvm.polyglot.Context;
@@ -75,7 +76,8 @@ public class Program implements AutoCloseable {
 		try {
 			// later: execute with arguments XOR getMember "main" and execute it with arguments (instead of bindings.putMember)
 			Value result = this.program.execute();
-			answer = result.as(CgaTruffleBox.class).inner;
+			CgaTruffleBox box = result.as(CgaTruffleBox.class);
+			answer = box.inner;
 		} finally {
 			// Will be executed regardless if an exception is thrown or not
 			// context.close();

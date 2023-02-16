@@ -6,9 +6,9 @@
 	<version>1.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<modules>
-		<module>annotation-user</module>
 		<module>annotation-processing</module>
 		<module>GeomAlgeLang</module>
+		<module>DSL4GeometricAlgebra-Test</module>
 	</modules>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

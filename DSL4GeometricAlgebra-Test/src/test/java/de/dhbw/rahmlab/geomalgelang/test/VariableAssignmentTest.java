@@ -1,15 +1,16 @@
-package de.dhbw.rahmlab.geomalgelang.semantics;
+package de.dhbw.rahmlab.geomalgelang.test;
 
 import de.dhbw.rahmlab.geomalgelang.api.Arguments;
 import de.dhbw.rahmlab.geomalgelang.api.Program;
+import de.dhbw.rahmlab.geomalgelang.test.common.AbstractTest;
 import java.io.IOException;
 import org.graalvm.polyglot.PolyglotException;
 import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-// @Disabled
-public class VariableAssignmentTest {
+@Disabled
+public class VariableAssignmentTest extends AbstractTest {
 
 	@Test
 	void passedNonExistentVariable() throws IOException {
