@@ -40,7 +40,7 @@ public class ClassCodeGenerator {
 			methods.add(method);
 		}
 
-		FieldSpec instance = FieldSpec.builder(TypeName.get(implementingInterfaceName.asType()), "INSTANCE", Modifier.PUBLIC, Modifier.STATIC)
+		FieldSpec instance = FieldSpec.builder(TypeName.get(implementingInterfaceName.asType()), "INSTANCE", Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
 			.initializer("new $L()", genClassName)
 			.build();
 
