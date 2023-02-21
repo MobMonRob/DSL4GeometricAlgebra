@@ -44,7 +44,7 @@ and build those projects to have them available in your local Maven cache.
 
 
 ## Run
-In order to run the example invokation in the package 'de.dhbw.rahmlab.geomalgelang.App' make sure you successfully executed the steps [GraalVM Setup](README.md#graalvm-setup) and [Dependencies Setup](README.md#dependencies-setup) beforehand. \
+In order to run the example invokation in the package 'de.dhbw.rahmlab.geomalgelang.App' make sure you successfully executed the steps [GraalVM Setup](#graalvm-setup) and [Dependencies Setup](#dependencies-setup) beforehand. \
 If you use an IDE other than Netbeans and execute the generated .class files directly rather than the generated .jar file, it might be necessary to configure the Maven execution in your IDE with the same properties set in the [GeomAlgeLang/nbactions.xml](GeomAlgeLang/nbactions.xml) file.
 
 
