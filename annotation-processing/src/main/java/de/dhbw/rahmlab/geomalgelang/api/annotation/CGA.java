@@ -6,5 +6,9 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.SOURCE)
 public @interface CGA {
 
-	String source();
+	/*
+	 * Name "value" allows to use the annotation without the methodname,
+	 * like: @CGA("a") instead of @CGA(value= "a")
+	 */
+	String value();
 }

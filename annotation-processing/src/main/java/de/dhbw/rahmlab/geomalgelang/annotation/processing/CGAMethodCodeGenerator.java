@@ -114,7 +114,7 @@ public class CGAMethodCodeGenerator {
 		CodeBlock tryWithBody = tryWithBodyBuilder.build();
 
 		MethodSpec method = MethodSpec.overriding(this.annotatedMethod.methodElement)
-			.addStatement("String source = $S", this.annotatedMethod.cgaMethodAnnotation.source())
+			.addStatement("String source = $S", this.annotatedMethod.cgaMethodAnnotation.value())
 			.addCode("try ($1T program = new $1T(source)) {\n", programClass)
 			.addCode("$>")
 			.addCode(tryWithBody)
