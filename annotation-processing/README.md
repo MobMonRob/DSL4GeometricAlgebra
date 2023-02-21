@@ -8,7 +8,7 @@ public interface <Arbitrary Name> {
 }
 ```
 Return type: \
-Same as a return type of one of the methods from the [Result class](GeomAlgeLang/src/main/java/de/dhbw/rahmlab/geomalgelang/api/Result.java).
+Same as a return type of one of the methods from the [Result class](../GeomAlgeLang/src/main/java/de/dhbw/rahmlab/geomalgelang/api/Result.java).
 
 Each Parameter consists of: \
 `<Type> <Identifier>`
@@ -16,8 +16,7 @@ Each Parameter consists of: \
 Parameter.Identifier: \
 `<Name of CGA Variable>_<Method name from Arguments class><Arbitrary String>`
 
-Each Parameter.Type must match the type of the (n+1)-th parameter of the corresponding “Method name from Arguments class”, with n as the n-th occurence of the same “Name of the CGA Variable”. \
-([Arguments class](GeomAlgeLang/src/main/java/de/dhbw/rahmlab/geomalgelang/api/Arguments.java))
+Each Parameter.Type must match the type of the (n+1)-th parameter of the corresponding “Method name from [Arguments class](../GeomAlgeLang/src/main/java/de/dhbw/rahmlab/geomalgelang/api/Arguments.java)”, with n as the n-th occurence of the same “Name of the CGA Variable”.
 
 Dataflow will be: \
 Parameters -> Methods of Arguments.java -> Interpreter execution -> Method of Result.java
