@@ -69,8 +69,8 @@ In Result.java it could make sense to add methods with the same return types as 
 However this is not supported by the annotation-processor. \
 A solution to work around that in these cases is to create new classes which themselves hold or compute the desired return types and use these new classes as return types.
 
-There is currently not optimization for many consecutive invokations of generated code. \
-If this causes performance issues, we could consider following ideas to fix that: \
+There is currently no optimization for many consecutive invokations of generated code. \
+If this causes performance issues, we could consider following ideas to fix that:
 - Caching of the internal Program instance (speed up only for consecutive executions of the same CGA code)
 - Sharing the same inner Context instance between multiple internal Program instances.
 
