@@ -8,8 +8,7 @@ public interface <Arbitrary Name> {
 }
 ```
 Return type: \
-Same as a return type of one of the methods from the Result class: \
-https://github.com/MobMonRob/DSL4GeometricAlgebra/blob/fabian/GeomAlgeLang/src/main/java/de/dhbw/rahmlab/geomalgelang/api/Result.java
+Same as a return type of one of the methods from the [Result class](GeomAlgeLang/src/main/java/de/dhbw/rahmlab/geomalgelang/api/Result.java).
 
 Each Parameter consists of: \
 `<Type> <Identifier>`
@@ -18,7 +17,7 @@ Parameter.Identifier: \
 `<Name of CGA Variable>_<Method name from Arguments class><Arbitrary String>`
 
 Each Parameter.Type must match the type of the (n+1)-th parameter of the corresponding “Method name from Arguments class”, with n as the n-th occurence of the same “Name of the CGA Variable”. \
-https://github.com/MobMonRob/DSL4GeometricAlgebra/blob/fabian/GeomAlgeLang/src/main/java/de/dhbw/rahmlab/geomalgelang/api/Arguments.java
+([Arguments class](GeomAlgeLang/src/main/java/de/dhbw/rahmlab/geomalgelang/api/Arguments.java))
 
 Dataflow will be: \
 Parameters -> Methods of Arguments.java -> Interpreter execution -> Method of Result.java
