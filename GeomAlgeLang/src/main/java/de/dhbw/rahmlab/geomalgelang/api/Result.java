@@ -24,6 +24,10 @@ public class Result {
 		return inner.decomposeScalar();
 	}
 
+        public double[] decomposeDoubleArray(){
+            return inner.extractCoordinates();
+        }
+        
 	public iCGATangentOrRound.EuclideanParameters decomposeTangentOrRound() {
 		return inner.decomposeTangentOrRound();
 	}
