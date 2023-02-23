@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.dhbw.rahmlab.geomalgelang.parsing._util;
 
 import de.dhbw.rahmlab.geomalgelang.parsing.CharStreamSupplier;
@@ -14,7 +9,6 @@ import org.antlr.v4.runtime.Parser;
 /**
  * https://github.com/antlr/antlr4/blob/4.9.3/tool/src/org/antlr/v4/gui/TestRig.java
  *
- * @author fabian
  */
 public class AntlrTestRig extends TestRig {
 

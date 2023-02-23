@@ -4,10 +4,12 @@ This repository contains code to work with multivector expressions of conformal 
 
 The code is in very early stage.
 
+
 ## GraalVM Setup
 Download the [GraalVM](https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.0.0.2/graalvm-ce-java17-linux-amd64-22.0.0.2.tar.gz)
 
 Extract the downloaded archive to an arbitrary location.
+
 
 ### Netbeans configuration
 Add a new java platform with the name "GraalVM 17". \
@@ -24,10 +26,12 @@ or navigate to this point via the Tools main menu.
   - choose the platform folder within the extracted archive.
   - name it "GraalVM 17"
 
+
 ### Netbeans project configuration
 - open project properties via right-click on the project
 - navigate to Build / Compile
 - in the drop-down list labeled "Java Platform" choose "GraalVM 17"
+
 
 ## Dependencies Setup
 The project depends on the vecmath library in the refactured version of jogamp. Your can find this library [here](https://jogamp.org/deployment/java3d/1.7.1-build-20200222/vecmath.jar). Unfortunately there is no maven repository available. That is why you need to download the jar file manually and add it as a local depency of the project. To do this in the nebeans ide: Right-click on the depencies of the project and add the dependency manually. The group id is "org.jogamp.java3d", the artifactId is "vecmath" and the type is "jar". \
@@ -36,12 +40,17 @@ Alternatively clone it from [GitHub](https://github.com/JogAmp/vecmath/tree/dev1
 Clone and checkout
 1. [GeometricAlgebra](https://github.com/orat/GeometricAlgebra) (commit `d3398497d2b8827a04bd411f8c1d8c7882e3d95d`)
 2. [ConformalGeometricAlgebra](https://github.com/orat/ConformalGeometricAlgebra) (commit `b4167730834de81c0f3cd6726089293aff8728df`)
-
 and build those projects to have them available in your local Maven cache.
 
+
 ## Run
-In order to run the example invokation in the package 'de.dhbw.rahmlab.geomalgelang.App' make sure you successfully executed the steps [GraalVM Setup](https://github.com/MobMonRob/DSL4GeometricAlgebra#graalvm-setup) and [Dependencies Setup](https://github.com/MobMonRob/DSL4GeometricAlgebra#dependencies-setup) beforehand. \
-If you use an IDE other than Netbeans and execute the generated .class files directly rather than the generated .jar file, it might be necessary to configure the Maven execution in your IDE with the same properties set in the [nbactions.xml](https://github.com/MobMonRob/DSL4GeometricAlgebra/blob/main/nbactions.xml) file.
+In order to run the example invokation in the package 'de.dhbw.rahmlab.geomalgelang.App' make sure you successfully executed the steps [GraalVM Setup](#graalvm-setup) and [Dependencies Setup](#dependencies-setup) beforehand. \
+If you use an IDE other than Netbeans and execute the generated .class files directly rather than the generated .jar file, it might be necessary to configure the Maven execution in your IDE with the same properties set in the [GeomAlgeLang/nbactions.xml](GeomAlgeLang/nbactions.xml) file.
+
+
+## Submodule docs
+- [annotation-processing](annotation-processing/README.md)
+
 
 ## Types to use from outside the language
 | Name | implementation class | hints |
@@ -55,8 +64,8 @@ If you use an IDE other than Netbeans and execute the generated .class files dir
 
 All of these types are automatically casted into a multivector inside the language. No other operations possible based on these types inside the language.
 
-## Types inside the language
 
+## Types inside the language
 ### CGA types
 | Name | implementation class | hints |
 | :-------- | :---- | ------|
@@ -70,9 +79,11 @@ All of these types are automatically casted into a multivector inside the langua
 
 &#x003C;representation&#x003E; = IPNS | OPNS
 
+
 ## Operators
 Hint: Operator precedence determines how operators are parsed concerning each other. A higher precedence number
 results in a higher binding strength. Thus operators with higher precedence become the operands of operators with lower precedence.
+
 
 ### 2-ary operators
 #### Base 2-ary operators
@@ -87,6 +98,7 @@ results in a higher binding strength. Thus operators with higher precedence beco
 | 3          | &#x2228; | \vee    | \u2228  | regressive product (intersection) | multivector1.vee(multivector2) or (multivector1* &#8743; multivector2*)* |  |
 | 2          | &#x002F; | /       | \u002F  | division (inverse geometric product) | multivector1.div(multivector2) |  |
 
+
 #### Additional 2-ary operators
 | precedence | symbol   | latex | unicode | description | implementation | CLUscript |
 | :--------: | :------: | ------| ------- | ----------- | -------------- | :----- |
@@ -94,10 +106,12 @@ results in a higher binding strength. Thus operators with higher precedence beco
 | 3          | &#x2229; | \cap  | \u2229  | meet (intersection) = largest common subspace| multivector1.meet(multivector2) | \& |
 | 3          | &#x222A; | \cup  | \u222A  | join  (union) of two subspaces is there smallest superspace = smallest space containing them both | multivector1.join(multivector2) or multivector2* &#8901; multivector1 or (multivector2* &#8743; multivector1*)* | \| |
 
+
 ### 1-ary operators
 All 1-ary operators have higher precedence than 2-ary ones. \
 All 1-ary operators are right-sides except from the negate operator '-'. \
 Except dual/undual the operators cancel itself so if your write X&#732;&#732; no reverse is executed.
+
 
 #### Base 1-ary operators
 | precedence | symbol           | latex                         | unicode      | description | implementation | CLUscript |
@@ -109,6 +123,7 @@ Except dual/undual the operators cancel itself so if your write X&#732;&#732; no
 | 6          | &#x2020;         | \textsuperscript{\textdagger} | \u2020       | clifford conjugate (a sign change operation) | multivector.conjugate() | |
 
 There exist three types of involution operations: Space inversion, reversion and the combination of both the clifford conjugation.
+
 
 #### Additional 1-ary operators
 | precedence | symbol           | latex                 | unicode      | description | implementation |
@@ -123,8 +138,8 @@ There exist three types of involution operations: Space inversion, reversion and
 | :----------------------------------------------------------------------------------------------------------------: | ----- | ------------ | ----------- | -------------- |
 | &#x003C;multivector&#x003E;&#x209A; (with &#x209A; ∈ {&#x2080;, &#x2081;, &#x2082;, &#x2083;, &#x2084;, &#x2085;}) |       | &#x003C; = \u003C,  &#x003E; = \u003E, &#x2080; = \u2080, &#x2081; = \u2081, &#x2082; = \u2082, &#x2083; = \u2083, &#x2084; = \u2084, &#x2085; = \u2085| grade extraction, grade p=0-5 as subscript | multivector.extractGrade(int grade)   |
 
-### Built-in functions
 
+### Built-in functions
 #### Base functions
 | symbol      | description | implementation |
 | :---------- | ------------ | -------------- |
@@ -135,12 +150,13 @@ There exist three types of involution operations: Space inversion, reversion and
 | atan2()     | arcus tansgens 2 | new CGAScalar(Math.atan2(CGAScalar, CGAScalar)) |
 | negate14()  | negate the signs of the vector- and 4-vector parts of an multivector. Usable to implement gerneral inverse. | multivector.negate14() |
 
-#### Additional functions to create transformations
 
+#### Additional functions to create transformations
 | symbol                   | description | implementation |
 | :----------------------- | ----------- | -------------- |
 | translator(tuple3d)      | creates a translation from an 3d-tuple | createTranslation(tuple3d) |
 | rotator(tuple3d, double) | creates a rotation from an 3d-tuple representing the rotation axis and a double representing the angle in radian | createTranslation(tuple3d) |
+
 
 ### Symbols
 #### Base vector symbols
@@ -151,6 +167,7 @@ There exist three types of involution operations: Space inversion, reversion and
 | &#x03B5;&#x2081; | \epsilon_1 | \u03B5\u2081 | base vector representing x direction | createEx(1d) |
 | &#x03B5;&#x2082; | \epsilon_2 | \u03B5\u2082 | base vector representing y direction | createEy(1d) |
 | &#x03B5;&#x2083; | \epsilon_3 | \u03B5\u2083 | base vector representing z direction | createEz(1d) |
+
 
 #### Further symbols
 | symbol           | latex      | Unicode      | description | implementation |
@@ -166,14 +183,13 @@ There exist three types of involution operations: Space inversion, reversion and
 | &#x0045;&#x2083; | E_3        | \u0045\u2083 | Euclidean pseudoscalar | &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083;     |
 | &#x0045;         | E          | \u0045       | Pseudoscalar | &#x03B5;&#x2080; &#x2227; &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083; &#x2227; &#x03B5;&#x1D62; |
 
-### Useful equations between above symbols
 
+### Useful equations between above symbols
 &#x03B5;&#x2080;&#x0045;&#x2080;=-&#x03B5;&#x2080;, &#x0045;&#x2080;&#x03B5;&#x2080;=&#x03B5;&#x2080;, &#x03B5;&#x1D62;&#x0045;&#x2080;=&#x03B5;&#x1D62;, &#x0045;&#x2080;&#x03B5;&#x1D62;=-&#x03B5;&#x1D62;, &#x0045;&#x2080;&#x00B2;=1, &#x03B5;&#x2080;&#x00B2;=&#x03B5;&#x1D62;&#x00B2;=0, &#x03B5;&#x208A;&#x00B2;=1, &#x03B5;&#x208B;&#x00B2;=-1, &#x03B5;&#x208A;&#x22C5;&#x03B5;&#x208B;=0
 
 
 ## Important formulae
 ### Formulae to compose conformal geometric objects
-
 #### Geometric objects in outer product null space representation
 | description | formula | grade | class |
 | :---------- | :------ | :----| :-------- |
@@ -186,6 +202,7 @@ There exist three types of involution operations: Space inversion, reversion and
 
 The conformal points in the table above have to be given in inner product null space represenation.
 
+
 #### Geometric objects in inner product null space representation (dual)
 | description | formula | grade |
 | :---------- | :------ | :----|
@@ -196,6 +213,7 @@ The conformal points in the table above have to be given in inner product null s
 | Line from two conformal planes (p1, p2) | p1&#8743;p2 | 2 |
 | Point pair from  three conformal spheres (s1, s2, s3) | s1&#8743;s2&#8743;s3 | 3 |
 
+
 ### Formulae to decompose conformal object representations
 | description | formula |
 | :---------- | :------ |
@@ -205,11 +223,12 @@ The conformal points in the table above have to be given in inner product null s
 | Radius (r) of a conformal sphere (S) | r&#x00B2; = (S&#x002A;)&#x00B2; = S&#x002A;&#x22C5;S&#x002A; |
 | Distance (d) between the the center of a conformal sphere (S) and a conformal point (P) | d&#x00B2; = S&#x22C5;S-2S&#x22C5;P |
 
-### Formulae to implement base functionalitity of CGA
 
+### Formulae to implement base functionalitity of CGA
 | description | formula |
 | :---------- | :------ |
 | Matrix free implementation of the inverse | x&#x207B;&#x00B9; =  (x&#x2020; x&#x5e; x&#x02DC; negate14(x)(x x&#x2020; x&#x5e; x&#x02DC;))/(x x&#x2020; x&#x5e; x&#x02DC; negate14(x) (x x&#x2020; x&#x5e; x&#x02DC;)) |
+
 
 ### General useful equations
 | name | equation | description |
@@ -229,3 +248,4 @@ The conformal points in the table above have to be given in inner product null s
 || (A &#x230B; B) &#x230B; C = A ∧ (B &#x230B; C) | if C contains A|
 |down projection| (&#x03B5;&#x1D62; ∧ &#x03B5;&#x2080;) &#x230B; (X ∧ (&#x03B5;&#x1D62; ∧ &#x03B5;&#x2080;))| extracts the pure euclidean part of the given multivector |
 || $P=\frac{1}{2}(\epsilon_0+L \epsilon_0 L))$ | Determines an arbitrary point $P$ on a line $L$ by reflecion of $\epsilon_0$ on the line. The midpoint between $\epsilon_0$ and its reflection $L \epsilon_0 L$, lays on the line $L$. This is equivalent to projecting the point $\epsilon_0$ onto the line $L$. |
+

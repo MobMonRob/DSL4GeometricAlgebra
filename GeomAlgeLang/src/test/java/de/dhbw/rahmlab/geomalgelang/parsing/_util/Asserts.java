@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package de.dhbw.rahmlab.geomalgelang.parsing._util;
 
 import de.dhbw.rahmlab.geomalgelang.parsing.CharStreamSupplier;
@@ -16,10 +12,6 @@ import org.junit.jupiter.api.Assertions;
 import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.DynamicTest;
 
-/**
- *
- * @author fabian
- */
 public class Asserts {
 
 	private static String generateProgramMessage(String program) {
