@@ -30,8 +30,8 @@ public class App {
 		try (Program program = new Program(source)) {
 			Arguments arguments = new Arguments();
 			arguments
-				.scalar("a", 5.0)
-				.scalar("b", 5.0);
+				.scalar_opns("a", 5.0)
+				.scalar_opns("b", 5.0);
 
 			Result answer = program.invoke(arguments);
 			double answerScalar = answer.decomposeScalar();

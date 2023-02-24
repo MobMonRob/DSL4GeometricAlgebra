@@ -44,13 +44,13 @@ public class Arguments {
             return this;
         }
         
-	public Arguments scalar(String argName, double scalar) {
+	public Arguments scalar_opns(String argName, double scalar) {
 		var mvec = new CGAScalarOPNS(scalar);
 		this.put(argName, mvec);
 		return this;
 	}
 
-        public Arguments scalar_ipns(String argName, double scalar) {
+    public Arguments scalar_ipns(String argName, double scalar) {
 		var mvec = new CGAScalarIPNS(scalar);
 		this.put(argName, mvec);
 		return this;
@@ -126,7 +126,7 @@ public class Arguments {
 		return this.plane_ipns(argName, normal, dist, 1.0);
 	}
         
-        public Arguments plane_ipns(String argName, Point3d location, Vector3d normal) {
+    public Arguments plane_ipns(String argName, Point3d location, Vector3d normal) {
 		var mvec = new CGAPlaneIPNS(location, normal);
 		this.put(argName, mvec);
 		return this;
@@ -146,19 +146,19 @@ public class Arguments {
 		return this;
 	}
         
-        public Arguments circle_ipns(String argName, Point3d location, Vector3d normal, double radius) {
+    public Arguments circle_ipns(String argName, Point3d location, Vector3d normal, double radius) {
 		var mvec = new CGACircleIPNS(location, normal, radius);
 		this.put(argName, mvec);
 		return this;
 	}
         
-        public Arguments oriented_point_ipns(String argName, Point3d location, Vector3d normal) {
+    public Arguments oriented_point_ipns(String argName, Point3d location, Vector3d normal) {
 		var mvec = new CGAOrientedPointIPNS(location, normal);
 		this.put(argName, mvec);
 		return this;
 	}
 
-        public Arguments flat_point_ipns(String argName, Point3d location) {
+    public Arguments flat_point_ipns(String argName, Point3d location) {
 		var mvec = new CGAFlatPointIPNS(location);
 		this.put(argName, mvec);
 		return this;
