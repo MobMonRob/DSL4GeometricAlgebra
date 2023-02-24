@@ -48,8 +48,8 @@ In order to run the example invokation in the package 'de.dhbw.rahmlab.geomalgel
 If you use an IDE other than Netbeans and execute the generated .class files directly rather than the generated .jar file, it might be necessary to configure the Maven execution in your IDE with the same properties set in the [GeomAlgeLang/nbactions.xml](GeomAlgeLang/nbactions.xml) file.
 
 
-## Submodule docs
-- [annotation-processing](annotation-processing/README.md)
+## Annotation based API
+An [annotation based API](annotation-processing/README.md) useful espcially for testing is available.
 
 
 ## Types to use from outside the language
