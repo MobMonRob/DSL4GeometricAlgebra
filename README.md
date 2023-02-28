@@ -84,7 +84,7 @@ All of these types are automatically casted into a multivector inside the langua
 Hint: Operator precedence determines how operators are parsed concerning each other. A higher precedence number
 results in a higher binding strength. Thus operators with higher precedence become the operands of operators with lower precedence.
 
-Exceptions from the precedence rules: \
+Exceptions from the precedence rules:
 - Expressions like `a-b` evaluate to `subtraction(a, b)` instead of `geometric_product(a, negate(b))`.
 
 ### 2-ary operators
