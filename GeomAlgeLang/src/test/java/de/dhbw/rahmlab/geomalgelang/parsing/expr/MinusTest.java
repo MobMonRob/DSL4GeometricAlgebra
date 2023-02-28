@@ -18,23 +18,22 @@ public class MinusTest extends AbstractParsingTest {
 
 		ProgramExpected pe;
 
+		// Subtraktion
 		pe = new ProgramExpected(
 			"a-b",
 			"""
-			GeometricProduct
+			Subtraction
 				GlobalVariableReference
-				Negate
-					GlobalVariableReference
+				GlobalVariableReference
 			""");
 		pes.add(pe);
 
 		pe = new ProgramExpected(
 			"a -b",
 			"""
-			GeometricProduct
+			Subtraction
 				GlobalVariableReference
-				Negate
-					GlobalVariableReference
+				GlobalVariableReference
 			""");
 		pes.add(pe);
 
@@ -67,14 +66,34 @@ public class MinusTest extends AbstractParsingTest {
 		pes.add(pe);
 
 		pe = new ProgramExpected(
-			"a -b / c",
+			"a - - b",
 			"""
-			Division
-				GeometricProduct
+			Subtraction
+				GlobalVariableReference
+				Negate
 					GlobalVariableReference
+			""");
+		pes.add(pe);
+
+		pe = new ProgramExpected(
+			"a - - - b",
+			"""
+			Subtraction
+				GlobalVariableReference
+				Negate
 					Negate
 						GlobalVariableReference
+			""");
+		pes.add(pe);
+
+		pe = new ProgramExpected(
+			"a -b / c",
+			"""
+			Subtraction
 				GlobalVariableReference
+				Division
+					GlobalVariableReference
+					GlobalVariableReference
 			""");
 		pes.add(pe);
 
@@ -91,9 +110,11 @@ public class MinusTest extends AbstractParsingTest {
 		return parsePrintAssert(pes);
 	}
 
+	/*
 	@TestFactory
 	Stream<DynamicTest> expectSyntaxError() {
-		final List<String> programs = List.of(new String[]{"a - - b"});
+		final List<String> programs = List.of(new String[]{""});
 		return parsePrintAssertSyntaxError(programs);
 	}
+	 */
 }

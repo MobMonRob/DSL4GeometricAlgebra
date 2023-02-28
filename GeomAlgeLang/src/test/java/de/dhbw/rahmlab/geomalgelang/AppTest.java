@@ -22,10 +22,7 @@ public class AppTest {
 	// Ausführen mit Rechtsklick auf die Datei -> Run File
 	// Oder Shift + Fn + F6
 	public static void main(String[] args) throws Exception {
-		String program = "involute( a b )";
-		// String program = "a -b";
-		// String program = "a-b";
-		// String program = "a - b";
+		String program = "x+0.5(x²-r²)εᵢ+ε₀";
 
 		Context context = Context.create();
 		context.enter();

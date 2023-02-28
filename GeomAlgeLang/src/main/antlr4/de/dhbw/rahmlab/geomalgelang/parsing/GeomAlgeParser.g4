@@ -44,6 +44,7 @@ unOpExpr
 unOpLExpr
 	:	<assoc=right>
 		op=	HYPHEN_MINUS
+		SPACE*
 		(
 			nonOuterRecursiveExpr
 			|unOpExpr
@@ -80,7 +81,10 @@ binOpExpr
 	|	unOpExpr				#BinOpExprDummy //Closure
 	|	binOpExpr
 		SPACE*
-		binOpExpr			#GP		//Precedence 4
+		(
+			nonOuterRecursiveExpr
+			|unOpRExpr	// "a-b" evaluates to subtraction(a, b) instead of gp(a, negate(b))
+		)					#GP		//Precedence 4
 	|	binOpExpr
 		SPACE*
 		op=	(DOT_OPERATOR
@@ -106,6 +110,7 @@ binOpExpr
 		SPACE*
 		binOpExpr			#BinOp	//Precedence 1
 	;
+
 
 ///////////////////////////////////////////////////////////////////////////
 // Various
