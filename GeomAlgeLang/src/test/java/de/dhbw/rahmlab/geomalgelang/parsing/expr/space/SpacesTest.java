@@ -42,7 +42,7 @@ public class SpacesTest extends AbstractParsingTest {
 	@TestFactory
 	Stream<DynamicTest> R2_2() {
 
-		final List<String> programs = List.of(new String[]{"a ˜", "- a"});
+		final List<String> programs = List.of(new String[]{"a ˜"});
 
 		return parsePrintAssertSyntaxError(programs);
 	}

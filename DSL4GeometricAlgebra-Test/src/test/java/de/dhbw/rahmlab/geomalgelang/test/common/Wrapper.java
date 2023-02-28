@@ -19,7 +19,7 @@ public interface Wrapper {
         
         //FIXME Point3d ist hier nicht zulässig, sollte es aber
         //FIXME x²-r² liefert eine falsche Zahl, das "-" scheint hier nicht richtig zu funktionieren?
-        @CGA("x+0.5(x²-r²)εᵢ+ε₀")
+        @CGA("x+0.5(x² - r²)εᵢ+ε₀")
 	double[] realSphereIPNS(Tuple3d x_euclidean_vector_opns, double r_scalar_opns);
         
         @CGA("x")
