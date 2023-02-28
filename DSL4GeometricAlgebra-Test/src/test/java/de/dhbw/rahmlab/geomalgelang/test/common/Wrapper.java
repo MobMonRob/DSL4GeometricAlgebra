@@ -61,8 +61,8 @@ public interface Wrapper {
         @CGA("x")
         double[] orientedPointIPNS2(Point3d x_oriented_point_ipns_1, Vector3d x_oriented_point_ipns_2);
         
-        @CGA("(n+(x∧n)εᵢ)E₃")
-        double[] lineIPNS(Tuple3d x_euclidean_vector_opns, Tuple3d n_euclidean_vector_opns);
+        @CGA("(nn+(x∧nn)εᵢ)E₃")
+        double[] lineIPNS(Tuple3d x_euclidean_vector_opns, Tuple3d nn_euclidean_vector_opns);
         
         @CGA("x")
         double[] lineIPNS2(Point3d x_line_ipns_1, Vector3d x_line_ipns_2);
@@ -74,7 +74,7 @@ public interface Wrapper {
         double[] pointpairIPNS2(Point3d x_pointpair_ipns_1, Vector3d x_pointpair_ipns_2, double x_pointpair_ipns_3);
         
         @CGA("(1-x∧εᵢ)E₃")
-        double[] flatPointIPNS(Tuple3d x_euclidean_vector_opns, Tuple3d n_euclidean_vector_opns);
+        double[] flatPointIPNS(Tuple3d x_euclidean_vector_opns);
         
         @CGA("x")
         double[] flatPointIPNS2(Point3d x_flat_point_ipns);

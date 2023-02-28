@@ -11,8 +11,10 @@ public class AnnotationTest {
     /**
      * Algebra's precision.
      */
-    public static double eps = 1e-12;
-    public static final String[] baseVectorNames = {"eo", "e1", "e2", "e3", "ei"};
+    private static double eps = 1e-12;
+    
+    private static final String[] baseVectorNames = new String[]{"","e0", "e1","e2","e3","einf","e01","e02","e03","e0i","e12","e13","e1i","e23","e2i","e3i","e012","e013",
+        "e01i","e023","e02i","e03i","e123","e12i","e13i","e23i","e0123","e012i","e013i","e023i","e123i","e0123i"};
     
     /**
      * Comparison of two multivectors.
@@ -39,13 +41,26 @@ public class AnnotationTest {
         return result;
     }
     
-    public static String toString(String name, double[] coordinates){
+    public static String toString(String name, double[] coordinates, double precision){
         StringBuilder result = new StringBuilder();
         result.append(name);
-        result.append("=(");
-        for (int i=0;i<coordinates.length;i++){
-            result.append(String.valueOf(coordinates[i]));
-            result.append(",");
+        result.append("= ");
+        boolean isFirstVectorWritten = false;
+        if (Math.abs(coordinates[0]) > precision){
+            result.append(String.valueOf(coordinates[0]));
+            isFirstVectorWritten = true;
+        }
+        for (int i=1;i<coordinates.length;i++){
+            if (Math.abs(coordinates[i]) > precision){
+                if (coordinates[i] < 0){
+                    result.append("-");
+                } else if (isFirstVectorWritten){
+                    result.append("+");
+                }
+                result.append(String.valueOf(Math.abs(coordinates[i])));
+                result.append(baseVectorNames[i]);
+                isFirstVectorWritten = true;
+            }
         }
         result.deleteCharAt(result.length()-1);
         result.append(")");
@@ -70,9 +85,9 @@ public class AnnotationTest {
         double[] s3 = WrapperGen.INSTANCE.realSphereIPNS3(p, r);
         //FIXME
         // alle drei verschieden
-        System.out.println(toString("s1",s1));
-        System.out.println(toString("s2",s2));
-        System.out.println(toString("s3",s3));
+        System.out.println(toString("s1",s1, eps)); // falsch
+        System.out.println(toString("s2",s2, eps)); // korrekt
+        System.out.println(toString("s3",s3, eps)); // falsch
         assertTrue(equals(s1,s2,eps));
     }
     
@@ -91,6 +106,27 @@ public class AnnotationTest {
         assertTrue(equals(p1,p2, eps));
     }
     
+    @Test
+    void compositionOfLineIPNS(){
+        Point3d p = new Point3d(1d,2d,3d);
+        Vector3d n = new Vector3d(0d,0d,1d);
+        double[] l1 = WrapperGen.INSTANCE.lineIPNS(p,n);
+        //System.out.println(toString("l1",l1));
+        double[] l2 = WrapperGen.INSTANCE.lineIPNS2(p,n);
+        //System.out.println(toString("l2",l2));
+        assertTrue(equals(l1,l2, eps));
+    }
+    
+    @Test
+    void compositionOfFlatPointIPNS(){
+        Point3d p = new Point3d(1d,2d,3d);
+        double[] f1 = WrapperGen.INSTANCE.flatPointIPNS(p);
+        System.out.println(toString("f1",f1, eps));
+        double[] f2 = WrapperGen.INSTANCE.flatPointIPNS2(p);
+        System.out.println(toString("f2",f2, eps));
+        
+        assertTrue(equals(f1,f2, eps));
+    }
     @Test
     void compositionOfScalarIPNS(){
         double scalar = 2.5d;
