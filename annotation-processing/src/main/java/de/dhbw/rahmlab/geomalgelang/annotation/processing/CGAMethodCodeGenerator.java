@@ -51,12 +51,12 @@ public class CGAMethodCodeGenerator {
 			return factory;
 		}
 
-		public CGAMethodCodeGenerator create(CGAAnnotatedMethod annotatedMethod) throws AnnotationException {
+		public CGAMethodCodeGenerator create(CGAAnnotatedMethod annotatedMethod) {
 			return new CGAMethodCodeGenerator(annotatedMethod);
 		}
 	}
 
-	private CGAMethodCodeGenerator(CGAAnnotatedMethod annotatedMethod) throws AnnotationException {
+	private CGAMethodCodeGenerator(CGAAnnotatedMethod annotatedMethod) {
 		this.annotatedMethod = annotatedMethod;
 	}
 

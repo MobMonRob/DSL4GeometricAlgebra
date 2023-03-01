@@ -23,13 +23,15 @@ public class ExceptionHandler {
 		try {
 			executable.execute();
 		} catch (AnnotationException ex) {
-			// error(ex.element, ex.getMessage());
-			// For internal debugging
+			error(ex.element, ex.getMessage());
+			/*
+			// For internal debugging while developing
 			StringWriter stringWriter = new StringWriter();
 			PrintWriter printWriter = new PrintWriter(stringWriter);
 			ex.printStackTrace(printWriter);
 			String message = stringWriter.toString();
 			error(ex.element, message);
+			 */
 		} catch (Exception ex) {
 			StringWriter stringWriter = new StringWriter();
 			PrintWriter printWriter = new PrintWriter(stringWriter);
