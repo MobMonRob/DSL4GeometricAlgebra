@@ -53,7 +53,7 @@ public interface Wrapper {
         @CGA("x")
         double[] circleIPNS2(Point3d x_circle_ipns_1, Vector3d x_circle_ipns_2, double x_circle_ipns_3);
         
-        @CGA("nn∧x+(0.5x²nn-x(x⋅nn))εᵢ+nnε₀+(x⋅nn)E₃")
+        @CGA("nn∧x+(0.5x²nn-x (x⋅nn))εᵢ+nnε₀-(x⋅nn)E₀")
         double[] orientedPointIPNS(Tuple3d x_euclidean_vector_opns, Tuple3d nn_euclidean_vector_opns);
         
         @CGA("x")

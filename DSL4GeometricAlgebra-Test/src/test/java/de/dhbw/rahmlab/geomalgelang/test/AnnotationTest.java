@@ -109,11 +109,11 @@ public class AnnotationTest {
     void compositionOfOrientedPoint(){
         Point3d p = new Point3d(1d,2d,3d);
         Vector3d n = new Vector3d(0d,0d,1d);
-        double[] l1 = WrapperGen.INSTANCE.orientedPointIPNS(p,n);
-        System.out.println(toString("l1",l1,eps));
-        double[] l2 = WrapperGen.INSTANCE.orientedPointIPNS2(p,n);
-        System.out.println(toString("l2",l2,eps));
-        assertTrue(equals(l1,l2, eps));
+        double[] p1 = WrapperGen.INSTANCE.orientedPointIPNS(p,n);
+        System.out.println(toString("l1",p1,eps));
+        double[] p2 = WrapperGen.INSTANCE.orientedPointIPNS2(p,n);
+        System.out.println(toString("l2",p2,eps));
+        assertTrue(equals(p1,p2, eps));
     }
     
     @Test
