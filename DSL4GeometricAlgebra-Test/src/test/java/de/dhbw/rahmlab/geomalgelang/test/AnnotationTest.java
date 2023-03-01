@@ -110,9 +110,9 @@ public class AnnotationTest {
         Point3d p = new Point3d(1d,2d,3d);
         Vector3d n = new Vector3d(0d,0d,1d);
         double[] p1 = WrapperGen.INSTANCE.orientedPointIPNS(p,n);
-        System.out.println(toString("l1",p1,eps));
+        //System.out.println(toString("p1",p1,eps));
         double[] p2 = WrapperGen.INSTANCE.orientedPointIPNS2(p,n);
-        System.out.println(toString("l2",p2,eps));
+        //System.out.println(toString("p2",p2,eps));
         assertTrue(equals(p1,p2, eps));
     }
     
@@ -138,8 +138,10 @@ public class AnnotationTest {
         Vector3d n = new Vector3d(p2);
         n.sub(p1);
         n.normalize();
-        double[] pp1 = WrapperGen.INSTANCE.pointPairIPNS(p, n, r);
         double[] pp2 = WrapperGen.INSTANCE.pointpairIPNS2(p, n, r);
+        System.out.println(toString("pp2",pp2, eps));
+        double[] pp1 = WrapperGen.INSTANCE.pointPairIPNS(p, n, r);
+        System.out.println(toString("pp1",pp1, eps));
         assertTrue(equals(pp1,pp2, eps));
     }
    
@@ -169,7 +171,7 @@ public class AnnotationTest {
         //System.out.println(toString("scl1",s1));
         assertTrue(equals(s1[31], scalar, eps));
         double[] s2 = WrapperGen.INSTANCE.scalarIPNS2(scalar);
-        assertTrue(equals(s1[31], scalar, eps));
+        assertTrue(equals(s2[31], scalar, eps));
         //System.out.println(toString("scl2",s2));
     }
 }
