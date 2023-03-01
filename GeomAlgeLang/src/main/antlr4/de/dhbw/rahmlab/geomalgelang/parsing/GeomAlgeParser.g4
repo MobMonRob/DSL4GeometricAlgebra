@@ -17,9 +17,8 @@ options { tokenVocab=GeomAlgeLexer; }
 program
 	:	(
 			expr
-			|stmt (NEWLINE+ stmt)*
+			|NEWLINE* stmt (NEWLINE+ stmt)* NEWLINE*
 		)
-		NEWLINE*
 		EOF
 	;
 
@@ -28,7 +27,7 @@ program
 ///////////////////////////////////////////////////////////////////////////
 
 stmt
-	:	SPACE* name=IDENTIFIER SPACE* ASSIGNMENT SPACE* expr		#DefStmt
+	:	SPACE* name=IDENTIFIER SPACE* ASSIGNMENT SPACE* expr SPACE*		#DefStmt
 	;
 
 ///////////////////////////////////////////////////////////////////////////
