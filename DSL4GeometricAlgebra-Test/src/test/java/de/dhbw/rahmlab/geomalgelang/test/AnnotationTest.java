@@ -83,12 +83,11 @@ public class AnnotationTest {
         double[] s1 = WrapperGen.INSTANCE.realSphereIPNS(p, r);
         double[] s2 = WrapperGen.INSTANCE.sphereIPNS2(p, r);
         double[] s3 = WrapperGen.INSTANCE.realSphereIPNS3(p, r);
-        //FIXME
-        // alle drei verschieden
-        System.out.println(toString("s1",s1, eps)); // falsch
-        System.out.println(toString("s2",s2, eps)); // korrekt
-        System.out.println(toString("s3",s3, eps)); // falsch
+        //System.out.println(toString("s1",s1, eps)); // falsch
+        //System.out.println(toString("s2",s2, eps)); // korrekt
+        //System.out.println(toString("s3",s3, eps)); // falsch
         assertTrue(equals(s1,s2,eps));
+        assertTrue(equals(s1,s3,eps));
     }
     
     @Test
@@ -107,6 +106,17 @@ public class AnnotationTest {
     }
     
     @Test
+    void compositionOfOrientedPoint(){
+        Point3d p = new Point3d(1d,2d,3d);
+        Vector3d n = new Vector3d(0d,0d,1d);
+        double[] l1 = WrapperGen.INSTANCE.orientedPointIPNS(p,n);
+        System.out.println(toString("l1",l1,eps));
+        double[] l2 = WrapperGen.INSTANCE.orientedPointIPNS2(p,n);
+        System.out.println(toString("l2",l2,eps));
+        assertTrue(equals(l1,l2, eps));
+    }
+    
+    @Test
     void compositionOfLineIPNS(){
         Point3d p = new Point3d(1d,2d,3d);
         Vector3d n = new Vector3d(0d,0d,1d);
@@ -118,15 +128,40 @@ public class AnnotationTest {
     }
     
     @Test
+    void compositionOfPointPairIPNS(){
+        Point3d p1 = new Point3d(1d,2d,3d);
+        Point3d p2 = new Point3d(2d,1d, 4d);
+        Point3d p = new Point3d(p1);
+        p.add(p2);
+        p.scale(0.5d);
+        double r = p1.distance(p2)/2d;
+        Vector3d n = new Vector3d(p2);
+        n.sub(p1);
+        n.normalize();
+        double[] pp1 = WrapperGen.INSTANCE.pointPairIPNS(p, n, r);
+        double[] pp2 = WrapperGen.INSTANCE.pointpairIPNS2(p, n, r);
+        assertTrue(equals(pp1,pp2, eps));
+    }
+   
+    @Test
     void compositionOfFlatPointIPNS(){
         Point3d p = new Point3d(1d,2d,3d);
         double[] f1 = WrapperGen.INSTANCE.flatPointIPNS(p);
-        System.out.println(toString("f1",f1, eps));
+        //System.out.println(toString("f1",f1, eps));
         double[] f2 = WrapperGen.INSTANCE.flatPointIPNS2(p);
-        System.out.println(toString("f2",f2, eps));
-        
+        //System.out.println(toString("f2",f2, eps));
         assertTrue(equals(f1,f2, eps));
     }
+    
+    @Test
+    void compositionOfCircleIPNS(){
+        Point3d p = new Point3d(1d,2d,3d);
+        Vector3d n = new Vector3d(0d,0d,1d);
+        double r = 2d;
+        double[] c1 = WrapperGen.INSTANCE.circleIPNS(p, n, r);
+        double[] c2 = WrapperGen.INSTANCE.circleIPNS2(p,n,r);
+    }
+    
     @Test
     void compositionOfScalarIPNS(){
         double scalar = 2.5d;

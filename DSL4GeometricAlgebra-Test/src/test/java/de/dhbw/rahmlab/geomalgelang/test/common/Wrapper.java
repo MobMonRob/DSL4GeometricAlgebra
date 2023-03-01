@@ -42,21 +42,19 @@ public interface Wrapper {
         @CGA("x")
         double[] planeIPNS2(Point3d x_plane_ipns_1, Vector3d x_plane_ipns_2);
         
-        //FIXME
-        // compile failed
+        //  Available overloads of method "plane_ipns" do not match the parameter types given for the variable "x"     
+        //FIXME build failure obwohl der passende Konstrutor vorhanden ist
         //@CGA("x")
         //double[] planeIPNS3(Vector3d x_plane_ipns_1, double x_plane_ipns_2);
         
-        // ohne argument r gibts keinen Fehler
-        //FIXME
-        @CGA("ε₀∧n+(x⋅n)ε₀∧εᵢ+x∧n+(x⋅n)x-0.5((x²-r²)n)∧εᵢ")
-        double[] circleIPNS(Tuple3d x_euclidean_vector_opns, Tuple3d n_euclidean_vector_opns, double r_scalar_opns);
+        @CGA("ε₀∧nn+(x⋅nn)ε₀∧εᵢ+x∧nn+(x⋅nn)x-0.5((x²-r²)nn)∧εᵢ")
+        double[] circleIPNS(Tuple3d x_euclidean_vector_opns, Tuple3d nn_euclidean_vector_opns, double r_scalar_opns);
         
         @CGA("x")
         double[] circleIPNS2(Point3d x_circle_ipns_1, Vector3d x_circle_ipns_2, double x_circle_ipns_3);
         
-        @CGA("n∧x+(0.5x²n-x(x⋅n))εᵢ+nε₀+(x⋅n)E₃")
-        double[] orientedPointIPNS(Tuple3d x_euclidean_vector_opns, Tuple3d n_euclidean_vector_opns);
+        @CGA("nn∧x+(0.5x²nn-x(x⋅nn))εᵢ+nnε₀+(x⋅nn)E₃")
+        double[] orientedPointIPNS(Tuple3d x_euclidean_vector_opns, Tuple3d nn_euclidean_vector_opns);
         
         @CGA("x")
         double[] orientedPointIPNS2(Point3d x_oriented_point_ipns_1, Vector3d x_oriented_point_ipns_2);
@@ -67,13 +65,13 @@ public interface Wrapper {
         @CGA("x")
         double[] lineIPNS2(Point3d x_line_ipns_1, Vector3d x_line_ipns_2);
        
-        @CGA("ε₀∧n+x∧n∧ε₀∧εᵢ-(x⋅n)-(x⋅n x)-0.5(x²+r²)n))E₃")
-        double[] pointPairIPNS(Tuple3d x_euclidean_vector_opns, Tuple3d n_euclidean_vector_opns, double r_scalar_opns);
+        @CGA("(ε₀∧nn+x∧nn∧ε₀∧εᵢ-(x⋅nn)-(x⋅nn x)-0.5(x²+r²)nn))E₃")
+        double[] pointPairIPNS(Tuple3d x_euclidean_vector_opns, Tuple3d nn_euclidean_vector_opns, double r_scalar_opns);
         
         @CGA("x")
         double[] pointpairIPNS2(Point3d x_pointpair_ipns_1, Vector3d x_pointpair_ipns_2, double x_pointpair_ipns_3);
         
-        @CGA("(1-x∧εᵢ)E₃")
+        @CGA("(x∧εᵢ-1)E₃")
         double[] flatPointIPNS(Tuple3d x_euclidean_vector_opns);
         
         @CGA("x")
