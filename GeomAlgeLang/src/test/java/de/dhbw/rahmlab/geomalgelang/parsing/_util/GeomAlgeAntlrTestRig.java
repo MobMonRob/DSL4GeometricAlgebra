@@ -4,7 +4,6 @@ import de.dhbw.rahmlab.geomalgelang.parsing.CharStreamSupplier;
 import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeLexer;
 import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParser;
 import de.dhbw.rahmlab.geomalgelang.parsing.ParsingService;
-import org.antlr.v4.runtime.CharStream;
 
 public class GeomAlgeAntlrTestRig {
 
@@ -21,12 +20,9 @@ public class GeomAlgeAntlrTestRig {
 		GeomAlgeLexer lexer = ParsingService.getLexer(charStream);
 		AntlrTestRig antlrTestRig = new AntlrTestRig();
 
-		GeomAlgeParser parser;
+		GeomAlgeParser parser = ParsingService.getDiagnosticParser(lexer);
 		if (diagnostic) {
-			parser = ParsingService.getDiagnosticParser(lexer);
 			antlrTestRig.setDiagnostics(true);
-		} else {
-			parser = ParsingService.getParser(lexer);
 		}
 
 		antlrTestRig.process(lexer, parser, charStream, startRuleName);
