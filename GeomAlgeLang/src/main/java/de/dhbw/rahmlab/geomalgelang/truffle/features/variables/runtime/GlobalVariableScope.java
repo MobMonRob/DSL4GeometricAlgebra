@@ -10,17 +10,29 @@ import com.oracle.truffle.api.interop.UnsupportedMessageException;
 import com.oracle.truffle.api.interop.UnsupportedTypeException;
 import com.oracle.truffle.api.library.ExportLibrary;
 import com.oracle.truffle.api.library.ExportMessage;
+import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParser;
+import de.dhbw.rahmlab.geomalgelang.parsing.GrammarUtils;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLang;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLangException;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.InputValidation;
 import de.orat.math.cga.api.CGAMultivector;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+import org.antlr.v4.runtime.Vocabulary;
+import org.antlr.v4.runtime.tree.TerminalNode;
 
 @ExportLibrary(InteropLibrary.class)
 public final class GlobalVariableScope implements TruffleObject {
@@ -37,7 +49,11 @@ public final class GlobalVariableScope implements TruffleObject {
 	public void assignVariable(String name, CGAMultivector value) throws GeomAlgeLangException {
 		Object existingValue = this.variables.replace(name, Optional.of(value));
 		if (existingValue == null) {
-			throw new GeomAlgeLangException("\"" + name + "\" is not a known variable!");
+			if (GrammarUtils.constantsLiteralNames.contains(name)) {
+				throw new GeomAlgeLangException(String.format("Cannot reassign constant \"%s\"!", name));
+			} else {
+				throw new GeomAlgeLangException("\"" + name + "\" is not a known variable!");
+			}
 		}
 	}
 
