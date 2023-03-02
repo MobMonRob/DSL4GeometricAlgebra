@@ -56,7 +56,7 @@ public abstract class CGA_constants {
 	}
 
 	public static CGAMultivector minkovsky_bi_vector() {
-		return base_vector_infinity().op(base_vector_origin());
+		return base_vector_origin().op(base_vector_infinity());
 	}
 
 	public static CGAMultivector euclidean_pseudoscalar() {
