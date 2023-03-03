@@ -38,11 +38,11 @@ public class Arguments {
 		this.argsMap.put(argName, multivector);
 	}
 
-        public Arguments euclidean_vector_opns(String argName, Tuple3d tuple3d){
-            var mvec = new CGAEuclideanVector(tuple3d);
-            this.put(argName, mvec);
-            return this;
-        }
+	public Arguments euclidean_vector_opns(String argName, Tuple3d tuple3d){
+		var mvec = new CGAEuclideanVector(tuple3d);
+		this.put(argName, mvec);
+		return this;
+	}
         
 	public Arguments scalar_opns(String argName, double scalar) {
 		var mvec = new CGAScalarOPNS(scalar);
@@ -74,17 +74,25 @@ public class Arguments {
 		return this;
 	}
 
-	public Arguments pointpair_opns(String argName, Tuple3d point1, Tuple3d point2) {
+	public Arguments pointpair_opns(String argName, Point3d point1, Point3d point2) {
 		var mvec = new CGAPointPairOPNS(new CGARoundPointIPNS(point1), new CGARoundPointIPNS(point2));
 		this.put(argName, mvec);
 		return this;
 	}
 
-        public Arguments pointpair_ipns(String argName, Point3d location, Vector3d normal, double radius) {
+    public Arguments pointpair_ipns(String argName, double radius, Point3d location, Vector3d normal) {
 		var mvec = new CGAPointPairIPNS(location, normal, radius);
 		this.put(argName, mvec);
 		return this;
 	}
+		
+	// via opns dual
+	public Arguments pointpair_ipns(String argName, Point3d point1, Point3d point2) {
+		var mvec = new CGAPointPairOPNS(new CGARoundPointIPNS(point1), new CGARoundPointIPNS(point2)).dual();
+		this.put(argName, mvec);
+		return this;
+	}
+		
         
 	public Arguments line_opns(String argName, Point3d point1, double weight1, Point3d point2, double weight2) {
 		var mvec = new CGALineOPNS(point1, weight1, point2, weight2);

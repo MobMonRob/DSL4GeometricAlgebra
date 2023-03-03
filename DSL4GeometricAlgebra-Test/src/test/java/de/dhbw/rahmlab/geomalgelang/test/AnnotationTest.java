@@ -66,9 +66,12 @@ public class AnnotationTest {
         result.append(")");
         return result.toString();
     }
+    
+    
+    // test ipns compositions 
+    
     @Test
     void compositionOfRoundPointIPNS() {
-        // rp1=(1.0,1.0,2.0,3.0,6.999999999999998,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0)
         double[] rp1 = WrapperGen.INSTANCE.roundPointIPNS(new Point3d(1d,2d,3d)); 
         double[] rp2 = WrapperGen.INSTANCE.roundPointIPNS2(new Point3d(1d,2d,3d)); 
         assertTrue(equals(rp1,rp2,eps));
@@ -95,7 +98,7 @@ public class AnnotationTest {
         Point3d p = new Point3d(1d,2d,3d);
         Vector3d n = new Vector3d(0d,0d,1d);
         double d = Math.abs(p.x*n.x+p.y*n.y+p.z*n.z)/Math.abs(n.length()); // vorzeichen kann falsch werden
-        double[] p1 = WrapperGen.INSTANCE.planeIPNS(n, p);
+        double[] p1 = WrapperGen.INSTANCE.planeIPNS(p,n);
         //System.out.println(toString("p1",p1));
         double[] p2 = WrapperGen.INSTANCE.planeIPNS1(n, d);
         //System.out.println(toString("p2",p2));
@@ -103,6 +106,9 @@ public class AnnotationTest {
         assertTrue(equals(p1,p3, eps));
         //System.out.println(toString("p3",p3));
         assertTrue(equals(p1,p2, eps));
+        //double[] p4 = WrapperGen.INSTANCE.planeIPNS3(n, d);
+        //System.out.println(toString("p4",p4));
+        //assertTrue(equals(p1,p4, eps));
     }
     
     @Test
@@ -139,10 +145,19 @@ public class AnnotationTest {
         n.sub(p1);
         n.normalize();
         double[] pp2 = WrapperGen.INSTANCE.pointpairIPNS2(p, n, r);
-        System.out.println(toString("pp2",pp2, eps));
-        double[] pp1 = WrapperGen.INSTANCE.pointPairIPNS(p, n, r);
+        //System.out.println(toString("pp2",pp2, eps));
+        double[] pp1 = WrapperGen.INSTANCE.pointPairIPNS(r, p, n);
         System.out.println(toString("pp1",pp1, eps));
         assertTrue(equals(pp1,pp2, eps));
+        
+        // via dual und opns constructor
+        double[] pp3 = WrapperGen.INSTANCE.pointPairIPNS3(p1,p2);
+        //FIXME
+        // warum stimmt das nicht mit pp1 überein? Funktioniert dual nicht?
+        System.out.println(toString("pp3",pp3, eps));
+        
+        double[] pp4 = WrapperGen.INSTANCE.pointPairIPNS4(p1,p2);
+        System.out.println(toString("pp4",pp4, eps));
     }
    
     @Test
@@ -161,7 +176,15 @@ public class AnnotationTest {
         Vector3d n = new Vector3d(0d,0d,1d);
         double r = 2d;
         double[] c1 = WrapperGen.INSTANCE.circleIPNS(p, n, r);
+        
+        // c2 = -c3
         double[] c2 = WrapperGen.INSTANCE.circleIPNS2(p,n,r);
+        double[] c3 = WrapperGen.INSTANCE.circleIPNS3(p, n, r);
+        System.out.println(toString("c1",c1,eps));
+        System.out.println(toString("c2",c2,eps));
+        System.out.println(toString("c3",c3,eps));
+        assertTrue(equals(c1, c2, eps));
+        assertTrue(equals(c1, c3, eps));
     }
     
     @Test
@@ -173,5 +196,32 @@ public class AnnotationTest {
         double[] s2 = WrapperGen.INSTANCE.scalarIPNS2(scalar);
         assertTrue(equals(s2[31], scalar, eps));
         //System.out.println(toString("scl2",s2));
+    }
+    
+    // test opns compositions
+    
+    @Test
+    void compositionOfSphereOPNS(){
+        Point3d p1 = new Point3d();
+        Point3d p2 = new Point3d();
+        Point3d p3 = new Point3d();
+        Point3d p4 = new Point3d();
+        double[] s = WrapperGen.INSTANCE.sphereOPNS(p1,p2,p3,p4);
+    }
+    
+    @Test
+    void compositionOfPointPairOPNS(){
+        Point3d p1 = new Point3d(1d,2d,3d);
+        Point3d p2 = new Point3d(2d,1d, 4d);
+        Point3d p = new Point3d(p1);
+        p.add(p2);
+        p.scale(0.5d);
+        double r = p1.distance(p2)/2d;
+        Vector3d n = new Vector3d(p2);
+        n.sub(p1);
+        n.normalize();
+        double[] pp2 = WrapperGen.INSTANCE.pointpairIPNS2(p, n, r);
+        double[] pp1 = WrapperGen.INSTANCE.pointPairOPNS(p1,p2);
+       
     }
 }
