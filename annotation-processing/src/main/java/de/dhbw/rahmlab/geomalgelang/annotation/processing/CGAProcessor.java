@@ -75,7 +75,7 @@ public class CGAProcessor extends AbstractProcessor {
 		}
 	}
 
-	protected List<ClassCodeGenerator> computeClassCodeGeneratorsFrom(Map<String, List<CGAAnnotatedMethod>> interfaceGroupedAnnotatedMethods) throws AnnotationException {
+	protected List<ClassCodeGenerator> computeClassCodeGeneratorsFrom(Map<String, List<CGAAnnotatedMethod>> interfaceGroupedAnnotatedMethods) {
 		List<ClassCodeGenerator> classCodeGenerators = new ArrayList<>(interfaceGroupedAnnotatedMethods.size());
 		for (var methodGroupEntry : interfaceGroupedAnnotatedMethods.entrySet()) {
 			String qualifiedInterfaceName = methodGroupEntry.getKey();
@@ -88,7 +88,7 @@ public class CGAProcessor extends AbstractProcessor {
 		return classCodeGenerators;
 	}
 
-	protected List<CGAMethodCodeGenerator> computeMethodCodeGenerators(List<CGAAnnotatedMethod> methodGroup) throws AnnotationException {
+	protected List<CGAMethodCodeGenerator> computeMethodCodeGenerators(List<CGAAnnotatedMethod> methodGroup) {
 		List<CGAMethodCodeGenerator> methodCodeGenerators = new ArrayList<>(methodGroup.size());
 		for (CGAAnnotatedMethod cgaAnnotatedMethod : methodGroup) {
 			CGAMethodCodeGenerator methodCodeGenerator = methodCodeGeneratorFactory.create(cgaAnnotatedMethod);
@@ -108,13 +108,7 @@ public class CGAProcessor extends AbstractProcessor {
 		List<CGAAnnotatedMethod> annotatedMethods = new ArrayList<>(annotatedElements.size());
 
 		for (Element annotatedElement : annotatedElements) {
-			// Already assured by @Target(ElementType.METHOD) in CGA.java
-			/*
-			if (annotatedElement.getKind() != ElementKind.METHOD) {
-				error(annotatedElement, "Annotation needs to be on METHOD, but was on %s.", annotatedElement.getKind().toString());
-				return true;
-			}
-			 */
+			// ExecutableElement is a safe assumption, because @Target(ElementType.METHOD) in CGA.java.
 			ExecutableElement method = (ExecutableElement) annotatedElement;
 			CGAAnnotatedMethod annotatedMethod = new CGAAnnotatedMethod(method);
 

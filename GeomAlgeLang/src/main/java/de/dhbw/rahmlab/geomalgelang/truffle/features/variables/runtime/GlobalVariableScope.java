@@ -10,6 +10,7 @@ import com.oracle.truffle.api.interop.UnsupportedMessageException;
 import com.oracle.truffle.api.interop.UnsupportedTypeException;
 import com.oracle.truffle.api.library.ExportLibrary;
 import com.oracle.truffle.api.library.ExportMessage;
+import de.dhbw.rahmlab.geomalgelang.parsing.GrammarUtils;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLang;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLangException;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.InputValidation;
@@ -37,7 +38,11 @@ public final class GlobalVariableScope implements TruffleObject {
 	public void assignVariable(String name, CGAMultivector value) throws GeomAlgeLangException {
 		Object existingValue = this.variables.replace(name, Optional.of(value));
 		if (existingValue == null) {
-			throw new GeomAlgeLangException("\"" + name + "\" is not a known variable!");
+			if (GrammarUtils.constantsLiteralNames.contains(name)) {
+				throw new GeomAlgeLangException(String.format("Cannot reassign constant \"%s\"!", name));
+			} else {
+				throw new GeomAlgeLangException("\"" + name + "\" is not a known variable!");
+			}
 		}
 	}
 

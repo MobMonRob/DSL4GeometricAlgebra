@@ -21,7 +21,7 @@ Each Parameter.Type must match the type of the (n+1)-th parameter of the corresp
 Dataflow will be: \
 Parameters -> Methods of Arguments.java -> Interpreter execution -> Method of Result.java
 
-The generated code will be in a subpackage named "gen" and a class with the same name as the interface and the suffix "Gen".
+The generated code will be deposited in a subpackage named "gen" and a class with the same name as the interface and the suffix "Gen".
 
 
 ## Example annotation usage
@@ -65,21 +65,21 @@ However, GeomAlgeLang needs to be rebuild for that.
 ## Particularities
 In Result.java it could make sense to add methods with the same return types as existing ones or to add methods with parameters. \
 However this is not supported by the annotation-processor. \
-A solution to work around that in these cases is to create new classes which themselves hold or compute the desired return types and use these new classes as return types.
+A solution to work around that in these cases is to create new classes which themselves hold or compute the desired return types and to use these new classes as return types.
 
 There is currently no optimization for many consecutive invokations of generated code. \
-If this causes performance issues, we could consider following ideas to fix that:
+If this causes performance issues, the following ideas to fix that could be considered:
 - Caching of the internal Program instance (speed up only for consecutive executions of the same CGA code)
 - Sharing the same inner Context instance between multiple internal Program instances.
 
 
 ## Dependency
-To use it as a dependency, add the following lines to the depencencies list in your maven pom.xml:
+To use it as a dependency, add the following lines to the depencencies list in your Maven pom.xml:
 ```xml
 <dependency>
 	<groupId>de.dhbw.rahmlab</groupId>
 	<artifactId>annotation-processing</artifactId>
-	<version>${annotation-processing.version}</version>
+	<version>1.0-SNAPSHOT</version>
 	<scope>provided</scope>
 	<exclusions>
 		<exclusion>
