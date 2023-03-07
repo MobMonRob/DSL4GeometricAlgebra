@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -191,19 +192,19 @@ public class CGAMethodCodeGenerator {
 		Iterator<DecomposedParameter> groupIterator = callerParameters.iterator();
 		// Safe assumption that callerParameters contains at least 1 element (groupDecomposedParameters()).
 		String remainingVarName = groupIterator.next().remainingVarName;
-		KeyValuePair<OverloadableMethodRepresentation> cgaConstructorMethod = argumentsRepresentation.methodsPrefixTrie.getKeyValuePairForLongestKeyPrefixing(remainingVarName);
-		if (cgaConstructorMethod == null) {
+		Optional<OverloadableMethodRepresentation> cgaConstructorMethod = argumentsRepresentation.getMethodForLongestMethodNamePrefixing(remainingVarName);
+		if (cgaConstructorMethod.isEmpty()) {
 			throw AnnotationException.create(this.annotatedMethod.methodElement, "No matching Methodname found for: %s", remainingVarName);
 		}
-		String methodName = cgaConstructorMethod.getKey().toString();
+		OverloadableMethodRepresentation callees = cgaConstructorMethod.get();
+		String methodName = callees.identifier;
+
 		boolean allSamePrefixed = toStream(groupIterator)
 			.map(dp -> dp.remainingVarName.startsWith(methodName))
 			.allMatch(b -> b == true);
 		if (!allSamePrefixed) {
 			throw AnnotationException.create(this.annotatedMethod.methodElement, "Methodname must be equal for all occurences of the same cga parameter but were not for the cga parameter with name \"%s\".", cgaVarName);
 		}
-
-		OverloadableMethodRepresentation callees = cgaConstructorMethod.getValue();
 
 		// Cannot check equal returnType because is same for all (Refer to Arguments class).
 		// Same identifier and parameter count and parameter types sequence implies identical method.

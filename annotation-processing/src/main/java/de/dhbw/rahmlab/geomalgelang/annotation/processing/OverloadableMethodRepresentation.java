@@ -10,7 +10,7 @@ import lombok.EqualsAndHashCode;
 public class OverloadableMethodRepresentation {
 
 	public final String identifier;
-	private final List<MethodRepresentation> overloads;
+	protected final List<MethodRepresentation> overloads;
 
 	public OverloadableMethodRepresentation(String identifier) {
 		this.identifier = identifier;
