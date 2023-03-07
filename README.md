@@ -64,22 +64,6 @@ An [annotation based API](annotation-processing/README.md) useful espcially for 
 
 All of these types are automatically casted into a multivector inside the language. No other operations possible based on these types inside the language.
 
-
-## Types inside the language
-### CGA types
-| Name | implementation class | hints |
-| :-------- | :---- | ------|
-| CGAMVec&#x003C;representation&#x003E; | de.orat.math.cga.api.CGAMultivector | All types set from outside the language can be casted to this Multivector class. But there are more specific implementations which can be used for more efficiency. |
-| CGAScalar&#x003C;representation&#x003E;| de.orat.math.api.CGAScalar extends CGAMultivector| |
-| CGAVecE3&#x003C;representation&#x003E;| extends CGAMultivector |
-| CGASphere&#x003C;representation&#x003E;| extends CGAMultivector |
-| CGAPointPair&#x003C;representation&#x003E; | extends CGAMultivector |
-| CGACircle&#x003C;representation&#x003E;| extends CGAMultivector |
-| CGAPoint&#x003C;representation&#x003E; | extends CGAMultivector |
-
-&#x003C;representation&#x003E; = IPNS | OPNS
-
-
 ## Operators
 Hint: Operator precedence determines how operators are parsed concerning each other. A higher precedence number
 results in a higher binding strength. Thus operators with higher precedence become the operands of operators with lower precedence.
