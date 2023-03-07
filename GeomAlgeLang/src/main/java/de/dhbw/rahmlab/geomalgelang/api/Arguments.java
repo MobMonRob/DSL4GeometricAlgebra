@@ -18,6 +18,7 @@ import de.orat.math.cga.api.CGARoundPointOPNS;
 import de.orat.math.cga.api.CGAScalarIPNS;
 import de.orat.math.cga.api.CGAScalarOPNS;
 import de.orat.math.cga.api.CGASphereIPNS;
+import de.orat.math.cga.api.CGASphereOPNS;
 import de.orat.math.cga.api.CGATangentVectorOPNS;
 import de.orat.math.cga.api.CGATranslator;
 import java.util.HashMap;
@@ -56,13 +57,13 @@ public class Arguments {
 		return this;
 	}
         
-	public Arguments round_point_ipns(String argName, Tuple3d point) {
+	public Arguments round_point_ipns(String argName, Point3d point) {
 		var mvec = new CGARoundPointIPNS(point);
 		this.put(argName, mvec);
 		return this;
 	}
 
-	public Arguments point_opns(String argName, Point3d point) {
+	public Arguments round_point_opns(String argName, Point3d point) {
 		var mvec = new CGARoundPointOPNS(point);
 		this.put(argName, mvec);
 		return this;
@@ -80,7 +81,9 @@ public class Arguments {
 		return this;
 	}
 
-    public Arguments pointpair_ipns(String argName, double radius, Point3d location, Vector3d normal) {
+    public Arguments pointpair_ipns2(String argName, Point3d location, Vector3d normal, double radius) {
+		//Vector3d normalizedNormal = new Vector3d(normal);
+		//normalizedNormal.normalize();
 		var mvec = new CGAPointPairIPNS(location, normal, radius);
 		this.put(argName, mvec);
 		return this;
@@ -117,6 +120,12 @@ public class Arguments {
 		this.put(argName, mvec);
 		return this;
 	}
+	
+	public Arguments sphere_opns(String argName, Point3d center, double radius) {
+		var mvec = new CGASphereOPNS(center, radius);
+		this.put(argName, mvec);
+		return this;
+	}
 
 	public Arguments sphere_ipns(String argName, Point3d center, double radius) {
 		var mvec = new CGASphereIPNS(center, radius);
@@ -130,7 +139,9 @@ public class Arguments {
 		return this;
 	}
 
-	public Arguments plane_ipns(String argName, Vector3d normal, double dist) {
+	//WORKAROUND eine 2 im Namen angefügt da sonst von obiger Methode
+	// nicht unterscheidbar
+	public Arguments plane_ipns2(String argName, Vector3d normal, double dist) {
 		return this.plane_ipns(argName, normal, dist, 1.0);
 	}
         
@@ -139,6 +150,13 @@ public class Arguments {
 		this.put(argName, mvec);
 		return this;
 	}
+	
+	public Arguments plane_opns(String argName, Point3d location, Vector3d normal) {
+		var mvec = new CGAPlaneIPNS(location, normal);
+		this.put(argName, mvec);
+		return this;
+	}
+	
 
 	public Arguments circle_opns(String argName, Point3d point1, double weight1, 
                                                      Point3d point2, double weight2, 

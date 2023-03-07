@@ -13,7 +13,8 @@ public class AnnotationTest {
      */
     private static double eps = 1e-12;
     
-    private static final String[] baseVectorNames = new String[]{"","e0", "e1","e2","e3","einf","e01","e02","e03","e0i","e12","e13","e1i","e23","e2i","e3i","e012","e013",
+    private static final String[] baseVectorNames = new String[]{"","e0", "e1","e2","e3","einf","e01","e02",
+		"e03","e0i","e12","e13","e1i","e23","e2i","e3i","e012","e013",
         "e01i","e023","e02i","e03i","e123","e12i","e13i","e23i","e0123","e012i","e013i","e023i","e123i","e0123i"};
     
     /**
@@ -63,7 +64,7 @@ public class AnnotationTest {
             }
         }
         result.deleteCharAt(result.length()-1);
-        result.append(")");
+        //result.append(")");
         return result.toString();
     }
     
@@ -141,23 +142,31 @@ public class AnnotationTest {
         p.add(p2);
         p.scale(0.5d);
         double r = p1.distance(p2)/2d;
+		// n from p1 to p2
         Vector3d n = new Vector3d(p2);
         n.sub(p1);
-        n.normalize();
+		
+		// composition via formula
+		double[] pp1 = WrapperGen.INSTANCE.pointPairIPNS(p, n, r);
+        System.out.println(toString("pp1",pp1, eps));
+        // composition via constructor
         double[] pp2 = WrapperGen.INSTANCE.pointpairIPNS2(p, n, r);
         //System.out.println(toString("pp2",pp2, eps));
-        double[] pp1 = WrapperGen.INSTANCE.pointPairIPNS(r, p, n);
-        System.out.println(toString("pp1",pp1, eps));
+        // test if composition via formula is equal to composition via constructor
         assertTrue(equals(pp1,pp2, eps));
         
-        // via dual und opns constructor
+		//FIXME
+        // warum stimmt das nicht mit pp1 überein? Funktioniert dual nicht? oder ist die ipns Formel falsch
+        // composition of a normalized point pair via opns constructor and dual
         double[] pp3 = WrapperGen.INSTANCE.pointPairIPNS3(p1,p2);
-        //FIXME
-        // warum stimmt das nicht mit pp1 überein? Funktioniert dual nicht?
         System.out.println(toString("pp3",pp3, eps));
-        
         double[] pp4 = WrapperGen.INSTANCE.pointPairIPNS4(p1,p2);
-        System.out.println(toString("pp4",pp4, eps));
+        //System.out.println(toString("pp4",pp4, eps));
+        // test ob dual in der Formel mit dem programmatischen dual identisch ist
+        assertTrue(equals(pp3,pp4, eps));
+		
+		double[] pp5 = WrapperGen.INSTANCE.pointPairIPNS5(p, n, r);
+        System.out.println(toString("pp5",pp5, eps));
     }
    
     @Test
@@ -175,10 +184,13 @@ public class AnnotationTest {
         Point3d p = new Point3d(1d,2d,3d);
         Vector3d n = new Vector3d(0d,0d,1d);
         double r = 2d;
+        // Komplexe Formel basierend auf lua code
         double[] c1 = WrapperGen.INSTANCE.circleIPNS(p, n, r);
         
-        // c2 = -c3
+        // c2 = -c3 = -c1
+        // Konstruktor basierende auf komplexer Formel lua code
         double[] c2 = WrapperGen.INSTANCE.circleIPNS2(p,n,r);
+        // Formel Kugel mit Ebene geschnitten
         double[] c3 = WrapperGen.INSTANCE.circleIPNS3(p, n, r);
         System.out.println(toString("c1",c1,eps));
         System.out.println(toString("c2",c2,eps));
@@ -201,13 +213,45 @@ public class AnnotationTest {
     // test opns compositions
     
     @Test
-    void compositionOfSphereOPNS(){
-        Point3d p1 = new Point3d();
-        Point3d p2 = new Point3d();
-        Point3d p3 = new Point3d();
-        Point3d p4 = new Point3d();
-        double[] s = WrapperGen.INSTANCE.sphereOPNS(p1,p2,p3,p4);
+    void compositionOfRoundPointOPNS(){
+        Point3d p = new Point3d(1d,0d,0d);
+        // mit Konstruktor via ipns dual
+        double[] cgaP1 = WrapperGen.INSTANCE.roundPointOPNS(p);
+		
+		// mit Formel aus 4 Kugeln
+        //double[] cgaP2 = WrapperGen.INSTANCE.roundPointOPNS(p1);
     }
+    
+    @Test
+    void compositionOfSphereOPNS(){
+        Point3d p1 = new Point3d(1d,0d,0d);
+        Point3d p2 = new Point3d(0d,1d,0d);
+        Point3d p3 = new Point3d(0d,0d,-1d);
+        Point3d p4 = new Point3d(0d,-1d,-0d);
+        // s=2.0*eo^e1^e2^e3 - 1.0*e1^e2^e3^ei (korrekt)
+        double[] s = WrapperGen.INSTANCE.sphereOPNS(p1,p2,p3,p4);
+		System.out.println(toString("s",s,eps));
+    }
+	
+	@Test
+	void compositionOfPlaneOPNS(){
+		Point3d p1 = new Point3d(1d,0d,0d);
+        Point3d p2 = new Point3d(0d,1d,0d);
+        Point3d p3 = new Point3d(0d,0d,-1d);
+		Vector3d n1 = new Vector3d(p2);
+		n1.sub(p1);
+		Vector3d n2 = new Vector3d(p3);
+		n2.sub(p1);
+		Vector3d n = new Vector3d();
+		n.cross(n1,n2);
+		//TODO
+		// Punkte in wecher Reihenfolge um n zu bestimmen, damit das Vorzeichen stimmt?
+		double[] pl1 = WrapperGen.INSTANCE.planeOPNS(p1,p2,p3);
+		System.out.println(toString("plane_1",pl1, eps));
+		double[] pl2 = WrapperGen.INSTANCE.planeOPNS2(p1,n);
+		System.out.println(toString("plane_2",pl2, eps));
+		
+	}
     
     @Test
     void compositionOfPointPairOPNS(){
@@ -220,8 +264,14 @@ public class AnnotationTest {
         Vector3d n = new Vector3d(p2);
         n.sub(p1);
         n.normalize();
-        double[] pp2 = WrapperGen.INSTANCE.pointpairIPNS2(p, n, r);
-        double[] pp1 = WrapperGen.INSTANCE.pointPairOPNS(p1,p2);
-       
+        
+		// via constructor
+		double[] pp1 = WrapperGen.INSTANCE.pointPairOPNS(p1,p2);
+		//System.out.println(toString("pp1_", pp1, eps));
+		// via formula
+		double[] pp2 = WrapperGen.INSTANCE.pointPairOPNS2(p1,p2);
+		//System.out.println(toString("pp2_", pp2, eps));
+		// test if composition via constructor is equals to composition via formula
+        assertTrue(equals(pp1,pp2,eps));
     }
 }
