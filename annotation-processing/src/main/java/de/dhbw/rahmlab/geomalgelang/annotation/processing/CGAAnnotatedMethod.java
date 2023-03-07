@@ -10,6 +10,7 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.TypeMirror;
 
 public class CGAAnnotatedMethod {
 
@@ -34,7 +35,7 @@ public class CGAAnnotatedMethod {
 		List<? extends VariableElement> variableElementParameters = methodElement.getParameters();
 		List<ParameterRepresentation> parameters = new ArrayList<>(variableElementParameters.size());
 		for (VariableElement variableElementParameter : variableElementParameters) {
-			String type = variableElementParameter.asType().toString();
+			TypeMirror type = variableElementParameter.asType();
 			String name = variableElementParameter.getSimpleName().toString();
 			ParameterRepresentation parameter = new ParameterRepresentation(type, name);
 			parameters.add(parameter);

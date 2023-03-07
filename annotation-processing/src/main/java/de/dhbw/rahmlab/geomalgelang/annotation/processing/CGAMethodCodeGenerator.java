@@ -1,6 +1,5 @@
 package de.dhbw.rahmlab.geomalgelang.annotation.processing;
 
-import com.googlecode.concurrenttrees.common.KeyValuePair;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
@@ -16,12 +15,15 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
+import javax.lang.model.util.Types;
 
 public class CGAMethodCodeGenerator {
 
 	protected final CGAAnnotatedMethod annotatedMethod;
 
+	private static Types typeUtils;
 	private static ClassRepresentation<Arguments> argumentsRepresentation;
 	private static ClassRepresentation<Result> resultRepresentation;
 	private static ClassName programClass;
@@ -37,12 +39,12 @@ public class CGAMethodCodeGenerator {
 
 		}
 
-		public static synchronized Factory init(Elements elementUtils) throws AnnotationException {
+		public static synchronized Factory init(Elements elementUtils, Types typeUtils) throws AnnotationException {
 			if (factory != null) {
 				throw AnnotationException.create(null, "CGAMethodCodeGenerator.Factory was already inited. Can be inited only once.");
 			}
 
-			CGAMethodCodeGenerator.init(elementUtils);
+			CGAMethodCodeGenerator.init(elementUtils, typeUtils);
 
 			// Ensures subsequent initing will work even if an exception is thrown in the init() method on the first invokation.
 			if (factory == null) {
@@ -61,7 +63,9 @@ public class CGAMethodCodeGenerator {
 		this.annotatedMethod = annotatedMethod;
 	}
 
-	private static void init(Elements elementUtils) {
+	private static void init(Elements elementUtils, Types typeUtils) {
+		CGAMethodCodeGenerator.typeUtils = typeUtils;
+
 		TypeElement argumentsTypeElement = elementUtils.getTypeElement(Arguments.class.getCanonicalName());
 		argumentsRepresentation = new ClassRepresentation<>(argumentsTypeElement);
 		List<MethodRepresentation> flattenedPublicMethods = argumentsRepresentation.publicMethods.stream()
@@ -74,7 +78,7 @@ public class CGAMethodCodeGenerator {
 			if (parametersSize < 1) {
 				throw new IllegalArgumentException(String.format("Expected parameters.size() to be at least 1 for all overloads of \"%s\", but was %s for one.", method.identifier(), parametersSize));
 			}
-			String type = parameters.get(0).type();
+			String type = parameters.get(0).type().toString();
 			if (!type.equals(stringTypeName)) {
 				throw new IllegalArgumentException(String.format("Expected first parameter of method \"%s\" of type \"%s\", but was of type \"%s\".", method.identifier(), stringTypeName, type));
 			}
@@ -221,10 +225,10 @@ public class CGAMethodCodeGenerator {
 		int callerParametersSize = callerParameters.size();
 		List<MethodRepresentation> matchedCallee = calleesWithMatchingParameterSize.stream()
 			.filter(callee -> {
-				for (int i = 0; i < callerParametersSize; ++i) {
-					String calleeParameterType = callee.parameters().get(i + 1).type();
-					String callerParameterType = callerParameters.get(i).javaType;
-					if (!calleeParameterType.equals(callerParameterType)) {
+			for (int i = 0; i < callerParametersSize; ++i) {
+				TypeMirror callerParameterType = callerParameters.get(i).uncomposedParameter.type();
+				TypeMirror calleeParameterType = callee.parameters().get(i + 1).type();
+					if (!CGAMethodCodeGenerator.typeUtils.isSubtype(callerParameterType, calleeParameterType)) {
 						return false;
 					}
 				}
@@ -249,7 +253,7 @@ public class CGAMethodCodeGenerator {
 		return cgaVarNameGroupedDecomposedParameters;
 	}
 
-	protected record DecomposedParameter(String cgaVarName, String remainingVarName, String javaType, ParameterRepresentation uncomposedParameter) {
+	protected record DecomposedParameter(String cgaVarName, String remainingVarName, ParameterRepresentation uncomposedParameter) {
 
 	}
 
@@ -264,9 +268,8 @@ public class CGAMethodCodeGenerator {
 
 			String cgaVarName = identifierSplit[0];
 			String remainingVarName = identifierSplit[1];
-			String javaType = parameter.type();
 
-			DecomposedParameter decomposedParameter = new DecomposedParameter(cgaVarName, remainingVarName, javaType, parameter);
+			DecomposedParameter decomposedParameter = new DecomposedParameter(cgaVarName, remainingVarName, parameter);
 			decomposedParameters.add(decomposedParameter);
 		}
 		return decomposedParameters;

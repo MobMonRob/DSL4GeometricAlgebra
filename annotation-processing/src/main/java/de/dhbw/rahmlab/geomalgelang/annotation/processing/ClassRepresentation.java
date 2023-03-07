@@ -1,6 +1,5 @@
 package de.dhbw.rahmlab.geomalgelang.annotation.processing;
 
-import com.googlecode.concurrenttrees.common.KeyValuePair;
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
 import com.googlecode.concurrenttrees.radixinverted.ConcurrentInvertedRadixTree;
 import com.googlecode.concurrenttrees.radixinverted.InvertedRadixTree;
@@ -16,6 +15,7 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.TypeMirror;
 
 public class ClassRepresentation<T> {
 
@@ -108,7 +108,7 @@ public class ClassRepresentation<T> {
 
 			List<ParameterRepresentation> parameters = new ArrayList<>(parameterElements.size());
 			for (var parameterElement : parameterElements) {
-				String paramType = parameterElement.asType().toString();
+				TypeMirror paramType = parameterElement.asType();
 				String paramName = parameterElement.getSimpleName().toString();
 				ParameterRepresentation parameter = new ParameterRepresentation(paramType, paramName);
 				parameters.add(parameter);

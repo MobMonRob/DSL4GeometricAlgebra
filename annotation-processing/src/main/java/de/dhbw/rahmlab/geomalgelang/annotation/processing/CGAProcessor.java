@@ -1,7 +1,7 @@
 package de.dhbw.rahmlab.geomalgelang.annotation.processing;
 
-import de.dhbw.rahmlab.geomalgelang.api.annotation.CGA;
 import com.google.auto.service.AutoService;
+import de.dhbw.rahmlab.geomalgelang.api.annotation.CGA;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,11 +17,13 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
+import javax.lang.model.util.Types;
 
 @AutoService(Processor.class)
 public class CGAProcessor extends AbstractProcessor {
 
 	protected Elements elementUtils;
+	protected Types typeUtils;
 	protected Filer filer;
 	protected ExceptionHandler exceptionHandler;
 
@@ -43,11 +45,12 @@ public class CGAProcessor extends AbstractProcessor {
 	public synchronized void init(ProcessingEnvironment processingEnv) {
 		super.init(processingEnv);
 		this.elementUtils = processingEnv.getElementUtils();
+		this.typeUtils = processingEnv.getTypeUtils();
 		this.filer = processingEnv.getFiler();
 		this.exceptionHandler = new ExceptionHandler(processingEnv.getMessager());
 		this.exceptionHandler.handle(() -> {
 			try {
-				methodCodeGeneratorFactory = CGAMethodCodeGenerator.Factory.init(this.elementUtils);
+				methodCodeGeneratorFactory = CGAMethodCodeGenerator.Factory.init(this.elementUtils, this.typeUtils);
 
 				// Mitigates issues with Netbeans realtime codeanalysis.
 			} catch (AnnotationException ex) {
