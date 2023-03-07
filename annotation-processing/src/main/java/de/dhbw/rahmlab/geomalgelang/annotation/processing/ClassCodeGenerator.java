@@ -1,5 +1,6 @@
 package de.dhbw.rahmlab.geomalgelang.annotation.processing;
 
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
@@ -40,14 +41,19 @@ public class ClassCodeGenerator {
 			methods.add(method);
 		}
 
-		FieldSpec instance = FieldSpec.builder(TypeName.get(implementingInterfaceName.asType()), "INSTANCE", Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+		FieldSpec genInstance = FieldSpec.builder(ClassName.get(packageName, genClassName), "GEN_INSTANCE", Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
 			.initializer("new $L()", genClassName)
+			.build();
+
+		FieldSpec implementingInstance = FieldSpec.builder(TypeName.get(implementingInterfaceName.asType()), "INSTANCE", Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+			.initializer("$N", genInstance)
 			.build();
 
 		TypeSpec cgaGenClass = TypeSpec.classBuilder(genClassName)
 			.addModifiers(Modifier.PUBLIC)
 			.addSuperinterface(implementingInterfaceName.asType())
-			.addField(instance)
+			.addField(genInstance)
+			.addField(implementingInstance)
 			.addMethods(methods)
 			.build();
 
