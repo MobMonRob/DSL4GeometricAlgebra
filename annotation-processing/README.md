@@ -72,6 +72,8 @@ If this causes performance issues, the following ideas to fix that could be cons
 - Caching of the internal Program instance (speed up only for consecutive executions of the same CGA code)
 - Sharing the same inner Context instance between multiple internal Program instances.
 
+Due to a workaround to support Netbeans' in-line error reporting, in order to support additional Parameter.Type's in the user of the annotation it is necessary to add a dependency to the annotation-processor which contains the defintion of these types.
+
 
 ## Dependency
 To use it as a dependency, add the following lines to the depencencies list in your Maven pom.xml:
