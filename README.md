@@ -53,7 +53,7 @@ An [annotation based API](annotation-processing/README.md) useful espcially for 
 
 
 ## Types to use from outside the language
-The CGA multivector type and its subtypes are completely hidden outside the DSL. Input data of the DSL can be given by objects of the following table.
+CGA multivectors and objecs of its subtypes are completely hidden - not visible outside the DSL. Input data to and output data from the DSL is transfered by objects of the classes listed in the following table:
 | Name | implementation class | hints |
 | :-------- | :---- | ------|
 | double | Double |  |
