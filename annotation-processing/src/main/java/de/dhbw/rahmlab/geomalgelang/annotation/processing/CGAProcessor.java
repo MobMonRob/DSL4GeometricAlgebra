@@ -51,7 +51,6 @@ public class CGAProcessor extends AbstractProcessor {
 		this.exceptionHandler.handle(() -> {
 			try {
 				methodCodeGeneratorFactory = CGAMethodCodeGenerator.Factory.init(this.elementUtils, this.typeUtils);
-
 				// Mitigates issues with Netbeans realtime codeanalysis.
 			} catch (AnnotationException ex) {
 				this.exceptionHandler.warn(ex.element, ex.getMessage());

@@ -1,7 +1,10 @@
 package de.dhbw.rahmlab.geomalgelang.annotation.processing;
 
-import javax.lang.model.type.TypeMirror;
+import javax.lang.model.element.VariableElement;
 
-public record ParameterRepresentation(TypeMirror type, String identifier) {
+public record ParameterRepresentation(VariableElement element, String type, String identifier) {
 
+	public ParameterRepresentation(VariableElement element) {
+		this(element, element.asType().toString(), element.getSimpleName().toString());
+	}
 }

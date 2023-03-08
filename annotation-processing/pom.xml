@@ -24,6 +24,17 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<!-- Workaround for Netbeans Bug -->
+		<!-- Dependency necessary to avoid ClassNotFound exception. -->
+		<dependency>
+			<groupId>org.jogamp.java3d</groupId>
+			<artifactId>vecmath</artifactId>
+			<version>1.7.1</version>
+		</dependency>
+		<!-- -->
+
+
+
 		<dependency>
 			<groupId>com.googlecode.concurrent-trees</groupId>
 			<artifactId>concurrent-trees</artifactId>

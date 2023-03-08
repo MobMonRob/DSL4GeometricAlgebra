@@ -3,7 +3,6 @@ package de.dhbw.rahmlab.geomalgelang.annotation.processing;
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
 import com.googlecode.concurrenttrees.radixinverted.ConcurrentInvertedRadixTree;
 import com.googlecode.concurrenttrees.radixinverted.InvertedRadixTree;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -14,8 +13,6 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.TypeMirror;
 
 public class ClassRepresentation<T> {
 
@@ -101,18 +98,9 @@ public class ClassRepresentation<T> {
 			.toList();
 
 		Map<String, OverloadableMethodRepresentation> methodNameToMethod = new HashMap<>(methodElements.size());
-		for (var methodElement : methodElements) {
-			String identifier = methodElement.getSimpleName().toString();
-			String returnType = methodElement.getReturnType().toString();
-			List<? extends VariableElement> parameterElements = methodElement.getParameters();
-
-			List<ParameterRepresentation> parameters = new ArrayList<>(parameterElements.size());
-			for (var parameterElement : parameterElements) {
-				TypeMirror paramType = parameterElement.asType();
-				String paramName = parameterElement.getSimpleName().toString();
-				ParameterRepresentation parameter = new ParameterRepresentation(paramType, paramName);
-				parameters.add(parameter);
-			}
+		for (ExecutableElement methodElement : methodElements) {
+			MethodRepresentation overload = new MethodRepresentation(methodElement);
+			String identifier = overload.identifier();
 
 			OverloadableMethodRepresentation method = methodNameToMethod.get(identifier);
 			if (method == null) {
@@ -120,7 +108,6 @@ public class ClassRepresentation<T> {
 				methodNameToMethod.put(identifier, method);
 			}
 
-			MethodRepresentation overload = new MethodRepresentation(identifier, returnType, parameters);
 			method.addOverload(overload);
 		}
 

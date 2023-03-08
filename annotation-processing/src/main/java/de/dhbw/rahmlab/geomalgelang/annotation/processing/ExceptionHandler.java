@@ -23,21 +23,24 @@ public class ExceptionHandler {
 		try {
 			executable.execute();
 		} catch (AnnotationException ex) {
-			//error(ex.element, ex.getMessage());
-			///*
+			error(ex.element, ex.getMessage());
+			/*
 			// For internal debugging while developing
-			StringWriter stringWriter = new StringWriter();
-			PrintWriter printWriter = new PrintWriter(stringWriter);
-			ex.printStackTrace(printWriter);
-			String message = stringWriter.toString();
+			String message = extractStackTrace(ex);
 			error(ex.element, message);
-			//*/
+			Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
+			 */
 		} catch (Exception ex) {
-			StringWriter stringWriter = new StringWriter();
-			PrintWriter printWriter = new PrintWriter(stringWriter);
-			ex.printStackTrace(printWriter);
-			String message = stringWriter.toString();
+			String message = extractStackTrace(ex);
 			error(null, message);
+		}
+	}
+
+	protected static String extractStackTrace(Throwable throwable) {
+		StringWriter stringWriter = new StringWriter();
+		try (PrintWriter printWriter = new PrintWriter(stringWriter)) {
+			throwable.printStackTrace(printWriter);
+			return stringWriter.toString();
 		}
 	}
 

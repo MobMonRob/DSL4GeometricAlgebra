@@ -15,7 +15,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.TypeMirror;
+import javax.lang.model.type.ExecutableType;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
@@ -23,6 +24,7 @@ public class CGAMethodCodeGenerator {
 
 	protected final CGAAnnotatedMethod annotatedMethod;
 
+	private static Elements elementUtils;
 	private static Types typeUtils;
 	private static ClassRepresentation<Arguments> argumentsRepresentation;
 	private static ClassRepresentation<Result> resultRepresentation;
@@ -64,6 +66,7 @@ public class CGAMethodCodeGenerator {
 	}
 
 	private static void init(Elements elementUtils, Types typeUtils) {
+		CGAMethodCodeGenerator.elementUtils = elementUtils;
 		CGAMethodCodeGenerator.typeUtils = typeUtils;
 
 		TypeElement argumentsTypeElement = elementUtils.getTypeElement(Arguments.class.getCanonicalName());
@@ -78,7 +81,7 @@ public class CGAMethodCodeGenerator {
 			if (parametersSize < 1) {
 				throw new IllegalArgumentException(String.format("Expected parameters.size() to be at least 1 for all overloads of \"%s\", but was %s for one.", method.identifier(), parametersSize));
 			}
-			String type = parameters.get(0).type().toString();
+			String type = parameters.get(0).type();
 			if (!type.equals(stringTypeName)) {
 				throw new IllegalArgumentException(String.format("Expected first parameter of method \"%s\" of type \"%s\", but was of type \"%s\".", method.identifier(), stringTypeName, type));
 			}
@@ -198,7 +201,7 @@ public class CGAMethodCodeGenerator {
 		String remainingVarName = groupIterator.next().remainingVarName;
 		Optional<OverloadableMethodRepresentation> cgaConstructorMethod = argumentsRepresentation.getMethodForLongestMethodNamePrefixing(remainingVarName);
 		if (cgaConstructorMethod.isEmpty()) {
-			throw AnnotationException.create(this.annotatedMethod.methodElement, "No matching Methodname found for: %s", remainingVarName);
+			throw AnnotationException.create(this.annotatedMethod.methodElement, "No matching Methodname found for: \"%s\"", remainingVarName);
 		}
 		OverloadableMethodRepresentation callees = cgaConstructorMethod.get();
 		String methodName = callees.identifier;
@@ -223,21 +226,55 @@ public class CGAMethodCodeGenerator {
 
 		// Check equal types
 		int callerParametersSize = callerParameters.size();
-		List<MethodRepresentation> matchedCallee = calleesWithMatchingParameterSize.stream()
-			.filter(callee -> {
+		List<MethodRepresentation> matchedCallee = new ArrayList<>(1);
+		for (var callee : calleesWithMatchingParameterSize) {
+			boolean matched = true;
 			for (int i = 0; i < callerParametersSize; ++i) {
-				TypeMirror callerParameterType = callerParameters.get(i).uncomposedParameter.type();
-				TypeMirror calleeParameterType = callee.parameters().get(i + 1).type();
-					if (!CGAMethodCodeGenerator.typeUtils.isSubtype(callerParameterType, calleeParameterType)) {
-						return false;
+				ParameterRepresentation callerParameter = callerParameters.get(i).uncomposedParameter;
+				ParameterRepresentation calleeParameter = callee.parameters().get(i + 1);
+
+				TypeKind callerParameterTypeKind = callerParameter.element().asType().getKind();
+				TypeKind calleeParameterTypeKind = calleeParameter.element().asType().getKind();
+
+				if (callerParameterTypeKind.equals(TypeKind.DECLARED) && calleeParameterTypeKind.equals(TypeKind.DECLARED)) {
+					Class<?> callerParameterClass = null;
+					try {
+						callerParameterClass = Class.forName(callerParameter.type());
+					} catch (ClassNotFoundException ex) {
+						throw AnnotationException.create(callerParameter.element(), ex, "Class not found: \"%s\"", callerParameter.type());
 					}
+
+					Class<?> calleeParameterClass = null;
+					try {
+						calleeParameterClass = Class.forName(calleeParameter.type());
+					} catch (ClassNotFoundException ex) {
+						String calleeEnclosingClass = callee.element().getEnclosingElement().asType().toString();
+						String calleeIdentifier = callee.identifier();
+						String calleeParamsTypes = ((ExecutableType) callee.element().asType()).getParameterTypes().toString();
+
+						throw AnnotationException.create(calleeParameter.element(), ex, "In callee method \"%s::%s(%s)\" parameter No. %s: class not found: \"%s\"", calleeEnclosingClass, calleeIdentifier, calleeParamsTypes, i + 1 + 1, calleeParameter.type());
+					}
+
+					boolean isAssignableFrom = calleeParameterClass.isAssignableFrom(callerParameterClass);
+					if (!isAssignableFrom) {
+						matched = false;
+						break;
+					}
+				} else if (!callerParameter.type().equals(calleeParameter.type())) {
+					matched = false;
+					break;
 				}
-				return true;
-			}).toList();
+			}
+			if (matched) {
+				matchedCallee.add(callee);
+			}
+		}
 		if (matchedCallee.size() < 1) {
 			throw AnnotationException.create(this.annotatedMethod.methodElement, "Available overloads of method \"%s\" do not match the parameter types given for the variable \"%s\"", methodName, cgaVarName);
 		}
-		// >1 not possible, because "Same identifier and parameter count and parameter types sequence implies identical method." implies that there can be at most 1 such method.
+		if (matchedCallee.size() > 1) {
+			throw new AssertionError(">1 not possible, because \"Same identifier and parameter count and parameter types sequence implies identical method.\" implies that there can be at most 1 such method.");
+		}
 
 		return matchedCallee.get(0);
 	}
@@ -263,7 +300,7 @@ public class CGAMethodCodeGenerator {
 		for (ParameterRepresentation parameter : parameters) {
 			String[] identifierSplit = parameter.identifier().split("_", 2);
 			if (identifierSplit.length < 2) {
-				throw AnnotationException.create(this.annotatedMethod.methodElement, "Parameter name \"%s\" must contain at least one \"_\"", parameter.identifier());
+				throw AnnotationException.create(parameter.element(), "Parameter name \"%s\" must contain at least one \"_\"", parameter.identifier());
 			}
 
 			String cgaVarName = identifierSplit[0];

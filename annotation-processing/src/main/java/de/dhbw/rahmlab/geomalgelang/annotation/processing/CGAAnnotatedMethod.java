@@ -1,17 +1,15 @@
 package de.dhbw.rahmlab.geomalgelang.annotation.processing;
 
 import de.dhbw.rahmlab.geomalgelang.api.annotation.CGA;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.TypeMirror;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode
 public class CGAAnnotatedMethod {
 
 	protected final ExecutableElement methodElement;
@@ -25,22 +23,7 @@ public class CGAAnnotatedMethod {
 		// Only the following line prevents genericity of this class. Thus still prefixed with "CGA".
 		this.cgaMethodAnnotation = methodElement.getAnnotation(CGA.class);
 		ensureModifiersContainPublic(methodElement);
-		String returnType = methodElement.getReturnType().toString();
-		String identifier = methodElement.getSimpleName().toString();
-		List<ParameterRepresentation> parameters = getParameters(methodElement);
-		this.methodRepresentation = new MethodRepresentation(identifier, returnType, parameters);
-	}
-
-	protected static List<ParameterRepresentation> getParameters(ExecutableElement methodElement) {
-		List<? extends VariableElement> variableElementParameters = methodElement.getParameters();
-		List<ParameterRepresentation> parameters = new ArrayList<>(variableElementParameters.size());
-		for (VariableElement variableElementParameter : variableElementParameters) {
-			TypeMirror type = variableElementParameter.asType();
-			String name = variableElementParameter.getSimpleName().toString();
-			ParameterRepresentation parameter = new ParameterRepresentation(type, name);
-			parameters.add(parameter);
-		}
-		return parameters;
+		this.methodRepresentation = new MethodRepresentation(methodElement);
 	}
 
 	protected static void ensureModifiersContainPublic(ExecutableElement methodElement) throws AnnotationException {
