@@ -62,17 +62,17 @@ Changes to Arguments.java and Result.java are automatically taken into account b
 However, GeomAlgeLang needs to be rebuild for that.
 
 
-## Particularities
-In Result.java it could make sense to add methods with the same return types as existing ones or to add methods with parameters. \
+## Peculiarities
+1. In Result.java it could make sense to add methods with the same return types as existing ones or to add methods with parameters. \
 However this is not supported by the annotation-processor. \
 A solution to work around that in these cases is to create new classes which themselves hold or compute the desired return types and to use these new classes as return types.
 
-There is currently no optimization for many consecutive invokations of generated code. \
+2. There is currently no optimization for many consecutive invokations of generated code. \
 If this causes performance issues, the following ideas to fix that could be considered:
 - Caching of the internal Program instance (speed up only for consecutive executions of the same CGA code)
 - Sharing the same inner Context instance between multiple internal Program instances.
 
-Due to a workaround to support Netbeans' in-line error reporting, in order to support additional Parameter.Type's in the user of the annotation it is necessary to add a dependency to the annotation-processor which contains the defintion of these types.
+3. Due to a workaround to support Netbeans' in-line error reporting, in order to support additional Parameter.Type's in the user of the annotation it is necessary to add a dependency to the annotation-processor which contains the defintion of these types.
 
 
 ## Dependency
