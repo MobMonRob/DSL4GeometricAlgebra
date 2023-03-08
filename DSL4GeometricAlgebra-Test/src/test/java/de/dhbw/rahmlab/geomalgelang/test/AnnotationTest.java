@@ -125,15 +125,36 @@ public class AnnotationTest {
     
     @Test
     void compositionOfLineIPNS(){
-        Point3d p = new Point3d(1d,2d,3d);
+        Point3d p1 = new Point3d(1d,2d,3d);
         Vector3d n = new Vector3d(0d,0d,1d);
-        double[] l1 = WrapperGen.INSTANCE.lineIPNS(p,n);
-        //System.out.println(toString("l1",l1));
-        double[] l2 = WrapperGen.INSTANCE.lineIPNS2(p,n);
-        //System.out.println(toString("l2",l2));
+		Point3d p2 = new Point3d(p1);
+		p2.add(p1);
+	
+        double[] l1 = WrapperGen.INSTANCE.lineIPNS(p1,n);
+        System.out.println(toString("l1",l1,eps));
+        double[] l2 = WrapperGen.INSTANCE.lineIPNS2(p1,n);
+        //System.out.println(toString("l2",l2, eps));
         assertTrue(equals(l1,l2, eps));
+		
+		double[] l3 = WrapperGen.INSTANCE.lineIPNS3(p1,p2);
+        System.out.println(toString("l3",l3,eps));
     }
     
+	@Test
+	void compositionOfLineOPNS(){
+		Point3d p1 = new Point3d(1d,2d,3d);
+        Point3d p2 = new Point3d(p1);
+		p2.add(p1);
+		double[] l = WrapperGen.INSTANCE.lineOPNS(p1,p2);
+        System.out.println(toString("l",l,eps));
+		double[] l2 = WrapperGen.INSTANCE.lineOPNS3(p1,p2);
+		assertTrue(equals(l,l2, eps));
+        System.out.println(toString("l2",l2,eps));
+		double[] l3 = WrapperGen.INSTANCE.lineOPNS3(p1,p2);
+        System.out.println(toString("l3",l3,eps));
+		assertTrue(equals(l,l3, eps));
+	}
+	
     @Test
     void compositionOfPointPairIPNS(){
         Point3d p1 = new Point3d(1d,2d,3d);
@@ -142,9 +163,9 @@ public class AnnotationTest {
         p.add(p2);
         p.scale(0.5d);
         double r = p1.distance(p2)/2d;
-		// n from p1 to p2
-        Vector3d n = new Vector3d(p2);
-        n.sub(p1);
+		// n from p2 to p1
+        Vector3d n = new Vector3d(p1);
+        n.sub(p2);
 		
 		// composition via formula
 		double[] pp1 = WrapperGen.INSTANCE.pointPairIPNS(p, n, r);
@@ -156,14 +177,22 @@ public class AnnotationTest {
         assertTrue(equals(pp1,pp2, eps));
         
 		//FIXME
-        // warum stimmt das nicht mit pp1 überein? Funktioniert dual nicht? oder ist die ipns Formel falsch
+        // warum stimmt das nicht mit pp1 überein (Vorzeichen)? 
+		// Funktioniert dual nicht? oder ist die ipns Formel falsch
         // composition of a normalized point pair via opns constructor and dual
         double[] pp3 = WrapperGen.INSTANCE.pointPairIPNS3(p1,p2);
         System.out.println(toString("pp3",pp3, eps));
+		// composition of a normalized point-pair via ipns construtor but intern dual of opns
         double[] pp4 = WrapperGen.INSTANCE.pointPairIPNS4(p1,p2);
         //System.out.println(toString("pp4",pp4, eps));
         // test ob dual in der Formel mit dem programmatischen dual identisch ist
         assertTrue(equals(pp3,pp4, eps));
+		
+		// test direct with dual composition
+		// pp1= -e012-e013-5e01i-e023-2e02i+3e03i+3.5e123-3.5e12i+14e13i+3.5e23
+        // pp3= -e012-e013-5e01i-e023-2e02i+3e03i-3.5e123-3.5e12i+14e13i+3.5e23
+		// failed, siehe sign of e123 component
+		//assertTrue(equals(pp1,pp3, eps));
 		
 		double[] pp5 = WrapperGen.INSTANCE.pointPairIPNS5(p, n, r);
         System.out.println(toString("pp5",pp5, eps));

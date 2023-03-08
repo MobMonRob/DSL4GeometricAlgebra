@@ -68,12 +68,41 @@ public interface Wrapper {
         @CGA("x")
         double[] orientedPointIPNS2(Point3d x_oriented_point_ipns_1, Vector3d x_oriented_point_ipns_2);
         
+		
+		// line
+		
+		// ipns
+		
         @CGA("(nn+(x∧nn)εᵢ)E₃")
         double[] lineIPNS(Tuple3d x_euclidean_vector_opns, Tuple3d nn_euclidean_vector_opns);
         
         @CGA("x")
         double[] lineIPNS2(Point3d x_line_ipns_1, Vector3d x_line_ipns_2);
        
+		// composition via opns representation via dual
+		// vermutlich fehlt hier die Normalisierung
+		@CGA("(p1∧p2∧εᵢ)*")
+        double[] lineIPNS3(Point3d p1_round_point_ipns, Point3d p2_round_point_ipns);
+		
+		@CGA("x*")
+        double[] lineIPNS4(Point3d x_line_opns_1, Point3d x_line_opns_2);
+		
+		// opns
+		
+		@CGA("p1∧p2∧εᵢ")
+        double[] lineOPNS(Point3d p1_round_point_ipns, Point3d p2_round_point_ipns);
+		
+		@CGA("x")
+        double[] lineOPNS2(Point3d x_line_opns_1, Point3d x_line_opns_2);
+		
+		@CGA("x1∧x2∧εᵢ+(x1-x2)E₀")
+        double[] lineOPNS3(Tuple3d x1_euclidean_vector_opns, Tuple3d x2_euclidean_vector_opns);
+		
+		
+		// point-pair
+		
+		// ipns
+		
 		// composition via formula
         @CGA("(ε₀∧nn+x∧nn∧E₀-(x⋅nn)-((x⋅nn) x-0.5(x²+r²)nn)∧εᵢ)E₃")
         double[] pointPairIPNS(Tuple3d x_euclidean_vector_opns, Tuple3d nn_euclidean_vector_opns, double r_scalar_opns);
