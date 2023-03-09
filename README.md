@@ -53,6 +53,7 @@ An [annotation based API](annotation-processing/README.md) useful espcially for 
 
 
 ## Types to use from outside the language
+CGA multivectors and objecs of its subtypes are completely hidden - not visible outside the DSL. Input data to and output data from the DSL is transfered by objects of the classes listed in the following table:
 | Name | implementation class | hints |
 | :-------- | :---- | ------|
 | double | Double |  |
@@ -62,7 +63,7 @@ An [annotation based API](annotation-processing/README.md) useful espcially for 
 | DualNumber | de.orat.math.vecmath.ext.DualNumber | |
 | ComplexNumber | de.orat.math.vecmath.ext.ComplexNumber | |
 
-All of these types are automatically casted into a multivector inside the language. No other operations possible based on these types inside the language.
+Inside the DSL all of these types are automatically casted into CGA multivectors. No other operations are possible based on these types inside the DSL.
 
 ## Operators
 Hint: Operator precedence determines how operators are parsed concerning each other. A higher precedence number
