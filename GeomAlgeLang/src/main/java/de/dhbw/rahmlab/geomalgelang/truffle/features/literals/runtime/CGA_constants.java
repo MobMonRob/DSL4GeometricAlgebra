@@ -1,6 +1,7 @@
 package de.dhbw.rahmlab.geomalgelang.truffle.features.literals.runtime;
 
 import de.orat.math.cga.api.CGAMultivector;
+import de.orat.math.cga.api.CGAScalarOPNS;
 
 public abstract class CGA_constants {
 
@@ -26,20 +27,20 @@ public abstract class CGA_constants {
 
 	/////////////////////
 	public static CGAMultivector epsilon_plus() {
-		return base_vector_origin().add((new CGAMultivector(0.5)).gp(base_vector_infinity()));
+		return base_vector_origin().add((new CGAScalarOPNS(0.5)).gp(base_vector_infinity()));
 	}
 
 	public static CGAMultivector epsilon_minus() {
-		return ((new CGAMultivector(0.5)).gp(base_vector_infinity())).sub(base_vector_origin());
+		return ((new CGAScalarOPNS(0.5)).gp(base_vector_infinity())).sub(base_vector_origin());
 	}
 
 	/////////////////////
 	public static CGAMultivector base_vector_infinity_dorst() {
-		return (new CGAMultivector(2.0)).gp(base_vector_origin());
+		return (new CGAScalarOPNS(2.0)).gp(base_vector_origin());
 	}
 
 	public static CGAMultivector base_vector_origin_dorst() {
-		return (new CGAMultivector(0.5)).gp(base_vector_infinity());
+		return (new CGAScalarOPNS(0.5)).gp(base_vector_infinity());
 	}
 
 	public static CGAMultivector base_vector_infinity_doran() {
@@ -47,12 +48,12 @@ public abstract class CGA_constants {
 	}
 
 	public static CGAMultivector base_vector_origin_doran() {
-		return (new CGAMultivector(-2.0)).gp(base_vector_origin());
+		return (new CGAScalarOPNS(-2.0)).gp(base_vector_origin());
 	}
 	/////////////////////
 
 	public static CGAMultivector pi() {
-		return new CGAMultivector(Math.PI);
+		return new CGAScalarOPNS(Math.PI);
 	}
 
 	public static CGAMultivector minkovsky_bi_vector() {

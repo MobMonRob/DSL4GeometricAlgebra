@@ -143,16 +143,30 @@ public class AnnotationTest {
 	@Test
 	void compositionOfLineOPNS(){
 		Point3d p1 = new Point3d(1d,2d,3d);
-        Point3d p2 = new Point3d(p1);
-		p2.add(p1);
+        Point3d p2 = new Point3d(0d,0d,0d); //new Point3d(/*p1*/-1d,-2d,-3d);
+		//p2.add(p1);
+		
+		//TODO
+		// Test ob lineOPNS3 auch funktioniert wenn die Gerade durch den Ursprung geht
+		// und Test ob es auch funktioniert wenn einer der beiden Punkte der Ursprung ist
+		
+		// composition via formula and ipns based points
 		double[] l = WrapperGen.INSTANCE.lineOPNS(p1,p2);
-        System.out.println(toString("l",l,eps));
-		double[] l2 = WrapperGen.INSTANCE.lineOPNS3(p1,p2);
+        //System.out.println(toString("l",l,eps));
+		// composition via ipns based points and constructor
+		double[] l2 = WrapperGen.INSTANCE.lineOPNS2(p1,p2);
 		assertTrue(equals(l,l2, eps));
-        System.out.println(toString("l2",l2,eps));
+        //System.out.println(toString("l2",l2,eps));
+		// composition via formula and euclidean vectors
 		double[] l3 = WrapperGen.INSTANCE.lineOPNS3(p1,p2);
-        System.out.println(toString("l3",l3,eps));
+        //System.out.println(toString("l3",l3,eps));
 		assertTrue(equals(l,l3, eps));
+		
+		// test vergleich mit ipns composition und dual
+		//TODO
+		
+		// test decomposition 
+		//TODO
 	}
 	
     @Test
