@@ -182,10 +182,11 @@ There exist three types of involution operations: Space inversion, reversion and
 | :---------- | :------ | :----| :-------- |
 | Point pair from  two conformal points (p1, p2) | p1&#8743;p2 | 2 | round |
 | (Flat) Finite-infinite point pair or Flat point from  one conformal point (p) | p&#8743;&#x03B5;&#7522; | 2 | flat |
-| Circle from three conformal Points (p1, p2, p3) | p1&#8743;p2&#8743;p3 | 3 |  round |
+| Circle from three ipns Points (p1, p2, p3) | p1&#8743;p2&#8743;p3 | 3 |  round |
 | Line from two conformal planes (p1, p2) | p1&#8743;p2&#8743;&#x03B5;&#7522; | 3 | flat |
-| Sphere from four conformal points (p1, p2, p3, p4) | p1&#8743;p2&#8743;p3&#8743;p4| 4 |  round |
-| Plane from three conformal points (p1, p2, p3) | p1&#8743;p2&#8743;p3&#8743;&#x03B5;&#7522;| 4 | flat |
+| Sphere from four ipns points (p1, p2, p3, p4) | p1&#8743;p2&#8743;p3&#8743;p4| 4 |  round |
+| Plane from three ipns points (p1, p2, p3) | p1&#8743;p2&#8743;p3&#8743;&#x03B5;&#7522;| 4 | flat |
+| Plane between two ipns points (p1, p2) | $\vec{p}_1\wedge\vec{p}_2\wedge\vec{\epsilon_\infinity}$| 4 | flat |
 
 The conformal points in the table above have to be given in inner product null space represenation.
 
