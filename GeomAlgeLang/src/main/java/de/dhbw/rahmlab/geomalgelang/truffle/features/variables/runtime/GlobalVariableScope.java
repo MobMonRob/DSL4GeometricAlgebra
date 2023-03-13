@@ -13,7 +13,6 @@ import com.oracle.truffle.api.library.ExportMessage;
 import de.dhbw.rahmlab.geomalgelang.parsing.GrammarUtils;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLang;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLangException;
-import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.InputValidation;
 import de.orat.math.cga.api.CGAMultivector;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,19 +29,23 @@ public final class GlobalVariableScope implements TruffleObject {
 	// Maybe we could use two different GlobalVariableScopes. One before and one after validation.
 	public final Map<String, Optional<CGAMultivector>> variables = new HashMap<>();
 
-	public boolean newVariable(String name) {
+	protected static void ensureNotConstant(String name) throws GeomAlgeLangException {
+		if (GrammarUtils.constantsLiteralNames.contains(name)) {
+			throw new GeomAlgeLangException(String.format("\"%s\" is a constant, not a valid variable name!", name));
+		}
+	}
+
+	public boolean newVariable(String name) throws GeomAlgeLangException {
+		GlobalVariableScope.ensureNotConstant(name);
 		Object existingValue = this.variables.putIfAbsent(name, Optional.empty());
 		return existingValue == null;
 	}
 
 	public void assignVariable(String name, CGAMultivector value) throws GeomAlgeLangException {
+		GlobalVariableScope.ensureNotConstant(name);
 		Object existingValue = this.variables.replace(name, Optional.of(value));
 		if (existingValue == null) {
-			if (GrammarUtils.constantsLiteralNames.contains(name)) {
-				throw new GeomAlgeLangException(String.format("Cannot reassign constant \"%s\"!", name));
-			} else {
-				throw new GeomAlgeLangException("\"" + name + "\" is not a known variable!");
-			}
+			throw new GeomAlgeLangException("\"" + name + "\" is not a known variable!");
 		}
 	}
 
