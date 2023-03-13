@@ -8,10 +8,10 @@ import javax.lang.model.element.VariableElement;
 public record MethodRepresentation(ExecutableElement element, String identifier, String returnType, List<ParameterRepresentation> parameters) {
 
 	public MethodRepresentation(ExecutableElement element) {
-		this(element, element.getSimpleName().toString(), element.getReturnType().toString(), MethodRepresentation.compututeParameters(element));
+		this(element, element.getSimpleName().toString(), element.getReturnType().toString(), MethodRepresentation.computeParameters(element));
 	}
 
-	protected static List<ParameterRepresentation> compututeParameters(ExecutableElement element) {
+	protected static List<ParameterRepresentation> computeParameters(ExecutableElement element) {
 		List<? extends VariableElement> parameterElements = element.getParameters();
 
 		List<ParameterRepresentation> parameters = new ArrayList<>(parameterElements.size());
