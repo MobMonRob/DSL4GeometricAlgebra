@@ -4,6 +4,7 @@ import de.orat.math.cga.api.CGAAttitudeVectorIPNS;
 import de.orat.math.cga.api.CGAAttitudeVectorOPNS;
 import de.orat.math.cga.api.CGACircleIPNS;
 import de.orat.math.cga.api.CGACircleOPNS;
+import de.orat.math.cga.api.CGAEuclideanBivector;
 import de.orat.math.cga.api.CGAEuclideanVector;
 import de.orat.math.cga.api.CGAFlatPointIPNS;
 import de.orat.math.cga.api.CGALineIPNS;
@@ -44,6 +45,12 @@ public class Arguments {
 		this.put(argName, mvec);
 		return this;
 	}
+	
+	public Arguments euclidean_bivector_opns(String argName, Vector3d v1, Vector3d v2){
+		var mvec = new CGAEuclideanBivector(v1,v2);
+		this.put(argName, mvec);
+		return this;
+	}
         
 	public Arguments scalar_opns(String argName, double scalar) {
 		var mvec = new CGAScalarOPNS(scalar);
@@ -81,6 +88,7 @@ public class Arguments {
 		return this;
 	}
 
+	// direction from point-2 to point-1
     public Arguments pointpair_ipns2(String argName, Point3d location, Vector3d normal, double radius) {
 		//Vector3d normalizedNormal = new Vector3d(normal);
 		//normalizedNormal.normalize();
