@@ -1,22 +1,23 @@
 package de.dhbw.rahmlab.geomalgelang.parsing.astConstruction;
 
-import de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionCalls.nodes.expr.*;
 import com.oracle.truffle.api.frame.VirtualFrame;
-import de.dhbw.rahmlab.geomalgelang.truffle.features.variables.nodes.expr.*;
+import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParser;
+import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParserBaseListener;
+import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
+import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLangContext;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionCalls.nodes.expr.*;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.functionCalls.nodes.expr.*;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.literals.nodes.expr.*;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.operators.nodes.expr.binaryOps.*;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.operators.nodes.expr.unaryOps.*;
-import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParser;
-import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParserBaseListener;
-import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLangContext;
-import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
-import de.dhbw.rahmlab.geomalgelang.truffle.features.functionCalls.nodes.expr.*;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.variables.nodes.expr.*;
 import de.orat.math.cga.api.CGAMultivector;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.Set;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 /**
@@ -30,16 +31,17 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
  */
 public class ExprTransform extends GeomAlgeParserBaseListener {
 
-	private final Deque<ExpressionBaseNode> nodeStack = new ArrayDeque<>();
-	private final GeomAlgeLangContext geomAlgeLangContext;
+	protected final Deque<ExpressionBaseNode> nodeStack = new ArrayDeque<>();
+	protected final GeomAlgeLangContext geomAlgeLangContext;
+	protected final Set<String> declaredVariables;
 
-	private ExprTransform(GeomAlgeLangContext geomAlgeLangContext) {
-		super();
+	protected ExprTransform(GeomAlgeLangContext geomAlgeLangContext, Set<String> declaredVariables) {
 		this.geomAlgeLangContext = geomAlgeLangContext;
+		this.declaredVariables = declaredVariables;
 	}
 
-	public static ExpressionBaseNode generateAST(GeomAlgeParser.ExprContext exprCtx, GeomAlgeLangContext geomAlgeLangContext) {
-		ExprTransform exprTransform = new ExprTransform(geomAlgeLangContext);
+	public static ExpressionBaseNode generateExprAST(GeomAlgeParser.ExprContext exprCtx, GeomAlgeLangContext geomAlgeLangContext, Set<String> declaredVariables) {
+		ExprTransform exprTransform = new ExprTransform(geomAlgeLangContext, declaredVariables);
 
 		ParseTreeWalker.DEFAULT.walk(exprTransform, exprCtx);
 
@@ -204,8 +206,10 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		GlobalVariableReference varRef = GlobalVariableReferenceNodeGen.create(name);
 		nodeStack.push(varRef);
 
-		// Needed for semantic validation
-		geomAlgeLangContext.globalVariableScope.newVariable(name);
+		if (!this.declaredVariables.contains(name)) {
+			// Needed for semantic validation
+			geomAlgeLangContext.globalVariableScope.newVariable(name);
+		}
 	}
 
 	// https://stackoverflow.com/questions/4323599/best-way-to-parsedouble-with-comma-as-decimal-separator/4323627#4323627

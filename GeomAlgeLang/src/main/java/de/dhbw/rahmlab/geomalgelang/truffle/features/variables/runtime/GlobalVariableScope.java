@@ -41,7 +41,7 @@ public final class GlobalVariableScope implements TruffleObject {
 		return existingValue == null;
 	}
 
-	public void assignVariable(String name, CGAMultivector value) throws GeomAlgeLangException {
+	public void updateVariable(String name, CGAMultivector value) throws GeomAlgeLangException {
 		GlobalVariableScope.ensureNotConstant(name);
 		Object existingValue = this.variables.replace(name, Optional.of(value));
 		if (existingValue == null) {
@@ -49,8 +49,8 @@ public final class GlobalVariableScope implements TruffleObject {
 		}
 	}
 
-	public CGAMultivector getValueOfVariable(String name) throws NoSuchElementException {
-		return this.variables.get(name).orElseThrow();
+	public Optional<CGAMultivector> getValueOfVariable(String name) throws NoSuchElementException {
+		return this.variables.get(name);
 	}
 
 	public boolean isVariablePresent(String name) {
@@ -66,7 +66,7 @@ public final class GlobalVariableScope implements TruffleObject {
 	@TruffleBoundary
 	public void writeMember(String member, Object value) throws UnsupportedMessageException, UnknownIdentifierException, UnsupportedTypeException {
 		CGAMultivector cga = InputValidation.ensureIsCGA(value);
-		this.assignVariable(member, cga);
+		this.updateVariable(member, cga);
 	}
 
 	@ExportMessage

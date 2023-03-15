@@ -1,8 +1,9 @@
 package de.dhbw.rahmlab.geomalgelang.parsing;
 
-import de.dhbw.rahmlab.geomalgelang.parsing.astConstruction.ExprTransform;
-import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLangContext;
+import de.dhbw.rahmlab.geomalgelang.parsing.astConstruction.FuncTransform;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
+import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLangContext;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.FunctionDefinitionBody;
 import org.antlr.v4.runtime.BailErrorStrategy;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.atn.PredictionMode;
@@ -14,16 +15,22 @@ public final class ParsingService {
 
 	}
 
-	protected static ExpressionBaseNode invoke(GeomAlgeParser parser, GeomAlgeLangContext geomAlgeLangContext) {
-		// Due to unknown reasons, parser.expr() won't throw syntax errors properly.
-		GeomAlgeParser.ProgramContext programContext = parser.program();
-		GeomAlgeParser.ExprContext exprContext = programContext.expr();
-		ExpressionBaseNode rootNode = ExprTransform.generateAST(exprContext, geomAlgeLangContext);
+	protected static FunctionDefinitionBody invoke(GeomAlgeParser parser, GeomAlgeLangContext geomAlgeLangContext) {
+		GeomAlgeParser.ProgramContext program = parser.program();
+		GeomAlgeParser.FuncContext func = program.func();
+		FunctionDefinitionBody functionDefinitionBody = FuncTransform.generate(func, geomAlgeLangContext);
 
-		return rootNode;
+		return functionDefinitionBody;
 	}
 
-	public static ExpressionBaseNode getAST(CharStreamSupplier program, GeomAlgeLangContext geomAlgeLangContext) {
+	public static ExpressionBaseNode parseExpr(CharStreamSupplier program, GeomAlgeLangContext geomAlgeLangContext) {
+		// After function definitions are part of the language, the provided string needs to be wrappt into a syntactivally correct function.
+		FunctionDefinitionBody functionDefinitionBody = ParsingService.parse(program, geomAlgeLangContext);
+		ExpressionBaseNode retExpr = functionDefinitionBody.getRetExpr();
+		return retExpr;
+	}
+
+	public static FunctionDefinitionBody parse(CharStreamSupplier program, GeomAlgeLangContext geomAlgeLangContext) {
 		GeomAlgeLexer lexer = ParsingService.getLexer(program);
 		GeomAlgeParser parser = ParsingService.getParser(lexer);
 		try {

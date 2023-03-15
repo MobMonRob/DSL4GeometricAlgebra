@@ -20,7 +20,7 @@ public class AppTest {
 
 		CharStreamSupplier charStream = CharStreamSupplier.from(program);
 		GeomAlgeLangContext geomAlgeLangContext = new GeomAlgeLangContext();
-		ExpressionBaseNode rootNode = ParsingService.getAST(charStream, geomAlgeLangContext);
+		ExpressionBaseNode rootNode = ParsingService.parseExpr(charStream, geomAlgeLangContext);
 		String ast = AstStringBuilder.getAstString(rootNode);
 		System.out.println(ast);
 

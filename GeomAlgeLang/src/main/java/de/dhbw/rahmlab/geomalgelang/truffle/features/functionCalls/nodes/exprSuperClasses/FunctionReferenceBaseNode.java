@@ -1,11 +1,10 @@
 package de.dhbw.rahmlab.geomalgelang.truffle.features.functionCalls.nodes.exprSuperClasses;
 
-import com.oracle.truffle.api.dsl.Specialization;
 import com.oracle.truffle.api.frame.VirtualFrame;
-import com.oracle.truffle.api.nodes.Node;
+import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.superClasses.GeomAlgeLangBaseNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.runtime.Function;
 
-public abstract class FunctionReferenceBaseNode extends Node {
+public abstract class FunctionReferenceBaseNode extends GeomAlgeLangBaseNode {
 
 	protected final String name;
 

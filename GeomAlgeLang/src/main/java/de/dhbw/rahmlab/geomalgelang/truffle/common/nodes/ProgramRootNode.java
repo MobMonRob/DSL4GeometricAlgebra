@@ -1,30 +1,28 @@
 package de.dhbw.rahmlab.geomalgelang.truffle.common.nodes;
 
-import com.oracle.truffle.api.TruffleLanguage;
 import com.oracle.truffle.api.frame.FrameDescriptor;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.RootNode;
-import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.CgaTruffleBox;
-import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.ExecutionValidation;
-import org.graalvm.polyglot.Value;
+import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLang;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.FunctionRootNode;
 
 public class ProgramRootNode extends RootNode {
 
 	@Child
-	private ExpressionBaseNode bodyNode;
+	protected FunctionRootNode functionRootNode;
 
-	private final ExecutionValidation executionValidation;
+	protected final ExecutionValidation executionValidation;
 
-	public ProgramRootNode(TruffleLanguage<?> language, FrameDescriptor frameDescriptor, ExpressionBaseNode bodyNode, ExecutionValidation executionValidation) {
+	public ProgramRootNode(GeomAlgeLang language, FrameDescriptor frameDescriptor, FunctionRootNode functionRootNode, ExecutionValidation executionValidation) {
 		super(language, frameDescriptor);
-		this.bodyNode = bodyNode;
+		this.functionRootNode = functionRootNode;
 		this.executionValidation = executionValidation;
 	}
 
 	@Override
 	public Object execute(VirtualFrame frame) {
 		this.executionValidation.validate();
-		return new CgaTruffleBox(this.bodyNode.executeGeneric(frame));
+		return this.functionRootNode.execute(frame); //CgaTruffleBox
 	}
 }
