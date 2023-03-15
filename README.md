@@ -6,7 +6,7 @@ The code is in very early stage.
 
 
 ## GraalVM Setup
-Download the [GraalVM](https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.0.0.2/graalvm-ce-java17-linux-amd64-22.0.0.2.tar.gz)
+Download the [GraalVM (Linux)](https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.0.0.2/graalvm-ce-java17-linux-amd64-22.0.0.2.tar.gz)
 
 Extract the downloaded archive to an arbitrary location.
 
