@@ -11,6 +11,7 @@ import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.F
 import de.dhbw.rahmlab.geomalgelang.truffle.features.variables.nodes.stmt.GlobalVariableAssignmentNodeGen;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.variables.nodes.stmt.GlobalVariableDeclarationNodeGen;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -21,6 +22,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 	protected final List<StatementBaseNode> stmts = new ArrayList<>();
 	protected ExpressionBaseNode retExpr = null;
 	protected final Set<String> declaredVariables = new HashSet<>();
+	protected final Set<String> unmodifiableDeclaredVariables = Collections.unmodifiableSet(declaredVariables);
 
 	protected FuncTransform(GeomAlgeLangContext geomAlgeLangContext) {
 		this.geomAlgeLangContext = geomAlgeLangContext;
@@ -44,8 +46,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 			this.stmts.add(declaration);
 			this.declaredVariables.add(name);
 		}
-
-		ExpressionBaseNode expr = ExprTransform.generateExprAST(ctx.exprContext, this.geomAlgeLangContext, this.declaredVariables);
+		ExpressionBaseNode expr = ExprTransform.generateExprAST(ctx.exprContext, this.geomAlgeLangContext, this.unmodifiableDeclaredVariables);
 		GlobalVariableAssignment assignment = GlobalVariableAssignmentNodeGen.create(expr, name);
 		this.stmts.add(assignment);
 	}
