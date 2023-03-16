@@ -28,8 +28,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 	public static FunctionDefinitionBody generate(GeomAlgeParser.FuncContext ctx, GeomAlgeLangContext geomAlgeLangContext) {
 		FuncTransform transform = new FuncTransform(geomAlgeLangContext);
-		StopingBeforeParseTreeWalker walker = new StopingBeforeParseTreeWalker(transform, ctx, GeomAlgeParser.ExprContext.class);
-		walker.walk();
+		StoppingBeforeParseTreeWalker.walk(transform, ctx, GeomAlgeParser.ExprContext.class);
 		FunctionDefinitionBody function = new FunctionDefinitionBody(transform.stmts.toArray(StatementBaseNode[]::new), transform.retExpr);
 		return function;
 	}
