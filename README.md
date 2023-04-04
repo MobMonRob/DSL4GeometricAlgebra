@@ -38,8 +38,9 @@ The project depends on the vecmath library in the refactured version of jogamp. 
 Alternatively clone it from [GitHub](https://github.com/JogAmp/vecmath/tree/dev1.7.1), update the compiler version in it's pom.xml and build it.
 
 Clone and checkout
-1. [GeometricAlgebra](https://github.com/orat/GeometricAlgebra) (commit `d3398497d2b8827a04bd411f8c1d8c7882e3d95d`)
-2. [ConformalGeometricAlgebra](https://github.com/orat/ConformalGeometricAlgebra) (commit `b4167730834de81c0f3cd6726089293aff8728df`)
+1. [GeometricAlgebra](https://github.com/orat/GeometricAlgebra)
+2. [ConformalGeometricAlgebra](https://github.com/orat/ConformalGeometricAlgebra)
+
 and build those projects to have them available in your local Maven cache.
 
 
