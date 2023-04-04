@@ -152,9 +152,10 @@ public class AnnotationTest {
 		
 		// composition via formula and ipns based points
 		double[] l = WrapperGen.INSTANCE.lineOPNS(p1,p2);
-        //System.out.println(toString("l",l,eps));
+        System.out.println(toString("l",l,eps));
 		// composition via ipns based points and constructor
 		double[] l2 = WrapperGen.INSTANCE.lineOPNS2(p1,p2);
+		System.out.println(toString("l2",l2,eps));
 		assertTrue(equals(l,l2, eps));
         //System.out.println(toString("l2",l2,eps));
 		// composition via formula and euclidean vectors
@@ -182,7 +183,8 @@ public class AnnotationTest {
         n.sub(p2);
 		
 		// composition via formula
-		double[] pp1 = WrapperGen.INSTANCE.pointPairIPNS(p, n, r);
+		double[] pp1 = WrapperGen.INSTANCE.pointPairIPNS(p,
+			n, r);
         System.out.println(toString("pp1",pp1, eps));
         // composition via constructor
         double[] pp2 = WrapperGen.INSTANCE.pointpairIPNS2(p, n, r);
@@ -208,7 +210,8 @@ public class AnnotationTest {
 		// failed, siehe sign of e123 component
 		//assertTrue(equals(pp1,pp3, eps));
 		
-		double[] pp5 = WrapperGen.INSTANCE.pointPairIPNS5(p, n, r);
+		double[] pp5 = WrapperGen.INSTANCE.pointPairIPNS5(p, 
+			                                              n, r);
         System.out.println(toString("pp5",pp5, eps));
     }
    
@@ -229,16 +232,14 @@ public class AnnotationTest {
         double r = 2d;
         // Komplexe Formel basierend auf lua code
         double[] c1 = WrapperGen.INSTANCE.circleIPNS(p, n, r);
-        
-        // c2 = -c3 = -c1
         // Konstruktor basierende auf komplexer Formel lua code
         double[] c2 = WrapperGen.INSTANCE.circleIPNS2(p,n,r);
         // Formel Kugel mit Ebene geschnitten
         double[] c3 = WrapperGen.INSTANCE.circleIPNS3(p, n, r);
-        System.out.println(toString("c1",c1,eps));
-        System.out.println(toString("c2",c2,eps));
-        System.out.println(toString("c3",c3,eps));
-        assertTrue(equals(c1, c2, eps));
+        //System.out.println(toString("c1",c1,eps));
+        //System.out.println(toString("c2",c2,eps));
+        //System.out.println(toString("c3",c3,eps));
+		assertTrue(equals(c1, c2, eps));
         assertTrue(equals(c1, c3, eps));
     }
     
@@ -257,10 +258,12 @@ public class AnnotationTest {
     
     @Test
     void compositionOfRoundPointOPNS(){
-        Point3d p = new Point3d(1d,0d,0d);
+        Point3d p = new Point3d(1d,2d,3d);
         // mit Konstruktor via ipns dual
         double[] cgaP1 = WrapperGen.INSTANCE.roundPointOPNS(p);
 		
+		double[] rp1 = WrapperGen.INSTANCE.roundPointIPNS(p); 
+        
 		// mit Formel aus 4 Kugeln
         //double[] cgaP2 = WrapperGen.INSTANCE.roundPointOPNS(p1);
     }
@@ -296,6 +299,18 @@ public class AnnotationTest {
 		
 	}
     
+	@Test
+	void imaginaryPointPair(){
+		// Parameters to define a real sphere
+		Point3d p1 = new Point3d(1d,2d,3d);
+		double r = 2d;
+		// Parameters to define plane through the origin of the sphere
+		Vector3d n = new Vector3d(0,0,1);
+		// cut of sphere and this plane results in an imaginary  point pair with a negative radius
+		// equivalent to a real circle
+		double result_r = WrapperGen.INSTANCE.testImaginaryPointPair(p1, r, n);
+		System.out.println("r="+String.valueOf(r));
+	}
     @Test
     void compositionOfPointPairOPNS(){
         Point3d p1 = new Point3d(1d,2d,3d);
