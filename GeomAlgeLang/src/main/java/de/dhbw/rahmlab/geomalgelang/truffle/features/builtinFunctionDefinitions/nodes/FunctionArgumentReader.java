@@ -1,4 +1,4 @@
-package de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes;
+package de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionDefinitions.nodes;
 
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.frame.VirtualFrame;

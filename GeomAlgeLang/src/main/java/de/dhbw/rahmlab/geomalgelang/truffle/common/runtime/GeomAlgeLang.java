@@ -7,8 +7,8 @@ import com.oracle.truffle.api.source.Source;
 import de.dhbw.rahmlab.geomalgelang.parsing.CharStreamSupplier;
 import de.dhbw.rahmlab.geomalgelang.parsing.ParsingService;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.ProgramRootNode;
-import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
-import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.ExecutionValidation;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.FunctionDefinitionBody;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.FunctionRootNode;
 import java.io.IOException;
 
 @TruffleLanguage.Registration(
@@ -21,7 +21,6 @@ public class GeomAlgeLang extends TruffleLanguage<GeomAlgeLangContext> {
 
 	public GeomAlgeLang() {
 		super();
-		// this.context = new GeomAlgeLangContext(this);
 	}
 
 	@Override
@@ -42,9 +41,13 @@ public class GeomAlgeLang extends TruffleLanguage<GeomAlgeLangContext> {
 	}
 
 	private ProgramRootNode parseSource(Source source) throws IOException, GeomAlgeLangException {
-		ExpressionBaseNode topNode = ParsingService.getAST(CharStreamSupplier.from(source), this.context);
-		// Semantic validation takes place here.
-		ProgramRootNode rootNode = new ProgramRootNode(this, new FrameDescriptor(), topNode, new ExecutionValidation(this.context));
+		FunctionDefinitionBody functionDefinitionBody = ParsingService.parse(CharStreamSupplier.from(source), this.context);
+
+		FrameDescriptor frameDescriptor = new FrameDescriptor();
+		FunctionRootNode functionRootNode = new FunctionRootNode(this, functionDefinitionBody);
+		ExecutionValidation executionValidation = new ExecutionValidation(this.context);
+
+		ProgramRootNode rootNode = new ProgramRootNode(this, frameDescriptor, functionRootNode, executionValidation);
 		return rootNode;
 	}
 }

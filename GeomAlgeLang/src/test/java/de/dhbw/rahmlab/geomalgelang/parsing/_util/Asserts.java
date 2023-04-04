@@ -32,7 +32,7 @@ public class Asserts {
 
 		String actualAstString = null;
 		try {
-			ExpressionBaseNode baseNode = ParsingService.getAST(CharStreamSupplier.from(program), new GeomAlgeLangContext());
+			ExpressionBaseNode baseNode = ParsingService.parseExpr(CharStreamSupplier.from(program), new GeomAlgeLangContext());
 			actualAstString = AstStringBuilder.getAstString(baseNode);
 		} catch (ParseCancellationException e) {
 			// Thrown by SytaxErrorListener indicating a syntax error
@@ -97,7 +97,7 @@ public class Asserts {
 	private static String getAstString(String program, int maxActualAstStringDepth, final String programMessage) {
 		String actualAstString = null;
 		try {
-			ExpressionBaseNode baseNode = ParsingService.getAST(CharStreamSupplier.from(program), new GeomAlgeLangContext());
+			ExpressionBaseNode baseNode = ParsingService.parseExpr(CharStreamSupplier.from(program), new GeomAlgeLangContext());
 			actualAstString = AstStringBuilder.getAstString(baseNode, maxActualAstStringDepth);
 		} catch (ParseCancellationException e) {
 			// Thrown by SytaxErrorListener indicating a syntax error
