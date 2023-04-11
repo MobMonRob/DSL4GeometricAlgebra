@@ -5,7 +5,7 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.RootNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.ExecutionValidation;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLang;
-import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.FunctionRootNode;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.superClasses.FunctionRootNode;
 
 public class ProgramRootNode extends RootNode {
 
@@ -23,6 +23,6 @@ public class ProgramRootNode extends RootNode {
 	@Override
 	public Object execute(VirtualFrame frame) {
 		this.executionValidation.validate();
-		return this.functionRootNode.execute(frame); //CgaTruffleBox
+		return this.functionRootNode.execute(frame);
 	}
 }
