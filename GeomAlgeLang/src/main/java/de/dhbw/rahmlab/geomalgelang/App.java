@@ -4,6 +4,7 @@ import de.dhbw.rahmlab.geomalgelang.api.Arguments;
 import de.dhbw.rahmlab.geomalgelang.api.Result;
 import de.dhbw.rahmlab.geomalgelang.api.Program;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 
 public class App {
 
@@ -25,7 +26,7 @@ public class App {
 	private static void invocationTest() throws Exception {
 		String source = """
 		c := b
-		(a²-b²)
+		a, b, c
 		""";
 
 		System.out.println("source: " + source);
@@ -33,13 +34,17 @@ public class App {
 		try (Program program = new Program(source)) {
 			Arguments arguments = new Arguments();
 			arguments
-				.scalar_opns("a", 5.0)
-				.scalar_opns("b", 5.0);
+				.scalar_opns("a", 1.0)
+				.scalar_opns("b", 2.0);
 
 			Result answer = program.invoke(arguments);
-			double answerScalar = answer.decomposeScalar();
+			double[][] answerScalar = answer.decomposeDoubleArray();
 
-			System.out.println("answer: " + answerScalar);
+			System.out.println("answer: ");
+			for (int i = 0; i < answerScalar.length; ++i) {
+				String current = Arrays.toString(answerScalar[i]);
+				System.out.println(current);
+			}
 			System.out.println();
 		}
 	}

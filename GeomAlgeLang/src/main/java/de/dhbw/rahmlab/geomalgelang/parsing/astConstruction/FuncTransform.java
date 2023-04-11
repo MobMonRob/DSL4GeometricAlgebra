@@ -20,7 +20,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 	protected final GeomAlgeLangContext geomAlgeLangContext;
 	protected final List<StatementBaseNode> stmts = new ArrayList<>();
-	protected ExpressionBaseNode retExpr = null;
+	protected final List<ExpressionBaseNode> retExprs = new ArrayList<>();
 	protected final Set<String> declaredVariables = new HashSet<>();
 	protected final Set<String> unmodifiableDeclaredVariables = Collections.unmodifiableSet(declaredVariables);
 
@@ -31,7 +31,9 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 	public static FunctionDefinitionBody generate(GeomAlgeParser.FuncContext ctx, GeomAlgeLangContext geomAlgeLangContext) {
 		FuncTransform transform = new FuncTransform(geomAlgeLangContext);
 		StoppingBeforeParseTreeWalker.walk(transform, ctx, GeomAlgeParser.ExprContext.class);
-		FunctionDefinitionBody function = new FunctionDefinitionBody(transform.stmts.toArray(StatementBaseNode[]::new), transform.retExpr);
+		FunctionDefinitionBody function = new FunctionDefinitionBody(
+			transform.stmts.toArray(StatementBaseNode[]::new),
+			transform.retExprs.toArray(ExpressionBaseNode[]::new));
 		return function;
 	}
 
@@ -53,6 +55,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 	@Override
 	public void enterRetExprStmt(GeomAlgeParser.RetExprStmtContext ctx) {
-		this.retExpr = ExprTransform.generateExprAST(ctx.exprContext, this.geomAlgeLangContext, this.declaredVariables);
+		ExpressionBaseNode retExpr = ExprTransform.generateExprAST(ctx.exprContext, this.geomAlgeLangContext, this.declaredVariables);
+		this.retExprs.add(retExpr);
 	}
 }

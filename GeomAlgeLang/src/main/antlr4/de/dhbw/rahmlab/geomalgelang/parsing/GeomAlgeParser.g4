@@ -38,8 +38,12 @@ stmt
 	:	SPACE* name=IDENTIFIER SPACE* ASSIGNMENT SPACE* exprContext=expr SPACE*		#AssgnStmt
 	;
 
+// The list-form (1) needs iteration in the transformer while the tree-form (2) don't.
+// enterRetExprStmt inverses the order if retExpr is left-recursive.
 retExpr
-	:	exprContext=expr	#RetExprStmt
+	//:	exprContext+=expr (COMMA exprContext+=expr)*	#RetExprStmt
+	:	exprContext=expr				#RetExprStmt
+	|	exprContext=expr COMMA retExpr	#RetExprStmt
 	;
 
 ///////////////////////////////////////////////////////////////////////////

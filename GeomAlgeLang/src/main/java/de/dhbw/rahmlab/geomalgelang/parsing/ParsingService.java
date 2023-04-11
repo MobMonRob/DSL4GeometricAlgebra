@@ -27,13 +27,14 @@ public final class ParsingService {
 	public static ExpressionBaseNode parseExpr(CharStreamSupplier program, GeomAlgeLangContext geomAlgeLangContext) {
 		// After function definitions are part of the language, the provided string needs to be wrappt into a syntactivally correct function.
 		FunctionDefinitionBody functionDefinitionBody = ParsingService.parse(program, geomAlgeLangContext);
-		ExpressionBaseNode retExpr = functionDefinitionBody.getRetExpr();
+		ExpressionBaseNode retExpr = functionDefinitionBody.getFirstRetExpr();
 		return retExpr;
 	}
 
 	public static FunctionDefinitionBody parse(CharStreamSupplier program, GeomAlgeLangContext geomAlgeLangContext) {
 		GeomAlgeLexer lexer = ParsingService.getLexer(program);
 		GeomAlgeParser parser = ParsingService.getParser(lexer);
+		configureParserDefault(parser);
 		try {
 			return invoke(parser, geomAlgeLangContext);
 		} catch (ParseCancellationException ex) {
@@ -59,25 +60,33 @@ public final class ParsingService {
 		parser.addErrorListener(new CustumDiagnosticErrorListener(System.out));
 		parser.addErrorListener(SyntaxErrorListener.INSTANCE);
 		parser.setErrorHandler(new BailErrorStrategy());
-		// parser.setErrorHandler(new DefaultErrorStrategy());
 		parser.getInterpreter().setPredictionMode(PredictionMode.LL_EXACT_AMBIG_DETECTION);
 	}
 
 	protected static void configureParserDefault(GeomAlgeParser parser) {
 		parser.removeErrorListeners();
+		parser.addErrorListener(SyntaxErrorListener.INSTANCE);
 		parser.setErrorHandler(new BailErrorStrategy());
 		parser.getInterpreter().setPredictionMode(PredictionMode.SLL);
 	}
 
-	public static GeomAlgeParser getDiagnosticParser(GeomAlgeLexer lexer) {
+	protected static void configureParserAntlrTestRig(GeomAlgeParser parser) {
+		parser.removeErrorListeners();
+		parser.addErrorListener(new CustumDiagnosticErrorListener(System.out));
+		//parser.addErrorListener(SyntaxErrorListener.INSTANCE); //TestRig dies with this if ambiguity is detected.
+		parser.setErrorHandler(new BailErrorStrategy());
+		parser.getInterpreter().setPredictionMode(PredictionMode.LL_EXACT_AMBIG_DETECTION);
+	}
+
+	public static GeomAlgeParser getAntlrTestRigParser(GeomAlgeLexer lexer) {
 		CommonTokenStream commonTokenStream = new CommonTokenStream(lexer);
 		GeomAlgeParser parser = new GeomAlgeParser(commonTokenStream);
-		configureParserDiagnostic(parser);
+		configureParserAntlrTestRig(parser);
 
 		return parser;
 	}
 
-	public static GeomAlgeParser getParser(GeomAlgeLexer lexer) {
+	protected static GeomAlgeParser getParser(GeomAlgeLexer lexer) {
 		CommonTokenStream commonTokenStream = new CommonTokenStream(lexer);
 		GeomAlgeParser parser = new GeomAlgeParser(commonTokenStream);
 		configureParserDefault(parser);
@@ -85,10 +94,12 @@ public final class ParsingService {
 		return parser;
 	}
 
-	public static GeomAlgeParser getParser(CharStreamSupplier program) {
+	/*
+	protected static GeomAlgeParser getParser(CharStreamSupplier program) {
 		GeomAlgeLexer lexer = ParsingService.getLexer(program);
 		GeomAlgeParser parser = ParsingService.getParser(lexer);
 
 		return parser;
 	}
+	 */
 }

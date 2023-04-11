@@ -10,11 +10,11 @@ public abstract class InputValidation {
 	public static CGAMultivector ensureIsCGA(Object object) throws IllegalArgumentException {
 		if (object instanceof CgaTruffleBox) {
 			CgaTruffleBox cgaTruffleBox = (CgaTruffleBox) object;
-			return cgaTruffleBox.inner;
+			return cgaTruffleBox.getInner();
 		} else if (object instanceof TruffleBox) {
 			TruffleBox truffleBox = (TruffleBox) object;
 			String expectedInnerClassName = CGAMultivector.class.getSimpleName();
-			String actualInnerClassName = truffleBox.inner.getClass().getSimpleName();
+			String actualInnerClassName = truffleBox.getInner().getClass().getSimpleName();
 
 			throw new GeomAlgeLangException("Got \"" + actualInnerClassName + "\" but expected \"" + expectedInnerClassName + "\"");
 		}
