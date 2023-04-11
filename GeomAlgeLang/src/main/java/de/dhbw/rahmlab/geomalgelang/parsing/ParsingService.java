@@ -6,6 +6,7 @@ import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.FunctionDefinitionBody;
 import org.antlr.v4.runtime.BailErrorStrategy;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.DefaultErrorStrategy;
 import org.antlr.v4.runtime.atn.PredictionMode;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 
@@ -57,7 +58,15 @@ public final class ParsingService {
 		parser.removeErrorListeners();
 		parser.addErrorListener(new CustumDiagnosticErrorListener(System.out));
 		parser.addErrorListener(SyntaxErrorListener.INSTANCE);
+		parser.setErrorHandler(new BailErrorStrategy());
+		// parser.setErrorHandler(new DefaultErrorStrategy());
 		parser.getInterpreter().setPredictionMode(PredictionMode.LL_EXACT_AMBIG_DETECTION);
+	}
+
+	protected static void configureParserDefault(GeomAlgeParser parser) {
+		parser.removeErrorListeners();
+		parser.setErrorHandler(new BailErrorStrategy());
+		parser.getInterpreter().setPredictionMode(PredictionMode.SLL);
 	}
 
 	public static GeomAlgeParser getDiagnosticParser(GeomAlgeLexer lexer) {
@@ -66,12 +75,6 @@ public final class ParsingService {
 		configureParserDiagnostic(parser);
 
 		return parser;
-	}
-
-	protected static void configureParserDefault(GeomAlgeParser parser) {
-		parser.removeErrorListeners();
-		parser.setErrorHandler(new BailErrorStrategy());
-		parser.getInterpreter().setPredictionMode(PredictionMode.SLL);
 	}
 
 	public static GeomAlgeParser getParser(GeomAlgeLexer lexer) {

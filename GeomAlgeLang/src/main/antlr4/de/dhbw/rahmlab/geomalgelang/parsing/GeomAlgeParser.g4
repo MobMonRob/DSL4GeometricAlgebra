@@ -16,6 +16,7 @@ options { tokenVocab=GeomAlgeLexer; }
 
 program
 	:	func
+		EOF // https://stackoverflow.com/a/61402548
 	;
 
 ///////////////////////////////////////////////////////////////////////////
@@ -27,7 +28,6 @@ func
 		(stmt NEWLINE+)*
 		retExpr
 		NEWLINE*
-		EOF
 	;
 
 ///////////////////////////////////////////////////////////////////////////
@@ -185,9 +185,7 @@ literalExpr
 	;
 
 parenExpr
-	:	L_PARENTHESIS
-		expr
-		R_PARENTHESIS
+	:	L_PARENTHESIS expr R_PARENTHESIS
 	;
 
 gradeExtractionExpr

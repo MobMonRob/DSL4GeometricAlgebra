@@ -23,7 +23,10 @@ public class App {
 	}
 
 	private static void invocationTest() throws Exception {
-		String source = "c:=b\nnormalize(a c)";
+		String source = """
+		c := b
+		(a²-b²)
+		""";
 
 		System.out.println("source: " + source);
 

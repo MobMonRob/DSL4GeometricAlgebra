@@ -13,7 +13,7 @@ public class AppTest {
 	// Ausführen mit Rechtsklick auf die Datei -> Run File
 	// Oder Shift + Fn + F6
 	public static void main(String[] args) throws Exception {
-		String program = "(ε₀∧nn+x∧nn∧ε₀∧εᵢ-(x⋅nn)-(x⋅nn x)-0.5(x²+r²)nn))E₃";
+		String program = "(a";
 
 		Context context = Context.create();
 		context.enter();
