@@ -1,6 +1,7 @@
 package de.dhbw.rahmlab.geomalgelang.test;
 
 import de.dhbw.rahmlab.geomalgelang.test.common.gen.WrapperGen;
+import de.orat.math.cga.api.iCGATangentOrRound;
 import org.jogamp.vecmath.Point3d;
 import org.jogamp.vecmath.Vector3d;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -172,6 +173,7 @@ public class AnnotationTest {
 	
     @Test
     void compositionOfPointPairIPNS(){
+		System.out.println("------------- composition of point pair ipns --------------------------");
         Point3d p1 = new Point3d(1d,2d,3d);
         Point3d p2 = new Point3d(2d,1d, 4d);
         Point3d p = new Point3d(p1);
@@ -188,19 +190,24 @@ public class AnnotationTest {
         System.out.println(toString("pp1",pp1, eps));
         // composition via constructor
         double[] pp2 = WrapperGen.INSTANCE.pointpairIPNS2(p, n, r);
-        //System.out.println(toString("pp2",pp2, eps));
+		//TODO pp2 scheint im Vergleich zu pp1 normalisiert zu sein
+        System.out.println(toString("pp2",pp2, eps));
         // test if composition via formula is equal to composition via constructor
-        assertTrue(equals(pp1,pp2, eps));
+		// failed da unterschiedliche magnitude, pp2 scheint normalisiert zu sein
+		// pp1= -0.9999999999999998e012-0.9999999999999998e013-4.999999999999998e01i-0.9999999999999998e023-    1.9999999999999993e02i+2.9999999999999987e03i+3.5e123-3.499999999999999e12i+13.999999999999996e13i+3.499999999999999e23
+        //pp2= -0.6666666666666673e012-0.6666666666666673e013-3.3333333333333357e01i-0.6666666666666673e023-1.3333333333333344e02i+2.0000000000000013e03i+2.3333333333333357e123-2.3333333333333353e12i+9.333333333333341e13i+2.3333333333333353e23
+	
+
+        //assertTrue(equals(pp1,pp2, eps));
         
 		//FIXME
-        // warum stimmt das nicht mit pp1 überein (Vorzeichen)? 
-		// Funktioniert dual nicht? oder ist die ipns Formel falsch
-        // composition of a normalized point pair via opns constructor and dual
+        // stimmt mit pp1 überein
+		// composition of a normalized point pair via opns constructor and dual
         double[] pp3 = WrapperGen.INSTANCE.pointPairIPNS3(p1,p2);
         System.out.println(toString("pp3",pp3, eps));
 		// composition of a normalized point-pair via ipns construtor but intern dual of opns
         double[] pp4 = WrapperGen.INSTANCE.pointPairIPNS4(p1,p2);
-        //System.out.println(toString("pp4",pp4, eps));
+        System.out.println(toString("pp4",pp4, eps));
         // test ob dual in der Formel mit dem programmatischen dual identisch ist
         assertTrue(equals(pp3,pp4, eps));
 		
@@ -208,11 +215,20 @@ public class AnnotationTest {
 		// pp1= -e012-e013-5e01i-e023-2e02i+3e03i+3.5e123-3.5e12i+14e13i+3.5e23
         // pp3= -e012-e013-5e01i-e023-2e02i+3e03i-3.5e123-3.5e12i+14e13i+3.5e23
 		// failed, siehe sign of e123 component
-		//assertTrue(equals(pp1,pp3, eps));
+		assertTrue(equals(pp1,pp3, eps));
 		
+		// following [Hitzer2004] (grade 2, also OPNS)
+		// wenn ich das normalisiere stimmt das mit pp2 überein
 		double[] pp5 = WrapperGen.INSTANCE.pointPairIPNS5(p, 
 			                                              n, r);
+		// pp5= -1.7320508075688754e012-1.7320508075688776e013-8.660254037844382e01i-1.7320508075688763e023-3.4641016151377526e02i+5.19615242270663e03i+6.062177826491061e123-6.062177826491064e12i+24.248711305964257e13i+6.062177826491064e23
+		//FIXME scheint mir anders normiert zu sein
         System.out.println(toString("pp5",pp5, eps));
+		
+		// nach [Dorst2009] scheint aber nicht zu funktionieren
+		double[] pp6 = WrapperGen.INSTANCE.pointPairIPNS6(p, 
+			                                              n, r);
+		System.out.println(toString("pp6",pp6, eps));
     }
    
     @Test
@@ -308,11 +324,17 @@ public class AnnotationTest {
 		Vector3d n = new Vector3d(0,0,1);
 		// cut of sphere and this plane results in an imaginary  point pair with a negative radius
 		// equivalent to a real circle
-		double result_r = WrapperGen.INSTANCE.testImaginaryPointPair(p1, r, n);
+		double result_r = WrapperGen.INSTANCE.testImaginaryPointPairRadius(p1, r, n);
 		System.out.println("r="+String.valueOf(r));
+		
+		iCGATangentOrRound.EuclideanParameters parameters = WrapperGen.INSTANCE.testImaginaryPointPair(p1, r, n);
+		System.out.println("r2_"+String.valueOf(parameters.squaredSize()));
+		System.out.println("------------------------------------------------------------------------");
 	}
     @Test
     void compositionOfPointPairOPNS(){
+		
+		System.out.println("------------- composition of point pair opns --------------------------");
         Point3d p1 = new Point3d(1d,2d,3d);
         Point3d p2 = new Point3d(2d,1d, 4d);
         Point3d p = new Point3d(p1);
@@ -323,13 +345,17 @@ public class AnnotationTest {
         n.sub(p1);
         n.normalize();
         
-		// via constructor
+		// via constructor - normalized? point pair
 		double[] pp1 = WrapperGen.INSTANCE.pointPairOPNS(p1,p2);
-		//System.out.println(toString("pp1_", pp1, eps));
-		// via formula
+		System.out.println(toString("pp1_", pp1, eps));
+		// non-normalized point-pair via formula, based on two round-points-ipns
 		double[] pp2 = WrapperGen.INSTANCE.pointPairOPNS2(p1,p2);
-		//System.out.println(toString("pp2_", pp2, eps));
+		System.out.println(toString("pp2_", pp2, eps));
 		// test if composition via constructor is equals to composition via formula
         assertTrue(equals(pp1,pp2,eps));
+		
+		// Test normalize-function and test if composition produces normalized on unnormalized objects
+		double[] npp2 = WrapperGen.INSTANCE.normalizePointPairOPNS2(p1,p2);
+		System.out.println(toString("npp2_", npp2, eps));
     }
 }

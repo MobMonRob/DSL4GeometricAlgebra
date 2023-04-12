@@ -2,8 +2,8 @@ package de.dhbw.rahmlab.geomalgelang.test.common;
 
 import de.dhbw.rahmlab.geomalgelang.api.annotation.CGA;
 import de.orat.math.cga.api.CGASphereIPNS;
+import de.orat.math.cga.api.iCGATangentOrRound;
 import org.jogamp.vecmath.Point3d;
-import org.jogamp.vecmath.Tuple3d;
 import org.jogamp.vecmath.Vector3d;
 
 public interface Wrapper {
@@ -13,13 +13,13 @@ public interface Wrapper {
     // ipns representation
     
         @CGA("x+0.5x²εᵢ+ε₀")
-		double[] roundPointIPNS(Point3d x_euclidean_vector_opns);
+		double[] roundPointIPNS(Point3d x_euclidean_vector);
         
         @CGA("x")
 		double[] roundPointIPNS2(Point3d x_round_point_ipns);
         
         @CGA("x+0.5(x² - r²)εᵢ+ε₀")
-		double[] realSphereIPNS(Point3d x_euclidean_vector_opns, double r_scalar_opns);
+		double[] realSphereIPNS(Point3d x_euclidean_vector, double r_scalar_opns);
         
         @CGA("x")
 		double[] sphereIPNS2(Point3d x_sphere_ipns_1, double x_sphere_ipns_2); // korrekt
@@ -30,10 +30,10 @@ public interface Wrapper {
         // FIXME Die Variable in der Formel darf nicht "n" genannt werden, da n bereits
         // als Symbol definiert ist. Bessere Fehlermeldung!
         @CGA("nn+(x⋅nn)εᵢ")
-		double[] planeIPNS(Point3d x_euclidean_vector_opns, Vector3d nn_euclidean_vector_opns);
+		double[] planeIPNS(Point3d x_euclidean_vector, Vector3d nn_euclidean_vector);
         
         @CGA("nn+dεᵢ")
-        double[] planeIPNS1(Vector3d nn_euclidean_vector_opns, double d_scalar_opns);
+        double[] planeIPNS1(Vector3d nn_euclidean_vector, double d_scalar_opns);
         
         @CGA("x")
         double[] planeIPNS2(Point3d x_plane_ipns_1, Vector3d x_plane_ipns_2);
@@ -44,7 +44,7 @@ public interface Wrapper {
         // Kugel mit Ebene geschnitten und in eine Summe umgeformt
         // passt nicht mit 2,3 zusammen
         @CGA("ε₀∧nn+(x⋅nn)E₀+x∧nn+((x⋅nn)x-0.5(x²-r²)nn)∧εᵢ")
-        double[] circleIPNS(Point3d x_euclidean_vector_opns, Vector3d nn_euclidean_vector_opns, 
+        double[] circleIPNS(Point3d x_euclidean_vector, Vector3d nn_euclidean_vector, 
 			double r_scalar_opns);
         
         //FIXME
@@ -54,12 +54,12 @@ public interface Wrapper {
         
         // Kugel mit Ebene geschnitten, mit Formel
         @CGA("(ε₀+x+0.5(x²-r²)εᵢ)∧(nn+(x⋅nn)εᵢ)")
-        double[] circleIPNS3(Point3d x_euclidean_vector_opns, Vector3d nn_euclidean_vector_opns, 
+        double[] circleIPNS3(Point3d x_euclidean_vector, Vector3d nn_euclidean_vector, 
 			double r_scalar_opns);
         
         
         @CGA("nn∧x+(0.5x²nn-x (x⋅nn))εᵢ+nnε₀-(x⋅nn)E₀")
-        double[] orientedPointIPNS(Point3d x_euclidean_vector_opns, Vector3d nn_euclidean_vector_opns);
+        double[] orientedPointIPNS(Point3d x_euclidean_vector, Vector3d nn_euclidean_vector);
         
         @CGA("x")
         double[] orientedPointIPNS2(Point3d x_oriented_point_ipns_1, Vector3d x_oriented_point_ipns_2);
@@ -70,7 +70,7 @@ public interface Wrapper {
 		// ipns
 		
         @CGA("(nn+(x∧nn)εᵢ)E₃")
-        double[] lineIPNS(Point3d x_euclidean_vector_opns, Vector3d nn_euclidean_vector_opns);
+        double[] lineIPNS(Point3d x_euclidean_vector, Vector3d nn_euclidean_vector);
         
         @CGA("x")
         double[] lineIPNS2(Point3d x_line_ipns_1, Vector3d x_line_ipns_2);
@@ -93,24 +93,25 @@ public interface Wrapper {
         double[] lineOPNS2(Point3d x_line_opns_1, Point3d x_line_opns_2);
 		
 		@CGA("x1∧x2∧εᵢ+(x1-x2)E₀")
-        double[] lineOPNS3(Point3d x1_euclidean_vector_opns, Point3d x2_euclidean_vector_opns);
+        double[] lineOPNS3(Point3d x1_euclidean_vector, Point3d x2_euclidean_vector);
 		
 		
 		// point-pair
 		
 		// ipns
 		
-		// composition via formula
+		// composition via formula from lua-based code
+		// scheint nicht normalisiert zu sein
         @CGA("(ε₀∧nn+x∧nn∧E₀-(x⋅nn)-((x⋅nn) x-0.5(x²+r²)nn)∧εᵢ)E₃")
-        double[] pointPairIPNS(Point3d x_euclidean_vector_opns, 
-			                   Vector3d nn_euclidean_vector_opns, double r_scalar_opns);
-        //FIXME
+        double[] pointPairIPNS(Point3d x_euclidean_vector, 
+			                   Vector3d nn_euclidean_vector, double r_scalar_opns);
+		
         // pointpair_ipns2 die 2 musste ich hinzufügen, da sonst nicht von pointPairINPNS4 unterscheidbar
-        // und compile-Fehler entstanden.
+        // und compile-Fehler entstanden. Fehler scheint behoben zu sein
 		// composition via constructor
         @CGA("x")
-        double[] pointpairIPNS2(Point3d x_pointpair_ipns2_1, Vector3d x_pointpair_ipns2_2,  
-			double x_pointpair_ipns2_3);
+        double[] pointpairIPNS2(Point3d x_pointpair_ipns_1, Vector3d x_pointpair_ipns_2,  
+			double x_pointpair_ipns_3);
         
 		// composition of a normalized point-pair via opns constructor and dual
         @CGA("x*")
@@ -121,16 +122,29 @@ public interface Wrapper {
         double[] pointPairIPNS4(Point3d x_pointpair_ipns_1, Point3d x_pointpair_ipns_2);
        
 		// following [Hitzer2004] (grade 2, also OPNS)
-		@CGA("(2r (nn∧x+0.5((x²+r²)nn-2(x⋅nn) x)εᵢ+nn ε₀+(x⋅nn) E₀))*")
-        double[] pointPairIPNS5(Point3d x_euclidean_vector_opns, Vector3d nn_euclidean_vector_opns, 
+		// magnitude scheint verdoppelt
+		@CGA("normalize((2r (nn∧x+0.5((x²+r²)nn-2(x⋅nn) x)εᵢ+nn ε₀+(x⋅nn) E₀))*)")
+        double[] pointPairIPNS5(Point3d x_euclidean_vector, Vector3d nn_euclidean_vector, 
 			double r_scalar_opns);
        
+		// following Dorst2009 14.10
+		//FIXME scheint gar nicht zu funktionieren
+		@CGA("(x-0.5r²εᵢ)∧(-x⌋((nn^/E₃)εᵢ))")
+		double[] pointPairIPNS6(Point3d x_euclidean_vector, Vector3d nn_euclidean_vector, 
+			double r_scalar_opns);
+		
+		
+		// flat-point
+		
         @CGA("(x∧εᵢ-1)E₃")
-        double[] flatPointIPNS(Point3d x_euclidean_vector_opns);
+        double[] flatPointIPNS(Point3d x_euclidean_vector);
         
         @CGA("x")
         double[] flatPointIPNS2(Point3d x_flat_point_ipns);
         
+		
+		// scalar
+		
         @CGA("s E")
         double[] scalarIPNS(double s_scalar_opns);
         
@@ -165,29 +179,54 @@ public interface Wrapper {
         double[] planeOPNS2(Point3d x_plane_opns, Vector3d x_plane_opns_2);
         
 		
-		@CGA("p1∧p2")
-        double[] pointPairOPNS2(Point3d p1_round_point_ipns, Point3d p2_round_point_ipns);
-		
         @CGA("x")
         double[] pointPairOPNS(Point3d x_pointpair_opns_1, Point3d x_pointpair_opns_2);
 		
+		@CGA("p1∧p2")
+        double[] pointPairOPNS2(Point3d p1_round_point_ipns, Point3d p2_round_point_ipns);
+		
+		@CGA("normalize(p1∧p2)")
+        double[] normalizePointPairOPNS2(Point3d p1_round_point_ipns, Point3d p2_round_point_ipns);
+		
 		
 		// complex tests
-		// ipns real sphere wedge orthogonal ipns plane ergibt ein imaginary point pair opns
-		// r2 < 0 testen, Berechung nach CGALua via center of point pair
-		//FIXME Normierung mit weight bevor c, r2 bestimmt werden
+		
+		// ipns real sphere wedge orthogonal ipns plane results in an imaginary point pair opns
+		// test r2 < 0, Calculation following CGALua via center of point pair
+		//FIXME Why is normalization needed with weight before c, r2 determination?
 		@CGA(
 		"""
-		s:=x+0.5(x² - r²)εᵢ+ε₀
+		s:=x+0.5(x²-r²)εᵢ+ε₀
 		p:=nn+(x⋅nn)εᵢ
 		PP:=s∧p
         w:=E₀⋅(PP∧εᵢ)E₃
 		PP:= PP/w
-		c:=-nn(E₀⋅(PP∧(ε₀εᵢ)))E₃
-		r2:=-c²+2((E₀⋅(ε₀∧PP))E₃+(c⋅nn)c)nn
+		c:=-nn (E₀⋅(PP∧(ε₀εᵢ)))E₃
+		-c²+2((E₀⋅(ε₀∧PP))E₃+(c⋅nn)c)nn
 		""")
-		double testImaginaryPointPair(Point3d x_euclidean_vector_opns, 
-			                          double r_scalar_opns, Vector3d nn_euclidean_vector_opns);
+		double testImaginaryPointPairRadius(Point3d x_euclidean_vector, 
+			                          double r_scalar_opns, Vector3d nn_euclidean_vector);
+		
+		@CGA(
+		"""
+		s:=x+0.5(x²-r²)εᵢ+ε₀
+		p:=nn+(x⋅nn)εᵢ
+		PP:=s∧p
+        w:=E₀⋅(PP∧εᵢ)E₃
+		PP:= PP/w
+		-nn (E₀⋅(PP∧(ε₀εᵢ)))E₃
+		""")
+		double[] testImaginaryPointPairCenter(Point3d x_euclidean_vector, 
+			                          double r_scalar_opns, Vector3d nn_euclidean_vector);
+		
+		@CGA(
+		"""
+		s:=x+0.5(x²-r²)εᵢ+ε₀
+		p:=nn+(x⋅nn)εᵢ
+		s∧p
+		""")
+		iCGATangentOrRound.EuclideanParameters testImaginaryPointPair(Point3d x_euclidean_vector, 
+			                          double r_scalar_opns, Vector3d nn_euclidean_vector);
 		
 		/*@CGA("""
 			 pp:=(ε₀∧nn+x∧nn∧E₀-(x⋅nn)-((x⋅nn) x-0.5(x²+r²)nn)∧εᵢ)E₃
@@ -196,7 +235,7 @@ public interface Wrapper {
 		     nn:=
 			 c:=
 		     r2:=""")
-		double decomposePointPair(Point3d x_euclidean_vector_opns, 
-			                   Vector3d nn_euclidean_vector_opns, double r_scalar_opns);
+		double decomposePointPair(Point3d x_euclidean_vector, 
+			                   Vector3d nn_euclidean_vector, double r_scalar_opns);
 		*/
 }

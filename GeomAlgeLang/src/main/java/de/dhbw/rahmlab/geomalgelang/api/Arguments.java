@@ -40,13 +40,13 @@ public class Arguments {
 		this.argsMap.put(argName, multivector);
 	}
 
-	public Arguments euclidean_vector_opns(String argName, Tuple3d tuple3d){
+	public Arguments euclidean_vector(String argName, Tuple3d tuple3d){
 		var mvec = new CGAEuclideanVector(tuple3d);
 		this.put(argName, mvec);
 		return this;
 	}
 	
-	public Arguments euclidean_bivector_opns(String argName, Vector3d v1, Vector3d v2){
+	public Arguments euclidean_bivector(String argName, Vector3d v1, Vector3d v2){
 		var mvec = new CGAEuclideanBivector(v1,v2);
 		this.put(argName, mvec);
 		return this;
@@ -76,7 +76,11 @@ public class Arguments {
 		return this;
 	}
 
-	public Arguments pointpair_opns(String argName, Point3d point1, double weight1, Point3d point2, double weight2) {
+	
+	// point-pair
+	
+	public Arguments pointpair_opns(String argName, Point3d point1, double weight1, 
+		                            Point3d point2, double weight2) {
 		var mvec = new CGAPointPairOPNS(point1, weight1, point2, weight2);
 		this.put(argName, mvec);
 		return this;
@@ -89,7 +93,7 @@ public class Arguments {
 	}
 
 	// direction from point-2 to point-1
-    public Arguments pointpair_ipns2(String argName, Point3d location, Vector3d normal, double radius) {
+    public Arguments pointpair_ipns/*2*/(String argName, Point3d location, Vector3d normal, double radius) {
 		//Vector3d normalizedNormal = new Vector3d(normal);
 		//normalizedNormal.normalize();
 		var mvec = new CGAPointPairIPNS(location, normal, radius);
@@ -99,7 +103,8 @@ public class Arguments {
 		
 	// via opns dual
 	public Arguments pointpair_ipns(String argName, Point3d point1, Point3d point2) {
-		var mvec = new CGAPointPairOPNS(new CGARoundPointIPNS(point1), new CGARoundPointIPNS(point2)).dual();
+		var mvec = new CGAPointPairOPNS(new CGARoundPointIPNS(point1), 
+			       new CGARoundPointIPNS(point2)).dual();
 		this.put(argName, mvec);
 		return this;
 	}
@@ -147,9 +152,7 @@ public class Arguments {
 		return this;
 	}
 
-	//WORKAROUND eine 2 im Namen angefügt da sonst von obiger Methode
-	// nicht unterscheidbar
-	public Arguments plane_ipns2(String argName, Vector3d normal, double dist) {
+	public Arguments plane_ipns(String argName, Vector3d normal, double dist) {
 		return this.plane_ipns(argName, normal, dist, 1.0);
 	}
         
