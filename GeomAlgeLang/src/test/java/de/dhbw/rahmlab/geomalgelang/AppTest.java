@@ -13,17 +13,21 @@ public class AppTest {
 	// Ausführen mit Rechtsklick auf die Datei -> Run File
 	// Oder Shift + Fn + F6
 	public static void main(String[] args) throws Exception {
-		String program = "(ε₀∧nn+x∧nn∧ε₀∧εᵢ-(x⋅nn)-(x⋅nn x)-0.5(x²+r²)nn))E₃";
+		//String program = "(a";
+		String program = """
+		a, b
+		""";
 
 		Context context = Context.create();
 		context.enter();
 
+		/*
 		CharStreamSupplier charStream = CharStreamSupplier.from(program);
 		GeomAlgeLangContext geomAlgeLangContext = new GeomAlgeLangContext();
 		ExpressionBaseNode rootNode = ParsingService.parseExpr(charStream, geomAlgeLangContext);
 		String ast = AstStringBuilder.getAstString(rootNode);
 		System.out.println(ast);
-
+		 */
 		GeomAlgeAntlrTestRig.processDiagnostic(program);
 	}
 }

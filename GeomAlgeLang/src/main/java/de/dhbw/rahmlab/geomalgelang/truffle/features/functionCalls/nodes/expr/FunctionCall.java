@@ -46,7 +46,7 @@ public abstract class FunctionCall extends ExpressionBaseNode {
 			// Indirect execution in order to utilize graal optimizations.
 			// invokes FunctionRootNode::execute
 			CgaTruffleBox returnValue = (CgaTruffleBox) library.execute(function, (Object) argumentValues);
-			return returnValue.inner;
+			return returnValue.getInner();
 		} catch (ArityException e) {
 			String message = "Wrong argument count in functionCall of: " + this.functionReference.getName() + "\n" + e.toString();
 			throw new GeomAlgeLangException(message);

@@ -5,7 +5,7 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.interop.TruffleObject;
 import com.oracle.truffle.api.nodes.Node;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.CgaTruffleBox;
-import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.CgaTruffleBoxes;
+import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.CgaListTruffleBox;
 import de.orat.math.cga.api.CGAMultivector;
 import java.lang.reflect.Field;
 
@@ -33,6 +33,6 @@ public class FunctionArgumentReader extends Node {
 		}
 		 */
 
-		return ((CgaTruffleBox) (((Object[]) ((frame.getArguments())[index]))[0])).inner;
+		return ((CgaTruffleBox) (((Object[]) ((frame.getArguments())[index]))[0])).getInner();
 	}
 }

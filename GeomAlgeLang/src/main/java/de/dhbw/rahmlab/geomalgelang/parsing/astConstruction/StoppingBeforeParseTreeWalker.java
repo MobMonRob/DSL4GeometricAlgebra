@@ -8,20 +8,13 @@ import org.antlr.v4.runtime.tree.RuleNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 // Inspired by: https://github.com/antlr/antlr4/blob/8188dc5388dfe9246deb9b6ae507c3693fd55c3f/runtime/Java/src/org/antlr/v4/runtime/tree/ParseTreeWalker.java
-public class StopingBeforeParseTreeWalker {
+public class StoppingBeforeParseTreeWalker {
 
 	protected final ParseTreeListener listener;
-	protected final ParseTree first;
 	protected final Class<? extends RuleNode> stopBefore;
 
-	/**
-	 * @param listener The listener used by the walker to process grammar rules
-	 * @param first The parse tree to be walked on
-	 * @param stopBefore type of first node to not visit
-	 */
-	public StopingBeforeParseTreeWalker(ParseTreeListener listener, ParseTree first, Class<? extends RuleNode> stopBefore) {
+	protected StoppingBeforeParseTreeWalker(ParseTreeListener listener, Class<? extends RuleNode> stopBefore) {
 		this.listener = listener;
-		this.first = first;
 		this.stopBefore = stopBefore;
 	}
 
@@ -30,9 +23,14 @@ public class StopingBeforeParseTreeWalker {
 	 * depth-first search. On each node, {@link ParseTreeWalker#enterRule} is called before recursively
 	 * walking down into child nodes, then {@link ParseTreeWalker#exitRule} is called after the recursive call
 	 * to wind up.
+	 *
+	 * @param listener The listener used by the walker to process grammar rules
+	 * @param first The parse tree to be walked on
+	 * @param stopBefore type of first node to not visit
 	 */
-	public void walk() {
-		walk(this.first);
+	public static void walk(ParseTreeListener listener, ParseTree first, Class<? extends RuleNode> stopBefore) {
+		StoppingBeforeParseTreeWalker walker = new StoppingBeforeParseTreeWalker(listener, stopBefore);
+		walker.walk(first);
 	}
 
 	protected void walk(ParseTree current) {

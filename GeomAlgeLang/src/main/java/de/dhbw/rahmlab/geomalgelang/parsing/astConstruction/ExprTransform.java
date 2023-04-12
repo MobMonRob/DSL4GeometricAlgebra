@@ -33,11 +33,11 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 
 	protected final Deque<ExpressionBaseNode> nodeStack = new ArrayDeque<>();
 	protected final GeomAlgeLangContext geomAlgeLangContext;
-	protected final Set<String> declaredVariables;
+	protected final Set<String> unmodifiableDeclaredVariables;
 
-	protected ExprTransform(GeomAlgeLangContext geomAlgeLangContext, Set<String> declaredVariables) {
+	protected ExprTransform(GeomAlgeLangContext geomAlgeLangContext, Set<String> unmodifiableDeclaredVariables) {
 		this.geomAlgeLangContext = geomAlgeLangContext;
-		this.declaredVariables = declaredVariables;
+		this.unmodifiableDeclaredVariables = unmodifiableDeclaredVariables;
 	}
 
 	public static ExpressionBaseNode generateExprAST(GeomAlgeParser.ExprContext exprCtx, GeomAlgeLangContext geomAlgeLangContext, Set<String> declaredVariables) {
@@ -206,7 +206,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		GlobalVariableReference varRef = GlobalVariableReferenceNodeGen.create(name);
 		nodeStack.push(varRef);
 
-		if (!this.declaredVariables.contains(name)) {
+		if (!this.unmodifiableDeclaredVariables.contains(name)) {
 			// Needed for semantic validation
 			geomAlgeLangContext.globalVariableScope.newVariable(name);
 		}

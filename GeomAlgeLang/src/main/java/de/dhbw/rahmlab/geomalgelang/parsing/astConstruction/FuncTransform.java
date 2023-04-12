@@ -11,6 +11,7 @@ import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.F
 import de.dhbw.rahmlab.geomalgelang.truffle.features.variables.nodes.stmt.GlobalVariableAssignmentNodeGen;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.variables.nodes.stmt.GlobalVariableDeclarationNodeGen;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -19,8 +20,9 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 	protected final GeomAlgeLangContext geomAlgeLangContext;
 	protected final List<StatementBaseNode> stmts = new ArrayList<>();
-	protected ExpressionBaseNode retExpr = null;
+	protected final List<ExpressionBaseNode> retExprs = new ArrayList<>();
 	protected final Set<String> declaredVariables = new HashSet<>();
+	protected final Set<String> unmodifiableDeclaredVariables = Collections.unmodifiableSet(declaredVariables);
 
 	protected FuncTransform(GeomAlgeLangContext geomAlgeLangContext) {
 		this.geomAlgeLangContext = geomAlgeLangContext;
@@ -28,9 +30,10 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 	public static FunctionDefinitionBody generate(GeomAlgeParser.FuncContext ctx, GeomAlgeLangContext geomAlgeLangContext) {
 		FuncTransform transform = new FuncTransform(geomAlgeLangContext);
-		StopingBeforeParseTreeWalker walker = new StopingBeforeParseTreeWalker(transform, ctx, GeomAlgeParser.ExprContext.class);
-		walker.walk();
-		FunctionDefinitionBody function = new FunctionDefinitionBody(transform.stmts.toArray(StatementBaseNode[]::new), transform.retExpr);
+		StoppingBeforeParseTreeWalker.walk(transform, ctx, GeomAlgeParser.ExprContext.class);
+		FunctionDefinitionBody function = new FunctionDefinitionBody(
+			transform.stmts.toArray(StatementBaseNode[]::new),
+			transform.retExprs.toArray(ExpressionBaseNode[]::new));
 		return function;
 	}
 
@@ -45,14 +48,14 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 			this.stmts.add(declaration);
 			this.declaredVariables.add(name);
 		}
-
-		ExpressionBaseNode expr = ExprTransform.generateExprAST(ctx.exprContext, this.geomAlgeLangContext, this.declaredVariables);
+		ExpressionBaseNode expr = ExprTransform.generateExprAST(ctx.exprContext, this.geomAlgeLangContext, this.unmodifiableDeclaredVariables);
 		GlobalVariableAssignment assignment = GlobalVariableAssignmentNodeGen.create(expr, name);
 		this.stmts.add(assignment);
 	}
 
 	@Override
 	public void enterRetExprStmt(GeomAlgeParser.RetExprStmtContext ctx) {
-		this.retExpr = ExprTransform.generateExprAST(ctx.exprContext, this.geomAlgeLangContext, this.declaredVariables);
+		ExpressionBaseNode retExpr = ExprTransform.generateExprAST(ctx.exprContext, this.geomAlgeLangContext, this.declaredVariables);
+		this.retExprs.add(retExpr);
 	}
 }

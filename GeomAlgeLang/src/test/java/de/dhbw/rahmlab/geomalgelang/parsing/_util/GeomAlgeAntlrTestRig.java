@@ -20,7 +20,7 @@ public class GeomAlgeAntlrTestRig {
 		GeomAlgeLexer lexer = ParsingService.getLexer(charStream);
 		AntlrTestRig antlrTestRig = new AntlrTestRig();
 
-		GeomAlgeParser parser = ParsingService.getDiagnosticParser(lexer);
+		GeomAlgeParser parser = ParsingService.getAntlrTestRigParser(lexer);
 		if (diagnostic) {
 			antlrTestRig.setDiagnostics(true);
 		}

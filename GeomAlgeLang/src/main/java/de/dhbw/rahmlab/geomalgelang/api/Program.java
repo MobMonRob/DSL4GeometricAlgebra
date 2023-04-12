@@ -1,7 +1,10 @@
 package de.dhbw.rahmlab.geomalgelang.api;
 
+import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.CgaListTruffleBox;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.CgaTruffleBox;
 import de.orat.math.cga.api.CGAMultivector;
+import java.util.ArrayList;
+import java.util.List;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Engine;
 import org.graalvm.polyglot.PolyglotException;
@@ -70,18 +73,18 @@ public class Program implements AutoCloseable {
 			bindings.putMember(name, new CgaTruffleBox(value));
 		});
 
-		CGAMultivector answer;
+		List<CGAMultivector> answers;
 
 		try {
 			// later: execute with arguments XOR getMember "main" and execute it with arguments (instead of bindings.putMember)
 			Value result = this.program.execute();
-			CgaTruffleBox box = result.as(CgaTruffleBox.class);
-			answer = box.inner;
+			CgaListTruffleBox box = result.as(CgaListTruffleBox.class);
+			answers = box.getInner();
 		} finally {
 			// Will be executed regardless if an exception is thrown or not
 			// context.close();
 		}
 
-		return new Result(answer);
+		return new Result(answers);
 	}
 }
