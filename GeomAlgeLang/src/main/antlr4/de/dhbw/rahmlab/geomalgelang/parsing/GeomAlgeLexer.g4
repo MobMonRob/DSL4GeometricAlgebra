@@ -63,13 +63,13 @@ UNION
 // right_contraction
 // \u230B
 R_FLOOR
-	: '⌋'
+	: '⌊'
 	;
 
 // left_contraction
 // \u230A
 L_FLOOR
-	: '⌊'
+	: '⌋'
 	;
 
 // regressive_product

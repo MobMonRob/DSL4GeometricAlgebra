@@ -127,10 +127,11 @@ public interface Wrapper {
         double[] pointPairIPNS5(Point3d x_euclidean_vector, Vector3d nn_euclidean_vector, 
 			double r_scalar_opns);
        
-		// following Dorst2009 14.10
+		// following [Dorst2009] 14.10
 		//FIXME scheint gar nicht zu funktionieren
-		@CGA("(x-0.5r²εᵢ)∧(-x⌋((nn^/E₃)εᵢ))")
-		double[] pointPairIPNS6(Point3d x_euclidean_vector, Vector3d nn_euclidean_vector, 
+		// aber in Form der create()-Methode klappt es - worin besteht der Unterschied?
+		@CGA("(p-0.5r²εᵢ)∧(-p⌋((nn^/E₃)εᵢ))")
+		double[] pointPairIPNS6(Point3d p_round_point_ipns, Vector3d nn_euclidean_vector, 
 			double r_scalar_opns);
 		
 		

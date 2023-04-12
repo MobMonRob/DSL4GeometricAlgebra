@@ -183,6 +183,7 @@ public class AnnotationTest {
 		// n from p2 to p1
         Vector3d n = new Vector3d(p1);
         n.sub(p2);
+		n.normalize(); // macht einen Unterschied bei pp1 und pp2
 		
 		// composition via formula
 		double[] pp1 = WrapperGen.INSTANCE.pointPairIPNS(p,
@@ -201,7 +202,7 @@ public class AnnotationTest {
         //assertTrue(equals(pp1,pp2, eps));
         
 		//FIXME
-        // stimmt mit pp1 überein
+        // stimmt mit pp1 überein bis auf das Vorzeichen von e123
 		// composition of a normalized point pair via opns constructor and dual
         double[] pp3 = WrapperGen.INSTANCE.pointPairIPNS3(p1,p2);
         System.out.println(toString("pp3",pp3, eps));
