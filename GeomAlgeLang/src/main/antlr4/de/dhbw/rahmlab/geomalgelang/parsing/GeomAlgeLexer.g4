@@ -6,7 +6,7 @@ lexer grammar GeomAlgeLexer;
 /*
 
 - The name of the corresponding function above the symbol name is the same as in ICGAMultivector_Processor.
-- The name of a symbol is essentially the same as in unicode.
+- The name of a symbol is usually the same as in unicode. Exceptions are for example the contraction operator symbols.
 - The sequence of symbol definitions is the same as in the README.md.
 
 */
@@ -61,14 +61,14 @@ UNION
 	;
 
 // right_contraction
-// \u230B
-R_FLOOR
+// \u230A (LEFT FLOOR)
+R_CONTRACTION
 	: '⌊'
 	;
 
 // left_contraction
-// \u230A
-L_FLOOR
+// \u230B (RIGHT FLOOR)
+L_CONTRACTION
 	: '⌋'
 	;
 
