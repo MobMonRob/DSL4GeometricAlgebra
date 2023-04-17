@@ -115,12 +115,13 @@ public class AnnotationTest {
     
     @Test
     void compositionOfOrientedPoint(){
+		System.out.println("------------------------ composition of oriented points ------------------");
         Point3d p = new Point3d(1d,2d,3d);
         Vector3d n = new Vector3d(0d,0d,1d);
         double[] p1 = WrapperGen.INSTANCE.orientedPointIPNS(p,n);
-        //System.out.println(toString("p1",p1,eps));
+        System.out.println(toString("p1",p1,eps));
         double[] p2 = WrapperGen.INSTANCE.orientedPointIPNS2(p,n);
-        //System.out.println(toString("p2",p2,eps));
+        System.out.println(toString("p2",p2,eps));
         assertTrue(equals(p1,p2, eps));
     }
     
@@ -191,18 +192,13 @@ public class AnnotationTest {
         System.out.println(toString("pp1",pp1, eps));
         // composition via constructor
         double[] pp2 = WrapperGen.INSTANCE.pointpairIPNS2(p, n, r);
-		//TODO pp2 scheint im Vergleich zu pp1 normalisiert zu sein
-        System.out.println(toString("pp2",pp2, eps));
+		System.out.println(toString("pp2",pp2, eps));
         // test if composition via formula is equal to composition via constructor
-		// failed da unterschiedliche magnitude, pp2 scheint normalisiert zu sein
-		// pp1= -0.9999999999999998e012-0.9999999999999998e013-4.999999999999998e01i-0.9999999999999998e023-    1.9999999999999993e02i+2.9999999999999987e03i+3.5e123-3.499999999999999e12i+13.999999999999996e13i+3.499999999999999e23
-        //pp2= -0.6666666666666673e012-0.6666666666666673e013-3.3333333333333357e01i-0.6666666666666673e023-1.3333333333333344e02i+2.0000000000000013e03i+2.3333333333333357e123-2.3333333333333353e12i+9.333333333333341e13i+2.3333333333333353e23
-	
-
-        //assertTrue(equals(pp1,pp2, eps));
+		//FIXME e12i, e13i und e23 sind verschieden
+		//assertTrue(equals(pp1,pp2, eps));
         
 		//FIXME
-        // stimmt mit pp1 überein bis auf das Vorzeichen von e123
+        // stimmt mit pp1 überein bis auf die magnitude/weight
 		// composition of a normalized point pair via opns constructor and dual
         double[] pp3 = WrapperGen.INSTANCE.pointPairIPNS3(p1,p2);
         System.out.println(toString("pp3",pp3, eps));
@@ -213,23 +209,23 @@ public class AnnotationTest {
         assertTrue(equals(pp3,pp4, eps));
 		
 		// test direct with dual composition
-		// pp1= -e012-e013-5e01i-e023-2e02i+3e03i+3.5e123-3.5e12i+14e13i+3.5e23
-        // pp3= -e012-e013-5e01i-e023-2e02i+3e03i-3.5e123-3.5e12i+14e13i+3.5e23
-		// failed, siehe sign of e123 component
+		// failed da magnitude/weight verschieden
 		//assertTrue(equals(pp1,pp3, eps));
 		
-		// following [Hitzer2004] (grade 2, also OPNS)
-		// wenn ich das normalisiere stimmt das mit pp2 überein
+		// following [Hitzer2004] (grade 2, also OPNS und via dual nach ipns)
+		// wenn ich das normalisiere stimmt das mit pp2 überein, leider nur bis auf 
+		// ein Vorzeichen von e123
+		//FIXME
 		double[] pp5 = WrapperGen.INSTANCE.pointPairIPNS5(p, 
 			                                              n, r);
-		// pp5= -1.7320508075688754e012-1.7320508075688776e013-8.660254037844382e01i-1.7320508075688763e023-3.4641016151377526e02i+5.19615242270663e03i+6.062177826491061e123-6.062177826491064e12i+24.248711305964257e13i+6.062177826491064e23
-		//FIXME scheint mir anders normiert zu sein
+		//FIXME scheint mir auch anders normiert zu sein
         System.out.println(toString("pp5",pp5, eps));
 		
-		// nach [Dorst2009] scheint aber nicht zu funktionieren
+		// nach [Dorst2009] identisch zu pp1,2
 		double[] pp6 = WrapperGen.INSTANCE.pointPairIPNS6(p, 
 			                                              n, r);
 		System.out.println(toString("pp6",pp6, eps));
+		assertTrue(equals(pp1,pp6, eps));
     }
    
     @Test
@@ -358,5 +354,19 @@ public class AnnotationTest {
 		// Test normalize-function and test if composition produces normalized on unnormalized objects
 		double[] npp2 = WrapperGen.INSTANCE.normalizePointPairOPNS2(p1,p2);
 		System.out.println(toString("npp2_", npp2, eps));
+		
+		double[] pp3 = WrapperGen.INSTANCE.pointPairOPNS3(p, n, r);
+		System.out.println(toString("pp3_", pp3, eps));
     }
+	
+	@Test
+	void atan2(){
+		System.out.println("--------------------- atan2 ----------------------------");
+		double x = 1;
+		double y = 1;
+		double atan2 = WrapperGen.INSTANCE.atan2(x,y);
+		// da sollte 45Grad rauskommen
+		System.out.println("atan2(1,1)="+String.valueOf(atan2*180/Math.PI));
+		//TODO assert
+	}
 }
