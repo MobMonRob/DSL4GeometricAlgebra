@@ -24,7 +24,6 @@ public abstract class FunctionCall extends ExpressionBaseNode {
 	private final ExpressionBaseNode[] arguments;
 
 	protected FunctionCall(FunctionReferenceBaseNode functionReference, ExpressionBaseNode[] arguments) {
-		super();
 		this.functionReference = functionReference;
 		this.arguments = arguments;
 	}
