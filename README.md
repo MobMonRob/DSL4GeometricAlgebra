@@ -75,6 +75,8 @@ Exceptions from the precedence rules:
 
 ### 2-ary operators
 #### Base 2-ary operators
+Hint: The Unicode and Latex name for the symbol used for left contraction is "RIGHT FLOOR" and for right contraction is "LEFT FLOOR". Please be cautious to this detail when writing Latex or programming tools which work with the language.
+
 | precedence | symbol   | latex   | unicode | name | implementation | hints |
 | :--------: | :------: | ------- | ------- | ---- | -------------- | ----- |
 | 4          |          |         | \u0020  | geometric product | multivector1.gp(multivector2) | Zero or more space characters are interpreted as the operator. |

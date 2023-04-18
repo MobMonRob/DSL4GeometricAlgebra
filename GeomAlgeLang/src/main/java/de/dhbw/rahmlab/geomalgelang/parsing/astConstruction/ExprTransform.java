@@ -79,9 +79,9 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 				MeetNodeGen.create(left, right);
 			case GeomAlgeParser.UNION ->
 				JoinNodeGen.create(left, right);
-			case GeomAlgeParser.R_FLOOR ->
+			case GeomAlgeParser.R_CONTRACTION ->
 				RightContractionNodeGen.create(left, right);
-			case GeomAlgeParser.L_FLOOR ->
+			case GeomAlgeParser.L_CONTRACTION ->
 				LeftContractionNodeGen.create(left, right);
 			case GeomAlgeParser.LOGICAL_OR ->
 				RegressiveProductNodeGen.create(left, right);
