@@ -1,7 +1,6 @@
 package de.dhbw.rahmlab.geomalgelang.test.common;
 
 import de.dhbw.rahmlab.geomalgelang.api.annotation.CGA;
-import de.orat.math.cga.api.CGASphereIPNS;
 import de.orat.math.cga.api.iCGATangentOrRound;
 import org.jogamp.vecmath.Point3d;
 import org.jogamp.vecmath.Vector3d;
@@ -152,10 +151,9 @@ public interface Wrapper {
         @CGA("x")
         double[] scalarIPNS2(double x_scalar_ipns);
         
-		@CGA("atan2(x,y)")
-		double atan2(double x_scalar_ipns, double y_scalar_ipns);
+		@CGA("atan2(y,x)")
+		double atan2(double y_scalar_opns, double x_scalar_opns);
 		
-        
     // opns respresentation
         
         @CGA("x")
@@ -248,105 +246,108 @@ public interface Wrapper {
 			                   Vector3d nn_euclidean_vector, double r_scalar_opns);
 		*/
 		
-		// Kommentarzeilen gibts noch nicht, daher folgende entfernt:
-		
+		// Kommentarzeilen gibts noch nicht, daher im folgenden zu entfernen
+		//TODO
 		@CGA(
 			"""
 			// dh parameters UR5e
-   			a2 := -0.425;
-   			a3 := -0.3922;
-   			d1 := 0.1625;
-   			d4 := 0.1333;
-   			d5 := 0.0997;
-   			d6 := 0.0996;
+   			a2 := -0.425
+   			a3 := -0.3922
+   			d1 := 0.1625
+   			d4 := 0.1333
+   			d5 := 0.0997
+   			d6 := 0.0996
    
 			// position of the end-effector and joint 5
    			Pe := p+0.5p²εᵢ+ε₀
-            P5 :=
-			?P_5 = createPoint(p_x - d6 * ae_1, p_y - d6 * ae_2, p_z - d6 * ae_3);
+   
+            P5e := p-d6 ae
+            P5 := P5e+0.5P5e²εᵢ+ε₀
+			//P5 = createPoint(px - d6 * ae1, py - d6 * ae2, pz - d6 * ae3)
 
 			// sphere around P5
    			Sc := P5-0.5d4²εᵢ
    
 			// sphere around the origin
-   			K0 := ε₀+ (Sc . ε₀)εᵢ
-			// intersection of S_c and K_0;
-			?C_5k = S_c ^ K_0;
-			// intersection of C_5k and the horizontal plane through P_5
-			?Q_c = Dual(C_5k . (P_5 ^ e1 ^ e2 ^ einf));
-			// point P_c with an offset d4 from P_5
-			?P_c = ExtractFirstPoint(Q_c);
+   			K0 := ε₀+(Sc⋅ε₀)εᵢ
+			// intersection of Sc and K0
+   			C5k := Sc^K0
+			// intersection of C5k and the horizontal plane through P5
+   			Qc := (C5k⋅(P5^ε₁^ε₂^εᵢ))*
+			// point Pc with an offset d4 from P5
+   			Pc := ExtractFirstPoint(Qc)
 			// plane through joints 1, 2, 3 and 4
-			?PI_c = Dual(e0 ^ e3 ^ P_c ^ einf);
-			// finding P_3 and P_4
-			// plane parallel to PI_c that contains P_4 and P_5
-			?PI_c_parallel = PI_c + (P_5 . PI_c) * einf; // eq. 47
-			?PI_56_orthogonal = Dual(Dual(P_5 ^ P_e) ^ einf); // eq. 48 l.1
-			?n_56_orthogonal = -((Dual(PI_56_orthogonal) . e0) . einf) / abs((Dual(PI_56_orthogonal) . e0) . einf); // eq. 48, l. 2
-			?PI_c_orthogonal = Dual(P_5 ^ n_56_orthogonal ^ einf);
-			?L_45 = PI_c_parallel ^ PI_c_orthogonal;
-			?S_5 = P_5 - (1 / 2 * d5 * d5 * einf);
-			?Q_4 = Dual(L_45 . Dual(S_5));
-			?P_4 = ExtractFirstPoint(Q_4);
+   			PIc := (ε₀^ε₃^Pc^εᵢ)*
+			// finding P3 and P4
+			// plane parallel to PIc that contains P4 and P5
+   			PIc_parallel := PIc + (P5⋅PIc)εᵢ // eq. 47
+   			PI56_orthogonal := ((P5^Pe)*^εᵢ)* // eq. 48 l.1
+   			n56_orthogonal  := -((PI56_orthogonal*⋅ε₀)⋅εᵢ)/abs((PI56_orthogonal*⋅ε₀)⋅εᵢ) // eq. 48, l. 2
+   			PIc_orthogonal := (P5^n56_orthogonal^εᵢ)*
+   			L45 := PIc_parallel^PIc_orthogonal
+   			S5  := P5-(0.5d5²εᵢ)
+			Q4  := (L45⋅S5*)*
+			P4  := ExtractFirstPoint(Q4)
 
 			// point P3
-			?S_4 = P_4 + (1 / 2 * d4 * d4 * einf);
-			?L_34 = Dual(P_4 ^ PI_c ^ einf);
-			?Q_3 = Dual(S_4 . Dual(L_34));
-			?P_3 = ExtractFirstPoint(Q_3);
+   			S4  := P4 + (0.5d4²εᵢ)
+   			L34 := (P4^PIc^εᵢ)*
+   			Q3  := (S4⋅L34*)*
+   			P3  := ExtractFirstPoint(Q3)
 
 			// finding P1 and P2
-			?P_1 = createPoint(0, 0, d1);
-			?S_1 = P_1 - (1 / 2 * a2 * a2 * einf);
-			?S_3 = P_3 + (1 / 2 * a3 * a3 * einf);
-			?C_2 = S_1 ^ S_3;
-			?Q_2 = Dual(Dual(C_2) . PI_c);
-			?P_2 = ExtractFirstPoint(Q_2);
+   			P1 := createPoint(0, 0, d1)
+   			S1 := P1-0.5a2²εᵢ
+   			S3 := P3+0.5a3²εᵢ
+   			C2 := S1^S3
+   			Q2 := (C2*⋅PIc)*
+   			P2 := ExtractFirstPoint(Q2)
 
 
 			// finding the joint angles
 
-			?L_01 = Dual(e0 ^ e3 ^ einf);
-			?L_12 = Dual(P_1 ^ P_2 ^ einf);
-			?L_23 = Dual(P_2 ^ P_3 ^ einf);
+   			L01 := (ε₀^ε₃^εᵢ)*
+   			L12 := (P1^P2^εᵢ)*
+   			L23 := (P2^P3^εᵢ)*
 
-			?P_0 = createPoint(0,0,0);
+   			P0 := ε₀ //createPoint(0,0,0);
 
-			?a_1 = e2;
-			?b_1 = -(PI_c);
-			?N_1 = e1 ^ e2;
-			?x1 = (a_1 ^ b_1) / N_1;
-			?y1 = a_1 . b_1;
+   			a1 := ε₂
+   			b1 := -PIc
+   			N1 := ε₁^ε₂
+   			x1 := (a1^b1)/N1
+   			y1 := a1⋅b1;
 
-			?a_2 = (Dual(L_01) . e0) . einf;
-			?b_2 = (Dual(L_12) . e0) . einf;
-			?N_2 = -(Dual(PI_c) . e0) . einf;
-			?x2 = (a_2 ^ b_2) / N_2;
-			?y2 = a_2 . b_2;
+   			a2 := (L01*⋅ε₀)⋅εᵢ
+   			b2 := (L12*⋅ε₀)⋅εᵢ
+   			N2 := -(PIc*⋅ε₀)⋅εᵢ
+   			x2 := (a2^b2)/N2
+   			y2 := a2⋅b2
 
-			?a_3 = (Dual(L_12) . e0) . einf;
-			?b_3 = (Dual(L_23) . e0) . einf;
-			?N_3 = -(Dual(PI_c) . e0) . einf;
-			?x3 = (a_3 ^ b_3) / N_3;
-			?y3 = a_3 . b_3;
+   			a3 := (L12*⋅ε₀)⋅εᵢ
+   			b3 := (L23*⋅ε₀)⋅εᵢ
+   			N3 := -(PIc*⋅ε₀)⋅εᵢ
+   			x3 := (a3^b3)/N3
+   			y3 := a3⋅b3
 
-			?a_4 = (Dual(L_23) . e0) . einf;
-			?b_4 = (Dual(L_45) . e0) . einf;
-			?N_4 = -(Dual(PI_c) . e0) . einf;
-			?x4 = (a_4 ^ b_4) / N_4;
-			?y4 = a_4 . b_4;
+   			a4 := (L23*⋅ε₀)⋅εᵢ
+   			b4 := (L45*⋅ε₀)⋅εᵢ
+   			N4 := -(PIc*⋅ε₀)⋅εᵢ
+   			x4 := (a4^b4)/N4
+   			y4 := a4⋅b4
 
-			?a_5 = P_c;
-			?b_5 = -(ae_1 * e1 + ae_2 * e2 + ae_3 * e3);
-			?N_5 = (-L_45 ^ e0) . einf;
-			?x5 = (a_5 ^ b_5) / N_5;
-			?y5 = a_5 . b_5;
+   			a5 := Pc;
+   			b5 := -ae
+   			N5 := (-L45^ε₀)⋅εᵢ
+   			x5 := (a5∧b5)/N5
+   			y5 := a5⋅b5
 
-			?a_6 = (Dual(L_45) . e0) . einf;
-			?b_6 = -(se_1 * e1 + se_2 * e2 + se_3 * e3);
-			?N_6 = -(ae_1 * e1 + ae_2 * e2 + ae_3 * e3) * (e3 ^ e2 ^ e1);
-			?x6 = (a_6 ^ b_6) / N_6;
-			?y6 = a_6 . b_6;
+   			a6 := (L45*⋅ε₀)⋅εᵢ
+   			b6 := -se
+   			N6 := -ae (ε₃^ε₂^ε₁)
+   			x6 := (a6∧b6)/N6
+   			y6 := a6⋅b6
+            atan2(y1,x1), atan2(y2,x2), atan2(y3,x3), atan2(y4, x4), atan2(y5, y5), atan2(y6,x6)
 		""")
-		public double[] ik(Point3d p_euclidean_vector, Vector3d a_euclidean_vector);
+		public double[] ik(Point3d p_euclidean_vector, Vector3d ae_euclidean_vector, Vector3d se_euclidean_vector);
 }

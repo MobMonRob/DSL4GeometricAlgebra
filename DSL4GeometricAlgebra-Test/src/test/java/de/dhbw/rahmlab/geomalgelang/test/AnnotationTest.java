@@ -362,11 +362,14 @@ public class AnnotationTest {
 	@Test
 	void atan2(){
 		System.out.println("--------------------- atan2 ----------------------------");
+		//TODO
+		// Beispiel ändern auf x!=y um sicher zu sein, dass Argumente in der Implementierung
+		// nicht vertauscht sind.
 		double x = 1;
 		double y = 1;
 		double atan2 = WrapperGen.INSTANCE.atan2(x,y);
-		// da sollte 45Grad rauskommen
-		System.out.println("atan2(1,1)="+String.valueOf(atan2*180/Math.PI));
-		//TODO assert
+		atan2 *=180/Math.PI;
+		System.out.println("atan2(1,1)="+String.valueOf(atan2));
+		assertTrue(Double.compare(atan2, 45d) == 0d);
 	}
 }
