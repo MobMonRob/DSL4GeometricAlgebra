@@ -1,7 +1,10 @@
-package de.dhbw.rahmlab.geomalgelang.annotation.processing;
+package de.dhbw.rahmlab.geomalgelang.annotation.processing.common;
 
 import com.google.auto.service.AutoService;
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.CGAAnnotatedMethod;
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.CGAMethodCodeGenerator;
 import de.dhbw.rahmlab.geomalgelang.api.annotation.CGA;
+import de.dhbw.rahmlab.geomalgelang.api.annotation.CGAPATH;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,7 +32,7 @@ public class CGAProcessor extends AbstractProcessor {
 
 	private static CGAMethodCodeGenerator.Factory methodCodeGeneratorFactory = null;
 
-	protected static final Set<String> supportedAnnotationTypes = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(new String[]{CGA.class.getCanonicalName()})));
+	protected static final Set<String> supportedAnnotationTypes = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(new String[]{CGA.class.getCanonicalName(), CGAPATH.class.getCanonicalName()})));
 
 	@Override
 	public Set<String> getSupportedAnnotationTypes() {

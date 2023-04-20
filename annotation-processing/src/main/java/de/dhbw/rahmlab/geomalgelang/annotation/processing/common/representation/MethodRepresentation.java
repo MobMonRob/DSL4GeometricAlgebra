@@ -1,5 +1,6 @@
-package de.dhbw.rahmlab.geomalgelang.annotation.processing;
+package de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation;
 
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.ParameterRepresentation;
 import java.util.ArrayList;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;

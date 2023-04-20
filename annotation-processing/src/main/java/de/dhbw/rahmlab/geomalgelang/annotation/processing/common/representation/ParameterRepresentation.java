@@ -1,4 +1,4 @@
-package de.dhbw.rahmlab.geomalgelang.annotation.processing;
+package de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation;
 
 import javax.lang.model.element.VariableElement;
 

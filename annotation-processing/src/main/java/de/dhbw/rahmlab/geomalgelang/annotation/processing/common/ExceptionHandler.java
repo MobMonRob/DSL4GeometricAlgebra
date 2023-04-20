@@ -1,4 +1,4 @@
-package de.dhbw.rahmlab.geomalgelang.annotation.processing;
+package de.dhbw.rahmlab.geomalgelang.annotation.processing.common;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

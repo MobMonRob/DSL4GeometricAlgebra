@@ -1,5 +1,10 @@
 package de.dhbw.rahmlab.geomalgelang.annotation.processing;
 
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.ClassRepresentation;
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.MethodRepresentation;
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.OverloadableMethodRepresentation;
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.ParameterRepresentation;
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.AnnotationException;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;

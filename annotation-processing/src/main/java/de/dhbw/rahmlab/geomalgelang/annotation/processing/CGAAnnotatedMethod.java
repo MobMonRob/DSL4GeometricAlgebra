@@ -1,5 +1,7 @@
 package de.dhbw.rahmlab.geomalgelang.annotation.processing;
 
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.MethodRepresentation;
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.AnnotationException;
 import de.dhbw.rahmlab.geomalgelang.api.annotation.CGA;
 import java.util.Set;
 import javax.lang.model.element.Element;
