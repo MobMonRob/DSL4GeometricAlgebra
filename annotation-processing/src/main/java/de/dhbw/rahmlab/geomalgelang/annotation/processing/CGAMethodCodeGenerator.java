@@ -9,7 +9,10 @@ import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.AnnotationExcep
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.CgaVarNameParameterGroupFactory;
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.CgaVarNameParameterGroupFactory.CgaVarNameParameterGroup;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.DecomposedIdentifierParameterRepresentation;
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.MethodInvocationRepresentation;
 import de.dhbw.rahmlab.geomalgelang.api.Arguments;
 import de.dhbw.rahmlab.geomalgelang.api.Result;
 import java.util.ArrayList;
@@ -105,7 +108,7 @@ public class CGAMethodCodeGenerator {
 	}
 
 	public MethodSpec generateCode() throws AnnotationException {
-		List<MethodInvocationData> argumentMethodInvocations = computeArgumentsMethodInvocations();
+		List<MethodInvocationRepresentation> argumentMethodInvocations = computeArgumentsMethodInvocations();
 		List<CodeBlock> argumentsMethodInvocationCode = createArgumentsMethodInvocationCode(argumentMethodInvocations);
 
 		CodeBlock.Builder tryWithBodyBuilder = CodeBlock.builder()
@@ -162,7 +165,7 @@ public class CGAMethodCodeGenerator {
 		return identifier;
 	}
 
-	protected List<CodeBlock> createArgumentsMethodInvocationCode(List<MethodInvocationData> methodInvocations) {
+	protected List<CodeBlock> createArgumentsMethodInvocationCode(List<MethodInvocationRepresentation> methodInvocations) {
 		List<CodeBlock> cgaConstructionMethodInvocations = new ArrayList<>(methodInvocations.size());
 		for (var methodInvocation : methodInvocations) {
 			CodeBlock.Builder cgaConstructionMethodInvocation = CodeBlock.builder();
@@ -177,24 +180,21 @@ public class CGAMethodCodeGenerator {
 		return cgaConstructionMethodInvocations;
 	}
 
-	protected List<MethodInvocationData> computeArgumentsMethodInvocations() throws AnnotationException {
-		LinkedHashMap<String, List<DecomposedIdentifierParameterRepresentation>> cgaVarNameGroupedDecomposedParameters = groupDecomposedParameters(this.annotatedMethod.decomposedParameters);
-		List<MethodInvocationData> argumentsMethodInvocations = matchMethods(cgaVarNameGroupedDecomposedParameters);
+	protected List<MethodInvocationRepresentation> computeArgumentsMethodInvocations() throws AnnotationException {
+		List<CgaVarNameParameterGroup> cgaVarNameParameterGroups = CgaVarNameParameterGroupFactory.computeFrom(this.annotatedMethod.decomposedParameters);
+
+		List<MethodInvocationRepresentation> argumentsMethodInvocations = matchMethods(cgaVarNameParameterGroups);
 		return argumentsMethodInvocations;
 	}
 
-	protected record MethodInvocationData(MethodRepresentation method, String cgaVarName, List<String> arguments) {
-
-	}
-
-	protected List<MethodInvocationData> matchMethods(Map<String, List<DecomposedIdentifierParameterRepresentation>> cgaVarNameGroupedDecomposedParameters) throws AnnotationException {
-		ArrayList<MethodInvocationData> methodInvocations = new ArrayList<>(cgaVarNameGroupedDecomposedParameters.size());
-		for (var cgaVarNameGroupedDecomposedParameter : cgaVarNameGroupedDecomposedParameters.entrySet()) {
-			String cgaVarName = cgaVarNameGroupedDecomposedParameter.getKey();
-			List<DecomposedIdentifierParameterRepresentation> parameters = cgaVarNameGroupedDecomposedParameter.getValue();
+	protected List<MethodInvocationRepresentation> matchMethods(List<CgaVarNameParameterGroup> cgaVarNameParameterGroups) throws AnnotationException {
+		ArrayList<MethodInvocationRepresentation> methodInvocations = new ArrayList<>(cgaVarNameParameterGroups.size());
+		for (CgaVarNameParameterGroup cgaVarNameParameterGroup : cgaVarNameParameterGroups) {
+			String cgaVarName = cgaVarNameParameterGroup.cgaVarName;
+			List<DecomposedIdentifierParameterRepresentation> parameters = cgaVarNameParameterGroup.parameters;
 			List<String> arguments = parameters.stream().map(a -> a.originParameter.identifier()).toList();
 			MethodRepresentation method = matchMethodFrom(parameters, cgaVarName);
-			MethodInvocationData argumentsMethodInvocationData = new MethodInvocationData(method, cgaVarName, arguments);
+			MethodInvocationRepresentation argumentsMethodInvocationData = new MethodInvocationRepresentation(method, cgaVarName, arguments);
 			methodInvocations.add(argumentsMethodInvocationData);
 		}
 		return methodInvocations;
@@ -289,10 +289,4 @@ public class CGAMethodCodeGenerator {
 		return StreamSupport.stream(((Iterable<T>) () -> iterator).spliterator(), false);
 	}
 
-	protected LinkedHashMap<String, List<DecomposedIdentifierParameterRepresentation>> groupDecomposedParameters(List<DecomposedIdentifierParameterRepresentation> decomposedParameters) throws AnnotationException {
-		// Group cgaVarNames.
-		LinkedHashMap<String, List<DecomposedIdentifierParameterRepresentation>> cgaVarNameGroupedDecomposedParameters = decomposedParameters.stream().collect(Collectors.groupingBy(dp -> dp.cgaVarName, LinkedHashMap::new, Collectors.toList()));
-
-		return cgaVarNameGroupedDecomposedParameters;
-	}
 }
