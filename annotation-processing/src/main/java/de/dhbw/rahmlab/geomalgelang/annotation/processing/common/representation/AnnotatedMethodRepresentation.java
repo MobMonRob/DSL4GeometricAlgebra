@@ -17,7 +17,7 @@ public class AnnotatedMethodRepresentation {
 	public final ExecutableElement methodElement; // Redundant to methodRepresentation.element
 	public final String enclosingInterfaceQualifiedName;
 	public final MethodRepresentation methodRepresentation;
-	public final List<DecomposedParameterRepresentation> decomposedParameters;
+	public final List<DecomposedIdentifierParameterRepresentation> decomposedParameters;
 
 	public AnnotatedMethodRepresentation(ExecutableElement methodElement) throws AnnotationException {
 		this.methodElement = methodElement;
@@ -49,18 +49,10 @@ public class AnnotatedMethodRepresentation {
 		return enclosingInterface.getQualifiedName().toString();
 	}
 
-	protected static List<DecomposedParameterRepresentation> decomposeParameters(List<ParameterRepresentation> parameters) throws AnnotationException {
-		List<DecomposedParameterRepresentation> decomposedParameters = new ArrayList<>(parameters.size());
+	protected static List<DecomposedIdentifierParameterRepresentation> decomposeParameters(List<ParameterRepresentation> parameters) throws AnnotationException {
+		List<DecomposedIdentifierParameterRepresentation> decomposedParameters = new ArrayList<>(parameters.size());
 		for (ParameterRepresentation parameter : parameters) {
-			String[] identifierSplit = parameter.identifier().split("_", 2);
-			if (identifierSplit.length < 2) {
-				throw AnnotationException.create(parameter.element(), "Parameter name \"%s\" must contain at least one \"_\"", parameter.identifier());
-			}
-
-			String cgaVarName = identifierSplit[0];
-			String remainingVarName = identifierSplit[1];
-
-			DecomposedParameterRepresentation decomposedParameter = new DecomposedParameterRepresentation(cgaVarName, remainingVarName, parameter);
+			DecomposedIdentifierParameterRepresentation decomposedParameter = new DecomposedIdentifierParameterRepresentation(parameter);
 			decomposedParameters.add(decomposedParameter);
 		}
 		return decomposedParameters;

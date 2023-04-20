@@ -9,7 +9,7 @@ import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.AnnotationExcep
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
-import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.DecomposedParameterRepresentation;
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.DecomposedIdentifierParameterRepresentation;
 import de.dhbw.rahmlab.geomalgelang.api.Arguments;
 import de.dhbw.rahmlab.geomalgelang.api.Result;
 import java.util.ArrayList;
@@ -178,7 +178,7 @@ public class CGAMethodCodeGenerator {
 	}
 
 	protected List<MethodInvocationData> computeArgumentsMethodInvocations() throws AnnotationException {
-		LinkedHashMap<String, List<DecomposedParameterRepresentation>> cgaVarNameGroupedDecomposedParameters = groupDecomposedParameters(this.annotatedMethod.decomposedParameters);
+		LinkedHashMap<String, List<DecomposedIdentifierParameterRepresentation>> cgaVarNameGroupedDecomposedParameters = groupDecomposedParameters(this.annotatedMethod.decomposedParameters);
 		List<MethodInvocationData> argumentsMethodInvocations = matchMethods(cgaVarNameGroupedDecomposedParameters);
 		return argumentsMethodInvocations;
 	}
@@ -187,12 +187,12 @@ public class CGAMethodCodeGenerator {
 
 	}
 
-	protected List<MethodInvocationData> matchMethods(Map<String, List<DecomposedParameterRepresentation>> cgaVarNameGroupedDecomposedParameters) throws AnnotationException {
+	protected List<MethodInvocationData> matchMethods(Map<String, List<DecomposedIdentifierParameterRepresentation>> cgaVarNameGroupedDecomposedParameters) throws AnnotationException {
 		ArrayList<MethodInvocationData> methodInvocations = new ArrayList<>(cgaVarNameGroupedDecomposedParameters.size());
 		for (var cgaVarNameGroupedDecomposedParameter : cgaVarNameGroupedDecomposedParameters.entrySet()) {
 			String cgaVarName = cgaVarNameGroupedDecomposedParameter.getKey();
-			List<DecomposedParameterRepresentation> parameters = cgaVarNameGroupedDecomposedParameter.getValue();
-			List<String> arguments = parameters.stream().map(a -> a.uncomposedParameter().identifier()).toList();
+			List<DecomposedIdentifierParameterRepresentation> parameters = cgaVarNameGroupedDecomposedParameter.getValue();
+			List<String> arguments = parameters.stream().map(a -> a.originParameter.identifier()).toList();
 			MethodRepresentation method = matchMethodFrom(parameters, cgaVarName);
 			MethodInvocationData argumentsMethodInvocationData = new MethodInvocationData(method, cgaVarName, arguments);
 			methodInvocations.add(argumentsMethodInvocationData);
@@ -200,11 +200,11 @@ public class CGAMethodCodeGenerator {
 		return methodInvocations;
 	}
 
-	protected MethodRepresentation matchMethodFrom(List<DecomposedParameterRepresentation> callerParameters, String cgaVarName) throws AnnotationException {
+	protected MethodRepresentation matchMethodFrom(List<DecomposedIdentifierParameterRepresentation> callerParameters, String cgaVarName) throws AnnotationException {
 		// Check that cgaConstructorMethod of the whole group is identical.
-		Iterator<DecomposedParameterRepresentation> groupIterator = callerParameters.iterator();
+		Iterator<DecomposedIdentifierParameterRepresentation> groupIterator = callerParameters.iterator();
 		// Safe assumption that callerParameters contains at least 1 element (groupDecomposedParameters()).
-		String remainingVarName = groupIterator.next().remainingVarName();
+		String remainingVarName = groupIterator.next().remainingVarName;
 		Optional<OverloadableMethodRepresentation> cgaConstructorMethod = argumentsRepresentation.getMethodForLongestMethodNamePrefixing(remainingVarName);
 		if (cgaConstructorMethod.isEmpty()) {
 			throw AnnotationException.create(this.annotatedMethod.methodElement, "No matching Methodname found for: \"%s\"", remainingVarName);
@@ -213,7 +213,7 @@ public class CGAMethodCodeGenerator {
 		String methodName = callees.identifier;
 
 		boolean allSamePrefixed = toStream(groupIterator)
-			.map(dp -> dp.remainingVarName().startsWith(methodName))
+			.map(dp -> dp.remainingVarName.startsWith(methodName))
 			.allMatch(b -> b == true);
 		if (!allSamePrefixed) {
 			throw AnnotationException.create(this.annotatedMethod.methodElement, "Methodname must be equal for all occurences of the same cga parameter but were not for the cga parameter with name \"%s\".", cgaVarName);
@@ -236,7 +236,7 @@ public class CGAMethodCodeGenerator {
 		for (var callee : calleesWithMatchingParameterSize) {
 			boolean matched = true;
 			for (int i = 0; i < callerParametersSize; ++i) {
-				ParameterRepresentation callerParameter = callerParameters.get(i).uncomposedParameter();
+				ParameterRepresentation callerParameter = callerParameters.get(i).originParameter;
 				ParameterRepresentation calleeParameter = callee.parameters().get(i + 1);
 
 				TypeKind callerParameterTypeKind = callerParameter.element().asType().getKind();
@@ -289,9 +289,9 @@ public class CGAMethodCodeGenerator {
 		return StreamSupport.stream(((Iterable<T>) () -> iterator).spliterator(), false);
 	}
 
-	protected LinkedHashMap<String, List<DecomposedParameterRepresentation>> groupDecomposedParameters(List<DecomposedParameterRepresentation> decomposedParameters) throws AnnotationException {
+	protected LinkedHashMap<String, List<DecomposedIdentifierParameterRepresentation>> groupDecomposedParameters(List<DecomposedIdentifierParameterRepresentation> decomposedParameters) throws AnnotationException {
 		// Group cgaVarNames.
-		LinkedHashMap<String, List<DecomposedParameterRepresentation>> cgaVarNameGroupedDecomposedParameters = decomposedParameters.stream().collect(Collectors.groupingBy(dp -> dp.cgaVarName(), LinkedHashMap::new, Collectors.toList()));
+		LinkedHashMap<String, List<DecomposedIdentifierParameterRepresentation>> cgaVarNameGroupedDecomposedParameters = decomposedParameters.stream().collect(Collectors.groupingBy(dp -> dp.cgaVarName, LinkedHashMap::new, Collectors.toList()));
 
 		return cgaVarNameGroupedDecomposedParameters;
 	}
