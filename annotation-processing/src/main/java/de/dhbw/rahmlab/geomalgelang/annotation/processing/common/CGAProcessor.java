@@ -1,7 +1,7 @@
 package de.dhbw.rahmlab.geomalgelang.annotation.processing.common;
 
 import com.google.auto.service.AutoService;
-import de.dhbw.rahmlab.geomalgelang.annotation.processing.CGAAnnotatedMethod;
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.cga.CGAAnnotatedMethodRepresentation;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.CGAMethodCodeGenerator;
 import de.dhbw.rahmlab.geomalgelang.api.annotation.CGA;
 import de.dhbw.rahmlab.geomalgelang.api.annotation.CGAPATH;
@@ -64,9 +64,9 @@ public class CGAProcessor extends AbstractProcessor {
 	@Override
 	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
 		this.exceptionHandler.handle(() -> {
-			List<CGAAnnotatedMethod> annotatedMethods = computeAnnotatedMethodsFrom(roundEnv);
-			Map<String, List<CGAAnnotatedMethod>> interfaceGroupedAnnotatedMethods = computeInterfaceGroupedAnnotatedMethodsFrom(annotatedMethods);
-			List<ClassCodeGenerator> classCodeGenerators = computeClassCodeGeneratorsFrom(interfaceGroupedAnnotatedMethods);
+			List<CGAAnnotatedMethodRepresentation> annotatedMethods = computeCGAAnnotatedMethodsFrom(roundEnv);
+			Map<String, List<CGAAnnotatedMethodRepresentation>> interfaceGroupedCGAAnnotatedMethods = computeInterfaceGroupedCGAAnnotatedMethodsFrom(annotatedMethods);
+			List<ClassCodeGenerator> classCodeGenerators = computeClassCodeGeneratorsFrom(interfaceGroupedCGAAnnotatedMethods);
 			generateCode(classCodeGenerators);
 		});
 
@@ -80,9 +80,9 @@ public class CGAProcessor extends AbstractProcessor {
 		}
 	}
 
-	protected List<ClassCodeGenerator> computeClassCodeGeneratorsFrom(Map<String, List<CGAAnnotatedMethod>> interfaceGroupedAnnotatedMethods) {
-		List<ClassCodeGenerator> classCodeGenerators = new ArrayList<>(interfaceGroupedAnnotatedMethods.size());
-		for (var methodGroupEntry : interfaceGroupedAnnotatedMethods.entrySet()) {
+	protected List<ClassCodeGenerator> computeClassCodeGeneratorsFrom(Map<String, List<CGAAnnotatedMethodRepresentation>> interfaceGroupedCGAAnnotatedMethods) {
+		List<ClassCodeGenerator> classCodeGenerators = new ArrayList<>(interfaceGroupedCGAAnnotatedMethods.size());
+		for (var methodGroupEntry : interfaceGroupedCGAAnnotatedMethods.entrySet()) {
 			String qualifiedInterfaceName = methodGroupEntry.getKey();
 			var methodGroup = methodGroupEntry.getValue();
 			List<CGAMethodCodeGenerator> methodCodeGenerators = computeMethodCodeGenerators(methodGroup);
@@ -93,29 +93,29 @@ public class CGAProcessor extends AbstractProcessor {
 		return classCodeGenerators;
 	}
 
-	protected List<CGAMethodCodeGenerator> computeMethodCodeGenerators(List<CGAAnnotatedMethod> methodGroup) {
+	protected List<CGAMethodCodeGenerator> computeMethodCodeGenerators(List<CGAAnnotatedMethodRepresentation> methodGroup) {
 		List<CGAMethodCodeGenerator> methodCodeGenerators = new ArrayList<>(methodGroup.size());
-		for (CGAAnnotatedMethod cgaAnnotatedMethod : methodGroup) {
-			CGAMethodCodeGenerator methodCodeGenerator = methodCodeGeneratorFactory.create(cgaAnnotatedMethod);
+		for (CGAAnnotatedMethodRepresentation cgaCGAAnnotatedMethod : methodGroup) {
+			CGAMethodCodeGenerator methodCodeGenerator = methodCodeGeneratorFactory.create(cgaCGAAnnotatedMethod);
 			methodCodeGenerators.add(methodCodeGenerator);
 		}
 		return methodCodeGenerators;
 	}
 
-	protected Map<String, List<CGAAnnotatedMethod>> computeInterfaceGroupedAnnotatedMethodsFrom(List<CGAAnnotatedMethod> annotatedMethods) {
-		Map<String, List<CGAAnnotatedMethod>> interfaceGroupedAnnotatedMethods = annotatedMethods.stream()
+	protected Map<String, List<CGAAnnotatedMethodRepresentation>> computeInterfaceGroupedCGAAnnotatedMethodsFrom(List<CGAAnnotatedMethodRepresentation> annotatedMethods) {
+		Map<String, List<CGAAnnotatedMethodRepresentation>> interfaceGroupedCGAAnnotatedMethods = annotatedMethods.stream()
 			.collect(Collectors.groupingBy(am -> am.enclosingInterfaceQualifiedName));
-		return interfaceGroupedAnnotatedMethods;
+		return interfaceGroupedCGAAnnotatedMethods;
 	}
 
-	protected List<CGAAnnotatedMethod> computeAnnotatedMethodsFrom(RoundEnvironment roundEnv) throws AnnotationException {
+	protected List<CGAAnnotatedMethodRepresentation> computeCGAAnnotatedMethodsFrom(RoundEnvironment roundEnv) throws AnnotationException {
 		Set<? extends Element> annotatedElements = roundEnv.getElementsAnnotatedWith(CGA.class);
-		List<CGAAnnotatedMethod> annotatedMethods = new ArrayList<>(annotatedElements.size());
+		List<CGAAnnotatedMethodRepresentation> annotatedMethods = new ArrayList<>(annotatedElements.size());
 
 		for (Element annotatedElement : annotatedElements) {
 			// ExecutableElement is a safe assumption, because @Target(ElementType.METHOD) in CGA.java.
 			ExecutableElement method = (ExecutableElement) annotatedElement;
-			CGAAnnotatedMethod annotatedMethod = new CGAAnnotatedMethod(method);
+			CGAAnnotatedMethodRepresentation annotatedMethod = new CGAAnnotatedMethodRepresentation(method);
 
 			annotatedMethods.add(annotatedMethod);
 		}

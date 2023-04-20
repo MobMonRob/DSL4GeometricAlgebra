@@ -1,5 +1,6 @@
 package de.dhbw.rahmlab.geomalgelang.annotation.processing;
 
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.cga.CGAAnnotatedMethodRepresentation;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.ClassRepresentation;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.MethodRepresentation;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.OverloadableMethodRepresentation;
@@ -27,7 +28,7 @@ import javax.lang.model.util.Types;
 
 public class CGAMethodCodeGenerator {
 
-	protected final CGAAnnotatedMethod annotatedMethod;
+	protected final CGAAnnotatedMethodRepresentation annotatedMethod;
 
 	private static Elements elementUtils;
 	private static Types typeUtils;
@@ -61,12 +62,12 @@ public class CGAMethodCodeGenerator {
 			return factory;
 		}
 
-		public CGAMethodCodeGenerator create(CGAAnnotatedMethod annotatedMethod) {
+		public CGAMethodCodeGenerator create(CGAAnnotatedMethodRepresentation annotatedMethod) {
 			return new CGAMethodCodeGenerator(annotatedMethod);
 		}
 	}
 
-	private CGAMethodCodeGenerator(CGAAnnotatedMethod annotatedMethod) {
+	private CGAMethodCodeGenerator(CGAAnnotatedMethodRepresentation annotatedMethod) {
 		this.annotatedMethod = annotatedMethod;
 	}
 

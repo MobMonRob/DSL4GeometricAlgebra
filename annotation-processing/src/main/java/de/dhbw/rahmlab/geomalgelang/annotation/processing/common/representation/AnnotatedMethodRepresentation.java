@@ -1,8 +1,6 @@
-package de.dhbw.rahmlab.geomalgelang.annotation.processing;
+package de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation;
 
-import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.MethodRepresentation;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.AnnotationException;
-import de.dhbw.rahmlab.geomalgelang.api.annotation.CGA;
 import java.util.Set;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -12,18 +10,15 @@ import javax.lang.model.element.TypeElement;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode
-public class CGAAnnotatedMethod {
+public class AnnotatedMethodRepresentation {
 
-	protected final ExecutableElement methodElement;
+	public final ExecutableElement methodElement;
 	public final String enclosingInterfaceQualifiedName;
-	public final CGA cgaMethodAnnotation;
 	public final MethodRepresentation methodRepresentation;
 
-	public CGAAnnotatedMethod(ExecutableElement methodElement) throws AnnotationException {
+	public AnnotatedMethodRepresentation(ExecutableElement methodElement) throws AnnotationException {
 		this.methodElement = methodElement;
 		this.enclosingInterfaceQualifiedName = getEnclosingInterfaceQualifiedName(methodElement);
-		// Only the following line prevents genericity of this class. Thus still prefixed with "CGA".
-		this.cgaMethodAnnotation = methodElement.getAnnotation(CGA.class);
 		ensureModifiersContainPublic(methodElement);
 		this.methodRepresentation = new MethodRepresentation(methodElement);
 	}
