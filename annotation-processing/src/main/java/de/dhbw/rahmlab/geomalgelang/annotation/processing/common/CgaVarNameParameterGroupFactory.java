@@ -4,9 +4,11 @@ import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.EqualsAndHashCode;
 
-public class CgaVarNameParameterGroupFactory {
+public abstract class CgaVarNameParameterGroupFactory {
 
+	@EqualsAndHashCode
 	public static class CgaVarNameParameterGroup {
 
 		public final String cgaVarName;
@@ -16,10 +18,6 @@ public class CgaVarNameParameterGroupFactory {
 			this.cgaVarName = cgaVarName;
 			this.parameters = parameters;
 		}
-	}
-
-	private CgaVarNameParameterGroupFactory() {
-
 	}
 
 	public static List<CgaVarNameParameterGroup> computeFrom(List<DecomposedIdentifierParameterRepresentation> decomposedParameters) {

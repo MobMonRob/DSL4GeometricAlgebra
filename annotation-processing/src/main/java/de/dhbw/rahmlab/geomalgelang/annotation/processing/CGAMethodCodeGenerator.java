@@ -4,29 +4,21 @@ import de.dhbw.rahmlab.geomalgelang.annotation.processing.cga.CGAAnnotatedMethod
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.ClassRepresentation;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.MethodRepresentation;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.OverloadableMethodRepresentation;
-import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.ParameterRepresentation;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.AnnotationException;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.ArgumentsMethodMatcherService;
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.ArgumentsMethodMatcherService.ArgumentsMethodInvocationRepresentation;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.CgaVarNameParameterGroupFactory;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.CgaVarNameParameterGroupFactory.CgaVarNameParameterGroup;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.DecomposedIdentifierParameterRepresentation;
-import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.MethodInvocationRepresentation;
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.ArgumentsRepresentation;
 import de.dhbw.rahmlab.geomalgelang.api.Arguments;
 import de.dhbw.rahmlab.geomalgelang.api.Result;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.ExecutableType;
-import javax.lang.model.type.TypeKind;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
@@ -36,8 +28,9 @@ public class CGAMethodCodeGenerator {
 
 	private static Elements elementUtils;
 	private static Types typeUtils;
-	private static ClassRepresentation<Arguments> argumentsRepresentation;
+	private static ArgumentsRepresentation argumentsRepresentation;
 	private static ClassRepresentation<Result> resultRepresentation;
+	private static ArgumentsMethodMatcherService argumentsMethodMatcherService;
 	private static ClassName programClass;
 	private static ClassName argumentsClass;
 	private static ClassName resultClass;
@@ -80,22 +73,8 @@ public class CGAMethodCodeGenerator {
 		CGAMethodCodeGenerator.typeUtils = typeUtils;
 
 		TypeElement argumentsTypeElement = elementUtils.getTypeElement(Arguments.class.getCanonicalName());
-		argumentsRepresentation = new ClassRepresentation<>(argumentsTypeElement);
-		List<MethodRepresentation> flattenedPublicMethods = argumentsRepresentation.publicMethods.stream()
-			.flatMap(m -> m.getOverloadsView().stream())
-			.toList();
-		String stringTypeName = String.class.getCanonicalName();
-		for (var method : flattenedPublicMethods) {
-			List<ParameterRepresentation> parameters = method.parameters();
-			int parametersSize = parameters.size();
-			if (parametersSize < 1) {
-				throw new IllegalArgumentException(String.format("Expected parameters.size() to be at least 1 for all overloads of \"%s\", but was %s for one.", method.identifier(), parametersSize));
-			}
-			String type = parameters.get(0).type();
-			if (!type.equals(stringTypeName)) {
-				throw new IllegalArgumentException(String.format("Expected first parameter of method \"%s\" of type \"%s\", but was of type \"%s\".", method.identifier(), stringTypeName, type));
-			}
-		}
+		argumentsRepresentation = new ArgumentsRepresentation(argumentsTypeElement);
+		argumentsMethodMatcherService = new ArgumentsMethodMatcherService(argumentsRepresentation);
 
 		TypeElement resultTypeElement = elementUtils.getTypeElement(Result.class.getCanonicalName());
 		resultRepresentation = new ClassRepresentation<>(resultTypeElement);
@@ -108,8 +87,8 @@ public class CGAMethodCodeGenerator {
 	}
 
 	public MethodSpec generateCode() throws AnnotationException {
-		List<MethodInvocationRepresentation> argumentMethodInvocations = computeArgumentsMethodInvocations();
-		List<CodeBlock> argumentsMethodInvocationCode = createArgumentsMethodInvocationCode(argumentMethodInvocations);
+		List<ArgumentsMethodInvocationRepresentation> argumentMethodInvocations = computeArgumentsMethodInvocations();
+		List<CodeBlock> argumentsMethodInvocationCode = computeArgumentsMethodInvocationCode(argumentMethodInvocations);
 
 		CodeBlock.Builder tryWithBodyBuilder = CodeBlock.builder()
 			.addStatement("$1T arguments = new $1T()", argumentsClass);
@@ -127,7 +106,7 @@ public class CGAMethodCodeGenerator {
 		tryWithBodyBuilder.add("$<");
 		tryWithBodyBuilder
 			.addStatement("$T answer = program.invoke(arguments)", resultClass)
-			.addStatement("var answerDecomposed = answer.$L()", computeDecompositionMethodName())
+			.addStatement("var answerDecomposed = answer.$L()", matchResultMethodName())
 			.addStatement("return answerDecomposed");
 		CodeBlock tryWithBody = tryWithBodyBuilder.build();
 
@@ -142,7 +121,7 @@ public class CGAMethodCodeGenerator {
 		return method;
 	}
 
-	protected String computeDecompositionMethodName() throws AnnotationException {
+	protected String matchResultMethodName() throws AnnotationException {
 		MethodRepresentation method = this.annotatedMethod.methodRepresentation;
 		String returnType = method.returnType();
 
@@ -165,7 +144,7 @@ public class CGAMethodCodeGenerator {
 		return identifier;
 	}
 
-	protected List<CodeBlock> createArgumentsMethodInvocationCode(List<MethodInvocationRepresentation> methodInvocations) {
+	protected List<CodeBlock> computeArgumentsMethodInvocationCode(List<ArgumentsMethodInvocationRepresentation> methodInvocations) {
 		List<CodeBlock> cgaConstructionMethodInvocations = new ArrayList<>(methodInvocations.size());
 		for (var methodInvocation : methodInvocations) {
 			CodeBlock.Builder cgaConstructionMethodInvocation = CodeBlock.builder();
@@ -180,113 +159,20 @@ public class CGAMethodCodeGenerator {
 		return cgaConstructionMethodInvocations;
 	}
 
-	protected List<MethodInvocationRepresentation> computeArgumentsMethodInvocations() throws AnnotationException {
+	protected List<ArgumentsMethodInvocationRepresentation> computeArgumentsMethodInvocations() throws AnnotationException {
 		List<CgaVarNameParameterGroup> cgaVarNameParameterGroups = CgaVarNameParameterGroupFactory.computeFrom(this.annotatedMethod.decomposedParameters);
 
-		List<MethodInvocationRepresentation> argumentsMethodInvocations = matchMethods(cgaVarNameParameterGroups);
+		List<ArgumentsMethodInvocationRepresentation> argumentsMethodInvocations = matchArgumentsMethods(cgaVarNameParameterGroups);
 		return argumentsMethodInvocations;
 	}
 
-	protected List<MethodInvocationRepresentation> matchMethods(List<CgaVarNameParameterGroup> cgaVarNameParameterGroups) throws AnnotationException {
-		ArrayList<MethodInvocationRepresentation> methodInvocations = new ArrayList<>(cgaVarNameParameterGroups.size());
+	protected List<ArgumentsMethodInvocationRepresentation> matchArgumentsMethods(List<CgaVarNameParameterGroup> cgaVarNameParameterGroups) throws AnnotationException {
+		ArrayList<ArgumentsMethodInvocationRepresentation> methodInvocations = new ArrayList<>(cgaVarNameParameterGroups.size());
 		for (CgaVarNameParameterGroup cgaVarNameParameterGroup : cgaVarNameParameterGroups) {
-			String cgaVarName = cgaVarNameParameterGroup.cgaVarName;
-			List<DecomposedIdentifierParameterRepresentation> parameters = cgaVarNameParameterGroup.parameters;
-			List<String> arguments = parameters.stream().map(a -> a.originParameter.identifier()).toList();
-			MethodRepresentation method = matchMethodFrom(parameters, cgaVarName);
-			MethodInvocationRepresentation argumentsMethodInvocationData = new MethodInvocationRepresentation(method, cgaVarName, arguments);
+			ArgumentsMethodInvocationRepresentation argumentsMethodInvocationData = argumentsMethodMatcherService.matchFrom(cgaVarNameParameterGroup, this.annotatedMethod);
 			methodInvocations.add(argumentsMethodInvocationData);
 		}
 		return methodInvocations;
-	}
-
-	protected MethodRepresentation matchMethodFrom(List<DecomposedIdentifierParameterRepresentation> callerParameters, String cgaVarName) throws AnnotationException {
-		// Check that cgaConstructorMethod of the whole group is identical.
-		Iterator<DecomposedIdentifierParameterRepresentation> groupIterator = callerParameters.iterator();
-		// Safe assumption that callerParameters contains at least 1 element (groupDecomposedParameters()).
-		String remainingVarName = groupIterator.next().remainingVarName;
-		Optional<OverloadableMethodRepresentation> cgaConstructorMethod = argumentsRepresentation.getMethodForLongestMethodNamePrefixing(remainingVarName);
-		if (cgaConstructorMethod.isEmpty()) {
-			throw AnnotationException.create(this.annotatedMethod.methodElement, "No matching Methodname found for: \"%s\"", remainingVarName);
-		}
-		OverloadableMethodRepresentation callees = cgaConstructorMethod.get();
-		String methodName = callees.identifier;
-
-		boolean allSamePrefixed = toStream(groupIterator)
-			.map(dp -> dp.remainingVarName.startsWith(methodName))
-			.allMatch(b -> b == true);
-		if (!allSamePrefixed) {
-			throw AnnotationException.create(this.annotatedMethod.methodElement, "Methodname must be equal for all occurences of the same cga parameter but were not for the cga parameter with name \"%s\".", cgaVarName);
-		}
-
-		// Cannot check equal returnType because is same for all (Refer to Arguments class).
-		// Same identifier and parameter count and parameter types sequence implies identical method.
-		int expectedCalleeParameterSize = 1 + callerParameters.size();
-		List<MethodRepresentation> calleesWithMatchingParameterSize = callees.getOverloadsView().stream()
-			.filter(m -> m.parameters().size() == expectedCalleeParameterSize)
-			.toList();
-		// Check matching caller and callee parameter size.
-		if (calleesWithMatchingParameterSize.isEmpty()) {
-			throw AnnotationException.create(this.annotatedMethod.methodElement, "Available overloads of method \"%s\" do not match the parameter count (%s) given for the variable \"%s\"", methodName, callerParameters.size(), cgaVarName);
-		}
-
-		// Check equal types
-		int callerParametersSize = callerParameters.size();
-		List<MethodRepresentation> matchedCallee = new ArrayList<>(1);
-		for (var callee : calleesWithMatchingParameterSize) {
-			boolean matched = true;
-			for (int i = 0; i < callerParametersSize; ++i) {
-				ParameterRepresentation callerParameter = callerParameters.get(i).originParameter;
-				ParameterRepresentation calleeParameter = callee.parameters().get(i + 1);
-
-				TypeKind callerParameterTypeKind = callerParameter.element().asType().getKind();
-				TypeKind calleeParameterTypeKind = calleeParameter.element().asType().getKind();
-
-				if (callerParameterTypeKind.equals(TypeKind.DECLARED) && calleeParameterTypeKind.equals(TypeKind.DECLARED)) {
-					Class<?> callerParameterClass = null;
-					try {
-						callerParameterClass = Class.forName(callerParameter.type());
-					} catch (ClassNotFoundException ex) {
-						throw AnnotationException.create(callerParameter.element(), ex, "Class not found: \"%s\"", callerParameter.type());
-					}
-
-					Class<?> calleeParameterClass = null;
-					try {
-						calleeParameterClass = Class.forName(calleeParameter.type());
-					} catch (ClassNotFoundException ex) {
-						String calleeEnclosingClass = callee.element().getEnclosingElement().asType().toString();
-						String calleeIdentifier = callee.identifier();
-						String calleeParamsTypes = ((ExecutableType) callee.element().asType()).getParameterTypes().toString();
-
-						throw AnnotationException.create(calleeParameter.element(), ex, "In callee method \"%s::%s(%s)\" parameter No. %s: class not found: \"%s\"", calleeEnclosingClass, calleeIdentifier, calleeParamsTypes, i + 1 + 1, calleeParameter.type());
-					}
-
-					boolean isAssignableFrom = calleeParameterClass.isAssignableFrom(callerParameterClass);
-					if (!isAssignableFrom) {
-						matched = false;
-						break;
-					}
-				} else if (!callerParameter.type().equals(calleeParameter.type())) {
-					matched = false;
-					break;
-				}
-			}
-			if (matched) {
-				matchedCallee.add(callee);
-			}
-		}
-		if (matchedCallee.size() < 1) {
-			throw AnnotationException.create(this.annotatedMethod.methodElement, "Available overloads of method \"%s\" do not match the parameter types given for the variable \"%s\"", methodName, cgaVarName);
-		}
-		if (matchedCallee.size() > 1) {
-			throw new AssertionError(">1 not possible, because \"Same identifier and parameter count and parameter types sequence implies identical method.\" implies that there can be at most 1 such method.");
-		}
-
-		return matchedCallee.get(0);
-	}
-
-	protected static <T> Stream<T> toStream(Iterator<T> iterator) {
-		return StreamSupport.stream(((Iterable<T>) () -> iterator).spliterator(), false);
 	}
 
 }
