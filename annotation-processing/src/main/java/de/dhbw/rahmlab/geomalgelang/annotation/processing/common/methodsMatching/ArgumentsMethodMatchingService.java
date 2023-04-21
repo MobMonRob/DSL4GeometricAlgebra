@@ -1,9 +1,9 @@
-package de.dhbw.rahmlab.geomalgelang.annotation.processing.common.matching;
+package de.dhbw.rahmlab.geomalgelang.annotation.processing.common.methodsMatching;
 
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.cga.CGAAnnotatedMethodRepresentation;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.AnnotationException;
-import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.matching.CgaVarNameParameterGroupFactory.CgaVarNameParameterGroup;
-import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.matching.DecomposedParameterFactory.DecomposedIdentifierParameter;
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.methodsMatching.CgaVarNameParameterGroupFactory.CgaVarNameParameterGroup;
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.methodsMatching.DecomposedParameterFactory.DecomposedIdentifierParameter;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.ArgumentsRepresentation;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.MethodRepresentation;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.OverloadableMethodRepresentation;
@@ -19,7 +19,7 @@ import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeKind;
 import lombok.EqualsAndHashCode;
 
-public class ArgumentsMethodMatcherService {
+public class ArgumentsMethodMatchingService {
 
 	@EqualsAndHashCode
 	public static class ArgumentsMethodInvocation {
@@ -37,7 +37,7 @@ public class ArgumentsMethodMatcherService {
 
 	protected final ArgumentsRepresentation argumentsRepresentation;
 
-	public ArgumentsMethodMatcherService(ArgumentsRepresentation argumentsRepresentation) {
+	public ArgumentsMethodMatchingService(ArgumentsRepresentation argumentsRepresentation) {
 		this.argumentsRepresentation = argumentsRepresentation;
 	}
 

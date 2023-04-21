@@ -1,4 +1,4 @@
-package de.dhbw.rahmlab.geomalgelang.annotation.processing.common.matching;
+package de.dhbw.rahmlab.geomalgelang.annotation.processing.common.methodsMatching;
 
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.AnnotationException;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.ParameterRepresentation;
