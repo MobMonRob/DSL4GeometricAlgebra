@@ -23,11 +23,12 @@ public class CGAPATHMethodCodeGenerator extends MethodCodeGenerator<CGAPATHAnnot
 		String path = super.annotatedMethod.cgaPathMethodAnnotation.value();
 
 		builder
+			.addStatement("String path = $S", path)
 			.beginControlFlow("""
-				try ( InputStream in = %T.class.getResourceAsStream(%S);
+				try ( InputStream in = $T.class.getResourceAsStream(path);
 				BufferedReader reader = new BufferedReader(new InputStreamReader(in)) )
-				""", enclosingInterface, path)
-			.add("$T source = Source.newBuilder($T.LANGUAGE_ID, reader, \"noname\").build();", sourceClass, programClass)
+				""", enclosingInterface)
+			.addStatement("$T source = Source.newBuilder($T.LANGUAGE_ID, reader, \"noname\").build();", sourceClass, programClass)
 			.add(sourceUsingBody)
 			.endControlFlow();
 
