@@ -84,51 +84,99 @@ public class CGAMethodCodeGenerator {
 		// IOExceptionTypeName = TypeName.get(elementUtils.getTypeElement(IOException.class.getCanonicalName()).asType());
 	}
 
+	private List<ArgumentsMethodInvocation> argumentMethodInvocations;
+	private String resultMethodName;
+
 	public MethodSpec generateCode() throws AnnotationException {
-		List<ArgumentsMethodInvocation> argumentMethodInvocations = argumentsMethodMatcherService.computeMatchingArgumentsMethods(this.annotatedMethod); // Das sollte nicht hiervon aufgerufen werden, sondern von dem Processor!
-		List<CodeBlock> argumentsMethodInvocationCode = computeArgumentsMethodInvocationCode(argumentMethodInvocations);
-		String resultMethodName = resultMethodMatchingService.computeMatchingResultMethod(this.annotatedMethod).identifier;
+		// Das sollte nicht hiervon aufgerufen werden, sondern von dem Processor und dann hier übergeben!
+		argumentMethodInvocations = argumentsMethodMatcherService.computeMatchingArgumentsMethods(this.annotatedMethod);
+		resultMethodName = resultMethodMatchingService.computeMatchingResultMethod(this.annotatedMethod).identifier;
 
-		CodeBlock.Builder tryWithBodyBuilder = CodeBlock.builder()
-			.addStatement("$1T arguments = new $1T()", argumentsClass);
-		if (argumentsMethodInvocationCode.size() >= 1) {
-			tryWithBodyBuilder.add("arguments");
-		}
-		tryWithBodyBuilder.add("$>");
-		for (CodeBlock argumentsMethodInvocation : argumentsMethodInvocationCode) {
-			tryWithBodyBuilder.add("\n");
-			tryWithBodyBuilder.add(argumentsMethodInvocation);
-		}
-		if (argumentsMethodInvocationCode.size() >= 1) {
-			tryWithBodyBuilder.add(";\n");
-		}
-		tryWithBodyBuilder.add("$<");
-		tryWithBodyBuilder
-			.addStatement("$T answer = program.invoke(arguments)", resultClass)
-			.addStatement("var answerDecomposed = answer.$L()", resultMethodName)
-			.addStatement("return answerDecomposed");
-		CodeBlock tryWithBody = tryWithBodyBuilder.build();
-
+		List<CodeBlock> argumentsMethodInvocationCode = argumentsMethodInvocationCode();
+		CodeBlock programUsingBody = programUsingBody(argumentsMethodInvocationCode);
+		CodeBlock sourceUsingBody = sourceUsingBody(programUsingBody);
+		CodeBlock sourceProvidingBody = sourceProvidingBody(sourceUsingBody);
 		MethodSpec method = MethodSpec.overriding(this.annotatedMethod.element)
-			.addStatement("String source = $S", this.annotatedMethod.cgaMethodAnnotation.value())
-			.addCode("try ($1T program = new $1T(source)) {\n", programClass)
-			.addCode("$>")
-			.addCode(tryWithBody)
-			.addCode("$<}")
+			.addCode(sourceProvidingBody)
 			.build();
 
 		return method;
 	}
 
-	protected List<CodeBlock> computeArgumentsMethodInvocationCode(List<ArgumentsMethodInvocation> methodInvocations) {
-		List<CodeBlock> cgaConstructionMethodInvocations = new ArrayList<>(methodInvocations.size());
-		for (var methodInvocation : methodInvocations) {
+	protected CodeBlock sourceProvidingBody(CodeBlock sourceUsingBody) {
+		CodeBlock.Builder builder = CodeBlock.builder();
+
+		String sourceValue = this.annotatedMethod.cgaMethodAnnotation.value();
+		if (sourceValue.contains("\n")) {
+			builder
+				.add("String source = $>\"\"\"\n$L\"\"\";\n$<", sourceValue);
+		} else {
+			builder
+				.addStatement("String source = $S", sourceValue);
+		}
+
+		builder
+			//.beginControlFlow("")
+			.add(sourceUsingBody);
+		//.endControlFlow();
+
+		return builder.build();
+	}
+
+	protected CodeBlock sourceUsingBody(CodeBlock programUsingBody) {
+		CodeBlock.Builder builder = CodeBlock.builder();
+
+		builder
+			.beginControlFlow("try ($1T program = new $1T(source))", programClass)
+			.add(programUsingBody)
+			.endControlFlow();
+
+		return builder.build();
+	}
+
+	protected CodeBlock programUsingBody(List<CodeBlock> argumentsMethodInvocationCode) {
+		CodeBlock.Builder builder = CodeBlock.builder();
+
+		builder.addStatement("$1T arguments = new $1T()", argumentsClass);
+
+		if (argumentsMethodInvocationCode.size() >= 1) {
+			builder.add("arguments");
+		}
+
+		builder.add("$>");
+		for (CodeBlock argumentsMethodInvocation : argumentsMethodInvocationCode) {
+			builder
+				.add("\n")
+				.add(argumentsMethodInvocation);
+		}
+		if (argumentsMethodInvocationCode.size() >= 1) {
+			builder.add(";\n");
+		}
+		builder.add("$<");
+
+		builder
+			.addStatement("$T answer = program.invoke(arguments)", resultClass)
+			.addStatement("var answerDecomposed = answer.$L()", resultMethodName)
+			.addStatement("return answerDecomposed");
+
+		return builder.build();
+	}
+
+	protected List<CodeBlock> argumentsMethodInvocationCode() {
+		List<CodeBlock> cgaConstructionMethodInvocations = new ArrayList<>(this.argumentMethodInvocations.size());
+
+		for (var methodInvocation : this.argumentMethodInvocations) {
 			CodeBlock.Builder cgaConstructionMethodInvocation = CodeBlock.builder();
-			cgaConstructionMethodInvocation.add(".$L($S", methodInvocation.method.identifier, methodInvocation.cgaVarName);
+
+			cgaConstructionMethodInvocation
+				.add(".$L($S", methodInvocation.method.identifier, methodInvocation.cgaVarName);
 			for (String argument : methodInvocation.arguments) {
-				cgaConstructionMethodInvocation.add(", $L", argument);
+				cgaConstructionMethodInvocation
+					.add(", $L", argument);
 			}
-			cgaConstructionMethodInvocation.add(")");
+			cgaConstructionMethodInvocation
+				.add(")");
+
 			cgaConstructionMethodInvocations.add(cgaConstructionMethodInvocation.build());
 		}
 
