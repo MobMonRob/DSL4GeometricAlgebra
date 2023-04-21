@@ -11,6 +11,7 @@ import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.methodsMatching
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.ArgumentsRepresentation;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.ResultRepresentation;
 import de.dhbw.rahmlab.geomalgelang.api.Arguments;
+import de.dhbw.rahmlab.geomalgelang.api.Program;
 import de.dhbw.rahmlab.geomalgelang.api.Result;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,54 +21,26 @@ import javax.lang.model.util.Types;
 
 public class CGAMethodCodeGenerator {
 
+	protected final Elements elementUtils;
+	protected final Types typeUtils;
+	protected final ArgumentsRepresentation argumentsRepresentation;
+	protected final ResultRepresentation resultRepresentation;
+	protected final ArgumentsMethodMatchingService argumentsMethodMatcherService;
+	protected final ResultMethodMatchingService resultMethodMatchingService;
+
+	//////
+	protected static final ClassName programClass = ClassName.get(Program.class);
+	protected static final ClassName argumentsClass = ClassName.get(Arguments.class);
+	protected static final ClassName resultClass = ClassName.get(Result.class);
+
+	//////
 	protected final CGAAnnotatedMethodRepresentation annotatedMethod;
+	protected final List<ArgumentsMethodInvocation> argumentMethodInvocations;
+	protected final String resultMethodName;
 
-	private static Elements elementUtils;
-	private static Types typeUtils;
-	private static ArgumentsRepresentation argumentsRepresentation;
-	private static ResultRepresentation resultRepresentation;
-	private static ArgumentsMethodMatchingService argumentsMethodMatcherService;
-	private static ResultMethodMatchingService resultMethodMatchingService;
-	private static ClassName programClass;
-	private static ClassName argumentsClass;
-	private static ClassName resultClass;
-	// private static TypeName IOExceptionTypeName;
-
-	public static class Factory {
-
-		private static Factory factory = null;
-
-		private Factory() {
-
-		}
-
-		public static synchronized Factory init(Elements elementUtils, Types typeUtils) throws AnnotationException {
-			if (factory != null) {
-				throw AnnotationException.create(null, "CGAMethodCodeGenerator.Factory was already inited. Can be inited only once.");
-			}
-
-			CGAMethodCodeGenerator.init(elementUtils, typeUtils);
-
-			// Ensures subsequent initing will work even if an exception is thrown in the init() method on the first invokation.
-			if (factory == null) {
-				factory = new Factory();
-			}
-
-			return factory;
-		}
-
-		public CGAMethodCodeGenerator create(CGAAnnotatedMethodRepresentation annotatedMethod) {
-			return new CGAMethodCodeGenerator(annotatedMethod);
-		}
-	}
-
-	private CGAMethodCodeGenerator(CGAAnnotatedMethodRepresentation annotatedMethod) {
-		this.annotatedMethod = annotatedMethod;
-	}
-
-	private static void init(Elements elementUtils, Types typeUtils) {
-		CGAMethodCodeGenerator.elementUtils = elementUtils;
-		CGAMethodCodeGenerator.typeUtils = typeUtils;
+	public CGAMethodCodeGenerator(CGAAnnotatedMethodRepresentation annotatedMethod, Elements elementUtils, Types typeUtils) throws AnnotationException {
+		this.elementUtils = elementUtils;
+		this.typeUtils = typeUtils;
 
 		TypeElement argumentsTypeElement = elementUtils.getTypeElement(Arguments.class.getCanonicalName());
 		argumentsRepresentation = new ArgumentsRepresentation(argumentsTypeElement);
@@ -77,25 +50,25 @@ public class CGAMethodCodeGenerator {
 		resultRepresentation = new ResultRepresentation(resultTypeElement);
 		resultMethodMatchingService = new ResultMethodMatchingService(resultRepresentation);
 
-		programClass = ClassName.get(de.dhbw.rahmlab.geomalgelang.api.Program.class);
-		argumentsClass = ClassName.get(de.dhbw.rahmlab.geomalgelang.api.Arguments.class);
-		resultClass = ClassName.get(de.dhbw.rahmlab.geomalgelang.api.Result.class);
+		/*
+		programClass = ClassName.get(Program.class);
+		argumentsClass = ClassName.get(Arguments.class);
+		resultClass = ClassName.get(Result.class);
+		 */
+		//////
+		this.annotatedMethod = annotatedMethod;
 
-		// IOExceptionTypeName = TypeName.get(elementUtils.getTypeElement(IOException.class.getCanonicalName()).asType());
+		// Die Services sollte nicht hiervon aufgerufen werden, sondern von dem Processor und dann hier übergeben!
+		this.argumentMethodInvocations = argumentsMethodMatcherService.computeMatchingArgumentsMethods(this.annotatedMethod);
+		this.resultMethodName = resultMethodMatchingService.computeMatchingResultMethod(this.annotatedMethod).identifier;
 	}
 
-	private List<ArgumentsMethodInvocation> argumentMethodInvocations;
-	private String resultMethodName;
-
-	public MethodSpec generateCode() throws AnnotationException {
-		// Das sollte nicht hiervon aufgerufen werden, sondern von dem Processor und dann hier übergeben!
-		argumentMethodInvocations = argumentsMethodMatcherService.computeMatchingArgumentsMethods(this.annotatedMethod);
-		resultMethodName = resultMethodMatchingService.computeMatchingResultMethod(this.annotatedMethod).identifier;
-
+	public MethodSpec generateCode() {
 		List<CodeBlock> argumentsMethodInvocationCode = argumentsMethodInvocationCode();
 		CodeBlock programUsingBody = programUsingBody(argumentsMethodInvocationCode);
 		CodeBlock sourceUsingBody = sourceUsingBody(programUsingBody);
 		CodeBlock sourceProvidingBody = sourceProvidingBody(sourceUsingBody);
+
 		MethodSpec method = MethodSpec.overriding(this.annotatedMethod.element)
 			.addCode(sourceProvidingBody)
 			.build();
@@ -127,7 +100,7 @@ public class CGAMethodCodeGenerator {
 		CodeBlock.Builder builder = CodeBlock.builder();
 
 		builder
-			.beginControlFlow("try ($1T program = new $1T(source))", programClass)
+			.beginControlFlow("try ($1T program = new $1T(source))", this.programClass)
 			.add(programUsingBody)
 			.endControlFlow();
 
@@ -137,7 +110,7 @@ public class CGAMethodCodeGenerator {
 	protected CodeBlock programUsingBody(List<CodeBlock> argumentsMethodInvocationCode) {
 		CodeBlock.Builder builder = CodeBlock.builder();
 
-		builder.addStatement("$1T arguments = new $1T()", argumentsClass);
+		builder.addStatement("$1T arguments = new $1T()", this.argumentsClass);
 
 		if (argumentsMethodInvocationCode.size() >= 1) {
 			builder.add("arguments");
@@ -155,8 +128,8 @@ public class CGAMethodCodeGenerator {
 		builder.add("$<");
 
 		builder
-			.addStatement("$T answer = program.invoke(arguments)", resultClass)
-			.addStatement("var answerDecomposed = answer.$L()", resultMethodName)
+			.addStatement("$T answer = program.invoke(arguments)", this.resultClass)
+			.addStatement("var answerDecomposed = answer.$L()", this.resultMethodName)
 			.addStatement("return answerDecomposed");
 
 		return builder.build();
