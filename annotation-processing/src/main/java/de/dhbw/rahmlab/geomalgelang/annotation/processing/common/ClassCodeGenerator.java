@@ -6,7 +6,7 @@ import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
-import de.dhbw.rahmlab.geomalgelang.annotation.processing.CGAMethodCodeGenerator;
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.MethodCodeGenerator;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,9 +22,9 @@ public class ClassCodeGenerator {
 
 	protected final String qualifiedInterfaceName;
 
-	protected final List<CGAMethodCodeGenerator> methodCodeGenerators;
+	protected final List<MethodCodeGenerator> methodCodeGenerators;
 
-	public ClassCodeGenerator(String qualifiedInterfaceName, List<CGAMethodCodeGenerator> methodCodeGenerators) {
+	public ClassCodeGenerator(String qualifiedInterfaceName, List<MethodCodeGenerator> methodCodeGenerators) {
 		this.qualifiedInterfaceName = qualifiedInterfaceName;
 		this.methodCodeGenerators = methodCodeGenerators;
 	}
@@ -37,7 +37,7 @@ public class ClassCodeGenerator {
 		String packageName = this.qualifiedInterfaceName.substring(0, nameSeparatorIndex) + PACKAGE_SUFFIX;
 
 		List<MethodSpec> methods = new ArrayList<>(this.methodCodeGenerators.size());
-		for (CGAMethodCodeGenerator methodCodeGenerator : this.methodCodeGenerators) {
+		for (MethodCodeGenerator methodCodeGenerator : this.methodCodeGenerators) {
 			exceptionHandler.handle(() -> {
 				MethodSpec method = methodCodeGenerator.generateCode();
 				methods.add(method);

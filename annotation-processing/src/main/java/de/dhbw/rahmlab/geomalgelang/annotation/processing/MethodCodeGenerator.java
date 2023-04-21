@@ -11,7 +11,7 @@ import de.dhbw.rahmlab.geomalgelang.api.Result;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CGAMethodCodeGenerator {
+public class MethodCodeGenerator {
 
 	protected static final ClassName programClass = ClassName.get(Program.class);
 	protected static final ClassName argumentsClass = ClassName.get(Arguments.class);
@@ -21,7 +21,7 @@ public class CGAMethodCodeGenerator {
 	protected final List<ArgumentsMethodInvocation> argumentMethodInvocations;
 	protected final String resultMethodName;
 
-	public CGAMethodCodeGenerator(CGAAnnotatedMethodRepresentation annotatedMethod, List<ArgumentsMethodInvocation> argumentMethodInvocations, String resultMethodName) {
+	public MethodCodeGenerator(CGAAnnotatedMethodRepresentation annotatedMethod, List<ArgumentsMethodInvocation> argumentMethodInvocations, String resultMethodName) {
 		this.annotatedMethod = annotatedMethod;
 		this.argumentMethodInvocations = argumentMethodInvocations;
 		this.resultMethodName = resultMethodName;

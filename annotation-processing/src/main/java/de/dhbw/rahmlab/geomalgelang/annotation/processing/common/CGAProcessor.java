@@ -2,7 +2,7 @@ package de.dhbw.rahmlab.geomalgelang.annotation.processing.common;
 
 import com.google.auto.service.AutoService;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.cga.CGAAnnotatedMethodRepresentation;
-import de.dhbw.rahmlab.geomalgelang.annotation.processing.CGAMethodCodeGenerator;
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.MethodCodeGenerator;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.methodsMatching.ArgumentsMethodMatchingService;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.methodsMatching.ResultMethodMatchingService;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.ArgumentsRepresentation;
@@ -93,7 +93,7 @@ public class CGAProcessor extends AbstractProcessor {
 		for (var methodGroupEntry : interfaceGroupedCGAAnnotatedMethods.entrySet()) {
 			String qualifiedInterfaceName = methodGroupEntry.getKey();
 			var methodGroup = methodGroupEntry.getValue();
-			List<CGAMethodCodeGenerator> methodCodeGenerators = computeMethodCodeGenerators(methodGroup);
+			List<MethodCodeGenerator> methodCodeGenerators = computeMethodCodeGenerators(methodGroup);
 			ClassCodeGenerator classCodeGenerator = new ClassCodeGenerator(qualifiedInterfaceName, methodCodeGenerators);
 			classCodeGenerators.add(classCodeGenerator);
 		}
@@ -101,12 +101,12 @@ public class CGAProcessor extends AbstractProcessor {
 		return classCodeGenerators;
 	}
 
-	protected List<CGAMethodCodeGenerator> computeMethodCodeGenerators(List<CGAAnnotatedMethodRepresentation> methodGroup) throws AnnotationException {
-		List<CGAMethodCodeGenerator> methodCodeGenerators = new ArrayList<>(methodGroup.size());
+	protected List<MethodCodeGenerator> computeMethodCodeGenerators(List<CGAAnnotatedMethodRepresentation> methodGroup) throws AnnotationException {
+		List<MethodCodeGenerator> methodCodeGenerators = new ArrayList<>(methodGroup.size());
 		for (CGAAnnotatedMethodRepresentation cgaCGAAnnotatedMethod : methodGroup) {
 			var argumentMethodInvocations = this.argumentsMethodMatcherService.computeMatchingArgumentsMethods(cgaCGAAnnotatedMethod);
 			var resultMethodName = this.resultMethodMatchingService.computeMatchingResultMethod(cgaCGAAnnotatedMethod).identifier;
-			CGAMethodCodeGenerator methodCodeGenerator = new CGAMethodCodeGenerator(cgaCGAAnnotatedMethod, argumentMethodInvocations, resultMethodName);
+			MethodCodeGenerator methodCodeGenerator = new MethodCodeGenerator(cgaCGAAnnotatedMethod, argumentMethodInvocations, resultMethodName);
 			methodCodeGenerators.add(methodCodeGenerator);
 		}
 		return methodCodeGenerators;
