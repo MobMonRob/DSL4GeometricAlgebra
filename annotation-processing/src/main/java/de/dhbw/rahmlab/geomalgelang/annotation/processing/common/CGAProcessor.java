@@ -3,6 +3,12 @@ package de.dhbw.rahmlab.geomalgelang.annotation.processing.common;
 import com.google.auto.service.AutoService;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.cga.CGAAnnotatedMethodRepresentation;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.CGAMethodCodeGenerator;
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.methodsMatching.ArgumentsMethodMatchingService;
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.methodsMatching.ResultMethodMatchingService;
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.ArgumentsRepresentation;
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.ResultRepresentation;
+import de.dhbw.rahmlab.geomalgelang.api.Arguments;
+import de.dhbw.rahmlab.geomalgelang.api.Result;
 import de.dhbw.rahmlab.geomalgelang.api.annotation.CGA;
 import de.dhbw.rahmlab.geomalgelang.api.annotation.CGAPATH;
 import java.io.IOException;
@@ -28,7 +34,10 @@ public class CGAProcessor extends AbstractProcessor {
 	protected Elements elementUtils;
 	protected Types typeUtils;
 	protected Filer filer;
+
 	protected ExceptionHandler exceptionHandler;
+	protected ArgumentsMethodMatchingService argumentsMethodMatcherService;
+	protected ResultMethodMatchingService resultMethodMatchingService;
 
 	protected static final Set<String> supportedAnnotationTypes
 		= Collections.unmodifiableSet(new HashSet<>(Arrays.asList(new String[]{CGA.class.getCanonicalName(), CGAPATH.class.getCanonicalName()})));
@@ -50,6 +59,14 @@ public class CGAProcessor extends AbstractProcessor {
 		this.typeUtils = processingEnv.getTypeUtils();
 		this.filer = processingEnv.getFiler();
 		this.exceptionHandler = new ExceptionHandler(processingEnv.getMessager());
+
+		TypeElement argumentsTypeElement = elementUtils.getTypeElement(Arguments.class.getCanonicalName());
+		ArgumentsRepresentation argumentsRepresentation = new ArgumentsRepresentation(argumentsTypeElement);
+		this.argumentsMethodMatcherService = new ArgumentsMethodMatchingService(argumentsRepresentation);
+
+		TypeElement resultTypeElement = elementUtils.getTypeElement(Result.class.getCanonicalName());
+		ResultRepresentation resultRepresentation = new ResultRepresentation(resultTypeElement);
+		this.resultMethodMatchingService = new ResultMethodMatchingService(resultRepresentation);
 	}
 
 	@Override
@@ -87,7 +104,9 @@ public class CGAProcessor extends AbstractProcessor {
 	protected List<CGAMethodCodeGenerator> computeMethodCodeGenerators(List<CGAAnnotatedMethodRepresentation> methodGroup) throws AnnotationException {
 		List<CGAMethodCodeGenerator> methodCodeGenerators = new ArrayList<>(methodGroup.size());
 		for (CGAAnnotatedMethodRepresentation cgaCGAAnnotatedMethod : methodGroup) {
-			CGAMethodCodeGenerator methodCodeGenerator = new CGAMethodCodeGenerator(cgaCGAAnnotatedMethod, this.elementUtils, this.typeUtils);
+			var argumentMethodInvocations = this.argumentsMethodMatcherService.computeMatchingArgumentsMethods(cgaCGAAnnotatedMethod);
+			var resultMethodName = this.resultMethodMatchingService.computeMatchingResultMethod(cgaCGAAnnotatedMethod).identifier;
+			CGAMethodCodeGenerator methodCodeGenerator = new CGAMethodCodeGenerator(cgaCGAAnnotatedMethod, argumentMethodInvocations, resultMethodName);
 			methodCodeGenerators.add(methodCodeGenerator);
 		}
 		return methodCodeGenerators;
