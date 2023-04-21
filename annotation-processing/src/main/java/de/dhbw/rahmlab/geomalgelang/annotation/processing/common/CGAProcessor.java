@@ -85,7 +85,7 @@ public class CGAProcessor extends AbstractProcessor {
 
 	protected void generateCode(List<ClassCodeGenerator> classCodeGenerators) throws IOException, AnnotationException {
 		for (ClassCodeGenerator classCodeGenerator : classCodeGenerators) {
-			classCodeGenerator.generateCode(this.elementUtils, this.filer, this.exceptionHandler);
+			classCodeGenerator.generateCode(this.elementUtils, this.filer);
 		}
 	}
 
@@ -105,10 +105,12 @@ public class CGAProcessor extends AbstractProcessor {
 	protected List<MethodCodeGenerator> computeMethodCodeGenerators(List<CGAAnnotatedMethodRepresentation> methodGroup) throws AnnotationException {
 		List<MethodCodeGenerator> methodCodeGenerators = new ArrayList<>(methodGroup.size());
 		for (CGAAnnotatedMethodRepresentation cgaCGAAnnotatedMethod : methodGroup) {
-			var argumentMethodInvocations = this.argumentsMethodMatcherService.computeMatchingArgumentsMethods(cgaCGAAnnotatedMethod);
-			var resultMethodName = this.resultMethodMatchingService.computeMatchingResultMethod(cgaCGAAnnotatedMethod).identifier;
-			MethodCodeGenerator methodCodeGenerator = new CGAMethodCodeGenerator(cgaCGAAnnotatedMethod, argumentMethodInvocations, resultMethodName);
-			methodCodeGenerators.add(methodCodeGenerator);
+			exceptionHandler.handle(() -> {
+				var argumentMethodInvocations = this.argumentsMethodMatcherService.computeMatchingArgumentsMethods(cgaCGAAnnotatedMethod);
+				var resultMethodName = this.resultMethodMatchingService.computeMatchingResultMethod(cgaCGAAnnotatedMethod).identifier;
+				MethodCodeGenerator methodCodeGenerator = new CGAMethodCodeGenerator(cgaCGAAnnotatedMethod, argumentMethodInvocations, resultMethodName);
+				methodCodeGenerators.add(methodCodeGenerator);
+			});
 		}
 		return methodCodeGenerators;
 	}

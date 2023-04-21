@@ -29,7 +29,7 @@ public class ClassCodeGenerator {
 		this.methodCodeGenerators = methodCodeGenerators;
 	}
 
-	public void generateCode(Elements elementUtils, Filer filer, ExceptionHandler exceptionHandler) throws IOException, AnnotationException {
+	public void generateCode(Elements elementUtils, Filer filer) throws IOException, AnnotationException {
 		TypeElement implementingInterfaceName = elementUtils.getTypeElement(this.qualifiedInterfaceName);
 		String genClassName = implementingInterfaceName.getSimpleName() + CLASS_SUFFIX;
 
@@ -38,10 +38,8 @@ public class ClassCodeGenerator {
 
 		List<MethodSpec> methods = new ArrayList<>(this.methodCodeGenerators.size());
 		for (MethodCodeGenerator methodCodeGenerator : this.methodCodeGenerators) {
-			exceptionHandler.handle(() -> {
-				MethodSpec method = methodCodeGenerator.generateCode();
-				methods.add(method);
-			});
+			MethodSpec method = methodCodeGenerator.generateCode();
+			methods.add(method);
 		}
 
 		FieldSpec genInstance = FieldSpec.builder(ClassName.get(packageName, genClassName), "GEN_INSTANCE", Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
