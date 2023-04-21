@@ -1,13 +1,21 @@
 package de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation;
 
+import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
+import com.googlecode.concurrenttrees.radixinverted.ConcurrentInvertedRadixTree;
+import com.googlecode.concurrenttrees.radixinverted.InvertedRadixTree;
 import de.dhbw.rahmlab.geomalgelang.api.Arguments;
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import javax.lang.model.element.TypeElement;
 
 public class ArgumentsRepresentation extends ClassRepresentation<Arguments> {
 
+	protected final InvertedRadixTree<OverloadableMethodRepresentation> methodsPrefixTrie;
+
 	public ArgumentsRepresentation(TypeElement typeElement) {
 		super(typeElement);
+		this.methodsPrefixTrie = generateMethodsPrefixTrie(super.publicMethods);
 
 		List<MethodRepresentation> flattenedPublicMethods = super.publicMethods.stream()
 			.flatMap(m -> m.getOverloadsView().stream())
@@ -25,4 +33,23 @@ public class ArgumentsRepresentation extends ClassRepresentation<Arguments> {
 			}
 		}
 	}
+
+	public Optional<OverloadableMethodRepresentation> getMethodForLongestMethodNamePrefixing(String string) {
+		var kvp = methodsPrefixTrie.getKeyValuePairForLongestKeyPrefixing(string);
+		if (kvp == null) {
+			return Optional.empty();
+		}
+		return Optional.of(kvp.getValue());
+	}
+
+	protected static InvertedRadixTree<OverloadableMethodRepresentation> generateMethodsPrefixTrie(Collection<OverloadableMethodRepresentation> publicMethods) {
+		InvertedRadixTree<OverloadableMethodRepresentation> methodsPrefixTrie = new ConcurrentInvertedRadixTree<>(new DefaultCharArrayNodeFactory());
+
+		for (OverloadableMethodRepresentation method : publicMethods) {
+			methodsPrefixTrie.put(method.identifier, method);
+		}
+
+		return methodsPrefixTrie;
+	}
+
 }

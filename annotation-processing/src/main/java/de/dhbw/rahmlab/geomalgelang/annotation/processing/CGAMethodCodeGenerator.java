@@ -1,7 +1,6 @@
 package de.dhbw.rahmlab.geomalgelang.annotation.processing;
 
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.cga.CGAAnnotatedMethodRepresentation;
-import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.ClassRepresentation;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.AnnotationException;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
@@ -10,6 +9,7 @@ import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.methodsMatching
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.methodsMatching.ArgumentsMethodMatchingService.ArgumentsMethodInvocation;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.methodsMatching.ResultMethodMatchingService;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.ArgumentsRepresentation;
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.ResultRepresentation;
 import de.dhbw.rahmlab.geomalgelang.api.Arguments;
 import de.dhbw.rahmlab.geomalgelang.api.Result;
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ public class CGAMethodCodeGenerator {
 	private static Elements elementUtils;
 	private static Types typeUtils;
 	private static ArgumentsRepresentation argumentsRepresentation;
-	private static ClassRepresentation<Result> resultRepresentation;
+	private static ResultRepresentation resultRepresentation;
 	private static ArgumentsMethodMatchingService argumentsMethodMatcherService;
 	private static ResultMethodMatchingService resultMethodMatchingService;
 	private static ClassName programClass;
@@ -74,7 +74,7 @@ public class CGAMethodCodeGenerator {
 		argumentsMethodMatcherService = new ArgumentsMethodMatchingService(argumentsRepresentation);
 
 		TypeElement resultTypeElement = elementUtils.getTypeElement(Result.class.getCanonicalName());
-		resultRepresentation = new ClassRepresentation<>(resultTypeElement);
+		resultRepresentation = new ResultRepresentation(resultTypeElement);
 		resultMethodMatchingService = new ResultMethodMatchingService(resultRepresentation);
 
 		programClass = ClassName.get(de.dhbw.rahmlab.geomalgelang.api.Program.class);

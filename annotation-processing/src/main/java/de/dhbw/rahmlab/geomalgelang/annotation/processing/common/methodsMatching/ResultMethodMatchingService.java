@@ -2,17 +2,16 @@ package de.dhbw.rahmlab.geomalgelang.annotation.processing.common.methodsMatchin
 
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.cga.CGAAnnotatedMethodRepresentation;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.AnnotationException;
-import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.ClassRepresentation;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.MethodRepresentation;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.OverloadableMethodRepresentation;
-import de.dhbw.rahmlab.geomalgelang.api.Result;
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.ResultRepresentation;
 import java.util.List;
 
 public class ResultMethodMatchingService {
 
-	protected final ClassRepresentation<Result> resultRepresentation;
+	protected final ResultRepresentation resultRepresentation;
 
-	public ResultMethodMatchingService(ClassRepresentation<Result> resultRepresentation) {
+	public ResultMethodMatchingService(ResultRepresentation resultRepresentation) {
 		this.resultRepresentation = resultRepresentation;
 	}
 
