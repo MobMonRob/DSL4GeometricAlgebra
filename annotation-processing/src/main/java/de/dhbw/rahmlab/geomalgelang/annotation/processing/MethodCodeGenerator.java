@@ -1,27 +1,27 @@
 package de.dhbw.rahmlab.geomalgelang.annotation.processing;
 
-import de.dhbw.rahmlab.geomalgelang.annotation.processing.cga.CGAAnnotatedMethodRepresentation;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.methodsMatching.ArgumentsMethodMatchingService.ArgumentsMethodInvocation;
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.AnnotatedMethodRepresentation;
 import de.dhbw.rahmlab.geomalgelang.api.Arguments;
 import de.dhbw.rahmlab.geomalgelang.api.Program;
 import de.dhbw.rahmlab.geomalgelang.api.Result;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class MethodCodeGenerator {
+public abstract class MethodCodeGenerator<T extends AnnotatedMethodRepresentation> {
 
 	protected static final ClassName programClass = ClassName.get(Program.class);
 	protected static final ClassName argumentsClass = ClassName.get(Arguments.class);
 	protected static final ClassName resultClass = ClassName.get(Result.class);
 
-	protected final CGAAnnotatedMethodRepresentation annotatedMethod;
+	protected final T annotatedMethod;
 	protected final List<ArgumentsMethodInvocation> argumentMethodInvocations;
 	protected final String resultMethodName;
 
-	public MethodCodeGenerator(CGAAnnotatedMethodRepresentation annotatedMethod, List<ArgumentsMethodInvocation> argumentMethodInvocations, String resultMethodName) {
+	public MethodCodeGenerator(T annotatedMethod, List<ArgumentsMethodInvocation> argumentMethodInvocations, String resultMethodName) {
 		this.annotatedMethod = annotatedMethod;
 		this.argumentMethodInvocations = argumentMethodInvocations;
 		this.resultMethodName = resultMethodName;

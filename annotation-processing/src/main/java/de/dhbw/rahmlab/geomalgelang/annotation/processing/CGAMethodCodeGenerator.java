@@ -5,7 +5,7 @@ import de.dhbw.rahmlab.geomalgelang.annotation.processing.cga.CGAAnnotatedMethod
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.methodsMatching.ArgumentsMethodMatchingService;
 import java.util.List;
 
-public class CGAMethodCodeGenerator extends MethodCodeGenerator {
+public class CGAMethodCodeGenerator extends MethodCodeGenerator<CGAAnnotatedMethodRepresentation> {
 
 	public CGAMethodCodeGenerator(CGAAnnotatedMethodRepresentation annotatedMethod, List<ArgumentsMethodMatchingService.ArgumentsMethodInvocation> argumentMethodInvocations, String resultMethodName) {
 		super(annotatedMethod, argumentMethodInvocations, resultMethodName);
@@ -15,13 +15,13 @@ public class CGAMethodCodeGenerator extends MethodCodeGenerator {
 	protected CodeBlock sourceProvidingBody(CodeBlock sourceUsingBody) {
 		CodeBlock.Builder builder = CodeBlock.builder();
 
-		String sourceValue = super.annotatedMethod.cgaMethodAnnotation.value();
-		if (sourceValue.contains("\n")) {
+		String source = super.annotatedMethod.cgaMethodAnnotation.value();
+		if (source.contains("\n")) {
 			builder
-				.add("String source = $>\"\"\"\n$L\"\"\";\n$<", sourceValue);
+				.add("String source = $>\"\"\"\n$L\"\"\";\n$<", source);
 		} else {
 			builder
-				.addStatement("String source = $S", sourceValue);
+				.addStatement("String source = $S", source);
 		}
 
 		builder

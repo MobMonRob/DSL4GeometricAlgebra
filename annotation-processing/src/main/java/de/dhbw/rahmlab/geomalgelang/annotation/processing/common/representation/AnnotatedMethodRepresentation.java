@@ -12,11 +12,13 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class AnnotatedMethodRepresentation extends MethodRepresentation {
 
+	public final TypeElement enclosingInterface;
 	public final String enclosingInterfaceQualifiedName;
 
 	public AnnotatedMethodRepresentation(ExecutableElement methodElement) throws AnnotationException {
 		super(methodElement);
-		this.enclosingInterfaceQualifiedName = getEnclosingInterfaceQualifiedName(methodElement);
+		this.enclosingInterface = getEnclosingInterface(methodElement);
+		this.enclosingInterfaceQualifiedName = this.enclosingInterface.getQualifiedName().toString();
 		ensureModifiersContainPublic(methodElement);
 	}
 
@@ -28,7 +30,7 @@ public class AnnotatedMethodRepresentation extends MethodRepresentation {
 		}
 	}
 
-	protected static String getEnclosingInterfaceQualifiedName(ExecutableElement methodElement) throws AnnotationException {
+	protected static TypeElement getEnclosingInterface(ExecutableElement methodElement) throws AnnotationException {
 		Element directEnclosingElement = methodElement.getEnclosingElement();
 		ElementKind directEnclosingElementKind = directEnclosingElement.getKind();
 
@@ -39,6 +41,6 @@ public class AnnotatedMethodRepresentation extends MethodRepresentation {
 			throw AnnotationException.create(methodElement, "Expected method to be enclosed by an INTERFACE, but was enclosed by \"%s\"", directEnclosingElementKind.toString());
 		}
 
-		return enclosingInterface.getQualifiedName().toString();
+		return enclosingInterface;
 	}
 }
