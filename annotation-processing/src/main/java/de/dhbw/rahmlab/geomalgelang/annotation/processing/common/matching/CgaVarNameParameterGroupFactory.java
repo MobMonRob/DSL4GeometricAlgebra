@@ -1,6 +1,6 @@
-package de.dhbw.rahmlab.geomalgelang.annotation.processing.common;
+package de.dhbw.rahmlab.geomalgelang.annotation.processing.common.matching;
 
-import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.DecomposedParameterFactory.DecomposedIdentifierParameter;
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.matching.DecomposedParameterFactory.DecomposedIdentifierParameter;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;

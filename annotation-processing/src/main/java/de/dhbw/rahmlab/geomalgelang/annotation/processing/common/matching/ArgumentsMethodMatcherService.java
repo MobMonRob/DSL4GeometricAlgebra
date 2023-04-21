@@ -1,8 +1,9 @@
-package de.dhbw.rahmlab.geomalgelang.annotation.processing.common;
+package de.dhbw.rahmlab.geomalgelang.annotation.processing.common.matching;
 
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.cga.CGAAnnotatedMethodRepresentation;
-import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.CgaVarNameParameterGroupFactory.CgaVarNameParameterGroup;
-import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.DecomposedParameterFactory.DecomposedIdentifierParameter;
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.AnnotationException;
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.matching.CgaVarNameParameterGroupFactory.CgaVarNameParameterGroup;
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.matching.DecomposedParameterFactory.DecomposedIdentifierParameter;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.ArgumentsRepresentation;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.MethodRepresentation;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.OverloadableMethodRepresentation;
@@ -40,7 +41,26 @@ public class ArgumentsMethodMatcherService {
 		this.argumentsRepresentation = argumentsRepresentation;
 	}
 
-	public ArgumentsMethodInvocation matchFrom(CgaVarNameParameterGroup cgaVarNameParameterGroup, CGAAnnotatedMethodRepresentation origin) throws AnnotationException {
+	public List<ArgumentsMethodInvocation> computeMatchingArgumentsMethods(CGAAnnotatedMethodRepresentation annotatedMethod) throws AnnotationException {
+		var decomposedParams = DecomposedParameterFactory.decompose(annotatedMethod.parameters);
+		var cgaVarNameParameterGroups = CgaVarNameParameterGroupFactory.group(decomposedParams);
+		var argumentsMethodInvocations = matchArgumentsMethods(cgaVarNameParameterGroups, annotatedMethod);
+
+		return argumentsMethodInvocations;
+	}
+
+	protected List<ArgumentsMethodInvocation> matchArgumentsMethods(List<CgaVarNameParameterGroup> cgaVarNameParameterGroups, CGAAnnotatedMethodRepresentation origin) throws AnnotationException {
+		ArrayList<ArgumentsMethodInvocation> methodInvocations = new ArrayList<>(cgaVarNameParameterGroups.size());
+
+		for (var cgaVarNameParameterGroup : cgaVarNameParameterGroups) {
+			var argumentsMethodInvocationData = matchArgumentsMethod(cgaVarNameParameterGroup, origin);
+			methodInvocations.add(argumentsMethodInvocationData);
+		}
+
+		return methodInvocations;
+	}
+
+	protected ArgumentsMethodInvocation matchArgumentsMethod(CgaVarNameParameterGroup cgaVarNameParameterGroup, CGAAnnotatedMethodRepresentation origin) throws AnnotationException {
 		var cgaVarName = cgaVarNameParameterGroup.cgaVarName;
 		var parameters = cgaVarNameParameterGroup.parameters;
 
@@ -48,12 +68,12 @@ public class ArgumentsMethodMatcherService {
 			.map(p -> p.originParameter.identifier())
 			.toList(); // unmodifiable
 
-		MethodRepresentation method = matchArgumentsMethodFrom(cgaVarName, parameters, origin.element);
+		MethodRepresentation method = matchArgumentsMethod(cgaVarName, parameters, origin.element);
 
 		return new ArgumentsMethodInvocation(method, cgaVarName, arguments);
 	}
 
-	protected MethodRepresentation matchArgumentsMethodFrom(String cgaVarName, List<DecomposedIdentifierParameter> callerParameters, ExecutableElement methodElement) throws AnnotationException {
+	protected MethodRepresentation matchArgumentsMethod(String cgaVarName, List<DecomposedIdentifierParameter> callerParameters, ExecutableElement methodElement) throws AnnotationException {
 		// Check that cgaConstructorMethod of the whole group is identical.
 		Iterator<DecomposedIdentifierParameter> groupIterator = callerParameters.iterator();
 		// Safe assumption that callerParameters contains at least 1 element (groupDecomposedParameters()).

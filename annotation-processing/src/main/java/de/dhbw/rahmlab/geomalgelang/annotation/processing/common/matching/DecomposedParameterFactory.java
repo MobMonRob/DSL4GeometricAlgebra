@@ -1,5 +1,6 @@
-package de.dhbw.rahmlab.geomalgelang.annotation.processing.common;
+package de.dhbw.rahmlab.geomalgelang.annotation.processing.common.matching;
 
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.AnnotationException;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.ParameterRepresentation;
 import java.util.ArrayList;
 import java.util.List;

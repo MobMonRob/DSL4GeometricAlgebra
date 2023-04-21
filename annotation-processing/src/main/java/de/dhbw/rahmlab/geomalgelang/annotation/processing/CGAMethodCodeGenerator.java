@@ -8,11 +8,8 @@ import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.AnnotationExcep
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
-import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.ArgumentsMethodMatcherService;
-import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.ArgumentsMethodMatcherService.ArgumentsMethodInvocation;
-import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.CgaVarNameParameterGroupFactory;
-import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.CgaVarNameParameterGroupFactory.CgaVarNameParameterGroup;
-import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.DecomposedParameterFactory;
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.matching.ArgumentsMethodMatcherService;
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.matching.ArgumentsMethodMatcherService.ArgumentsMethodInvocation;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.ArgumentsRepresentation;
 import de.dhbw.rahmlab.geomalgelang.api.Arguments;
 import de.dhbw.rahmlab.geomalgelang.api.Result;
@@ -87,7 +84,7 @@ public class CGAMethodCodeGenerator {
 	}
 
 	public MethodSpec generateCode() throws AnnotationException {
-		List<ArgumentsMethodInvocation> argumentMethodInvocations = computeArgumentsMethodInvocations();
+		List<ArgumentsMethodInvocation> argumentMethodInvocations = argumentsMethodMatcherService.computeMatchingArgumentsMethods(this.annotatedMethod); // Das sollte nicht hiervon aufgerufen werden, sondern von dem Processor!
 		List<CodeBlock> argumentsMethodInvocationCode = computeArgumentsMethodInvocationCode(argumentMethodInvocations);
 
 		CodeBlock.Builder tryWithBodyBuilder = CodeBlock.builder()
@@ -158,21 +155,4 @@ public class CGAMethodCodeGenerator {
 
 		return cgaConstructionMethodInvocations;
 	}
-
-	protected List<ArgumentsMethodInvocation> computeArgumentsMethodInvocations() throws AnnotationException {
-		var decomposedParams = DecomposedParameterFactory.decompose(this.annotatedMethod.parameters);
-		var cgaVarNameParameterGroups = CgaVarNameParameterGroupFactory.group(decomposedParams);
-		var argumentsMethodInvocations = matchArgumentsMethods(cgaVarNameParameterGroups);
-		return argumentsMethodInvocations;
-	}
-
-	protected List<ArgumentsMethodInvocation> matchArgumentsMethods(List<CgaVarNameParameterGroup> cgaVarNameParameterGroups) throws AnnotationException {
-		ArrayList<ArgumentsMethodInvocation> methodInvocations = new ArrayList<>(cgaVarNameParameterGroups.size());
-		for (CgaVarNameParameterGroup cgaVarNameParameterGroup : cgaVarNameParameterGroups) {
-			ArgumentsMethodInvocation argumentsMethodInvocationData = argumentsMethodMatcherService.matchFrom(cgaVarNameParameterGroup, this.annotatedMethod);
-			methodInvocations.add(argumentsMethodInvocationData);
-		}
-		return methodInvocations;
-	}
-
 }
