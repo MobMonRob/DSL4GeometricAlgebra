@@ -1,6 +1,7 @@
 package de.dhbw.rahmlab.geomalgelang.annotation.processing.common;
 
 import com.google.auto.service.AutoService;
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.CGAMethodCodeGenerator;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.cga.CGAAnnotatedMethodRepresentation;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.MethodCodeGenerator;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.methodsMatching.ArgumentsMethodMatchingService;
@@ -106,7 +107,7 @@ public class CGAProcessor extends AbstractProcessor {
 		for (CGAAnnotatedMethodRepresentation cgaCGAAnnotatedMethod : methodGroup) {
 			var argumentMethodInvocations = this.argumentsMethodMatcherService.computeMatchingArgumentsMethods(cgaCGAAnnotatedMethod);
 			var resultMethodName = this.resultMethodMatchingService.computeMatchingResultMethod(cgaCGAAnnotatedMethod).identifier;
-			MethodCodeGenerator methodCodeGenerator = new MethodCodeGenerator(cgaCGAAnnotatedMethod, argumentMethodInvocations, resultMethodName);
+			MethodCodeGenerator methodCodeGenerator = new CGAMethodCodeGenerator(cgaCGAAnnotatedMethod, argumentMethodInvocations, resultMethodName);
 			methodCodeGenerators.add(methodCodeGenerator);
 		}
 		return methodCodeGenerators;

@@ -11,7 +11,7 @@ import de.dhbw.rahmlab.geomalgelang.api.Result;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MethodCodeGenerator {
+public abstract class MethodCodeGenerator {
 
 	protected static final ClassName programClass = ClassName.get(Program.class);
 	protected static final ClassName argumentsClass = ClassName.get(Arguments.class);
@@ -40,25 +40,7 @@ public class MethodCodeGenerator {
 		return method;
 	}
 
-	protected CodeBlock sourceProvidingBody(CodeBlock sourceUsingBody) {
-		CodeBlock.Builder builder = CodeBlock.builder();
-
-		String sourceValue = this.annotatedMethod.cgaMethodAnnotation.value();
-		if (sourceValue.contains("\n")) {
-			builder
-				.add("String source = $>\"\"\"\n$L\"\"\";\n$<", sourceValue);
-		} else {
-			builder
-				.addStatement("String source = $S", sourceValue);
-		}
-
-		builder
-			//.beginControlFlow("")
-			.add(sourceUsingBody);
-		//.endControlFlow();
-
-		return builder.build();
-	}
+	protected abstract CodeBlock sourceProvidingBody(CodeBlock sourceUsingBody);
 
 	protected CodeBlock sourceUsingBody(CodeBlock programUsingBody) {
 		CodeBlock.Builder builder = CodeBlock.builder();
