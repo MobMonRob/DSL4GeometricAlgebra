@@ -1,6 +1,10 @@
 package de.dhbw.rahmlab.geomalgelang.test;
 
 import de.dhbw.rahmlab.geomalgelang.test.common.gen.WrapperGen;
+import de.orat.math.cga.api.CGAMultivector;
+import static de.orat.math.cga.api.CGAMultivector.inf;
+import static de.orat.math.cga.api.CGAMultivector.o;
+import de.orat.math.cga.api.CGARoundPointIPNS;
 import de.orat.math.cga.api.iCGAFlat;
 import de.orat.math.cga.api.iCGATangentOrRound;
 import org.jogamp.vecmath.Point3d;
@@ -49,25 +53,25 @@ public class AnnotationTest {
         StringBuilder result = new StringBuilder();
         result.append(name);
         result.append("= ");
-        boolean isFirstVectorWritten = false;
+        boolean hasScalarPart = false;
         if (Math.abs(coordinates[0]) > precision){
             result.append(String.valueOf(coordinates[0]));
-            isFirstVectorWritten = true;
+            hasScalarPart = true;
         }
         for (int i=1;i<coordinates.length;i++){
             if (Math.abs(coordinates[i]) > precision){
                 if (coordinates[i] < 0){
                     result.append("-");
-                } else if (isFirstVectorWritten){
+                } else if (hasScalarPart){
                     result.append("+");
                 }
                 result.append(String.valueOf(Math.abs(coordinates[i])));
                 result.append(baseVectorNames[i]);
-                isFirstVectorWritten = true;
+                hasScalarPart = true;
             }
         }
-        result.deleteCharAt(result.length()-1);
-        //result.append(")");
+        //result.deleteCharAt(result.length()-1);
+        result.append(")");
         return result.toString();
     }
     
@@ -316,15 +320,21 @@ public class AnnotationTest {
 		System.out.println(toString("plane_1",pl1, eps));
 		double[] pl2 = WrapperGen.INSTANCE.planeOPNS2(p1,n);
 		System.out.println(toString("plane_2",pl2, eps));
+		
 	}
 	
 	@Test
 	void compositionOfPlanePC1(){
-		Point3d p = new Point3d(1d,1d,1d);
+		Point3d P3 = new Point3d(0d,0d,1d);
+		Point3d P = new Point3d(1d,1d,1d);
 		System.out.println("------------------------ composition of plane PC ------------------");
-		double[] result = WrapperGen.INSTANCE.planePC1(p);
+		double[] result = WrapperGen.INSTANCE.planePC1(P3, P);
 		//PC= -0.9999999999999993e1+0.9999999999999993e
 		System.out.println(toString("PC",result, eps));
+		// (ε₀∧P3∧P∧εᵢ)*
+		CGAMultivector m = o.op(CGAMultivector.createEz(1d)).op(new CGARoundPointIPNS(P)).op(inf).dual();
+		System.out.println(toString("PC-java",result, eps));
+		// PC-java= -0.9999999999999993e1+0.9999999999999993e
 	}
 	
 	/*@Test

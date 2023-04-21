@@ -195,8 +195,8 @@ public interface Wrapper {
 		@CGA("x")
         double[] planeOPNS2(Point3d x_plane_opns, Vector3d x_plane_opns_2);
         
-		@CGA("(ε₀∧ε₃∧P∧εᵢ)*")
-		public double[] planePC1(Point3d P_euclidean_vector);
+		@CGA("(ε₀∧P3∧P∧εᵢ)*")
+		public double[] planePC1(Point3d P3_round_point_ipns, Point3d P_round_point_ipns);
 		
 		@CGA("(ε₀^ε₃^P^εᵢ)*")
 		public iCGAFlat.EuclideanParameters planePC(Point3d P_round_point_ipns);
