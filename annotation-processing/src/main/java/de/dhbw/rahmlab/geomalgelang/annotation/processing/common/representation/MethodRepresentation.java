@@ -1,25 +1,27 @@
 package de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation;
 
-import java.util.ArrayList;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.VariableElement;
+import lombok.EqualsAndHashCode;
 
-public record MethodRepresentation(ExecutableElement element, String identifier, String returnType, List<ParameterRepresentation> parameters) {
+@EqualsAndHashCode
+public class MethodRepresentation {
+
+	public final ExecutableElement element;
+	public final String identifier;
+	public final String returnType;
+	public final List<ParameterRepresentation> parameters; // unmodifiable
 
 	public MethodRepresentation(ExecutableElement element) {
-		this(element, element.getSimpleName().toString(), element.getReturnType().toString(), MethodRepresentation.computeParameters(element));
+		this.element = element;
+		this.identifier = element.getSimpleName().toString();
+		this.returnType = element.getReturnType().toString();
+		this.parameters = computeParameters(element);
 	}
 
 	protected static List<ParameterRepresentation> computeParameters(ExecutableElement element) {
-		List<? extends VariableElement> parameterElements = element.getParameters();
-
-		List<ParameterRepresentation> parameters = new ArrayList<>(parameterElements.size());
-		for (VariableElement parameterElement : parameterElements) {
-			ParameterRepresentation parameter = new ParameterRepresentation(parameterElement);
-			parameters.add(parameter);
-		}
-
-		return parameters;
+		return element.getParameters().stream()
+			.map(e -> new ParameterRepresentation(e))
+			.toList(); // unmodifiable
 	}
 }

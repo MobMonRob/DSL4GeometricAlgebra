@@ -9,10 +9,10 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.ArgumentsMethodMatcherService;
-import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.ArgumentsMethodMatcherService.ArgumentsMethodInvocationRepresentation;
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.ArgumentsMethodMatcherService.ArgumentsMethodInvocation;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.CgaVarNameParameterGroupFactory;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.CgaVarNameParameterGroupFactory.CgaVarNameParameterGroup;
-import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.DecomposedIdentifierParameterRepresentation;
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.DecomposedParameterFactory;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.ArgumentsRepresentation;
 import de.dhbw.rahmlab.geomalgelang.api.Arguments;
 import de.dhbw.rahmlab.geomalgelang.api.Result;
@@ -87,7 +87,7 @@ public class CGAMethodCodeGenerator {
 	}
 
 	public MethodSpec generateCode() throws AnnotationException {
-		List<ArgumentsMethodInvocationRepresentation> argumentMethodInvocations = computeArgumentsMethodInvocations();
+		List<ArgumentsMethodInvocation> argumentMethodInvocations = computeArgumentsMethodInvocations();
 		List<CodeBlock> argumentsMethodInvocationCode = computeArgumentsMethodInvocationCode(argumentMethodInvocations);
 
 		CodeBlock.Builder tryWithBodyBuilder = CodeBlock.builder()
@@ -110,7 +110,7 @@ public class CGAMethodCodeGenerator {
 			.addStatement("return answerDecomposed");
 		CodeBlock tryWithBody = tryWithBodyBuilder.build();
 
-		MethodSpec method = MethodSpec.overriding(this.annotatedMethod.methodElement)
+		MethodSpec method = MethodSpec.overriding(this.annotatedMethod.element)
 			.addStatement("String source = $S", this.annotatedMethod.cgaMethodAnnotation.value())
 			.addCode("try ($1T program = new $1T(source)) {\n", programClass)
 			.addCode("$>")
@@ -122,33 +122,33 @@ public class CGAMethodCodeGenerator {
 	}
 
 	protected String matchResultMethodName() throws AnnotationException {
-		MethodRepresentation method = this.annotatedMethod.methodRepresentation;
-		String returnType = method.returnType();
+		MethodRepresentation method = this.annotatedMethod;
+		String returnType = method.returnType;
 
 		List<OverloadableMethodRepresentation> methods = resultRepresentation.returnTypeToMethods.get(returnType);
 		if (methods == null) {
-			throw AnnotationException.create(this.annotatedMethod.methodElement, "Return type \"%s\" is not supported.", returnType);
+			throw AnnotationException.create(this.annotatedMethod.element, "Return type \"%s\" is not supported.", returnType);
 		}
 
 		// Parameters are currently not supported.
 		List<MethodRepresentation> flattenedMethods = methods.stream()
 			.flatMap(m -> m.getOverloadsView().stream())
-			.filter(m -> m.parameters().isEmpty())
+			.filter(m -> m.parameters.isEmpty())
 			.toList();
 
 		if (flattenedMethods.size() != 1) {
-			throw AnnotationException.create(this.annotatedMethod.methodElement, "Found %s methods without parameters matching returnType \"%s\", but expected 1.", flattenedMethods.size(), returnType);
+			throw AnnotationException.create(this.annotatedMethod.element, "Found %s methods without parameters matching returnType \"%s\", but expected 1.", flattenedMethods.size(), returnType);
 		}
-		String identifier = flattenedMethods.get(0).identifier();
+		String identifier = flattenedMethods.get(0).identifier;
 
 		return identifier;
 	}
 
-	protected List<CodeBlock> computeArgumentsMethodInvocationCode(List<ArgumentsMethodInvocationRepresentation> methodInvocations) {
+	protected List<CodeBlock> computeArgumentsMethodInvocationCode(List<ArgumentsMethodInvocation> methodInvocations) {
 		List<CodeBlock> cgaConstructionMethodInvocations = new ArrayList<>(methodInvocations.size());
 		for (var methodInvocation : methodInvocations) {
 			CodeBlock.Builder cgaConstructionMethodInvocation = CodeBlock.builder();
-			cgaConstructionMethodInvocation.add(".$L($S", methodInvocation.method.identifier(), methodInvocation.cgaVarName);
+			cgaConstructionMethodInvocation.add(".$L($S", methodInvocation.method.identifier, methodInvocation.cgaVarName);
 			for (String argument : methodInvocation.arguments) {
 				cgaConstructionMethodInvocation.add(", $L", argument);
 			}
@@ -159,17 +159,17 @@ public class CGAMethodCodeGenerator {
 		return cgaConstructionMethodInvocations;
 	}
 
-	protected List<ArgumentsMethodInvocationRepresentation> computeArgumentsMethodInvocations() throws AnnotationException {
-		List<CgaVarNameParameterGroup> cgaVarNameParameterGroups = CgaVarNameParameterGroupFactory.computeFrom(this.annotatedMethod.decomposedParameters);
-
-		List<ArgumentsMethodInvocationRepresentation> argumentsMethodInvocations = matchArgumentsMethods(cgaVarNameParameterGroups);
+	protected List<ArgumentsMethodInvocation> computeArgumentsMethodInvocations() throws AnnotationException {
+		var decomposedParams = DecomposedParameterFactory.decompose(this.annotatedMethod.parameters);
+		var cgaVarNameParameterGroups = CgaVarNameParameterGroupFactory.group(decomposedParams);
+		var argumentsMethodInvocations = matchArgumentsMethods(cgaVarNameParameterGroups);
 		return argumentsMethodInvocations;
 	}
 
-	protected List<ArgumentsMethodInvocationRepresentation> matchArgumentsMethods(List<CgaVarNameParameterGroup> cgaVarNameParameterGroups) throws AnnotationException {
-		ArrayList<ArgumentsMethodInvocationRepresentation> methodInvocations = new ArrayList<>(cgaVarNameParameterGroups.size());
+	protected List<ArgumentsMethodInvocation> matchArgumentsMethods(List<CgaVarNameParameterGroup> cgaVarNameParameterGroups) throws AnnotationException {
+		ArrayList<ArgumentsMethodInvocation> methodInvocations = new ArrayList<>(cgaVarNameParameterGroups.size());
 		for (CgaVarNameParameterGroup cgaVarNameParameterGroup : cgaVarNameParameterGroups) {
-			ArgumentsMethodInvocationRepresentation argumentsMethodInvocationData = argumentsMethodMatcherService.matchFrom(cgaVarNameParameterGroup, this.annotatedMethod);
+			ArgumentsMethodInvocation argumentsMethodInvocationData = argumentsMethodMatcherService.matchFrom(cgaVarNameParameterGroup, this.annotatedMethod);
 			methodInvocations.add(argumentsMethodInvocationData);
 		}
 		return methodInvocations;

@@ -2,8 +2,8 @@ package de.dhbw.rahmlab.geomalgelang.annotation.processing.common;
 
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.cga.CGAAnnotatedMethodRepresentation;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.CgaVarNameParameterGroupFactory.CgaVarNameParameterGroup;
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.DecomposedParameterFactory.DecomposedIdentifierParameter;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.ArgumentsRepresentation;
-import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.DecomposedIdentifierParameterRepresentation;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.MethodRepresentation;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.OverloadableMethodRepresentation;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.ParameterRepresentation;
@@ -21,13 +21,13 @@ import lombok.EqualsAndHashCode;
 public class ArgumentsMethodMatcherService {
 
 	@EqualsAndHashCode
-	public static class ArgumentsMethodInvocationRepresentation {
+	public static class ArgumentsMethodInvocation {
 
 		public final MethodRepresentation method;
 		public final String cgaVarName;
 		public final List<String> arguments; // unmodifiable
 
-		private ArgumentsMethodInvocationRepresentation(MethodRepresentation method, String cgaVarName, List<String> arguments) {
+		private ArgumentsMethodInvocation(MethodRepresentation method, String cgaVarName, List<String> arguments) {
 			this.method = method;
 			this.cgaVarName = cgaVarName;
 			this.arguments = arguments;
@@ -40,7 +40,7 @@ public class ArgumentsMethodMatcherService {
 		this.argumentsRepresentation = argumentsRepresentation;
 	}
 
-	public ArgumentsMethodInvocationRepresentation matchFrom(CgaVarNameParameterGroup cgaVarNameParameterGroup, CGAAnnotatedMethodRepresentation origin) throws AnnotationException {
+	public ArgumentsMethodInvocation matchFrom(CgaVarNameParameterGroup cgaVarNameParameterGroup, CGAAnnotatedMethodRepresentation origin) throws AnnotationException {
 		var cgaVarName = cgaVarNameParameterGroup.cgaVarName;
 		var parameters = cgaVarNameParameterGroup.parameters;
 
@@ -48,14 +48,14 @@ public class ArgumentsMethodMatcherService {
 			.map(p -> p.originParameter.identifier())
 			.toList(); // unmodifiable
 
-		MethodRepresentation method = matchArgumentsMethodFrom(cgaVarName, parameters, origin.methodElement);
+		MethodRepresentation method = matchArgumentsMethodFrom(cgaVarName, parameters, origin.element);
 
-		return new ArgumentsMethodInvocationRepresentation(method, cgaVarName, arguments);
+		return new ArgumentsMethodInvocation(method, cgaVarName, arguments);
 	}
 
-	protected MethodRepresentation matchArgumentsMethodFrom(String cgaVarName, List<DecomposedIdentifierParameterRepresentation> callerParameters, ExecutableElement methodElement) throws AnnotationException {
+	protected MethodRepresentation matchArgumentsMethodFrom(String cgaVarName, List<DecomposedIdentifierParameter> callerParameters, ExecutableElement methodElement) throws AnnotationException {
 		// Check that cgaConstructorMethod of the whole group is identical.
-		Iterator<DecomposedIdentifierParameterRepresentation> groupIterator = callerParameters.iterator();
+		Iterator<DecomposedIdentifierParameter> groupIterator = callerParameters.iterator();
 		// Safe assumption that callerParameters contains at least 1 element (groupDecomposedParameters()).
 		String remainingVarName = groupIterator.next().remainingVarName;
 		Optional<OverloadableMethodRepresentation> cgaConstructorMethod = argumentsRepresentation.getMethodForLongestMethodNamePrefixing(remainingVarName);
@@ -76,7 +76,7 @@ public class ArgumentsMethodMatcherService {
 		// Same identifier and parameter count and parameter types sequence implies identical method.
 		int expectedCalleeParameterSize = 1 + callerParameters.size();
 		List<MethodRepresentation> calleesWithMatchingParameterSize = callees.getOverloadsView().stream()
-			.filter(m -> m.parameters().size() == expectedCalleeParameterSize)
+			.filter(m -> m.parameters.size() == expectedCalleeParameterSize)
 			.toList();
 		// Check matching caller and callee parameter size.
 		if (calleesWithMatchingParameterSize.isEmpty()) {
@@ -90,7 +90,7 @@ public class ArgumentsMethodMatcherService {
 			boolean matched = true;
 			for (int i = 0; i < callerParametersSize; ++i) {
 				ParameterRepresentation callerParameter = callerParameters.get(i).originParameter;
-				ParameterRepresentation calleeParameter = callee.parameters().get(i + 1);
+				ParameterRepresentation calleeParameter = callee.parameters.get(i + 1);
 
 				TypeKind callerParameterTypeKind = callerParameter.element().asType().getKind();
 				TypeKind calleeParameterTypeKind = calleeParameter.element().asType().getKind();
@@ -107,9 +107,9 @@ public class ArgumentsMethodMatcherService {
 					try {
 						calleeParameterClass = Class.forName(calleeParameter.type());
 					} catch (ClassNotFoundException ex) {
-						String calleeEnclosingClass = callee.element().getEnclosingElement().asType().toString();
-						String calleeIdentifier = callee.identifier();
-						String calleeParamsTypes = ((ExecutableType) callee.element().asType()).getParameterTypes().toString();
+						String calleeEnclosingClass = callee.element.getEnclosingElement().asType().toString();
+						String calleeIdentifier = callee.identifier;
+						String calleeParamsTypes = ((ExecutableType) callee.element.asType()).getParameterTypes().toString();
 
 						throw AnnotationException.create(calleeParameter.element(), ex, "In callee method \"%s::%s(%s)\" parameter No. %s: class not found: \"%s\"", calleeEnclosingClass, calleeIdentifier, calleeParamsTypes, i + 1 + 1, calleeParameter.type());
 					}

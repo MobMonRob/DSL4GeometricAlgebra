@@ -1,6 +1,6 @@
 package de.dhbw.rahmlab.geomalgelang.annotation.processing.common;
 
-import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.DecomposedIdentifierParameterRepresentation;
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.DecomposedParameterFactory.DecomposedIdentifierParameter;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,16 +12,16 @@ public abstract class CgaVarNameParameterGroupFactory {
 	public static class CgaVarNameParameterGroup {
 
 		public final String cgaVarName;
-		public final List<DecomposedIdentifierParameterRepresentation> parameters; // unmodifiable
+		public final List<DecomposedIdentifierParameter> parameters; // unmodifiable
 
-		private CgaVarNameParameterGroup(String cgaVarName, List<DecomposedIdentifierParameterRepresentation> parameters) {
+		private CgaVarNameParameterGroup(String cgaVarName, List<DecomposedIdentifierParameter> parameters) {
 			this.cgaVarName = cgaVarName;
 			this.parameters = parameters;
 		}
 	}
 
-	public static List<CgaVarNameParameterGroup> computeFrom(List<DecomposedIdentifierParameterRepresentation> decomposedParameters) {
-		LinkedHashMap<String, List<DecomposedIdentifierParameterRepresentation>> cgaVarNameGroupedDecomposedParameters = decomposedParameters.stream()
+	public static List<CgaVarNameParameterGroup> group(List<DecomposedIdentifierParameter> decomposedParameters) {
+		LinkedHashMap<String, List<DecomposedIdentifierParameter>> cgaVarNameGroupedDecomposedParameters = decomposedParameters.stream()
 			.collect(Collectors.groupingBy(dp -> dp.cgaVarName, LinkedHashMap::new, Collectors.toUnmodifiableList()));
 
 		List<CgaVarNameParameterGroup> cgaVarNameParameterGroups = cgaVarNameGroupedDecomposedParameters.entrySet().stream()

@@ -1,8 +1,6 @@
 package de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation;
 
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.AnnotationException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -11,20 +9,15 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import lombok.EqualsAndHashCode;
 
-@EqualsAndHashCode
-public class AnnotatedMethodRepresentation {
+@EqualsAndHashCode(callSuper = true)
+public class AnnotatedMethodRepresentation extends MethodRepresentation {
 
-	public final ExecutableElement methodElement; // Redundant to methodRepresentation.element
 	public final String enclosingInterfaceQualifiedName;
-	public final MethodRepresentation methodRepresentation;
-	public final List<DecomposedIdentifierParameterRepresentation> decomposedParameters;
 
 	public AnnotatedMethodRepresentation(ExecutableElement methodElement) throws AnnotationException {
-		this.methodElement = methodElement;
+		super(methodElement);
 		this.enclosingInterfaceQualifiedName = getEnclosingInterfaceQualifiedName(methodElement);
 		ensureModifiersContainPublic(methodElement);
-		this.methodRepresentation = new MethodRepresentation(methodElement);
-		this.decomposedParameters = decomposeParameters(this.methodRepresentation.parameters());
 	}
 
 	protected static void ensureModifiersContainPublic(ExecutableElement methodElement) throws AnnotationException {
@@ -47,14 +40,5 @@ public class AnnotatedMethodRepresentation {
 		}
 
 		return enclosingInterface.getQualifiedName().toString();
-	}
-
-	protected static List<DecomposedIdentifierParameterRepresentation> decomposeParameters(List<ParameterRepresentation> parameters) throws AnnotationException {
-		List<DecomposedIdentifierParameterRepresentation> decomposedParameters = new ArrayList<>(parameters.size());
-		for (ParameterRepresentation parameter : parameters) {
-			DecomposedIdentifierParameterRepresentation decomposedParameter = new DecomposedIdentifierParameterRepresentation(parameter);
-			decomposedParameters.add(decomposedParameter);
-		}
-		return decomposedParameters;
 	}
 }

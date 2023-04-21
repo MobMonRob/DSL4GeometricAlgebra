@@ -1,7 +1,5 @@
 package de.dhbw.rahmlab.geomalgelang.annotation.processing.common;
 
-import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.AnnotationException;
-import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.ExceptionHandler;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;

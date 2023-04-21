@@ -64,7 +64,7 @@ public class ClassRepresentation<T> {
 			String identifier = inputMethod.identifier;
 			List<MethodRepresentation> overloads = inputMethod.getOverloadsView();
 			for (var overload : overloads) {
-				String returnType = overload.returnType();
+				String returnType = overload.returnType;
 				Map<String, OverloadableMethodRepresentation> identifierToMethod = returnTypeToIdentifierToMethod.get(returnType);
 				if (identifierToMethod == null) {
 					identifierToMethod = new HashMap<>();
@@ -100,7 +100,7 @@ public class ClassRepresentation<T> {
 		Map<String, OverloadableMethodRepresentation> methodNameToMethod = new HashMap<>(methodElements.size());
 		for (ExecutableElement methodElement : methodElements) {
 			MethodRepresentation overload = new MethodRepresentation(methodElement);
-			String identifier = overload.identifier();
+			String identifier = overload.identifier;
 
 			OverloadableMethodRepresentation method = methodNameToMethod.get(identifier);
 			if (method == null) {

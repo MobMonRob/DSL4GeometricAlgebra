@@ -39,8 +39,8 @@ public class OverloadableMethodRepresentation {
 	}
 
 	private void checkOverload(MethodRepresentation overload) {
-		if (!overload.identifier().equals(identifier)) {
-			throw new IllegalArgumentException(String.format("overload.identifier() \"%s\" does not match common identifier \"%s\"", overload.identifier(), identifier));
+		if (!overload.identifier.equals(identifier)) {
+			throw new IllegalArgumentException(String.format("overload.identifier() \"%s\" does not match common identifier \"%s\"", overload.identifier, identifier));
 		}
 	}
 }
