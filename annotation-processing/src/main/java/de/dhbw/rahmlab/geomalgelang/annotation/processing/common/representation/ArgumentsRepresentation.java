@@ -8,7 +8,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import javax.lang.model.element.TypeElement;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 public class ArgumentsRepresentation extends ClassRepresentation<Arguments> {
 
 	protected final InvertedRadixTree<OverloadableMethodRepresentation> methodsPrefixTrie;

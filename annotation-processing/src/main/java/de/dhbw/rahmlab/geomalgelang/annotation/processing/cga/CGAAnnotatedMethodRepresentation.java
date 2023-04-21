@@ -4,7 +4,9 @@ import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.AnnotationException;
 import de.dhbw.rahmlab.geomalgelang.api.annotation.CGA;
 import javax.lang.model.element.ExecutableElement;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 public class CGAAnnotatedMethodRepresentation extends AnnotatedMethodRepresentation {
 
 	public final CGA cgaMethodAnnotation;

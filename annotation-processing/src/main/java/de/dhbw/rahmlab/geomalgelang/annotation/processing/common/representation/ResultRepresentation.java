@@ -7,7 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.lang.model.element.TypeElement;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 public class ResultRepresentation extends ClassRepresentation<Result> {
 
 	public final Map<String, List<OverloadableMethodRepresentation>> returnTypeToMethods; // unmodifiable
