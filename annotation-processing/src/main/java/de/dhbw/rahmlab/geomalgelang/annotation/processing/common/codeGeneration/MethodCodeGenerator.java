@@ -1,4 +1,4 @@
-package de.dhbw.rahmlab.geomalgelang.annotation.processing;
+package de.dhbw.rahmlab.geomalgelang.annotation.processing.common.codeGeneration;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;

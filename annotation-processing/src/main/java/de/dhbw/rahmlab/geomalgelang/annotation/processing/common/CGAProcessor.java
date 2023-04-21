@@ -1,9 +1,10 @@
 package de.dhbw.rahmlab.geomalgelang.annotation.processing.common;
 
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.codeGeneration.MethodCodeGenerator;
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.codeGeneration.ClassCodeGenerator;
 import com.google.auto.service.AutoService;
-import de.dhbw.rahmlab.geomalgelang.annotation.processing.CGAMethodCodeGenerator;
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.cga.CGAMethodCodeGenerator;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.cga.CGAAnnotatedMethodRepresentation;
-import de.dhbw.rahmlab.geomalgelang.annotation.processing.MethodCodeGenerator;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.methodsMatching.ArgumentsMethodMatchingService;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.methodsMatching.ResultMethodMatchingService;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.ArgumentsRepresentation;

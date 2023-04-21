@@ -1,4 +1,4 @@
-package de.dhbw.rahmlab.geomalgelang.annotation.processing.common;
+package de.dhbw.rahmlab.geomalgelang.annotation.processing.common.codeGeneration;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
@@ -6,7 +6,7 @@ import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
-import de.dhbw.rahmlab.geomalgelang.annotation.processing.MethodCodeGenerator;
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.AnnotationException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
