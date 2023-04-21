@@ -1,6 +1,7 @@
 package de.dhbw.rahmlab.geomalgelang.api;
 
 import de.orat.math.cga.api.CGAMultivector;
+import de.orat.math.cga.api.CGAPlaneIPNS;
 import de.orat.math.cga.api.iCGAFlat;
 import de.orat.math.cga.api.iCGAPointPair.PointPair;
 import de.orat.math.cga.api.iCGATangentOrRound;
@@ -37,12 +38,11 @@ public class Result {
 		return inner.get(0).decomposeTangentOrRound();
 	}
 
-	public iCGAFlat.EuclideanParameters firstDecomposeFlat() {
-		return inner.get(0).decomposeFlat();
+	public iCGAFlat.EuclideanParameters firstDecomposePlaneIPNS() {
+		return (new CGAPlaneIPNS(inner.get(0))).decomposeFlat();
 	}
-
-	public iCGAFlat.EuclideanParameters firstDecomposeFlat(Point3d probePoint) {
-		return inner.get(0).decomposeFlat(probePoint);
+	public iCGAFlat.EuclideanParameters firstDecomposePlaneIPNS(Point3d probePoint) {
+		return (new CGAPlaneIPNS(inner.get(0))).decomposeFlat(probePoint);
 	}
 
 	public Vector3d firstDecomposeAttitude() {

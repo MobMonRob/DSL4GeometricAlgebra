@@ -1,6 +1,7 @@
 package de.dhbw.rahmlab.geomalgelang.test.common;
 
 import de.dhbw.rahmlab.geomalgelang.api.annotation.CGA;
+import de.orat.math.cga.api.iCGAFlat;
 import de.orat.math.cga.api.iCGATangentOrRound;
 import org.jogamp.vecmath.Point3d;
 import org.jogamp.vecmath.Vector3d;
@@ -194,6 +195,11 @@ public interface Wrapper {
 		@CGA("x")
         double[] planeOPNS2(Point3d x_plane_opns, Vector3d x_plane_opns_2);
         
+		@CGA("(ε₀∧ε₃∧P∧εᵢ)*")
+		public double[] planePC1(Point3d P_euclidean_vector);
+		
+		@CGA("(ε₀^ε₃^P^εᵢ)*")
+		public iCGAFlat.EuclideanParameters planePC(Point3d P_round_point_ipns);
 		
 		
 		// complex tests
