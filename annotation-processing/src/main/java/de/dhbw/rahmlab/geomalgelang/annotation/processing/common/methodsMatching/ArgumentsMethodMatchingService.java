@@ -3,7 +3,6 @@ package de.dhbw.rahmlab.geomalgelang.annotation.processing.common.methodsMatchin
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.AnnotationException;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.methodsMatching.CgaVarNameParameterGroupFactory.CgaVarNameParameterGroup;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.methodsMatching.DecomposedParameterFactory.DecomposedIdentifierParameter;
-import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.MethodRepresentation;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.ArgumentsRepresentation;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.MethodRepresentation;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.OverloadableMethodRepresentation;

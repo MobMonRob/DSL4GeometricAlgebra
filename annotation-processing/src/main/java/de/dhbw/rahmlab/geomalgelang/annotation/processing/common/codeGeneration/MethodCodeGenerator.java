@@ -17,7 +17,7 @@ public abstract class MethodCodeGenerator<T extends AnnotatedMethodRepresentatio
 	protected static final ClassName argumentsClass = ClassName.get(Arguments.class);
 	protected static final ClassName resultClass = ClassName.get(Result.class);
 
-	protected final T annotatedMethod;
+	public final T annotatedMethod;
 	protected final List<ArgumentsMethodInvocation> argumentMethodInvocations;
 	protected final String resultMethodName;
 
