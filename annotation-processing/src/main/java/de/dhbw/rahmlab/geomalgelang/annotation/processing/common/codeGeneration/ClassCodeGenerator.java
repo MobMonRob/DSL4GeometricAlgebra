@@ -29,7 +29,7 @@ public class ClassCodeGenerator {
 		this.methodCodeGenerators = methodCodeGenerators;
 	}
 
-	public void generateCode(Elements elementUtils, Filer filer) throws IOException, AnnotationException {
+	public void generateCode(Elements elementUtils, Filer filer) throws IOException {
 		TypeElement implementingInterfaceName = elementUtils.getTypeElement(this.qualifiedInterfaceName);
 		String genClassName = implementingInterfaceName.getSimpleName() + CLASS_SUFFIX;
 

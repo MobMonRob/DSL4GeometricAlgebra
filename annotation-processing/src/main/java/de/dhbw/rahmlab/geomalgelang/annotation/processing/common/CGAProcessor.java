@@ -84,7 +84,7 @@ public class CGAProcessor extends AbstractProcessor {
 		return true;
 	}
 
-	protected void generateCode(List<ClassCodeGenerator> classCodeGenerators) throws IOException, AnnotationException {
+	protected void generateCode(List<ClassCodeGenerator> classCodeGenerators) throws IOException {
 		for (ClassCodeGenerator classCodeGenerator : classCodeGenerators) {
 			classCodeGenerator.generateCode(this.elementUtils, this.filer);
 		}
