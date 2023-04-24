@@ -39,6 +39,8 @@ public class CGAProcessor extends AbstractProcessor {
 	protected CGAMethodCodeGeneratorFactory cgaMethodCodeGeneratorFactory;
 	protected CGAPATHMethodCodeGeneratorFactory cgapathMethodCodeGeneratorFactory;
 
+	private volatile boolean initialized = false;
+
 	protected static final Set<String> supportedAnnotationTypes
 		= Collections.unmodifiableSet(new HashSet<>(Arrays.asList(new String[]{CGA.class.getCanonicalName(), CGAPATH.class.getCanonicalName()})));
 
@@ -71,11 +73,23 @@ public class CGAProcessor extends AbstractProcessor {
 
 			this.cgaMethodCodeGeneratorFactory = new CGAMethodCodeGeneratorFactory(argumentsMethodMatchingService, resultMethodMatchingService, this.exceptionHandler);
 			this.cgapathMethodCodeGeneratorFactory = new CGAPATHMethodCodeGeneratorFactory(argumentsMethodMatchingService, resultMethodMatchingService, this.exceptionHandler);
+
+			this.initialized = true;
 		});
+
+	}
+
+	@Override
+	protected synchronized boolean isInitialized() {
+		return super.isInitialized() && this.initialized;
 	}
 
 	@Override
 	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
+		if (!isInitialized()) {
+			throw new IllegalStateException("Can't proccess if not initialized properly.");
+		}
+
 		this.exceptionHandler.handle(() -> {
 			List<ClassCodeGenerator> classCodeGenerators = computeClassCodeGenerators(roundEnv);
 			generateCode(classCodeGenerators);
