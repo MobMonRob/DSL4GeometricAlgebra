@@ -6,14 +6,18 @@ import com.google.auto.service.AutoService;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.cga.CGAMethodCodeGenerator;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.cga.CGAAnnotatedMethodRepresentation;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.methodsMatching.ArgumentsMethodMatchingService;
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.methodsMatching.ArgumentsMethodMatchingService.ArgumentsMethodInvocation;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.methodsMatching.ResultMethodMatchingService;
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.AnnotatedMethodRepresentation;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.ArgumentsRepresentation;
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.MethodRepresentation;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.ResultRepresentation;
 import de.dhbw.rahmlab.geomalgelang.api.Arguments;
 import de.dhbw.rahmlab.geomalgelang.api.Result;
 import de.dhbw.rahmlab.geomalgelang.api.annotation.CGA;
 import de.dhbw.rahmlab.geomalgelang.api.annotation.CGAPATH;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -21,6 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
@@ -130,6 +135,39 @@ public class CGAProcessor extends AbstractProcessor {
 			// ExecutableElement is a safe assumption, because @Target(ElementType.METHOD) in CGA.java.
 			ExecutableElement method = (ExecutableElement) annotatedElement;
 			CGAAnnotatedMethodRepresentation annotatedMethod = new CGAAnnotatedMethodRepresentation(method);
+
+			annotatedMethods.add(annotatedMethod);
+		}
+
+		return annotatedMethods;
+	}
+	
+	protected record MCGargument<AMR2 extends AnnotatedMethodRepresentation>(AMR2 annotatedMethod, List<ArgumentsMethodInvocation> argumentMethodInvocations, String resultMethodName) {
+		
+	}
+
+	protected <AMR extends AnnotatedMethodRepresentation, MCG extends MethodCodeGenerator<AMR>> List<MCG> computeMethodCodeGeneratorsFrom(List<AMR> methodGroup, Function<MCGargument<AMR>, MCG> methodCodeGeneratorConstructor) throws AnnotationException {
+		List<MCG> methodCodeGenerators = new ArrayList<>(methodGroup.size());
+		for (AMR annotatedMethod : methodGroup) {
+			exceptionHandler.handle(() -> {
+				List<ArgumentsMethodInvocation> argumentMethodInvocations = this.argumentsMethodMatcherService.computeMatchingArgumentsMethods(annotatedMethod);
+				String resultMethodName = this.resultMethodMatchingService.computeMatchingResultMethod(annotatedMethod).identifier;
+				MCGargument<AMR> argument = new MCGargument(annotatedMethod, argumentMethodInvocations, resultMethodName);
+				MCG methodCodeGenerator = methodCodeGeneratorConstructor.apply(argument);
+				methodCodeGenerators.add(methodCodeGenerator);
+			});
+		}
+		return methodCodeGenerators;
+	}
+
+	protected <AMR extends AnnotatedMethodRepresentation> List<AMR> computeAnnotatedMethodsFrom(RoundEnvironment roundEnv, Class<? extends Annotation> annotationClass, Function<ExecutableElement, AMR> annotatedMethodRepresentationConstructor) throws AnnotationException {
+		Set<? extends Element> annotatedElements = roundEnv.getElementsAnnotatedWith(annotationClass);
+		List<AMR> annotatedMethods = new ArrayList<>(annotatedElements.size());
+
+		for (Element annotatedElement : annotatedElements) {
+			// ExecutableElement is a safe assumption, because @Target(ElementType.METHOD) in CGA.java.
+			ExecutableElement method = (ExecutableElement) annotatedElement;
+			AMR annotatedMethod = annotatedMethodRepresentationConstructor.apply(method);
 
 			annotatedMethods.add(annotatedMethod);
 		}
