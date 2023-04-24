@@ -1,9 +1,9 @@
 package de.dhbw.rahmlab.geomalgelang.annotation.processing.common.methodsMatching;
 
-import de.dhbw.rahmlab.geomalgelang.annotation.processing.cga.CGAAnnotatedMethodRepresentation;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.AnnotationException;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.methodsMatching.CgaVarNameParameterGroupFactory.CgaVarNameParameterGroup;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.methodsMatching.DecomposedParameterFactory.DecomposedIdentifierParameter;
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.AnnotatedMethodRepresentation;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.ArgumentsRepresentation;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.MethodRepresentation;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.OverloadableMethodRepresentation;
@@ -41,7 +41,7 @@ public class ArgumentsMethodMatchingService {
 		this.argumentsRepresentation = argumentsRepresentation;
 	}
 
-	public List<ArgumentsMethodInvocation> computeMatchingArgumentsMethods(CGAAnnotatedMethodRepresentation annotatedMethod) throws AnnotationException {
+	public List<ArgumentsMethodInvocation> computeMatchingArgumentsMethods(AnnotatedMethodRepresentation annotatedMethod) throws AnnotationException {
 		var decomposedParams = DecomposedParameterFactory.decompose(annotatedMethod.parameters);
 		var cgaVarNameParameterGroups = CgaVarNameParameterGroupFactory.group(decomposedParams);
 		var argumentsMethodInvocations = matchArgumentsMethods(cgaVarNameParameterGroups, annotatedMethod);
@@ -49,7 +49,7 @@ public class ArgumentsMethodMatchingService {
 		return argumentsMethodInvocations;
 	}
 
-	protected List<ArgumentsMethodInvocation> matchArgumentsMethods(List<CgaVarNameParameterGroup> cgaVarNameParameterGroups, CGAAnnotatedMethodRepresentation origin) throws AnnotationException {
+	protected List<ArgumentsMethodInvocation> matchArgumentsMethods(List<CgaVarNameParameterGroup> cgaVarNameParameterGroups, AnnotatedMethodRepresentation origin) throws AnnotationException {
 		ArrayList<ArgumentsMethodInvocation> methodInvocations = new ArrayList<>(cgaVarNameParameterGroups.size());
 
 		for (var cgaVarNameParameterGroup : cgaVarNameParameterGroups) {
@@ -60,7 +60,7 @@ public class ArgumentsMethodMatchingService {
 		return methodInvocations;
 	}
 
-	protected ArgumentsMethodInvocation matchArgumentsMethod(CgaVarNameParameterGroup cgaVarNameParameterGroup, CGAAnnotatedMethodRepresentation origin) throws AnnotationException {
+	protected ArgumentsMethodInvocation matchArgumentsMethod(CgaVarNameParameterGroup cgaVarNameParameterGroup, AnnotatedMethodRepresentation origin) throws AnnotationException {
 		var cgaVarName = cgaVarNameParameterGroup.cgaVarName;
 		var parameters = cgaVarNameParameterGroup.parameters;
 

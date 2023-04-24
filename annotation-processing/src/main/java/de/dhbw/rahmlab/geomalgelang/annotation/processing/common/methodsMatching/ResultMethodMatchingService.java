@@ -1,7 +1,7 @@
 package de.dhbw.rahmlab.geomalgelang.annotation.processing.common.methodsMatching;
 
-import de.dhbw.rahmlab.geomalgelang.annotation.processing.cga.CGAAnnotatedMethodRepresentation;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.AnnotationException;
+import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.AnnotatedMethodRepresentation;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.MethodRepresentation;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.OverloadableMethodRepresentation;
 import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.representation.ResultRepresentation;
@@ -15,7 +15,7 @@ public class ResultMethodMatchingService {
 		this.resultRepresentation = resultRepresentation;
 	}
 
-	public MethodRepresentation computeMatchingResultMethod(CGAAnnotatedMethodRepresentation annotatedMethod) throws AnnotationException {
+	public MethodRepresentation computeMatchingResultMethod(AnnotatedMethodRepresentation annotatedMethod) throws AnnotationException {
 		String returnType = annotatedMethod.returnType;
 
 		List<OverloadableMethodRepresentation> methods = resultRepresentation.returnTypeToMethods.get(returnType);

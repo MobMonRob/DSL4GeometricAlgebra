@@ -6,7 +6,6 @@ import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
-import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.AnnotationException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
