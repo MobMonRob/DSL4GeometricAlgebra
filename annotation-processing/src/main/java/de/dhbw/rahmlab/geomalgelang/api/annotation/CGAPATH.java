@@ -10,5 +10,5 @@ public @interface CGAPATH {
 	 * Name "value" allows to use the annotation without the methodname,
 	 * like: @CGA("a") instead of @CGA(value= "a")
 	 */
-	String value();
+	String value() default "";
 }

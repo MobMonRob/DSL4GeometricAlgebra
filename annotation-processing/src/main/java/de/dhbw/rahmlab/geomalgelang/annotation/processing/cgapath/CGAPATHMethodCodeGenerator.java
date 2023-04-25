@@ -31,6 +31,10 @@ public class CGAPATHMethodCodeGenerator extends MethodCodeGenerator<CGAPATHAnnot
 		ClassName enclosingInterface = ClassName.get(super.annotatedMethod.enclosingInterface);
 		String path = super.annotatedMethod.cgaPathMethodAnnotation.value();
 
+		if (path.length() == 0) {
+			path = String.format("./%s.ocga", super.annotatedMethod.identifier);
+		}
+
 		builder
 			.addStatement("String path = $S", path)
 			.beginControlFlow("try ($T in = $T.class.getResourceAsStream(path))", inputStreamClass, enclosingInterface)
