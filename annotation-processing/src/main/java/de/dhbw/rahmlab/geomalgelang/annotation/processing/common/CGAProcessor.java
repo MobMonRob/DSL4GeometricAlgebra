@@ -42,7 +42,9 @@ public class CGAProcessor extends AbstractProcessor {
 	private volatile boolean initialized = false;
 
 	protected static final Set<String> supportedAnnotationTypes
-		= Collections.unmodifiableSet(new HashSet<>(Arrays.asList(new String[]{CGA.class.getCanonicalName(), CGAPATH.class.getCanonicalName()})));
+		= Collections.unmodifiableSet(new HashSet<>(Arrays.asList(new String[]{
+		CGA.class.getCanonicalName(),
+		CGAPATH.class.getCanonicalName()})));
 
 	@Override
 	public Set<String> getSupportedAnnotationTypes() {
