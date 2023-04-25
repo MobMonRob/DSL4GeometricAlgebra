@@ -16,7 +16,7 @@ public class Program implements AutoCloseable {
 
 	protected Context context;
 	protected Value program;
-	protected static final String LANGUAGE_ID = "geomalgelang";
+	public static final String LANGUAGE_ID = "geomalgelang";
 
 	public Program(String source) {
 		this(Source.create(LANGUAGE_ID, source));
