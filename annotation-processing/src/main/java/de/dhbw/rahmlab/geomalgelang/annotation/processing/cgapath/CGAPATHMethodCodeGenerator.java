@@ -33,14 +33,15 @@ public class CGAPATHMethodCodeGenerator extends MethodCodeGenerator<CGAPATHAnnot
 
 		builder
 			.addStatement("String path = $S", path)
-			.beginControlFlow("""
-				try ( $T in = $T.class.getResourceAsStream(path);
-					var reader = new $T(new $T(in)) )
-				""", inputStreamClass, enclosingInterface, bufferedReaderClass, inputStreamReaderClass)
+			.beginControlFlow("try ($T in = $T.class.getResourceAsStream(path))", inputStreamClass, enclosingInterface)
+			.beginControlFlow("if (in == null)")
+			.addStatement("throw new $T(String.format(\"Path not found: %s\", path))", runtimeExceptionClass)
+			.endControlFlow()
+			.beginControlFlow("try (var reader = new $T(new $T(in)))", bufferedReaderClass, inputStreamReaderClass)
 			.addStatement("var source = $T.newBuilder($T.LANGUAGE_ID, reader, \"noname\").build()", sourceClass, programClass)
 			.add(sourceUsingBody)
 			.endControlFlow()
-			.beginControlFlow("catch ($T ex)", ioExceptionClass)
+			.nextControlFlow("catch ($T ex)", ioExceptionClass)
 			.addStatement("throw new $T(ex)", runtimeExceptionClass)
 			.endControlFlow();
 
