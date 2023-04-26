@@ -1,7 +1,7 @@
 # Common
 For more usage examples, see [DSL4GeometricAlgebra-Test](../DSL4GeometricAlgebra-Test/).
 
-The [@CGA annotation](#cga) generates a wrapper to invoke the provided cga code with the interface that the annotated method defines. \
+The [@CGA annotation](#cgaarbitrary-cga-code) generates a wrapper to invoke the provided cga code with the interface that the annotated method defines. \
 The [@CGAPATH annotation](#cgapath-annotation) generates a wrapper to invoke the cga code within the provided .ocga file with the interface that the annotated method defines.
 
 
