@@ -1,5 +1,7 @@
 package de.dhbw.rahmlab.geomalgelang.test;
 
+import de.dhbw.rahmlab.geomalgelang.api.EuclideanParametersFromPlaneIPNS;
+import de.dhbw.rahmlab.geomalgelang.api.EuclideanParametersFromPlaneOPNS;
 import de.dhbw.rahmlab.geomalgelang.test.common.gen.WrapperGen;
 import de.orat.math.cga.api.CGAMultivector;
 import static de.orat.math.cga.api.CGAMultivector.inf;
@@ -70,8 +72,7 @@ public class AnnotationTest {
                 hasScalarPart = true;
             }
         }
-        //result.deleteCharAt(result.length()-1);
-        result.append(")");
+        //result.append(")");
         return result.toString();
     }
     
@@ -328,13 +329,37 @@ public class AnnotationTest {
 		Point3d P3 = new Point3d(0d,0d,1d);
 		Point3d P = new Point3d(1d,1d,1d);
 		System.out.println("------------------------ composition of plane PC ------------------");
-		double[] result = WrapperGen.INSTANCE.planePC1(P3, P);
-		//PC= -0.9999999999999993e1+0.9999999999999993e
-		System.out.println(toString("PC",result, eps));
-		// (ε₀∧P3∧P∧εᵢ)*
-		CGAMultivector m = o.op(CGAMultivector.createEz(1d)).op(new CGARoundPointIPNS(P)).op(inf).dual();
-		System.out.println(toString("PC-java",result, eps));
-		// PC-java= -0.9999999999999993e1+0.9999999999999993e
+		
+		//(ε₀∧P3∧P∧εᵢ)
+		// scheint richtig
+		double[] result = WrapperGen.INSTANCE.planeIPNSPC1(P3, P);
+		//PC1= -0.9999999999999993e1+0.9999999999999993e2
+		System.out.println(toString("PC1",result, eps));
+		
+		CGAMultivector m = o.op(new CGARoundPointIPNS(P3)).op(new CGARoundPointIPNS(P)).op(inf).dual();
+		// PC1-java = (-0.9999999999999993*e1 + 0.9999999999999993*e2)
+		System.out.println(m.toString("PC1-java"));
+		
+		EuclideanParametersFromPlaneIPNS result1a = WrapperGen.INSTANCE.planeIPNSPC1a(P3, P);
+		System.out.println(toString("location",result1a.location()));
+		System.out.println(toString("attitude",result1a.attitude()));
+		
+		
+		double[] result2 = WrapperGen.INSTANCE.planeIPNSPC2(P);
+		// PC2= 0.9999999999999988e1-0.9999999999999988e2+0.999999999999999e01i-0.999999999999999e02i+0.9999999999999988e123+0.999999999999999e0123i
+		System.out.println(toString("PC2",result2, eps));
+		
+		CGAMultivector m2 = o.op(CGAMultivector.createEz(1d)).op(new CGARoundPointIPNS(P)).op(inf).dual();
+		// PC2-java = (-0.9999999999999993*e1 + 0.9999999999999993*e2)
+		System.out.println(m2.toString("PC2-java"));
+		
+		EuclideanParametersFromPlaneIPNS result3 = WrapperGen.INSTANCE.planeIPNSPC(P);
+		System.out.println(toString("location (ipns)",result3.location()));
+		System.out.println(toString("attitude (ipns)",result3.attitude()));
+		
+		EuclideanParametersFromPlaneOPNS result4 = WrapperGen.INSTANCE.planeOPNSPC(P);
+		System.out.println(toString("location (opns)",result3.location()));
+		System.out.println(toString("attitude (opns)",result3.attitude()));
 	}
 	
 	/*@Test

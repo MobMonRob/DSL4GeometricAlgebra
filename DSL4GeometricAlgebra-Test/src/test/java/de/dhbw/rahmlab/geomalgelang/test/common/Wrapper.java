@@ -1,7 +1,8 @@
 package de.dhbw.rahmlab.geomalgelang.test.common;
 
+import de.dhbw.rahmlab.geomalgelang.api.EuclideanParametersFromPlaneIPNS;
+import de.dhbw.rahmlab.geomalgelang.api.EuclideanParametersFromPlaneOPNS;
 import de.dhbw.rahmlab.geomalgelang.api.annotation.CGA;
-import de.orat.math.cga.api.iCGAFlat;
 import de.orat.math.cga.api.iCGATangentOrRound;
 import org.jogamp.vecmath.Point3d;
 import org.jogamp.vecmath.Vector3d;
@@ -27,6 +28,9 @@ public interface Wrapper {
         @CGA("p-0.5r²εᵢ")
 		double[] realSphereIPNS3(Point3d p_round_point_ipns, double r_scalar_opns); 
         
+		
+		// plane IPNS
+		
         // FIXME Die Variable in der Formel darf nicht "n" genannt werden, da n bereits
         // als Symbol definiert ist. Bessere Fehlermeldung!
         @CGA("nn+(x⋅nn)εᵢ")
@@ -41,6 +45,9 @@ public interface Wrapper {
         @CGA("x")
         double[] planeIPNS3(Vector3d x_plane_ipns_1, double x_plane_ipns_2);
         
+		
+		// circle
+		
         // Kugel mit Ebene geschnitten und in eine Summe umgeformt
         // passt nicht mit 2,3 zusammen
         @CGA("ε₀∧nn+(x⋅nn)E₀+x∧nn+((x⋅nn)x-0.5(x²-r²)nn)∧εᵢ")
@@ -58,6 +65,8 @@ public interface Wrapper {
 			double r_scalar_opns);
         
         
+		// oriented-point IPNS
+		
         @CGA("nn∧x+(0.5x²nn-x (x⋅nn))εᵢ+nnε₀-(x⋅nn)E₀")
         double[] orientedPointIPNS(Point3d x_euclidean_vector, Vector3d nn_euclidean_vector);
         
@@ -189,18 +198,30 @@ public interface Wrapper {
 		double[] sphereOPNS2(Point3d x_sphere_opns_1, double x_sphere_opns_2);
         
 		
+		// plane
+		
 		@CGA("p1∧p2∧p3∧εᵢ")
         double[] planeOPNS(Point3d p1_round_point_ipns, Point3d p2_round_point_ipns, Point3d p3_round_point_ipns);
         
 		@CGA("x")
         double[] planeOPNS2(Point3d x_plane_opns, Vector3d x_plane_opns_2);
         
+		
 		@CGA("(ε₀∧P3∧P∧εᵢ)*")
-		public double[] planePC1(Point3d P3_round_point_ipns, Point3d P_round_point_ipns);
+		public double[] planeIPNSPC1(Point3d P3_round_point_ipns, Point3d P_round_point_ipns);
 		
-		@CGA("(ε₀^ε₃^P^εᵢ)*")
-		public iCGAFlat.EuclideanParameters planePC(Point3d P_round_point_ipns);
+		@CGA("(ε₀∧P3∧P∧εᵢ)*")
+		public EuclideanParametersFromPlaneIPNS planeIPNSPC1a(Point3d P3_round_point_ipns, Point3d P_round_point_ipns);
 		
+		
+		@CGA("(ε₀∧ε₃∧P∧εᵢ)*")
+		public double[] planeIPNSPC2(Point3d P_round_point_ipns);
+		
+		@CGA("(ε₀∧ε₃∧P∧εᵢ)*")
+		public EuclideanParametersFromPlaneIPNS planeIPNSPC(Point3d P_round_point_ipns);
+		
+		@CGA("ε₀∧ε₃∧P∧εᵢ")
+		public EuclideanParametersFromPlaneOPNS planeOPNSPC(Point3d P_round_point_ipns);
 		
 		// complex tests
 		

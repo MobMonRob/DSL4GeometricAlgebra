@@ -1,7 +1,13 @@
 package de.dhbw.rahmlab.geomalgelang.api;
 
+import de.orat.math.cga.api.CGAAttitudeIPNS;
+import de.orat.math.cga.api.CGAKVector;
 import de.orat.math.cga.api.CGAMultivector;
 import de.orat.math.cga.api.CGAPlaneIPNS;
+import de.orat.math.cga.api.CGAPlaneOPNS;
+import de.orat.math.cga.api.CGAPointPairIPNS;
+import de.orat.math.cga.api.CGAPointPairOPNS;
+import de.orat.math.cga.api.CGARotor;
 import de.orat.math.cga.api.iCGAFlat;
 import de.orat.math.cga.api.iCGAPointPair.PointPair;
 import de.orat.math.cga.api.iCGATangentOrRound;
@@ -19,7 +25,7 @@ public class Result {
 	}
 
 	public Double firstDecomposeSquaredWeight() {
-		return inner.get(0).squaredWeight();
+		return ((CGAKVector) inner.get(0)).squaredWeight();
 	}
 
 	public double firstDecomposeScalar() {
@@ -35,27 +41,38 @@ public class Result {
 	}
 
 	public iCGATangentOrRound.EuclideanParameters firstDecomposeTangentOrRound() {
-		return inner.get(0).decomposeTangentOrRound();
+		return ((CGAKVector) inner.get(0)).decomposeTangentOrRound();
 	}
 
-	public iCGAFlat.EuclideanParameters firstDecomposePlaneIPNS() {
-		return (new CGAPlaneIPNS(inner.get(0))).decomposeFlat();
+	public EuclideanParametersFromPlaneIPNS firstDecomposePlaneIPNS() {
+		return new EuclideanParametersFromPlaneIPNS((new CGAPlaneIPNS(inner.get(0))).decomposeFlat());
 	}
-	public iCGAFlat.EuclideanParameters firstDecomposePlaneIPNS(Point3d probePoint) {
-		return (new CGAPlaneIPNS(inner.get(0))).decomposeFlat(probePoint);
+	
+	public EuclideanParametersFromPlaneOPNS firstDecomposePlaneOPNS() {
+		return new EuclideanParametersFromPlaneOPNS((new CGAPlaneOPNS(inner.get(0))).decomposeFlat());
 	}
+	
 
-	public Vector3d firstDecomposeAttitude() {
-		return inner.get(0).decomposeAttitude();
+	public Vector3d firstDecomposeAttitudeIPNS() {
+		return (new CGAAttitudeIPNS(inner.get(0))).direction();
 	}
+	// Das geht so nicht, da result argument type identisch mit vorheriger Methode
+	// vielleicht zwei verschiedenen Klassen bauen die von Vector3d erben ...
+	//TODO
+	/*public Vector3d firstDecomposeAttitudeOPNS() {
+		return (new CGAAttitudeOPNS(inner.get(0))).direction();
+	}*/
 
 	public Quat4d firstDecomposeRotor() {
-		return inner.get(0).decomposeRotor();
+		return (new CGARotor(inner.get(0))).decompose();
 	}
 
-	public PointPair firstDecomposePointPair() {
-		return inner.get(0).decomposePointPair();
+	public PointPair firstDecomposePointPairIPNS() {
+		return (new CGAPointPairIPNS(inner.get(0))).decomposePoints();
 	}
+	/*public PointPair firstDecomposePointPairOPNS() {
+		return (new CGAPointPairOPNS(inner.get(0))).decomposePoints();
+	}*/
 	
 	/*public iCGATangentOrRound.EuclideanParameters decomposeTangentOrRound() {
 		return inner.decomposeTangentOrRound();
