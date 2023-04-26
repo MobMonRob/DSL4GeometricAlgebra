@@ -1,8 +1,8 @@
 # Common
 For more usage examples, see [DSL4GeometricAlgebra-Test](../DSL4GeometricAlgebra-Test/).
 
-The @CGA annotation generates a wrapper to invoke the provided cga code with the interface that the annotated method defines. \
-The @CGAPATH annotation generates a wrapper to invoke the cga code within the provided .ocga file with the interface that the annotated method defines.
+The [@CGA annotation](#cga) generates a wrapper to invoke the provided cga code with the interface that the annotated method defines. \
+The [@CGAPATH annotation](#cgapath-annotation) generates a wrapper to invoke the cga code within the provided .ocga file with the interface that the annotated method defines.
 
 
 ### Usage
@@ -74,7 +74,7 @@ To use it as a dependency, add the following lines to the depencencies list in y
 ```
 
 
-# @CGA("<Arbitrary CGA Code>")
+# `@CGA("<Arbitrary CGA Code>")`
 ### Example usage
 ```java
 package de.dhbw.rahmlab.geomalgelang.test.common;
@@ -109,7 +109,7 @@ public class AnnotationTest {
 
 
 # CGAPATH Annotation
-For testing, place the following code lines into your pom.xml at the appropriate place within the xml-node "build". To be able to the files in the non-test build, adjust them accordingly.
+For testing, place the following code lines into your pom.xml at the appropriate place within the xml-node "build". To be able to use the files in the non-test build, adjust them accordingly.
 ```xml
 <testResources>
 	<testResource>
@@ -119,13 +119,13 @@ For testing, place the following code lines into your pom.xml at the appropriate
 ```
 
 
-## @CGAPATH
+## `@CGAPATH`
 To use this variant, place your .ocga file within the resources directory in the same package as the Java file which contains the annotated method. \
 The file name before the filename extension has to be the same as the name of the annotated method.
 
 
-## @CGAPATH("<Path to .ocga file>")
+## `@CGAPATH("<Path to .ocga file>")`
 To use this variant, place your .ocga file within an arbitrary place in the resources directory. \
-A leading Slash ("/") will indicate an absolute path within the directory provided in the pom.xml. \
-Otherwise, especially with a leading Dot-Slash ("./"), it will be a path relative to the package of the Java file which contains the annotated method.
+A leading slash ("/") will indicate an absolute path within the directory provided in the pom.xml. \
+Otherwise, especially with a leading dot-slash ("./"), it will be a path relative to the package of the Java file which contains the annotated method.
 
