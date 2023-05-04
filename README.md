@@ -234,7 +234,6 @@ The conformal points in the table above have to be given in inner product null s
 | projection | (A &#x230B; B) B&#x207B;&#x00B9; | Projection of A onto B |
 | rejection | (A &#x2227; B) B&#x207B;&#x00B9; | Rejection of A from B |
 | duality | (A &#x230B; B)* = A ∧ B* | |
-| duality | (A ∧ B)* = A &#x230B; B* | |
 || A &#x230B; (B &#x230B; C) = (A ∧ B) &#x230B; C ||
 || (A &#x230B; B) &#x230B; C = A ∧ (B &#x230B; C) | if C contains A|
 |down projection| (&#x03B5;&#x1D62; ∧ &#x03B5;&#x2080;) &#x230B; (X ∧ (&#x03B5;&#x1D62; ∧ &#x03B5;&#x2080;))| extracts the pure euclidean part of the given multivector |
