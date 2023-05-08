@@ -189,7 +189,7 @@ There exist three types of involution operations: Space inversion, reversion and
 | Line from two conformal planes (p1, p2) | p1&#8743;p2&#8743;&#x03B5;&#7522; | 3 | flat |
 | Sphere from four ipns points (p1, p2, p3, p4) | p1&#8743;p2&#8743;p3&#8743;p4| 4 |  round |
 | Plane from three ipns points (p1, p2, p3) | p1&#8743;p2&#8743;p3&#8743;&#x03B5;&#7522;| 4 | flat |
-| Plane between two ipns points (p1, p2) | $(\vec{p}_1\wedge\vec{p}_2)*\wedge\epsilon_\infinity$ | 4 | flat |
+| Plane between two ipns points (p1, p2) | $ (\vec{p}_1\wedge\vec{p}_2)*\wedge\epsilon_\infinity $ | 4 | flat |
 
 The conformal points in the table above have to be given in inner product null space represenation.
 
@@ -230,11 +230,10 @@ The conformal points in the table above have to be given in inner product null s
 | | (A &#8970; B)&#732; = B&#732; C&#8743; A&#732; | |
 | | A &#8743; B * C = A * (B &#8971; C) | |
 | | C * (B &#8743; A) = (C &#8970; B) * A | |
-| intersection | (A &#8745; B)* = B* &#8743; A* | Intersection = outer product in the dual representation; B* &#8743; A* means computing the union of everything which is not B and everything that is not A. The dual of that must be what have A and B in common.|
+| intersection | (A &#x2228; B)* = B* &#8743; A* | Intersection = outer product in the ipns representation; B* &#8743; A* means computing the union of everything which is not B and everything that is not A. The dual of that must be what have A and B in common.|
 | projection | (A &#x230B; B) B&#x207B;&#x00B9; | Projection of A onto B |
 | rejection | (A &#x2227; B) B&#x207B;&#x00B9; | Rejection of A from B |
 | duality | (A &#x230B; B)* = A ∧ B* | |
-| duality | (A ∧ B)* = A &#x230B; B* | |
 || A &#x230B; (B &#x230B; C) = (A ∧ B) &#x230B; C ||
 || (A &#x230B; B) &#x230B; C = A ∧ (B &#x230B; C) | if C contains A|
 |down projection| (&#x03B5;&#x1D62; ∧ &#x03B5;&#x2080;) &#x230B; (X ∧ (&#x03B5;&#x1D62; ∧ &#x03B5;&#x2080;))| extracts the pure euclidean part of the given multivector |
