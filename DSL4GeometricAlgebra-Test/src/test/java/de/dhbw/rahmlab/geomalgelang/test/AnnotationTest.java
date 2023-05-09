@@ -7,8 +7,6 @@ import de.orat.math.cga.api.CGAMultivector;
 import static de.orat.math.cga.api.CGAMultivector.inf;
 import static de.orat.math.cga.api.CGAMultivector.o;
 import de.orat.math.cga.api.CGARoundPointIPNS;
-import de.orat.math.cga.api.iCGAFlat;
-import de.orat.math.cga.api.iCGATangentOrRound;
 import org.jogamp.vecmath.Point3d;
 import org.jogamp.vecmath.Tuple3d;
 import org.jogamp.vecmath.Vector3d;

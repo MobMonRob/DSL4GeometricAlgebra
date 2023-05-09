@@ -1,0 +1,59 @@
+// dh parameters UR5e
+a2 := -0.425
+a3 := -0.3922
+d1 := 0.1625
+d4 := 0.1333
+d5 := 0.0997
+d6 := 0.0996
+
+// position of the end-effector and joint 5
+Pe := p+0.5p²εᵢ+ε₀
+t := p-(d6 ae)
+P5 := t+0.5t²εᵢ+ε₀
+
+// sphere around P5
+Sc := P5-0.5d4²εᵢ
+
+// sphere around the origin
+K0 := ε₀+(Sc⋅ε₀)εᵢ
+
+// intersection of Sc and K0
+C5k := Sc^K0
+
+// intersection of C5k and the horizontal plane through P5
+Pl := P5∧ε₁^ε₂^εᵢ
+Qc := (C5k⌋Pl)*
+
+// point Pc with an offset d4 from P5
+//Pc := ExtractFirstPoint(Qc)
+Pc := (Qc-sqrt(Qc²))/(-εᵢ⌋Qc)
+
+// plane through joints 1, 2, 3 and 4
+PIc := (ε₀^ε₃^Pc^εᵢ)*
+
+// finding P4
+// plane parallel to PIc that contains P4 and P5
+PIc_parallel := PIc + (P5⋅PIc)εᵢ // eq. 47
+PI56_orthogonal := ((P5^Pe)*^εᵢ)* // eq. 48 l.1
+//n56_orthogonal  := -((PI56_orthogonal*⋅ε₀)⋅εᵢ)/abs((PI56_orthogonal*⋅ε₀)⋅εᵢ) // eq. 48, l. 2
+//PIc_orthogonal := (P5^n56_orthogonal^εᵢ)*
+//L45 := PIc_parallel^PIc_orthogonal
+//S5  := P5-(0.5d5²εᵢ)
+//Q4  := (L45⋅S5*)*
+//P4 := (Q4-sqrt(Q4²))/(-εᵢ⌋Q4)
+
+// finding point P3
+//S4  := P4 + (0.5d4²εᵢ)
+//L34 := (P4^PIc^εᵢ)*
+//Q3  := (S4⋅L34*)*
+//P3 := (Q3-sqrt(Q3²))/(-εᵢ⌋Q3) 
+
+// finding P1 and P2
+//P1 := createPoint(0, 0, d1)
+//S1 := P1-0.5a2²εᵢ
+//S3 := P3+0.5a3²εᵢ
+//C2 := S1^S3
+//Q2 := (C2*⋅PIc)*
+//P2 := (Q2-sqrt(Q2²))/(-εᵢ⌋Q2) 
+
+Pe, P5, Sc, K0, C5k, Pl, Qc, Pc, PIc, PIc_parallel, PI56_orthogonal //, n56_orthogonal, PIc_orthogonal, L45, S5, Q4, P4, S4, L34, Q3, P3, P1, S1, S3, C2, Q2, P2
