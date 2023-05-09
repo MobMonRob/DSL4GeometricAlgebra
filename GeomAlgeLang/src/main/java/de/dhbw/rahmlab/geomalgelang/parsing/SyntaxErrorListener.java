@@ -30,7 +30,7 @@ public class SyntaxErrorListener extends BaseErrorListener {
 		errorMessageBuilder
 			.append(String.format("\nline: %s, position: %s, token: \'%s\', msg: \'%s\'", line, charPositionInLine, tokenText, msg));
 
-		List<String> lines = token.getTokenSource().getInputStream().toString().lines().toList();
+		List<String> lines = token.getInputStream().toString().lines().toList();
 		int linesSize = lines.size();
 		// Anltr4 line starts with 1; lines.get() starts with 0
 
