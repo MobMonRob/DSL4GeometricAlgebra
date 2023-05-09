@@ -430,4 +430,19 @@ public class AnnotationTest {
 		System.out.println("atan2(1,1)="+String.valueOf(atan2));
 		assertTrue(Double.compare(atan2, 45d) == 0d);
 	}
+	
+	@Test
+	void testScalar(){
+		System.out.println("--------------------- test scalar ----------------------------");
+		double[][] result = WrapperGen.INSTANCE.testScalar();
+	}
+	
+	@Test
+	void testIK1(){
+		System.out.println("--------------------- test ik1 ----------------------------");
+		Point3d p_euclidean_vector = new Point3d(0,0,0);
+		Vector3d ae_euclidean_vector = new Vector3d(0,0,0); 
+        //Vector3d se_euclidean_vector = new Vector3d(0,0,0); 
+		double[][] result = WrapperGen.INSTANCE.testIKPart1(p_euclidean_vector, ae_euclidean_vector/*, se_euclidean_vector*/);
+	}
 }

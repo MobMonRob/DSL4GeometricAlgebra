@@ -377,4 +377,27 @@ public interface Wrapper {
             atan2(y1,x1), atan2(y2,x2), atan2(y3,x3), atan2(y4, x4), atan2(y5, y5), atan2(y6,x6)
 		""")
 		public double[] ik(Point3d p_euclidean_vector, Vector3d ae_euclidean_vector, Vector3d se_euclidean_vector);
+		
+		@CGA(
+        """
+        d4 := 0.1333
+        d6 := 0.0996
+        d4,d6
+        """)
+		public double[][] testScalar();
+		
+		 @CGA(
+    """
+    d4 := 0.1333
+    d6 := 0.0996
+    Pe := p+0.5p²εᵢ+ε₀
+    P5e := p-d6 ae
+    P5 := P5e+0.5P5e²εᵢ+ε₀
+    Sc := P5-0.5d4²εᵢ
+    K0 := ε₀+(Sc⋅ε₀)εᵢ
+    C5k := Sc^K0
+    Qc := (C5k⋅(P5^ε₁^ε₂^εᵢ))*
+    Pe, P5e, Sc, K0, C5k, Qc
+    """)
+    public double[][] testIKPart1(Point3d p_euclidean_vector, Vector3d ae_euclidean_vector);
 }
