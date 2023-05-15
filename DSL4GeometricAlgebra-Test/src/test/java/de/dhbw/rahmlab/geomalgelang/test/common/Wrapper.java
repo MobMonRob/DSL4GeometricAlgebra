@@ -3,6 +3,7 @@ package de.dhbw.rahmlab.geomalgelang.test.common;
 import de.dhbw.rahmlab.geomalgelang.api.EuclideanParametersFromPlaneIPNS;
 import de.dhbw.rahmlab.geomalgelang.api.EuclideanParametersFromPlaneOPNS;
 import de.dhbw.rahmlab.geomalgelang.api.annotation.CGA;
+import de.orat.math.cga.api.iCGAPointPair.PointPair;
 import de.orat.math.cga.api.iCGATangentOrRound;
 import org.jogamp.vecmath.Point3d;
 import org.jogamp.vecmath.Vector3d;
@@ -222,6 +223,17 @@ public interface Wrapper {
 		
 		@CGA("ε₀∧ε₃∧P∧εᵢ")
 		public EuclideanParametersFromPlaneOPNS planeOPNSPC(Point3d P_round_point_ipns);
+		
+		
+	// decomposition
+		
+		// 1. compose OPNS point-pair
+		// 2. decompose into two round-points-ipns object and get its location as Point3d
+		@CGA("""
+            Q_3 := P1∧P2
+			(Q_3-sqrt(Q_3²))/(-εᵢ⌋Q_3), (Q_3+sqrt(Q_3²))/(-εᵢ⌋Q_3)
+			""")
+		public Point3d[] decomposePointPair(Point3d P1_round_point_ipns, Point3d P2_round_point_ipns);
 		
 		// complex tests
 		

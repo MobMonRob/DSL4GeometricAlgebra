@@ -8,6 +8,7 @@ import de.orat.math.cga.api.CGAPlaneOPNS;
 import de.orat.math.cga.api.CGAPointPairIPNS;
 import de.orat.math.cga.api.CGAPointPairOPNS;
 import de.orat.math.cga.api.CGARotor;
+import de.orat.math.cga.api.CGARoundPointIPNS;
 import de.orat.math.cga.api.iCGAFlat;
 import de.orat.math.cga.api.iCGAPointPair.PointPair;
 import de.orat.math.cga.api.iCGATangentOrRound;
@@ -67,12 +68,17 @@ public class Result {
 		return (new CGARotor(inner.get(0))).decompose();
 	}
 
-	public PointPair firstDecomposePointPairIPNS() {
+	/*public PointPair firstDecomposePointPairIPNS() {
 		return (new CGAPointPairIPNS(inner.get(0))).decomposePoints();
-	}
-	/*public PointPair firstDecomposePointPairOPNS() {
-		return (new CGAPointPairOPNS(inner.get(0))).decomposePoints();
 	}*/
+	public PointPair firstDecomposePointPairOPNS() {
+		//TODO herausfinden ob der Multivector ein ipns oder ein opns point-pair ist und entsprechend casten
+		return (new CGAPointPairOPNS(inner.get(0))).decomposePoints();
+	}
+	
+	public Point3d[] decomposePoints(){
+		return inner.stream().map(mv -> (new CGARoundPointIPNS(mv)).location()).toArray(Point3d[]::new);
+	}
 	
 	/*public iCGATangentOrRound.EuclideanParameters decomposeTangentOrRound() {
 		return inner.decomposeTangentOrRound();

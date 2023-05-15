@@ -416,6 +416,19 @@ public class AnnotationTest {
     }
 	
 	@Test
+	void pointPair(){
+		System.out.println("--------------------- pointPair ----------------------------");
+		Point3d p1 = new Point3d(1,2,3);
+		Point3d p2 = new Point3d(2,3,4);
+		Point3d[] result = WrapperGen.INSTANCE.decomposePointPair(p1, p2);
+		System.out.println(toString("p1", p1));
+		System.out.println(toString("p2", p2));
+		assertTrue(p1.epsilonEquals(result[0], eps));
+		assertTrue(p2.epsilonEquals(result[1], eps));
+	}
+	
+	
+	@Test
 	void atan2(){
 		System.out.println("--------------------- atan2 ----------------------------");
 		//TODO

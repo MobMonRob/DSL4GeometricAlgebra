@@ -29,23 +29,24 @@ Qc := (C5k⌋Pl)*
 Pc := (Qc-sqrt(Qc²))/(-εᵢ⌋Qc)
 
 // plane through joints 1, 2, 3 and 4
-PIc := (ε₀^ε₃^Pc^εᵢ)*
+PIc := (ε₀^ε₃^Pc^εᵢ) // opns
 
 // finding P4
 // plane parallel to PIc that contains P4 and P5
-PIc_parallel := PIc + (P5⋅PIc)εᵢ // eq. 47
+PIc_parallel := PIc* + (P5⋅PIc*)εᵢ // eq. 47
 PI56_orthogonal := ((P5^Pe)*^εᵢ)* // eq. 48 l.1
-//n56_orthogonal  := -((PI56_orthogonal*⋅ε₀)⋅εᵢ)/abs((PI56_orthogonal*⋅ε₀)⋅εᵢ) // eq. 48, l. 2
+// Not a scalar: -0.05872415999978912*ei
+//n56_orthogonal  := -((PI56_orthogonal⋅ε₀)⋅εᵢ)/abs((PI56_orthogonal⋅ε₀)⋅εᵢ) // eq. 48, l. 2
 //PIc_orthogonal := (P5^n56_orthogonal^εᵢ)*
-//L45 := PIc_parallel^PIc_orthogonal
+//L45 := PIc_parallel^PIc_orthogonal*
 //S5  := P5-(0.5d5²εᵢ)
-//Q4  := (L45⋅S5*)*
+//Q4  := (L45*⋅S5*)
 //P4 := (Q4-sqrt(Q4²))/(-εᵢ⌋Q4)
 
 // finding point P3
 //S4  := P4 + (0.5d4²εᵢ)
-//L34 := (P4^PIc^εᵢ)*
-//Q3  := (S4⋅L34*)*
+//L34 := (P4^PIc*^εᵢ)*
+//Q3  := (S4*⋅L34*)*
 //P3 := (Q3-sqrt(Q3²))/(-εᵢ⌋Q3) 
 
 // finding P1 and P2
@@ -53,7 +54,7 @@ PI56_orthogonal := ((P5^Pe)*^εᵢ)* // eq. 48 l.1
 //S1 := P1-0.5a2²εᵢ
 //S3 := P3+0.5a3²εᵢ
 //C2 := S1^S3
-//Q2 := (C2*⋅PIc)*
+//Q2 := (C2*⋅PIc*)*
 //P2 := (Q2-sqrt(Q2²))/(-εᵢ⌋Q2) 
 
 Pe, P5, Sc, K0, C5k, Pl, Qc, Pc, PIc, PIc_parallel, PI56_orthogonal //, n56_orthogonal, PIc_orthogonal, L45, S5, Q4, P4, S4, L34, Q3, P3, P1, S1, S3, C2, Q2, P2
