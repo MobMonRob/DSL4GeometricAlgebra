@@ -2,18 +2,18 @@
 
 This repository contains code to work with multivector expressions of conformal algebra. The code is used as a reference implementation to demonstrate and test the software pipeline of truffle/graal in the context of geometric algebra and underlaying multivector implementations.
 
-The code is in very early stage.
+The code is in a very early stage.
 
 
 ## GraalVM Setup
-Download the [GraalVM (Linux)](https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.0.0.2/graalvm-ce-java17-linux-amd64-22.0.0.2.tar.gz)
+Download the [GraalVM 22.3.2](https://github.com/graalvm/graalvm-ce-builds/releases/tag/vm-22.3.2) (Linux (amd64), Java17).
 
 Extract the downloaded archive to an arbitrary location.
 
 
 ### Netbeans configuration
-Add a new java platform with the name "GraalVM 17". \
-Within the Netbeans 16 IDE you can do this if you follow these steps:
+Add a new java platform with the name "GraalVM". \
+Within the Netbeans 17 IDE you can do this if you follow these steps:
 - open project properties via right-click on the project
 - navigate to Build / Compile
 - click "Manage Java Platforms..."
@@ -24,17 +24,17 @@ or navigate to this point via the Tools main menu.
 - In the poping-up wizard:
   - select platform type "Java Standard Edition"
   - choose the platform folder within the extracted archive.
-  - name it "GraalVM 17"
+  - name it "GraalVM"
 
 
 ### Netbeans project configuration
 - open project properties via right-click on the project
 - navigate to Build / Compile
-- in the drop-down list labeled "Java Platform" choose "GraalVM 17"
+- in the drop-down list labeled "Java Platform" choose "GraalVM"
 
 
 ## Dependencies Setup
-The project depends on the vecmath library in the refactured version of jogamp. Your can find this library [here](https://jogamp.org/deployment/java3d/1.7.1-build-20200222/vecmath.jar). Unfortunately there is no maven repository available. That is why you need to download the jar file manually and add it as a local depency of the project. To do this in the nebeans ide: Right-click on the depencies of the project and add the dependency manually. The group id is "org.jogamp.java3d", the artifactId is "vecmath" and the type is "jar". \
+The project depends on the vecmath library in the refactored version of the JogAmp Community. Your can find this library [here](https://jogamp.org/deployment/java3d/1.7.1-build-20200222/vecmath.jar). Unfortunately there is no maven repository available. That is why you need to download the jar file manually and add it as a local depency of the project. To do this in the nebeans ide: Right-click on the depencies of the project and add the dependency manually. The group id is "org.jogamp.java3d", the artifactId is "vecmath" and the type is "jar". \
 Alternatively clone it from [GitHub](https://github.com/JogAmp/vecmath/tree/dev1.7.1), update the compiler version in it's pom.xml and build it.
 
 Clone and checkout
