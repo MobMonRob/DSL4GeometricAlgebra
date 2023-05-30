@@ -137,7 +137,7 @@ There exist three types of involution operations: Space inversion, reversion and
 | normalize() | normalize | CGAMultivector.normalize() |
 | abs()       | absolute value | Math.abs(CGAScalar) |
 | sqrt()      | square root | new CGAScalar(Math.sqrt(CGAScalar)) |
-| atan2()     | arcus tansgens 2 | new CGAScalar(Math.atan2(CGAScalar, CGAScalar)) |
+| atan2(y,x)     | arcus tansgens 2 (Converts the coordinates (x,y) to coordinates (r, theta) and returns the angle theta.)| new CGAScalar(Math.atan2(CGAScalar, CGAScalar)) |
 | negate14()  | negate the signs of the vector- and 4-vector parts of an multivector. Usable to implement gerneral inverse. | multivector.negate14() |
 
 
