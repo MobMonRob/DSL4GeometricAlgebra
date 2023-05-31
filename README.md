@@ -33,6 +33,18 @@ or navigate to this point via the Tools main menu.
 - in the drop-down list labeled "Java Platform" choose "GraalVM"
 
 
+## GraalVM Update
+To update the GraalVM, navigate into the parent directory of your GraalVM installation and execute the following (customized) command: \
+`./<foldername of your GraalVM installation>/bin/gu upgrade` \
+A separate directory for the new installation will be created.
+
+Next, you need to redo the [Netbeans configuration](#netbeans-configuration).
+
+If you are the first collaborator updating to a new version, you also need to
+- update the `graalvm.version` property in the [pom.xml of the GeomAlgeLang subproject](GeomAlgeLang/pom.xml).
+- update the download link [in this documentation](#graalvm-setup).
+
+
 ## Dependencies Setup
 The project depends on the vecmath library in the refactored version of the JogAmp Community. Your can find this library [here](https://jogamp.org/deployment/java3d/1.7.1-build-20200222/vecmath.jar). Unfortunately there is no maven repository available. That is why you need to download the jar file manually and add it as a local depency of the project. To do this in the nebeans ide: Right-click on the depencies of the project and add the dependency manually. The group id is "org.jogamp.java3d", the artifactId is "vecmath" and the type is "jar". \
 Alternatively clone it from [GitHub](https://github.com/JogAmp/vecmath/tree/dev1.7.1), update the compiler version in it's pom.xml and build it.

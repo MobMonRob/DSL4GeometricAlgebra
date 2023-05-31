@@ -2,6 +2,7 @@ package de.dhbw.rahmlab.geomalgelang.truffle.common.runtime;
 
 import com.oracle.truffle.api.TruffleLanguage.ContextReference;
 import com.oracle.truffle.api.nodes.Node;
+import com.oracle.truffle.api.source.Source;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionDefinitions.runtime.BuiltinRegistry;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.variables.runtime.GlobalVariableScope;
 
@@ -24,5 +25,15 @@ public final class GeomAlgeLangContext {
 	public GeomAlgeLangContext(GeomAlgeLang truffleLanguage) {
 		this.globalVariableScope = new GlobalVariableScope();
 		this.builtinRegistry = new BuiltinRegistry(truffleLanguage);
+	}
+
+	private Source source = null;
+
+	public void setSource(Source source) {
+		this.source = source;
+	}
+
+	public Source getSource() {
+		return this.source;
 	}
 }

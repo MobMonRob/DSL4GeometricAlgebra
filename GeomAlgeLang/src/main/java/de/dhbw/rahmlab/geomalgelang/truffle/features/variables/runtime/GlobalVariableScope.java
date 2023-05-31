@@ -45,7 +45,7 @@ public final class GlobalVariableScope implements TruffleObject {
 		GlobalVariableScope.ensureNotConstant(name);
 		Object existingValue = this.variables.replace(name, Optional.of(value));
 		if (existingValue == null) {
-			throw new GeomAlgeLangException("\"" + name + "\" is not a known variable!");
+			throw new GeomAlgeLangException("\"" + name + "\" is not a known variable within the given ocga program!");
 		}
 	}
 

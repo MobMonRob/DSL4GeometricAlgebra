@@ -6,7 +6,6 @@ import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParserBaseListener;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionCalls.nodes.expr.*;
-import de.dhbw.rahmlab.geomalgelang.truffle.features.functionCalls.nodes.expr.*;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.literals.nodes.expr.*;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.operators.nodes.expr.binaryOps.*;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.operators.nodes.expr.unaryOps.*;
@@ -18,6 +17,7 @@ import java.text.ParseException;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Set;
+import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 /**
@@ -269,7 +269,12 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		// Oder auch, falls Funktionen höherer Ordung unterstützt: Variable vom Typ Funktion
 		GlobalBuiltinReference globalBuiltinReference = GlobalBuiltinReferenceNodeGen.create(functionName, this.geomAlgeLangContext);
 
-		FunctionCall functionCall = FunctionCallNodeGen.create(globalBuiltinReference, argumentsArray);
+		BuiltinFunctionCall functionCall = BuiltinFunctionCallNodeGen.create(globalBuiltinReference, argumentsArray);
+
+		int start = ctx.getStart().getStartIndex();
+		int stop = ctx.getStop().getStopIndex();
+		Interval sourceInterval = new Interval(start, stop);
+		functionCall.setSourceSection(sourceInterval.a, sourceInterval.length());
 
 		this.nodeStack.push(functionCall);
 	}
