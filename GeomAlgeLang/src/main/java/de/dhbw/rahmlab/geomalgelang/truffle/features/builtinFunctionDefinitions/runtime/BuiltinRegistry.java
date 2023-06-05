@@ -11,7 +11,7 @@ import de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionDefinitions.
 import de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionDefinitions.nodes.builtins.NormalizeFactory;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionDefinitions.nodes.builtins.SqrtFactory;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionDefinitions.nodes.FunctionArgumentReader;
-import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.superClasses.FunctionRootNode;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.superClasses.AbstractFunctionRootNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.runtime.Function;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,7 +48,7 @@ public class BuiltinRegistry {
 			.toArray(FunctionArgumentReader[]::new);
 
 		BuiltinFunctionBody builtinFunctionBody = factory.createNode((Object) functionArguments);
-		FunctionRootNode functionRootNode = new BuiltinFunctionRootNode(truffleLanguage, builtinFunctionBody);
+		AbstractFunctionRootNode functionRootNode = new BuiltinFunctionRootNode(truffleLanguage, builtinFunctionBody);
 		Function function = new Function(functionRootNode, name, arity);
 
 		this.builtins.put(function.name, function);

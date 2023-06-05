@@ -26,9 +26,9 @@ public abstract class BuiltinFunctionCall extends AbstractFunctionCall {
 
 		try {
 			return _executeFunction(function, argumentValueBoxed, library);
-		} catch (GeomAlgeLangException ex) {
+		} catch (Exception ex) {
 			// Needed to print SourceLocation in BuiltinCalls.
-			throw new GeomAlgeLangException(ex.getMessage(), ex, ex.getStackTraceElementLimit(), this);
+			throw new GeomAlgeLangException(ex.getMessage(), ex, this);
 		}
 	}
 }

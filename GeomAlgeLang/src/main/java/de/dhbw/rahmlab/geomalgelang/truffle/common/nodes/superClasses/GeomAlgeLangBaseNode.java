@@ -17,10 +17,13 @@ public abstract class GeomAlgeLangBaseNode extends Node {
 	private int sourceLength;
 
 	// invoked by the parser to set the source
-	public void setSourceSection(int charIndex, int length) {
+	public void setSourceSection(int fromIndex, int toIndexInclusive) throws IllegalArgumentException {
 		assert sourceCharIndex == NO_SOURCE : "source should only be set once";
-		this.sourceCharIndex = charIndex;
-		this.sourceLength = length;
+		if (fromIndex > toIndexInclusive) {
+			throw new IllegalArgumentException();
+		}
+		this.sourceCharIndex = fromIndex;
+		this.sourceLength = toIndexInclusive - fromIndex + 1;
 	}
 
 	@Override

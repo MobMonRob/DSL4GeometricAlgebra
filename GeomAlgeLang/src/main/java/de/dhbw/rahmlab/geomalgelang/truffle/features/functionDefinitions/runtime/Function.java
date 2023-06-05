@@ -12,18 +12,18 @@ import com.oracle.truffle.api.library.ExportMessage;
 import com.oracle.truffle.api.nodes.DirectCallNode;
 import com.oracle.truffle.api.nodes.IndirectCallNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.CgaListTruffleBox;
-import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.superClasses.FunctionRootNode;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.superClasses.AbstractFunctionRootNode;
 
 @ExportLibrary(InteropLibrary.class)
 public final class Function implements TruffleObject {
 
 	public final String name;
 
-	protected final FunctionRootNode functionRootNode;
+	protected final AbstractFunctionRootNode functionRootNode;
 
 	protected final int arity;
 
-	public Function(FunctionRootNode functionRootNode, String name, int arity) {
+	public Function(AbstractFunctionRootNode functionRootNode, String name, int arity) {
 		this.functionRootNode = functionRootNode;
 		this.name = name;
 		this.arity = arity;

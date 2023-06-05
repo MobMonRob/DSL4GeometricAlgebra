@@ -17,7 +17,6 @@ import java.text.ParseException;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Set;
-import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 /**
@@ -55,7 +54,19 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		ExpressionBaseNode right = nodeStack.pop();
 		ExpressionBaseNode left = nodeStack.pop();
 
-		ExpressionBaseNode current = GeometricProductNodeGen.create(left, right);
+		ExpressionBaseNode current = new GeometricProduct(left, right);
+
+		int start;
+		int stop;
+		var spaces = ctx.spaces;
+		if (!spaces.isEmpty()) {
+			start = spaces.get(0).getStartIndex();
+			stop = spaces.get(spaces.size() - 1).getStopIndex();
+		} else {
+			start = ctx.lhs.getStop().getStopIndex();
+			stop = start + 1;
+		}
+		current.setSourceSection(start, stop);
 
 		nodeStack.push(current);
 	}
@@ -68,28 +79,30 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 
 		ExpressionBaseNode current = switch (ctx.op.getType()) {
 			case GeomAlgeParser.DOT_OPERATOR ->
-				InnerProductNodeGen.create(left, right);
+				new InnerProduct(left, right);
 			case GeomAlgeParser.LOGICAL_AND ->
-				OuterProductNodeGen.create(left, right);
+				new OuterProduct(left, right);
 			case GeomAlgeParser.PLUS_SIGN ->
-				AdditionNodeGen.create(left, right);
+				new Addition(left, right);
 			case GeomAlgeParser.HYPHEN_MINUS ->
-				SubtractionNodeGen.create(left, right);
+				new Subtraction(left, right);
 			case GeomAlgeParser.INTERSECTION ->
-				MeetNodeGen.create(left, right);
+				new Meet(left, right);
 			case GeomAlgeParser.UNION ->
-				JoinNodeGen.create(left, right);
+				new Join(left, right);
 			case GeomAlgeParser.R_CONTRACTION ->
-				RightContractionNodeGen.create(left, right);
+				new RightContraction(left, right);
 			case GeomAlgeParser.L_CONTRACTION ->
-				LeftContractionNodeGen.create(left, right);
+				new LeftContraction(left, right);
 			case GeomAlgeParser.LOGICAL_OR ->
-				RegressiveProductNodeGen.create(left, right);
+				new RegressiveProduct(left, right);
 			case GeomAlgeParser.SOLIDUS ->
-				DivisionNodeGen.create(left, right);
+				new Division(left, right);
 			default ->
 				throw new UnsupportedOperationException();
 		};
+
+		current.setSourceSection(ctx.op.getStartIndex(), ctx.op.getStopIndex());
 
 		nodeStack.push(current);
 	}
@@ -100,22 +113,24 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 
 		ExpressionBaseNode current = switch (ctx.op.getType()) {
 			case GeomAlgeParser.SUPERSCRIPT_MINUS__SUPERSCRIPT_ONE ->
-				GeneralInverseNodeGen.create(left);
+				new GeneralInverse(left);
 			case GeomAlgeParser.ASTERISK ->
-				DualNodeGen.create(left);
+				new Dual(left);
 			case GeomAlgeParser.SMALL_TILDE ->
-				ReverseNodeGen.create(left);
+				new Reverse(left);
 			case GeomAlgeParser.DAGGER ->
-				CliffordConjugateNodeGen.create(left);
+				new CliffordConjugate(left);
 			case GeomAlgeParser.SUPERSCRIPT_MINUS__ASTERISK ->
-				UndualNodeGen.create(left);
+				new Undual(left);
 			case GeomAlgeParser.SUPERSCRIPT_TWO ->
-				GeometricProductNodeGen.create(left, left);
+				new GeometricProduct(left, left);
 			case GeomAlgeParser.CIRCUMFLEX_ACCENT ->
-				InvoluteNodeGen.create(left);
+				new Involute(left);
 			default ->
 				throw new UnsupportedOperationException();
 		};
+
+		current.setSourceSection(ctx.op.getStartIndex(), ctx.op.getStopIndex());
 
 		nodeStack.push(current);
 	}
@@ -126,10 +141,12 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 
 		ExpressionBaseNode current = switch (ctx.op.getType()) {
 			case GeomAlgeParser.HYPHEN_MINUS ->
-				NegateNodeGen.create(right);
+				new Negate(right);
 			default ->
 				throw new UnsupportedOperationException();
 		};
+
+		current.setSourceSection(ctx.op.getStartIndex(), ctx.op.getStopIndex());
 
 		nodeStack.push(current);
 	}
@@ -155,7 +172,9 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 				throw new UnsupportedOperationException();
 		};
 
-		ExpressionBaseNode current = GradeExtractionNodeGen.create(inner, grade);
+		ExpressionBaseNode current = new GradeExtraction(inner, grade);
+
+		current.setSourceSection(ctx.getStart().getStartIndex(), ctx.getStop().getStopIndex());
 
 		nodeStack.push(current);
 	}
@@ -204,6 +223,9 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 	public void exitVariableReference(GeomAlgeParser.VariableReferenceContext ctx) {
 		String name = ctx.name.getText();
 		GlobalVariableReference varRef = GlobalVariableReferenceNodeGen.create(name);
+
+		varRef.setSourceSection(ctx.name.getStartIndex(), ctx.name.getStopIndex());
+
 		nodeStack.push(varRef);
 
 		if (!this.unmodifiableDeclaredVariables.contains(name)) {
@@ -253,12 +275,15 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 	@Override
 	public void exitCall(GeomAlgeParser.CallContext ctx) {
 		Deque<ExpressionBaseNode> arguments = new ArrayDeque<>();
-		ExpressionBaseNode currentArgument = this.nodeStack.pop();
-		for (; currentArgument != enterCallMarker; currentArgument = this.nodeStack.pop()) {
+
+		for (ExpressionBaseNode currentArgument = this.nodeStack.pop();
+			currentArgument != enterCallMarker;
+			currentArgument = this.nodeStack.pop()) {
 			// rightmost argument will be pushed first
 			// therefore ordered properly at the end
 			arguments.push(currentArgument);
 		}
+
 		ExpressionBaseNode[] argumentsArray = arguments.toArray(ExpressionBaseNode[]::new);
 
 		String functionName = ctx.name.getText();
@@ -271,10 +296,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 
 		BuiltinFunctionCall functionCall = BuiltinFunctionCallNodeGen.create(globalBuiltinReference, argumentsArray);
 
-		int start = ctx.getStart().getStartIndex();
-		int stop = ctx.getStop().getStopIndex();
-		Interval sourceInterval = new Interval(start, stop);
-		functionCall.setSourceSection(sourceInterval.a, sourceInterval.length());
+		functionCall.setSourceSection(ctx.getStart().getStartIndex(), ctx.getStop().getStopIndex());
 
 		this.nodeStack.push(functionCall);
 	}

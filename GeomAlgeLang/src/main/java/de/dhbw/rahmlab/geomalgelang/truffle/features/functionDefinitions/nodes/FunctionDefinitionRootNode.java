@@ -2,9 +2,9 @@ package de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLang;
-import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.superClasses.FunctionRootNode;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.superClasses.AbstractFunctionRootNode;
 
-public final class FunctionDefinitionRootNode extends FunctionRootNode {
+public final class FunctionDefinitionRootNode extends AbstractFunctionRootNode {
 
 	@SuppressWarnings("FieldMayBeFinal")
 	@Child
@@ -17,6 +17,6 @@ public final class FunctionDefinitionRootNode extends FunctionRootNode {
 
 	@Override
 	public Object execute(VirtualFrame frame) {
-		return this.funcDefBodyNode.executeGeneric(frame);
+		return this.funcDefBodyNode.directCall(frame);
 	}
 }
