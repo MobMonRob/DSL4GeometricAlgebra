@@ -9,7 +9,7 @@ import de.dhbw.rahmlab.geomalgelang.parsing.ParsingService;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.ProgramRootNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.FunctionDefinitionBody;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.FunctionDefinitionRootNode;
-import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.superClasses.FunctionRootNode;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.superClasses.AbstractFunctionRootNode;
 import java.io.IOException;
 
 @TruffleLanguage.Registration(
@@ -46,7 +46,7 @@ public class GeomAlgeLang extends TruffleLanguage<GeomAlgeLangContext> {
 		FunctionDefinitionBody functionDefinitionBody = ParsingService.parse(CharStreamSupplier.from(source), this.context);
 
 		FrameDescriptor frameDescriptor = new FrameDescriptor();
-		FunctionRootNode functionRootNode = new FunctionDefinitionRootNode(this, functionDefinitionBody);
+		AbstractFunctionRootNode functionRootNode = new FunctionDefinitionRootNode(this, functionDefinitionBody);
 		ExecutionValidation executionValidation = new ExecutionValidation(this.context);
 
 		ProgramRootNode rootNode = new ProgramRootNode(this, frameDescriptor, functionRootNode, executionValidation);

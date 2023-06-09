@@ -1,12 +1,15 @@
 package de.dhbw.rahmlab.geomalgelang.truffle.features.operators.nodes.expr.binaryOps;
 
 import de.dhbw.rahmlab.geomalgelang.truffle.features.operators.nodes.exprSuperClasses.BinaryOp;
-import com.oracle.truffle.api.dsl.Specialization;
+import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import de.orat.math.cga.api.CGAMultivector;
 
-public abstract class RegressiveProduct extends BinaryOp {
+public final class RegressiveProduct extends BinaryOp {
 
-	@Specialization
+	public RegressiveProduct(ExpressionBaseNode argumentLeft, ExpressionBaseNode argumentRight) {
+		super(argumentLeft, argumentRight);
+	}
+
 	@Override
 	protected CGAMultivector execute(CGAMultivector left, CGAMultivector right) {
 		return left.vee(right);

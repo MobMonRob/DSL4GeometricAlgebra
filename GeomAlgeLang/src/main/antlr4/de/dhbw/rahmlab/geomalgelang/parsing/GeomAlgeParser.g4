@@ -35,7 +35,7 @@ func
 ///////////////////////////////////////////////////////////////////////////
 
 stmt
-	:	SPACE* name=IDENTIFIER SPACE* ASSIGNMENT SPACE* exprContext=expr SPACE*		#AssgnStmt
+	:	SPACE* assigned=IDENTIFIER SPACE* assignment=ASSIGNMENT SPACE* exprContext=expr SPACE*		#AssgnStmt
 	;
 
 // The list-form (1) needs iteration in the transformer while the tree-form (2) don't.
@@ -106,8 +106,8 @@ unOpRSymbolExpr
 binOpExpr
 	:	nonOuterRecursiveExpr	#BinOpExprDummy //Closure
 	|	unOpExpr				#BinOpExprDummy //Closure
-	|	binOpExpr
-		SPACE*
+	|	lhs=binOpExpr
+		spaces+=SPACE*
 		(
 			nonOuterRecursiveExpr
 			|unOpRExpr	// "a-b" evaluates to subtraction(a, b) instead of gp(a, negate(b))

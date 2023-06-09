@@ -1,12 +1,15 @@
 package de.dhbw.rahmlab.geomalgelang.truffle.features.operators.nodes.expr.unaryOps;
 
+import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.operators.nodes.exprSuperClasses.UnaryOp;
-import com.oracle.truffle.api.dsl.Specialization;
 import de.orat.math.cga.api.CGAMultivector;
 
-public abstract class Dual extends UnaryOp {
+public final class Dual extends UnaryOp {
 
-	@Specialization
+	public Dual(ExpressionBaseNode argument) {
+		super(argument);
+	}
+
 	@Override
 	protected CGAMultivector execute(CGAMultivector input) {
 		return input.dual();

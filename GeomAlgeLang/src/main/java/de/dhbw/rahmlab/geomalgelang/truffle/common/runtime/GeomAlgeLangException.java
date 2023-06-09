@@ -32,7 +32,7 @@ public class GeomAlgeLangException extends AbstractTruffleException {
 	}
 
 	@TruffleBoundary
-	public GeomAlgeLangException(String message, Throwable cause, int stackTraceElementLimit, GeomAlgeLangBaseNode location) {
-		super(includeSource(message, location), cause, stackTraceElementLimit, location);
+	public GeomAlgeLangException(String message, Throwable cause, GeomAlgeLangBaseNode location) {
+		super(includeSource(message, location), cause, AbstractTruffleException.UNLIMITED_STACK_TRACE, location);
 	}
 }

@@ -5,16 +5,16 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.RootNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.ExecutionValidation;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLang;
-import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.superClasses.FunctionRootNode;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.superClasses.AbstractFunctionRootNode;
 
 public class ProgramRootNode extends RootNode {
 
 	@Child
-	protected FunctionRootNode functionRootNode;
+	protected AbstractFunctionRootNode functionRootNode;
 
 	protected final ExecutionValidation executionValidation;
 
-	public ProgramRootNode(GeomAlgeLang language, FrameDescriptor frameDescriptor, FunctionRootNode functionRootNode, ExecutionValidation executionValidation) {
+	public ProgramRootNode(GeomAlgeLang language, FrameDescriptor frameDescriptor, AbstractFunctionRootNode functionRootNode, ExecutionValidation executionValidation) {
 		super(language, frameDescriptor);
 		this.functionRootNode = functionRootNode;
 		this.executionValidation = executionValidation;

@@ -5,11 +5,11 @@ import com.oracle.truffle.api.nodes.ExplodeLoop;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.stmtSuperClasses.StatementBaseNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.CgaListTruffleBox;
-import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.superClasses.FunctionBody;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.superClasses.AbstractFunctionBody;
 import de.orat.math.cga.api.CGAMultivector;
 import java.util.ArrayList;
 
-public class FunctionDefinitionBody extends FunctionBody {
+public final class FunctionDefinitionBody extends AbstractFunctionBody {
 
 	@Children
 	protected final StatementBaseNode[] stmts;
@@ -27,7 +27,7 @@ public class FunctionDefinitionBody extends FunctionBody {
 	}
 
 	@ExplodeLoop
-	public Object executeGeneric(VirtualFrame frame) {
+	public Object directCall(VirtualFrame frame) {
 		for (StatementBaseNode stmt : stmts) {
 			stmt.executeGeneric(frame);
 		}

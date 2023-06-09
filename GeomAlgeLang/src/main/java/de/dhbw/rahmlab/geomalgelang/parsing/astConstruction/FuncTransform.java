@@ -39,7 +39,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 	@Override
 	public void enterAssgnStmt(GeomAlgeParser.AssgnStmtContext ctx) {
-		String name = ctx.name.getText();
+		String name = ctx.assigned.getText();
 
 		boolean variableAlreadyDeclared = geomAlgeLangContext.globalVariableScope.variables.containsKey(name)
 			|| this.declaredVariables.contains(name);
@@ -50,6 +50,9 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 		}
 		ExpressionBaseNode expr = ExprTransform.generateExprAST(ctx.exprContext, this.geomAlgeLangContext, this.unmodifiableDeclaredVariables);
 		GlobalVariableAssignment assignment = GlobalVariableAssignmentNodeGen.create(expr, name);
+
+		assignment.setSourceSection(ctx.assignment.getStartIndex(), ctx.assignment.getStopIndex());
+
 		this.stmts.add(assignment);
 	}
 

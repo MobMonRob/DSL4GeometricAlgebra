@@ -1,12 +1,15 @@
 package de.dhbw.rahmlab.geomalgelang.truffle.features.operators.nodes.expr.binaryOps;
 
 import de.dhbw.rahmlab.geomalgelang.truffle.features.operators.nodes.exprSuperClasses.BinaryOp;
-import com.oracle.truffle.api.dsl.Specialization;
+import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import de.orat.math.cga.api.CGAMultivector;
 
-public abstract class Subtraction extends BinaryOp {
+public final class Subtraction extends BinaryOp {
 
-	@Specialization
+	public Subtraction(ExpressionBaseNode argumentLeft, ExpressionBaseNode argumentRight) {
+		super(argumentLeft, argumentRight);
+	}
+
 	@Override
 	protected CGAMultivector execute(CGAMultivector left, CGAMultivector right) {
 		return left.sub(right);

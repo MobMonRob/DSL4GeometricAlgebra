@@ -2,6 +2,6 @@ package de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.
 
 import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.superClasses.GeomAlgeLangBaseNode;
 
-public abstract class FunctionBody extends GeomAlgeLangBaseNode {
+public abstract class AbstractFunctionBody extends GeomAlgeLangBaseNode {
 
 }
