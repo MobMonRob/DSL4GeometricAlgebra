@@ -2,6 +2,7 @@ package de.dhbw.rahmlab.geomalgelang.api;
 
 import de.orat.math.cga.api.CGAAttitudeVectorIPNS;
 import de.orat.math.cga.api.CGAAttitudeVectorOPNS;
+import de.orat.math.cga.api.CGABoolean;
 import de.orat.math.cga.api.CGACircleIPNS;
 import de.orat.math.cga.api.CGACircleOPNS;
 import de.orat.math.cga.api.CGAEuclideanBivector;
@@ -60,6 +61,12 @@ public class Arguments {
 
     public Arguments scalar_ipns(String argName, double scalar) {
 		var mvec = new CGAScalarIPNS(scalar);
+		this.put(argName, mvec);
+		return this;
+	}
+	
+	public Arguments bool(String argName, boolean bool){
+		var mvec = new CGABoolean(bool);
 		this.put(argName, mvec);
 		return this;
 	}
