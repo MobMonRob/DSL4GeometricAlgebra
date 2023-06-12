@@ -2,14 +2,13 @@ package de.dhbw.rahmlab.geomalgelang.api;
 
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.CgaListTruffleBox;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.CgaTruffleBox;
+import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLangException;
 import de.orat.math.cga.api.CGAMultivector;
-import java.util.ArrayList;
 import java.util.List;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Engine;
 import org.graalvm.polyglot.PolyglotException;
 import org.graalvm.polyglot.Source;
-import org.graalvm.polyglot.SourceSection;
 import org.graalvm.polyglot.Value;
 
 public class Program implements AutoCloseable {
@@ -34,16 +33,8 @@ public class Program implements AutoCloseable {
 
 		try {
 			program = this.context.parse(source);
-			// parsing succeeded
-		} catch (PolyglotException e) {
-			if (e.isSyntaxError()) {
-				SourceSection location = e.getSourceLocation();
-				// syntax error detected at location
-			} else {
-				// other guest error detected
-			}
-			this.context.close();
-			throw e;
+		} catch (PolyglotException ex) {
+			processAndRethrow(ex);
 		}
 	}
 
@@ -73,18 +64,43 @@ public class Program implements AutoCloseable {
 			bindings.putMember(name, new CgaTruffleBox(value));
 		});
 
-		List<CGAMultivector> answers;
-
+		Value result = null;
 		try {
 			// later: execute with arguments XOR getMember "main" and execute it with arguments (instead of bindings.putMember)
-			Value result = this.program.execute();
-			CgaListTruffleBox box = result.as(CgaListTruffleBox.class);
-			answers = box.getInner();
-		} finally {
-			// Will be executed regardless if an exception is thrown or not
-			// context.close();
+			result = this.program.execute();
+		} catch (PolyglotException ex) {
+			processAndRethrow(ex);
 		}
 
+		CgaListTruffleBox box = result.as(CgaListTruffleBox.class);
+		List<CGAMultivector> answers = box.getInner();
+
 		return new Result(answers);
+	}
+
+	private void processAndRethrow(PolyglotException ex) {
+		// // Print CGA functions stacktrace. ToDo: implement with the CGA functions feature.
+		// Iterable<PolyglotException.StackFrame> polyglotStackTrace = ex.getPolyglotStackTrace();
+		// ---
+		// // Possible if GeomAlgeLangException exports this message.
+		// SourceSection location = ex.getSourceLocation();
+		// ---
+
+		// Print the full originating error.
+		// Can also be used to transfer additional information through GeomAlgeLangException.
+		GeomAlgeLangException origin = null;
+		try {
+			origin = ex.getGuestObject().as(GeomAlgeLangException.class);
+		} catch (Exception ex2) {
+
+		}
+
+		this.context.close();
+
+		if (origin != null) {
+			throw origin;
+		} else {
+			throw ex;
+		}
 	}
 }

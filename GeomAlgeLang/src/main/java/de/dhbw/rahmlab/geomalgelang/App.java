@@ -25,9 +25,8 @@ public class App {
 
 	private static void invocationTest() throws Exception {
 		String source = """
-		c := a b
-		d := atan2(c, a)
-		d
+		c:= a + asdf() // /0.0
+		b // +y
 		""";
 
 		System.out.println("source: " + source);
