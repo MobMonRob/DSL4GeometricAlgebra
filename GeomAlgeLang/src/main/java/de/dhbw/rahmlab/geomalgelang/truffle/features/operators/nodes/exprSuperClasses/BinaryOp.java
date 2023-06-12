@@ -1,14 +1,11 @@
 package de.dhbw.rahmlab.geomalgelang.truffle.features.operators.nodes.exprSuperClasses;
 
-import com.oracle.truffle.api.dsl.NodeChild;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.NodeCost;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLangException;
 import de.orat.math.cga.api.CGAMultivector;
 
-@NodeChild("leftArgument")
-@NodeChild("rightArgument")
 public abstract class BinaryOp extends ExpressionBaseNode {
 
 	@Child

@@ -48,8 +48,8 @@ public class BuiltinRegistry {
 			.toArray(FunctionArgumentReader[]::new);
 
 		BuiltinFunctionBody builtinFunctionBody = factory.createNode((Object) functionArguments);
-		AbstractFunctionRootNode functionRootNode = new BuiltinFunctionRootNode(truffleLanguage, builtinFunctionBody);
-		Function function = new Function(functionRootNode, name, arity);
+		BuiltinFunctionRootNode builtinFunctionRootNode = new BuiltinFunctionRootNode(truffleLanguage, builtinFunctionBody);
+		Function function = new Function(builtinFunctionRootNode, name, arity);
 
 		this.builtins.put(function.name, function);
 	}
