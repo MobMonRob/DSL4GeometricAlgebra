@@ -14,6 +14,10 @@ import com.oracle.truffle.api.nodes.IndirectCallNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.CgaListTruffleBox;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.superClasses.AbstractFunctionRootNode;
 
+/**
+ * Corresponding simplelanguage class:
+ * https://github.com/graalvm/simplelanguage/blob/master/language/src/main/java/com/oracle/truffle/sl/runtime/SLFunction.java
+ */
 @ExportLibrary(InteropLibrary.class)
 public final class Function implements TruffleObject {
 

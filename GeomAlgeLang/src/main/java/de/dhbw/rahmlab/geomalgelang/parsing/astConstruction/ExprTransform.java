@@ -292,10 +292,10 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		// Sobald es Funktionsdefinitionen gibt:
 		// Kann auch sein: Referenz auf statische / globale Funktion
 		// Oder auch, falls Funktionen höherer Ordung unterstützt: Variable vom Typ Funktion
-		GlobalBuiltinReference globalBuiltinReference = GlobalBuiltinReferenceNodeGen.create(functionName, this.geomAlgeLangContext);
+		GlobalBuiltinReference globalBuiltinReference = GlobalBuiltinReferenceNodeGen.create(functionName);
+		globalBuiltinReference.setSourceSection(ctx.name.getStartIndex(), ctx.name.getStopIndex());
 
 		BuiltinFunctionCall functionCall = BuiltinFunctionCallNodeGen.create(globalBuiltinReference, argumentsArray);
-
 		functionCall.setSourceSection(ctx.getStart().getStartIndex(), ctx.getStop().getStopIndex());
 
 		this.nodeStack.push(functionCall);
