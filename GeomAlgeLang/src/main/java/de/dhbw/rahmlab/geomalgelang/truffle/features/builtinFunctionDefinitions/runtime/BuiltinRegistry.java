@@ -11,7 +11,6 @@ import de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionDefinitions.
 import de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionDefinitions.nodes.builtins.NormalizeFactory;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionDefinitions.nodes.builtins.SqrtFactory;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionDefinitions.nodes.FunctionArgumentReader;
-import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.superClasses.AbstractFunctionRootNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.runtime.Function;
 import java.util.HashMap;
 import java.util.Map;

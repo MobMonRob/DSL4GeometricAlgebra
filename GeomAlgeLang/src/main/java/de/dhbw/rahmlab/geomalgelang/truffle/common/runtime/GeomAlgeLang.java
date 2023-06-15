@@ -41,7 +41,7 @@ public class GeomAlgeLang extends TruffleLanguage<GeomAlgeLangContext> {
 		return rootNode.getCallTarget();
 	}
 
-	private ProgramRootNode parseSource(Source source) throws IOException, GeomAlgeLangException {
+	private ProgramRootNode parseSource(Source source) throws IOException {
 		this.context.setSource(source);
 		FunctionDefinitionBody functionDefinitionBody = ParsingService.parse(CharStreamSupplier.from(source), this.context);
 
