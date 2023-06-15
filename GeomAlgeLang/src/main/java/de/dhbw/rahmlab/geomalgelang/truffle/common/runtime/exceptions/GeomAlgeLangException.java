@@ -1,4 +1,4 @@
-package de.dhbw.rahmlab.geomalgelang.truffle.common.runtime;
+package de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions;
 
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.exception.AbstractTruffleException;

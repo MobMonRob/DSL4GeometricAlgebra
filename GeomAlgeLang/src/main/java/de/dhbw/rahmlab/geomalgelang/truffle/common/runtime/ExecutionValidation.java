@@ -1,5 +1,7 @@
 package de.dhbw.rahmlab.geomalgelang.truffle.common.runtime;
 
+import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.GeomAlgeLangException;
+
 public class ExecutionValidation {
 
 	final GeomAlgeLangContext context;

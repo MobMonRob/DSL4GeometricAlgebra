@@ -2,7 +2,7 @@ package de.dhbw.rahmlab.geomalgelang.api;
 
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.CgaListTruffleBox;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.CgaTruffleBox;
-import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLangException;
+import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.GeomAlgeLangException;
 import de.orat.math.cga.api.CGAMultivector;
 import java.util.List;
 import org.graalvm.polyglot.Context;

@@ -1,7 +1,7 @@
 package de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionDefinitions.runtime;
 
 import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.superClasses.GeomAlgeLangBaseNode;
-import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLangException;
+import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.GeomAlgeLangException;
 import de.orat.math.cga.api.CGAMultivector;
 
 public class ScalarExtractor {

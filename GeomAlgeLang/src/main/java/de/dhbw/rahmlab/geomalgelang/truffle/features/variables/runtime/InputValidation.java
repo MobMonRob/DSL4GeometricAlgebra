@@ -1,7 +1,7 @@
 package de.dhbw.rahmlab.geomalgelang.truffle.features.variables.runtime;
 
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.CgaTruffleBox;
-import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLangException;
+import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.GeomAlgeLangException;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.TruffleBox;
 import de.orat.math.cga.api.CGAMultivector;
 
