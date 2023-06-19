@@ -37,11 +37,9 @@ public class Program implements AutoCloseable {
 		try {
 			program = this.context.parse(source);
 		} catch (PolyglotException ex) {
-			try {
-				processAndRethrow(ex);
-			} finally {
-				this.context.close();
-			}
+			RuntimeException enrichedException = enrichException(ex);
+			this.context.close();
+			throw enrichedException;
 		}
 	}
 
@@ -76,11 +74,9 @@ public class Program implements AutoCloseable {
 			// later: execute with arguments XOR getMember "main" and execute it with arguments (instead of bindings.putMember)
 			result = this.program.execute();
 		} catch (PolyglotException ex) {
-			try {
-				processAndRethrow(ex);
-			} finally {
-				this.context.close();
-			}
+			RuntimeException enrichedException = enrichException(ex);
+			this.context.close();
+			throw enrichedException;
 		}
 
 		CgaListTruffleBox box = result.as(CgaListTruffleBox.class);
@@ -89,7 +85,7 @@ public class Program implements AutoCloseable {
 		return new Result(answers);
 	}
 
-	private void processAndRethrow(PolyglotException ex) {
+	private RuntimeException enrichException(PolyglotException ex) {
 		// // Print CGA functions stacktrace. ToDo: implement with the CGA functions feature.
 		// Iterable<PolyglotException.StackFrame> polyglotStackTrace = ex.getPolyglotStackTrace();
 		// ---
@@ -102,38 +98,38 @@ public class Program implements AutoCloseable {
 
 		}
 		if (origin == null) {
-			throw ex;
+			return ex;
 		}
 
-		if (origin instanceof LanguageRuntimeException langException) {
-
-			SourceSection sourceSection = ex.getSourceLocation();
-			if (sourceSection == null) {
-				throw langException;
-			}
-
-			GeomAlgeLangBaseNode location = langException.location();
-
-			String locationDescription = String.format(
-				"line %s, column %s",
-				sourceSection.getStartLine(),
-				sourceSection.getStartColumn()
-			);
-			String nodeType = location.getClass().getSimpleName();
-			String characters = sourceSection.getCharacters().toString();
-
-			String oldMessage = origin.getMessage();
-			String newMessage = String.format(
-				"\nLocation: %s\nCharacters: \"%s\"\nNodeType: %s\nMessage: %s",
-				locationDescription,
-				characters,
-				nodeType,
-				oldMessage
-			);
-
-			throw new LanguageRuntimeException(newMessage, langException, location);
-		} else {
-			throw ex;
+		if (!(origin instanceof LanguageRuntimeException)) {
+			return ex;
 		}
+		LanguageRuntimeException langException = (LanguageRuntimeException) origin;
+
+		SourceSection sourceSection = ex.getSourceLocation();
+		if (sourceSection == null) {
+			return langException;
+		}
+
+		GeomAlgeLangBaseNode location = langException.location();
+
+		String locationDescription = String.format(
+			"line %s, column %s",
+			sourceSection.getStartLine(),
+			sourceSection.getStartColumn()
+		);
+		String nodeType = location.getClass().getSimpleName();
+		String characters = sourceSection.getCharacters().toString();
+
+		String oldMessage = origin.getMessage();
+		String newMessage = String.format(
+			"\nLocation: %s\nCharacters: \"%s\"\nNodeType: %s\nMessage: %s",
+			locationDescription,
+			characters,
+			nodeType,
+			oldMessage
+		);
+
+		return new LanguageRuntimeException(newMessage, langException, location);
 	}
 }
