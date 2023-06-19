@@ -36,7 +36,11 @@ public class Program implements AutoCloseable {
 		try {
 			program = this.context.parse(source);
 		} catch (PolyglotException ex) {
-			processAndRethrow(ex);
+			try {
+				processAndRethrow(ex);
+			} finally {
+				this.context.close();
+			}
 		}
 	}
 
@@ -71,7 +75,11 @@ public class Program implements AutoCloseable {
 			// later: execute with arguments XOR getMember "main" and execute it with arguments (instead of bindings.putMember)
 			result = this.program.execute();
 		} catch (PolyglotException ex) {
-			processAndRethrow(ex);
+			try {
+				processAndRethrow(ex);
+			} finally {
+				this.context.close();
+			}
 		}
 
 		CgaListTruffleBox box = result.as(CgaListTruffleBox.class);
@@ -84,20 +92,14 @@ public class Program implements AutoCloseable {
 		// // Print CGA functions stacktrace. ToDo: implement with the CGA functions feature.
 		// Iterable<PolyglotException.StackFrame> polyglotStackTrace = ex.getPolyglotStackTrace();
 		// ---
-		// // Possible if GeomAlgeLangException exports this message.
-		// SourceSection location = ex.getSourceLocation();
-		// ---
 
 		// Print the full originating error.
-		// Can also be used to transfer additional information through GeomAlgeLangException.
 		GeomAlgeLangException origin = null;
 		try {
 			origin = ex.getGuestObject().as(GeomAlgeLangException.class);
 		} catch (Exception ex2) {
 
 		}
-
-		this.context.close();
 
 		if (origin != null) {
 			SourceSection sourceSection = ex.getSourceLocation();
