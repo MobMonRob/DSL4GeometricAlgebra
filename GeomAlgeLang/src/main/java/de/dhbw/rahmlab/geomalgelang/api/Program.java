@@ -1,5 +1,6 @@
 package de.dhbw.rahmlab.geomalgelang.api;
 
+import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.superClasses.GeomAlgeLangBaseNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.CgaListTruffleBox;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.CgaTruffleBox;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.GeomAlgeLangException;
@@ -9,6 +10,7 @@ import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Engine;
 import org.graalvm.polyglot.PolyglotException;
 import org.graalvm.polyglot.Source;
+import org.graalvm.polyglot.SourceSection;
 import org.graalvm.polyglot.Value;
 
 public class Program implements AutoCloseable {
@@ -98,7 +100,20 @@ public class Program implements AutoCloseable {
 		this.context.close();
 
 		if (origin != null) {
-			throw origin;
+			SourceSection sourceSection = ex.getSourceLocation();
+			if (sourceSection == null) {
+				throw origin;
+			}
+			GeomAlgeLangBaseNode location = origin.theLocation;
+
+			String locationDescription = String.format("line %s, column %s", sourceSection.getStartLine(), sourceSection.getStartColumn());
+			String nodeType = location.getClass().getSimpleName();
+			String characters = sourceSection.getCharacters().toString();
+
+			String oldMessage = origin.getMessage();
+			String newMessage = String.format("\nLocation: %s\nCharacters: \"%s\"\nNodeType: %s\nMessage: %s", locationDescription, characters, nodeType, oldMessage);
+
+			throw new GeomAlgeLangException(newMessage, origin, null);
 		} else {
 			throw ex;
 		}
