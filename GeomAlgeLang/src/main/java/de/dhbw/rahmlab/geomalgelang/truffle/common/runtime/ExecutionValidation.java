@@ -1,6 +1,6 @@
 package de.dhbw.rahmlab.geomalgelang.truffle.common.runtime;
 
-import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.GeomAlgeLangException;
+import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.internal.InterpreterInternalException;
 
 public class ExecutionValidation {
 
@@ -10,15 +10,17 @@ public class ExecutionValidation {
 		this.context = context;
 	}
 
-	public void validate() {
+	public void validate() throws InterpreterInternalException {
 		allVariablesAssigned();
 	}
 
-	private void allVariablesAssigned() throws GeomAlgeLangException {
-		this.context.globalVariableScope.variables.forEach((name, content) -> {
+	private void allVariablesAssigned() throws InterpreterInternalException {
+		for (var entry : this.context.globalVariableScope.variables.entrySet()) {
+			var name = entry.getKey();
+			var content = entry.getValue();
 			if (content.isEmpty()) {
-				throw new GeomAlgeLangException("\"" + name + "\" is not assigned!");
+				throw new InterpreterInternalException("\"" + name + "\" is not assigned!");
 			}
-		});
+		}
 	}
 }

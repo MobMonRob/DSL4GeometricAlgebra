@@ -1,13 +1,13 @@
 package de.dhbw.rahmlab.geomalgelang.truffle.features.variables.runtime;
 
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.CgaTruffleBox;
-import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.GeomAlgeLangException;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.TruffleBox;
+import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.internal.InterpreterInternalException;
 import de.orat.math.cga.api.CGAMultivector;
 
 public abstract class InputValidation {
 
-	public static CGAMultivector ensureIsCGA(Object object) throws IllegalArgumentException {
+	public static CGAMultivector ensureIsCGA(Object object) throws InterpreterInternalException {
 		if (object instanceof CgaTruffleBox) {
 			CgaTruffleBox cgaTruffleBox = (CgaTruffleBox) object;
 			return cgaTruffleBox.getInner();
@@ -16,9 +16,16 @@ public abstract class InputValidation {
 			String expectedInnerClassName = CGAMultivector.class.getSimpleName();
 			String actualInnerClassName = truffleBox.getInner().getClass().getSimpleName();
 
-			throw new GeomAlgeLangException("Got \"" + actualInnerClassName + "\" but expected \"" + expectedInnerClassName + "\"");
+			throw new InterpreterInternalException(String.format(
+				"Got \"%s\" but expected \"%s\"",
+				actualInnerClassName,
+				expectedInnerClassName)
+			);
 		}
 
-		throw new GeomAlgeLangException("\"" + object.getClass().getSimpleName() + "\" is not a proper cga type");
+		throw new InterpreterInternalException(String.format(
+			"\"%s\" is not a proper cga type",
+			object.getClass().getSimpleName()
+		));
 	}
 }

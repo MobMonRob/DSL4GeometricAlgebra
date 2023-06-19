@@ -25,7 +25,7 @@ public class App {
 
 	private static void invocationTest() throws Exception {
 		String source = """
-		c:= a / 0.0 // + asdf() // /0.0
+		c:= a + asdf() // /0.0
 		b // +y
 		""";
 

@@ -2,7 +2,7 @@ package de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionDefinitions
 
 import com.oracle.truffle.api.dsl.NodeFactory;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLang;
-import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.GeomAlgeLangException;
+import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.internal.InterpreterInternalException;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionDefinitions.nodes.BuiltinFunctionRootNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionDefinitions.nodes.builtinsSuperClasses.BuiltinFunctionBody;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionDefinitions.nodes.builtins.AbsFactory;
@@ -53,9 +53,9 @@ public class BuiltinRegistry {
 		this.builtins.put(function.name, function);
 	}
 
-	public Function getBuiltinFunction(String name) {
+	public Function getBuiltinFunction(String name) throws InterpreterInternalException {
 		if (!this.builtins.containsKey(name)) {
-			throw new GeomAlgeLangException("BuiltinFunction \"" + name + "\" does not exist.");
+			throw new InterpreterInternalException("BuiltinFunction \"" + name + "\" does not exist.");
 		}
 
 		return this.builtins.get(name);

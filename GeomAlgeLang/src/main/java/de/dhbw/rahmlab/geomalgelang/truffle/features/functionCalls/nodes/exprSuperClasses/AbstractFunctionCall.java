@@ -9,7 +9,7 @@ import com.oracle.truffle.api.nodes.ExplodeLoop;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.CgaListTruffleBox;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.CgaTruffleBox;
-import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.GeomAlgeLangException;
+import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.internal.InterpreterInternalException;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.runtime.Function;
 import de.orat.math.cga.api.CGAMultivector;
 import java.util.Arrays;
@@ -42,7 +42,7 @@ public abstract class AbstractFunctionCall extends ExpressionBaseNode {
 		return new CgaListTruffleBox(Arrays.asList(argumentValues));
 	}
 
-	protected CGAMultivector _executeFunction(Function function, CgaListTruffleBox argumentValueBoxed, InteropLibrary library) {
+	protected CGAMultivector _executeFunction(Function function, CgaListTruffleBox argumentValueBoxed, InteropLibrary library) throws InterpreterInternalException {
 		try {
 			// Indirect execution in order to utilize graal optimizations.
 			// invokes FunctionRootNode::execute
@@ -50,9 +50,9 @@ public abstract class AbstractFunctionCall extends ExpressionBaseNode {
 			return returnValue.getInner();
 		} catch (ArityException e) {
 			String message = "Wrong argument count in functionCall of: " + this.functionReference.getName() + "\n" + e.toString();
-			throw new GeomAlgeLangException(message);
+			throw new InterpreterInternalException(message);
 		} catch (UnsupportedTypeException | UnsupportedMessageException e) {
-			throw new GeomAlgeLangException(e.toString());
+			throw new InterpreterInternalException(e.toString());
 		}
 	}
 }

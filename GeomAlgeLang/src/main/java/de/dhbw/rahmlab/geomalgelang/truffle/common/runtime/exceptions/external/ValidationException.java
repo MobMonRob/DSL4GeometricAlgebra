@@ -1,6 +1,13 @@
 package de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.external;
 
+/**
+ * This exception indicates a syntactical error or an incorrect external invocation.
+ */
 public class ValidationException extends AbstractExternalException {
+
+	public ValidationException(Throwable cause) {
+		super(cause.getMessage(), cause, null);
+	}
 
 	public ValidationException(String message) {
 		// If the cause is omitted, then the stackTrace of Java functions will be empty.

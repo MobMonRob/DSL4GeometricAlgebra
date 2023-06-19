@@ -3,7 +3,7 @@ package de.dhbw.rahmlab.geomalgelang.truffle.features.operators.nodes.exprSuperC
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.NodeCost;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
-import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.GeomAlgeLangException;
+import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.external.LanguageRuntimeException;
 import de.orat.math.cga.api.CGAMultivector;
 
 public abstract class UnaryOp extends ExpressionBaseNode {
@@ -21,11 +21,11 @@ public abstract class UnaryOp extends ExpressionBaseNode {
 
 		try {
 			return this.execute(argumentValue);
-		} catch (GeomAlgeLangException ex) {
+		} catch (LanguageRuntimeException ex) {
 			// Ensures that only the innermost sourceSection gets printed.
 			throw ex;
-		} catch (Exception ex) {
-			throw new GeomAlgeLangException(ex.getMessage(), ex, this);
+		} catch (RuntimeException ex) {
+			throw new LanguageRuntimeException(ex.getMessage(), ex, this);
 		}
 	}
 

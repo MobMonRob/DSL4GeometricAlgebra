@@ -8,8 +8,15 @@ import com.oracle.truffle.api.library.ExportMessage;
 import com.oracle.truffle.api.source.SourceSection;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.superClasses.GeomAlgeLangBaseNode;
 
+/**
+ * This exception indicates a runtime error within the language.
+ */
 @ExportLibrary(InteropLibrary.class)
 public class LanguageRuntimeException extends AbstractExternalException {
+
+	public LanguageRuntimeException(Throwable cause, GeomAlgeLangBaseNode location) {
+		super(cause.getMessage(), cause, location);
+	}
 
 	public LanguageRuntimeException(String message, Throwable cause, GeomAlgeLangBaseNode location) {
 		super(message, cause, location);

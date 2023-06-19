@@ -12,7 +12,8 @@ import com.oracle.truffle.api.library.ExportLibrary;
 import com.oracle.truffle.api.library.ExportMessage;
 import de.dhbw.rahmlab.geomalgelang.parsing.GrammarUtils;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLang;
-import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.GeomAlgeLangException;
+import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.external.ValidationException;
+import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.internal.InterpreterInternalException;
 import de.orat.math.cga.api.CGAMultivector;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,23 +30,23 @@ public final class GlobalVariableScope implements TruffleObject {
 	// Maybe we could use two different GlobalVariableScopes. One before and one after validation.
 	public final Map<String, Optional<CGAMultivector>> variables = new HashMap<>();
 
-	protected static void ensureNotConstant(String name) throws GeomAlgeLangException {
+	protected static void ensureNotConstant(String name) throws InterpreterInternalException {
 		if (GrammarUtils.constantsLiteralNames.contains(name)) {
-			throw new GeomAlgeLangException(String.format("\"%s\" is a constant, not a valid variable name!", name));
+			throw new InterpreterInternalException(String.format("\"%s\" is a constant, not a valid variable name!", name));
 		}
 	}
 
-	public boolean newVariable(String name) throws GeomAlgeLangException {
+	public boolean newVariable(String name) throws InterpreterInternalException {
 		GlobalVariableScope.ensureNotConstant(name);
 		Object existingValue = this.variables.putIfAbsent(name, Optional.empty());
 		return existingValue == null;
 	}
 
-	public void updateVariable(String name, CGAMultivector value) throws GeomAlgeLangException {
+	public void updateVariable(String name, CGAMultivector value) throws InterpreterInternalException {
 		GlobalVariableScope.ensureNotConstant(name);
 		Object existingValue = this.variables.replace(name, Optional.of(value));
 		if (existingValue == null) {
-			throw new GeomAlgeLangException("\"" + name + "\" is not a known variable within the given ocga program!");
+			throw new InterpreterInternalException("\"" + name + "\" is not a known variable within the given ocga program!");
 		}
 	}
 
@@ -65,8 +66,13 @@ public final class GlobalVariableScope implements TruffleObject {
 	@ExportMessage
 	@TruffleBoundary
 	public void writeMember(String member, Object value) throws UnsupportedMessageException, UnknownIdentifierException, UnsupportedTypeException {
-		CGAMultivector cga = InputValidation.ensureIsCGA(value);
-		this.updateVariable(member, cga);
+		CGAMultivector cga;
+		try {
+			cga = InputValidation.ensureIsCGA(value);
+			this.updateVariable(member, cga);
+		} catch (InterpreterInternalException ex) {
+			throw new ValidationException(ex);
+		}
 	}
 
 	@ExportMessage

@@ -5,6 +5,7 @@ import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParser;
 import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParserBaseListener;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLangContext;
+import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.internal.InterpreterInternalException;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionCalls.nodes.expr.*;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.literals.nodes.expr.*;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.operators.nodes.expr.binaryOps.*;
@@ -229,8 +230,12 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		nodeStack.push(varRef);
 
 		if (!this.unmodifiableDeclaredVariables.contains(name)) {
-			// Needed for semantic validation
-			geomAlgeLangContext.globalVariableScope.newVariable(name);
+			try {
+				// Needed for semantic validation
+				geomAlgeLangContext.globalVariableScope.newVariable(name);
+			} catch (InterpreterInternalException ex) {
+				throw new AssertionError(ex);
+			}
 		}
 	}
 

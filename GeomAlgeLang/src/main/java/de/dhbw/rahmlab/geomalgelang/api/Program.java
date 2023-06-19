@@ -3,7 +3,8 @@ package de.dhbw.rahmlab.geomalgelang.api;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.superClasses.GeomAlgeLangBaseNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.CgaListTruffleBox;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.CgaTruffleBox;
-import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.GeomAlgeLangException;
+import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.external.AbstractExternalException;
+import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.external.LanguageRuntimeException;
 import de.orat.math.cga.api.CGAMultivector;
 import java.util.List;
 import org.graalvm.polyglot.Context;
@@ -94,28 +95,43 @@ public class Program implements AutoCloseable {
 		// ---
 
 		// Print the full originating error.
-		GeomAlgeLangException origin = null;
+		AbstractExternalException origin = null;
 		try {
-			origin = ex.getGuestObject().as(GeomAlgeLangException.class);
+			origin = ex.getGuestObject().as(AbstractExternalException.class);
 		} catch (Exception ex2) {
 
 		}
+		if (origin == null) {
+			throw ex;
+		}
 
-		if (origin != null) {
+		if (origin instanceof LanguageRuntimeException langException) {
+
 			SourceSection sourceSection = ex.getSourceLocation();
 			if (sourceSection == null) {
-				throw origin;
+				throw langException;
 			}
-			GeomAlgeLangBaseNode location = origin.theLocation;
 
-			String locationDescription = String.format("line %s, column %s", sourceSection.getStartLine(), sourceSection.getStartColumn());
+			GeomAlgeLangBaseNode location = langException.location();
+
+			String locationDescription = String.format(
+				"line %s, column %s",
+				sourceSection.getStartLine(),
+				sourceSection.getStartColumn()
+			);
 			String nodeType = location.getClass().getSimpleName();
 			String characters = sourceSection.getCharacters().toString();
 
 			String oldMessage = origin.getMessage();
-			String newMessage = String.format("\nLocation: %s\nCharacters: \"%s\"\nNodeType: %s\nMessage: %s", locationDescription, characters, nodeType, oldMessage);
+			String newMessage = String.format(
+				"\nLocation: %s\nCharacters: \"%s\"\nNodeType: %s\nMessage: %s",
+				locationDescription,
+				characters,
+				nodeType,
+				oldMessage
+			);
 
-			throw new GeomAlgeLangException(newMessage, origin, null);
+			throw new LanguageRuntimeException(newMessage, langException, location);
 		} else {
 			throw ex;
 		}
