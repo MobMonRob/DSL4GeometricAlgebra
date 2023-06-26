@@ -6,7 +6,7 @@ import com.oracle.truffle.api.interop.InteropLibrary;
 import com.oracle.truffle.api.library.CachedLibrary;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.CgaListTruffleBox;
-import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.external.LanguageRuntimeException;
+import static de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.CatchAndRethrow.catchAndRethrow;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionCalls.nodes.exprSuperClasses.AbstractFunctionCall;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.runtime.Function;
 import de.orat.math.cga.api.CGAMultivector;
@@ -23,11 +23,8 @@ public abstract class BuiltinFunctionCall extends AbstractFunctionCall {
 
 		CgaListTruffleBox argumentValueBoxed = super._executeArguments(frame);
 
-		try {
+		return catchAndRethrow(this, () -> {
 			return super._executeFunction(function, argumentValueBoxed, library);
-		} catch (Exception ex) {
-			// Needed to print SourceLocation in BuiltinCalls.
-			throw new LanguageRuntimeException(ex.getMessage(), ex, this);
-		}
+		});
 	}
 }

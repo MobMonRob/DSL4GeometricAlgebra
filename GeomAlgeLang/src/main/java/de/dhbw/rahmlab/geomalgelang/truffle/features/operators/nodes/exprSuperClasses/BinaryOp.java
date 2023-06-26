@@ -3,6 +3,7 @@ package de.dhbw.rahmlab.geomalgelang.truffle.features.operators.nodes.exprSuperC
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.NodeCost;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
+import static de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.CatchAndRethrow.catchAndRethrow;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.external.LanguageRuntimeException;
 import de.orat.math.cga.api.CGAMultivector;
 
@@ -23,14 +24,9 @@ public abstract class BinaryOp extends ExpressionBaseNode {
 		CGAMultivector argumentLeftValue = this.argumentLeft.executeGeneric(frame);
 		CGAMultivector argumentRightValue = this.argumentRight.executeGeneric(frame);
 
-		try {
+		return catchAndRethrow(this, () -> {
 			return this.execute(argumentLeftValue, argumentRightValue);
-		} catch (LanguageRuntimeException ex) {
-			// Ensures that only the innermost sourceSection gets printed.
-			throw ex;
-		} catch (RuntimeException ex) {
-			throw new LanguageRuntimeException(ex.getMessage(), ex, this);
-		}
+		});
 	}
 
 	protected abstract CGAMultivector execute(CGAMultivector left, CGAMultivector right);

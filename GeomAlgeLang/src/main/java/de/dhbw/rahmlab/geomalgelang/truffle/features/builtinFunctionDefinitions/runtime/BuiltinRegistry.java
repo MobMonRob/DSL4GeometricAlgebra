@@ -1,6 +1,7 @@
 package de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionDefinitions.runtime;
 
 import com.oracle.truffle.api.dsl.NodeFactory;
+import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.superClasses.GeomAlgeLangBaseNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLang;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.internal.InterpreterInternalException;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionDefinitions.nodes.BuiltinFunctionRootNode;

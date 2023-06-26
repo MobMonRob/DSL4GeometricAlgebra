@@ -88,6 +88,7 @@ public class Program implements AutoCloseable {
 	private RuntimeException enrichException(PolyglotException ex) {
 		// // Print CGA functions stacktrace. ToDo: implement with the CGA functions feature.
 		// Iterable<PolyglotException.StackFrame> polyglotStackTrace = ex.getPolyglotStackTrace();
+		// Can we use the Java default StackWalker here?
 		// ---
 
 		// Print the full originating error.
