@@ -10,14 +10,31 @@ import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.internal.I
  */
 public abstract class CatchAndRethrow {
 
-	public static interface Executable<E> {
+	public static interface ReturningExecutable<E> {
 
 		E execute() throws InterpreterInternalException, LanguageRuntimeException, RuntimeException;
 	}
 
-	public static <T> T catchAndRethrow(GeomAlgeLangBaseNode location, Executable<T> executable) {
+	public static <T> T catchAndRethrow(GeomAlgeLangBaseNode location, ReturningExecutable<T> executable) {
 		try {
 			return executable.execute();
+		} catch (InterpreterInternalException ex) {
+			throw new LanguageRuntimeException(ex, location);
+		} catch (LanguageRuntimeException ex) {
+			throw ex;
+		} catch (RuntimeException ex) {
+			throw new LanguageRuntimeException(ex, location);
+		}
+	}
+
+	public static interface Executable {
+
+		void execute() throws InterpreterInternalException, LanguageRuntimeException, RuntimeException;
+	}
+
+	public static void catchAndRethrow(GeomAlgeLangBaseNode location, Executable executable) {
+		try {
+			executable.execute();
 		} catch (InterpreterInternalException ex) {
 			throw new LanguageRuntimeException(ex, location);
 		} catch (LanguageRuntimeException ex) {

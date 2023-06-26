@@ -7,8 +7,7 @@ import com.oracle.truffle.api.dsl.Specialization;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.stmtSuperClasses.StatementBaseNode;
-import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.external.LanguageRuntimeException;
-import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.internal.InterpreterInternalException;
+import static de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.CatchAndRethrow.catchAndRethrow;
 import de.orat.math.cga.api.CGAMultivector;
 
 @NodeChild(value = "expr", type = ExpressionBaseNode.class)
@@ -19,10 +18,8 @@ public abstract class GlobalVariableAssignment extends StatementBaseNode {
 
 	@Specialization
 	protected void execute(CGAMultivector exprValue, @Cached("currentLanguageContext()") GeomAlgeLangContext context) {
-		try {
+		catchAndRethrow(this, () -> {
 			context.globalVariableScope.updateVariable(this.getName(), exprValue);
-		} catch (InterpreterInternalException | RuntimeException ex) {
-			throw new LanguageRuntimeException(ex, this);
-		}
+		});
 	}
 }
