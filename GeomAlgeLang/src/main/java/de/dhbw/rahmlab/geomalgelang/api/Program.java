@@ -5,6 +5,7 @@ import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.CgaListTruffleBox;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.CgaTruffleBox;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.external.AbstractExternalException;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.external.LanguageRuntimeException;
+import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.external.ValidationException;
 import de.orat.math.cga.api.CGAMultivector;
 import java.util.List;
 import org.graalvm.polyglot.Context;
@@ -96,18 +97,29 @@ public class Program implements AutoCloseable {
 		try {
 			origin = ex.getGuestObject().as(AbstractExternalException.class);
 		} catch (Exception ex2) {
-
+			return ex;
 		}
 		if (origin == null) {
 			return ex;
 		}
 
-		if (!(origin instanceof LanguageRuntimeException)) {
-			return ex;
+		if (origin instanceof LanguageRuntimeException langException) {
+			return enrichLanguageRuntimeException(ex, langException);
+		} else if (origin instanceof ValidationException validationException) {
+			return enrichValidationException(ex, validationException);
 		}
-		LanguageRuntimeException langException = (LanguageRuntimeException) origin;
+		throw new AssertionError(String.format(
+			"The given AbstractExternalException instance was of unexpected subtype: %s",
+			origin.getClass().getCanonicalName()
+		));
+	}
 
-		SourceSection sourceSection = ex.getSourceLocation();
+	private LanguageRuntimeException enrichLanguageRuntimeException(
+		PolyglotException containingException,
+		LanguageRuntimeException langException
+	) {
+
+		SourceSection sourceSection = containingException.getSourceLocation();
 		if (sourceSection == null) {
 			return langException;
 		}
@@ -122,15 +134,20 @@ public class Program implements AutoCloseable {
 		String nodeType = location.getClass().getSimpleName();
 		String characters = sourceSection.getCharacters().toString();
 
-		String oldMessage = origin.getMessage();
 		String newMessage = String.format(
-			"\nLocation: %s\nCharacters: \"%s\"\nNodeType: %s\nMessage: %s",
+			"\nLocation: %s\nCharacters: \"%s\"\nNodeType: %s",
 			locationDescription,
 			characters,
-			nodeType,
-			oldMessage
+			nodeType
 		);
 
 		return new LanguageRuntimeException(newMessage, langException, location);
+	}
+
+	private RuntimeException enrichValidationException(
+		PolyglotException containingException,
+		ValidationException validationException
+	) {
+		return validationException;
 	}
 }

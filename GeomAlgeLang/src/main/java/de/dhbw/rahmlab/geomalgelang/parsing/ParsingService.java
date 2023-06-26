@@ -1,13 +1,11 @@
 package de.dhbw.rahmlab.geomalgelang.parsing;
 
-import com.oracle.truffle.api.source.Source;
 import de.dhbw.rahmlab.geomalgelang.parsing.astConstruction.FuncTransform;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLangContext;
+import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.external.ValidationException;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.FunctionDefinitionBody;
-import org.antlr.v4.runtime.BailErrorStrategy;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.DefaultErrorStrategy;
 import org.antlr.v4.runtime.atn.PredictionMode;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 
@@ -26,7 +24,7 @@ public final class ParsingService {
 	}
 
 	public static ExpressionBaseNode parseExpr(CharStreamSupplier program, GeomAlgeLangContext geomAlgeLangContext) {
-		// After function definitions are part of the language, the provided string needs to be wrappt into a syntactivally correct function.
+		// After function definitions are part of the language, the provided string needs to be wrapped into a syntactivally correct function.
 		FunctionDefinitionBody functionDefinitionBody = ParsingService.parse(program, geomAlgeLangContext);
 		ExpressionBaseNode retExpr = functionDefinitionBody.getFirstRetExpr();
 		return retExpr;
@@ -44,7 +42,11 @@ public final class ParsingService {
 			lexer.reset();
 			parser.reset();
 			configureParserDiagnostic(parser);
-			return invoke(parser, geomAlgeLangContext);
+			try {
+				return invoke(parser, geomAlgeLangContext);
+			} catch (ParseCancellationException ex2) {
+				throw new ValidationException(ex2);
+			}
 		}
 	}
 
@@ -57,17 +59,23 @@ public final class ParsingService {
 	}
 
 	protected static void configureParserDiagnostic(GeomAlgeParser parser) {
+		// parser.setErrorHandler(new BailErrorStrategy());
+		parser.setErrorHandler(new CustomBailErrorStrategy());
+
 		parser.removeErrorListeners();
-		parser.addErrorListener(new CustumDiagnosticErrorListener(System.out));
+		// Too noisy for default use.
+		// parser.addErrorListener(new CustumDiagnosticErrorListener(System.out));
 		parser.addErrorListener(SyntaxErrorListener.INSTANCE);
-		parser.setErrorHandler(new BailErrorStrategy());
+
 		parser.getInterpreter().setPredictionMode(PredictionMode.LL_EXACT_AMBIG_DETECTION);
 	}
 
 	protected static void configureParserDefault(GeomAlgeParser parser) {
+		parser.setErrorHandler(new CustomBailErrorStrategy());
+
 		parser.removeErrorListeners();
 		parser.addErrorListener(SyntaxErrorListener.INSTANCE);
-		parser.setErrorHandler(new BailErrorStrategy());
+
 		parser.getInterpreter().setPredictionMode(PredictionMode.SLL);
 	}
 
@@ -75,7 +83,7 @@ public final class ParsingService {
 		parser.removeErrorListeners();
 		parser.addErrorListener(new CustumDiagnosticErrorListener(System.out));
 		//parser.addErrorListener(SyntaxErrorListener.INSTANCE); //TestRig dies with this if ambiguity is detected.
-		parser.setErrorHandler(new BailErrorStrategy());
+		parser.setErrorHandler(new CustomBailErrorStrategy());
 		parser.getInterpreter().setPredictionMode(PredictionMode.LL_EXACT_AMBIG_DETECTION);
 	}
 

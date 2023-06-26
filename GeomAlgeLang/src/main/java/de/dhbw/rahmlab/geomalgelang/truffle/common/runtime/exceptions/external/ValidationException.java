@@ -6,7 +6,7 @@ package de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.external;
 public class ValidationException extends AbstractExternalException {
 
 	public ValidationException(Throwable cause) {
-		super(cause.getMessage(), cause, null);
+		super(null, cause, null);
 	}
 
 	public ValidationException(String message) {

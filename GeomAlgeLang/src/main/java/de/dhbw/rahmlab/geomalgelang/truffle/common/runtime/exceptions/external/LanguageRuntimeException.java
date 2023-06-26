@@ -15,7 +15,7 @@ import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.superClasses.GeomAlgeLa
 public class LanguageRuntimeException extends AbstractExternalException {
 
 	public LanguageRuntimeException(Throwable cause, GeomAlgeLangBaseNode location) {
-		super(cause.getMessage(), cause, location);
+		super(null, cause, location);
 	}
 
 	public LanguageRuntimeException(String message, Throwable cause, GeomAlgeLangBaseNode location) {
