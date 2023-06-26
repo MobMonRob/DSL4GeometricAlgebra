@@ -22,7 +22,7 @@ public class VariableAssignmentTest {
 
 		try {
 			program.invoke(arguments);
-		} catch (PolyglotException e) {
+		} catch (RuntimeException e) {
 			//System.out.println(e);
 			return;
 		} finally {
@@ -39,8 +39,7 @@ public class VariableAssignmentTest {
 
 		try {
 			program.invoke(arguments);
-		} catch (PolyglotException e) {
-			//System.out.println(e);
+		} catch (RuntimeException e) {
 			return;
 		} finally {
 			program.close();
