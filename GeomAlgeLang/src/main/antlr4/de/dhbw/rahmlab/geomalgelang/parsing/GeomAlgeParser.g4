@@ -15,15 +15,31 @@ options { tokenVocab=GeomAlgeLexer; }
 ///////////////////////////////////////////////////////////////////////////
 
 program
-	:	func
+	:	(WHITE_LINE* function WHITE_LINE*)+
 		EOF // https://stackoverflow.com/a/61402548
 	;
 
 ///////////////////////////////////////////////////////////////////////////
-// Func
+// Function
 ///////////////////////////////////////////////////////////////////////////
 
-func
+function
+	:	SPACE* FUNCTION_INDICATOR
+		SPACE+ name=IDENTIFIER
+		SPACE* L_PARENTHESIS formalParameterList R_PARENTHESIS
+		SPACE* L_CURLY_BRACKET functionBody R_CURLY_BRACKET
+		#Function_
+	;
+
+formalParameterList
+	:	SPACE* (params+=formalParameter (SPACE* COMMA SPACE* params+=formalParameter SPACE*)*)? SPACE*
+	;
+
+formalParameter
+	:	name=IDENTIFIER	#FormalParameter_
+	;
+
+functionBody
 	:	WHITE_LINE*
 		(stmt WHITE_LINE+)*
 		retExpr

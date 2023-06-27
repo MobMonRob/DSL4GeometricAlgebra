@@ -25,10 +25,12 @@ public class App {
 
 	private static void invocationTest() throws Exception {
 		String source = """
-		c:= a /0.0
-		///*
-		//z = 5
-		b // +y
+		fn myTest(b) {
+			//c:= a /0.0
+			///*
+			//z = 5
+			b // +y
+		}
 		""";
 
 		System.out.println("source: " + source);

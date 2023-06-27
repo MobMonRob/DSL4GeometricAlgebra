@@ -28,7 +28,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 		this.geomAlgeLangContext = geomAlgeLangContext;
 	}
 
-	public static FunctionDefinitionBody generate(GeomAlgeParser.FuncContext ctx, GeomAlgeLangContext geomAlgeLangContext) {
+	public static FunctionDefinitionBody generate(GeomAlgeParser.FunctionContext ctx, GeomAlgeLangContext geomAlgeLangContext) {
 		FuncTransform transform = new FuncTransform(geomAlgeLangContext);
 		StoppingBeforeParseTreeWalker.walk(transform, ctx, GeomAlgeParser.ExprContext.class);
 		FunctionDefinitionBody function = new FunctionDefinitionBody(
