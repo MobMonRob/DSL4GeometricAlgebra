@@ -240,13 +240,16 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 	}
 
 	// https://stackoverflow.com/questions/4323599/best-way-to-parsedouble-with-comma-as-decimal-separator/4323627#4323627
-	private static final DecimalFormat decimalFormat = new DecimalFormat();
+	private static final DecimalFormat decimalFormat = initDecimalFormat();
 
-	static {
-		final DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+	private static DecimalFormat initDecimalFormat() {
+		DecimalFormatSymbols symbols = new DecimalFormatSymbols();
 		symbols.setDecimalSeparator('.');
 		symbols.setGroupingSeparator(' ');
-		decimalFormat.setDecimalFormatSymbols(symbols);
+
+		DecimalFormat format = new DecimalFormat();
+		format.setDecimalFormatSymbols(symbols);
+		return format;
 	}
 
 	@Override
