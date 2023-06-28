@@ -14,7 +14,7 @@ public class ProgramTransform extends GeomAlgeParserBaseListener {
 
 	public static void generate(GeomAlgeParser.ProgramContext ctx, GeomAlgeLangContext geomAlgeLangContext) {
 		ProgramTransform transform = new ProgramTransform(geomAlgeLangContext);
-		StoppingBeforeParseTreeWalker.walk(transform, ctx, GeomAlgeParser.FunctionContext.class);
+		SkippingParseTreeWalker.walk(transform, ctx, GeomAlgeParser.FunctionContext.class);
 
 	}
 }

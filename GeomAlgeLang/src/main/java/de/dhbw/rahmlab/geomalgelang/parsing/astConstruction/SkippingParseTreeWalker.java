@@ -8,28 +8,28 @@ import org.antlr.v4.runtime.tree.RuleNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 // Inspired by: https://github.com/antlr/antlr4/blob/8188dc5388dfe9246deb9b6ae507c3693fd55c3f/runtime/Java/src/org/antlr/v4/runtime/tree/ParseTreeWalker.java
-public class StoppingBeforeParseTreeWalker {
+public class SkippingParseTreeWalker {
 
 	protected final ParseTreeListener listener;
-	protected final Class<? extends RuleNode> stopBefore;
+	protected final Class<? extends RuleNode> skipBeforeEnteringRuleNodeClass;
 
-	protected StoppingBeforeParseTreeWalker(ParseTreeListener listener, Class<? extends RuleNode> stopBefore) {
+	protected SkippingParseTreeWalker(ParseTreeListener listener, Class<? extends RuleNode> stopBefore) {
 		this.listener = listener;
-		this.stopBefore = stopBefore;
+		this.skipBeforeEnteringRuleNodeClass = stopBefore;
 	}
 
 	/**
 	 * Performs a walk on the given parse tree starting at the root and going down recursively with
 	 * depth-first search. On each node, {@link ParseTreeWalker#enterRule} is called before recursively
 	 * walking down into child nodes, then {@link ParseTreeWalker#exitRule} is called after the recursive call
-	 * to wind up.
+	 * to wind up. It skips the subtrees below their root node of the class given in the parameter.
 	 *
 	 * @param listener The listener used by the walker to process grammar rules
 	 * @param first The parse tree to be walked on
-	 * @param stopBefore type of first node to not visit
+	 * @param skipBeforeEnteringRuleNodeClass class of root node of a skipped subtree
 	 */
-	public static void walk(ParseTreeListener listener, ParseTree first, Class<? extends RuleNode> stopBefore) {
-		StoppingBeforeParseTreeWalker walker = new StoppingBeforeParseTreeWalker(listener, stopBefore);
+	public static void walk(ParseTreeListener listener, ParseTree first, Class<? extends RuleNode> skipBeforeEnteringRuleNodeClass) {
+		SkippingParseTreeWalker walker = new SkippingParseTreeWalker(listener, skipBeforeEnteringRuleNodeClass);
 		walker.walk(first);
 	}
 
@@ -45,7 +45,7 @@ public class StoppingBeforeParseTreeWalker {
 
 		RuleNode r = (RuleNode) current;
 
-		if (this.stopBefore.isInstance(r)) {
+		if (this.skipBeforeEnteringRuleNodeClass.isInstance(r)) {
 			return;
 		}
 
