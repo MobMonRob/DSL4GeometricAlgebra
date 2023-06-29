@@ -6,7 +6,7 @@ import com.oracle.truffle.api.frame.FrameDescriptor;
 import com.oracle.truffle.api.source.Source;
 import de.dhbw.rahmlab.geomalgelang.parsing.CharStreamSupplier;
 import de.dhbw.rahmlab.geomalgelang.parsing.ParsingService;
-import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.ProgramRootNode;
+import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.ExecutionRootNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.FunctionDefinitionBody;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.FunctionDefinitionRootNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.superClasses.AbstractFunctionRootNode;
@@ -37,11 +37,11 @@ public class GeomAlgeLang extends TruffleLanguage<GeomAlgeLangContext> {
 
 	@Override
 	protected CallTarget parse(ParsingRequest request) throws IOException {
-		ProgramRootNode rootNode = parseSource(request.getSource());
+		ExecutionRootNode rootNode = parseSource(request.getSource());
 		return rootNode.getCallTarget();
 	}
 
-	private ProgramRootNode parseSource(Source source) throws IOException {
+	private ExecutionRootNode parseSource(Source source) throws IOException {
 		this.context.setSource(source);
 		FunctionDefinitionBody functionDefinitionBody = ParsingService.parse(CharStreamSupplier.from(source), this.context);
 
@@ -49,7 +49,7 @@ public class GeomAlgeLang extends TruffleLanguage<GeomAlgeLangContext> {
 		AbstractFunctionRootNode functionRootNode = new FunctionDefinitionRootNode(this, functionDefinitionBody);
 		ExecutionValidation executionValidation = new ExecutionValidation(this.context);
 
-		ProgramRootNode rootNode = new ProgramRootNode(this, frameDescriptor, functionRootNode, executionValidation);
+		ExecutionRootNode rootNode = new ExecutionRootNode(this, frameDescriptor, functionRootNode, executionValidation);
 		return rootNode;
 	}
 }

@@ -9,14 +9,14 @@ import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.external.V
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.internal.InterpreterInternalException;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.superClasses.AbstractFunctionRootNode;
 
-public class ProgramRootNode extends RootNode {
+public class ExecutionRootNode extends RootNode {
 
 	@Child
 	protected AbstractFunctionRootNode functionRootNode;
 
 	protected final ExecutionValidation executionValidation;
 
-	public ProgramRootNode(GeomAlgeLang language, FrameDescriptor frameDescriptor, AbstractFunctionRootNode functionRootNode, ExecutionValidation executionValidation) {
+	public ExecutionRootNode(GeomAlgeLang language, FrameDescriptor frameDescriptor, AbstractFunctionRootNode functionRootNode, ExecutionValidation executionValidation) {
 		super(language, frameDescriptor);
 		this.functionRootNode = functionRootNode;
 		this.executionValidation = executionValidation;
