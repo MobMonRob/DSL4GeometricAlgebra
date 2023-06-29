@@ -16,8 +16,8 @@ public final class ParsingService {
 	}
 
 	protected static FunctionDefinitionBody invoke(GeomAlgeParser parser, GeomAlgeLangContext geomAlgeLangContext) {
-		GeomAlgeParser.ProgramContext program = parser.program();
-		GeomAlgeParser.FunctionContext function = program.function(0);
+		GeomAlgeParser.SourceUnitContext sourceUnit = parser.sourceUnit();
+		GeomAlgeParser.FunctionContext function = sourceUnit.function(0);
 		FunctionDefinitionBody functionDefinitionBody = FuncTransform.generate(function, geomAlgeLangContext);
 
 		return functionDefinitionBody;
