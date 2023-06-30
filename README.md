@@ -61,6 +61,11 @@ If you use an IDE other than Netbeans and execute the generated .class files dir
 ## Annotation based API
 An [annotation based API](annotation-processing/README.md) useful espcially for testing is available.
 
+## Netbeans IDE Tooling
+
+### Syntax-Highlighting
+
+### Insertion of special characters
 
 ## Types to use from outside the language
 CGA multivectors and objecs of its subtypes are completely hidden - not visible outside the DSL. Input data to and output data from the DSL is transfered by objects of the classes listed in the following table:
