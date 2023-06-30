@@ -94,7 +94,7 @@ Hint: The Unicode and Latex name for the symbol used for left contraction is "RI
 | 1          | &#x002D; | -       | \u002D  | difference | multivector1.sub(multivector2) | |
 | 3          | &#x230B; | \rfloor | \u230B  | left contraction | multivetor1.ip(multivector2, LEFT_CONTRACTION) |  |
 | 3          | &#x230A; | \lfloor | \u230A  | right contraction | multivector1.ip(multivector1, RIGHT_CONTRACTION); where the grade operator for negative grades is zero. This implies that `something of higher grade cannot be contracted onto something of lower grade`. | |
-| 3          | &#x2228; | \vee    | \u2228  | regressive product (intersection, meet for) | multivector1.vee(multivector2) or (multivector1* &#8743; multivector2*)* |  |
+| 3          | &#x2228; | \vee    | \u2228  | regressive product (meet if intersected) | multivector1.vee(multivector2) or (multivector1* &#8743; multivector2*)* |  |
 | 2          | &#x002F; | /       | \u002F  | division (inverse geometric product) | multivector1.div(multivector2) |  |
 
 
