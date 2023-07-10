@@ -61,6 +61,11 @@ If you use an IDE other than Netbeans and execute the generated .class files dir
 ## Annotation based API
 An [annotation based API](annotation-processing/README.md) useful espcially for testing is available.
 
+## Netbeans IDE Tooling
+
+### Syntax-Highlighting
+
+### Insertion of special characters
 
 ## Types to use from outside the language
 CGA multivectors and objecs of its subtypes are completely hidden - not visible outside the DSL. Input data to and output data from the DSL is transfered by objects of the classes listed in the following table:
@@ -89,12 +94,12 @@ Hint: The Unicode and Latex name for the symbol used for left contraction is "RI
 | precedence | symbol   | latex   | unicode | name | implementation | hints |
 | :--------: | :------: | ------- | ------- | ---- | -------------- | ----- |
 | 4          |          |         | \u0020  | geometric product | multivector1.gp(multivector2) | Zero or more space characters are interpreted as the operator. |
-| 3          | &#x2227; | \wedge  | \u2227  | outer product (join, span) | multivector1.op(multivector2), not used for double, for tuple3d it makes sense but actually no implementation is available | joining linearily independend vectors/two disjoint subspaces |
+| 3          | &#x2227; | \wedge  | \u2227  | outer product (join, span for no common subspace) | multivector1.op(multivector2), not used for double, for tuple3d it makes sense but actually no implementation is available | joining linearily independend vectors/two disjoint subspaces |
 | 1          | &#x002B; | +       | \u002B  | sum | multivector1.add(multivector2) | |
 | 1          | &#x002D; | -       | \u002D  | difference | multivector1.sub(multivector2) | |
 | 3          | &#x230B; | \rfloor | \u230B  | left contraction | multivetor1.ip(multivector2, LEFT_CONTRACTION) |  |
 | 3          | &#x230A; | \lfloor | \u230A  | right contraction | multivector1.ip(multivector1, RIGHT_CONTRACTION); where the grade operator for negative grades is zero. This implies that `something of higher grade cannot be contracted onto something of lower grade`. | |
-| 3          | &#x2228; | \vee    | \u2228  | regressive product (intersection) | multivector1.vee(multivector2) or (multivector1* &#8743; multivector2*)* |  |
+| 3          | &#x2228; | \vee    | \u2228  | regressive product (meet if intersected) | multivector1.vee(multivector2) or (multivector1* &#8743; multivector2*)* |  |
 | 2          | &#x002F; | /       | \u002F  | division (inverse geometric product) | multivector1.div(multivector2) |  |
 
 
@@ -178,7 +183,7 @@ There exist three types of involution operations: Space inversion, reversion and
 | &#x006F;         | o          | \u006F       | corresponding to origin vector in Dorst, Fontijne & Mann 2007 | 0.5&#x03B5;&#7522;  |
 | &#x006E;         | n          | \u006E       | corresponding to infinity vector in Doran & Lasenby | &#x03B5;&#7522;  |
 | &#x00F1;         | \tilde{n}  | \u00F1       | corresponding to origin vector in Doran & Lasenby | -2&#x03B5;&#8320; |
-| &#x0045;&#x2080; | E_0        | \u0045\u2080 | Minkovsky bi-vector | &#x03B5;&#8320; &#x2227; &#x03B5;&#7522;|
+| &#x0045;&#x2080; | E_0        | \u0045\u2080 | Minkovsky bi-vector (is its own inverse) | &#x03B5;&#8320; &#x2227; &#x03B5;&#7522;|
 | &#x0045;&#x2083; | E_3        | \u0045\u2083 | Euclidean pseudoscalar | &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083;     |
 | &#x0045;         | E          | \u0045       | Pseudoscalar | &#x03B5;&#x2080; &#x2227; &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083; &#x2227; &#x03B5;&#x1D62; |
 
