@@ -80,6 +80,18 @@ CGA multivectors and objecs of its subtypes are completely hidden - not visible 
 
 Inside the DSL all of these types are automatically casted into CGA multivectors. No other operations are possible based on these types inside the DSL.
 
+## Function definitions
+Custom functions can be defined like in the following example:
+```
+// Comment
+fn functionName(param1, param2) {
+	// Comment
+	a := param1 param2
+	b := param1 + param2
+	a, b
+}
+```
+
 ## Operators
 Hint: Operator precedence determines how operators are parsed concerning each other. A higher precedence number
 results in a higher binding strength. Thus operators with higher precedence become the operands of operators with lower precedence.
@@ -143,8 +155,8 @@ There exist three types of involution operations: Space inversion, reversion and
 | &#x003C;multivector&#x003E;&#x209A; (with &#x209A; ∈ {&#x2080;, &#x2081;, &#x2082;, &#x2083;, &#x2084;, &#x2085;}) |       | &#x003C; = \u003C,  &#x003E; = \u003E, &#x2080; = \u2080, &#x2081; = \u2081, &#x2082; = \u2082, &#x2083; = \u2083, &#x2084; = \u2084, &#x2085; = \u2085| grade extraction, grade p=0-5 as subscript | multivector.extractGrade(int grade)   |
 
 
-### Built-in functions
-#### Base functions
+## Built-in functions
+### Base functions
 | symbol      | description | implementation |
 | :---------- | ------------ | -------------- |
 | exp()       | exponential | CGAMultivector.exp() |
@@ -155,15 +167,15 @@ There exist three types of involution operations: Space inversion, reversion and
 | negate14()  | negate the signs of the vector- and 4-vector parts of an multivector. Usable to implement gerneral inverse. | multivector.negate14() |
 
 
-#### Additional functions to create transformations
+### Additional functions to create transformations
 | symbol                   | description | implementation |
 | :----------------------- | ----------- | -------------- |
 | translator(tuple3d)      | creates a translation from an 3d-tuple | createTranslation(tuple3d) |
 | rotator(tuple3d, double) | creates a rotation from an 3d-tuple representing the rotation axis and a double representing the angle in radian | createTranslation(tuple3d) |
 
 
-### Symbols
-#### Base vector symbols
+## Symbols
+### Base vector symbols
 | symbol           | latex        | Unicode      | description | implementation |
 | :--------------: | ------------ | ------------ | ----------- | -------------- |
 | &#x03B5;&#x2080; | \epsilon_0 | \u03B5\u2080 | base vector representing the origin | createOrigin(1d) |
@@ -173,7 +185,7 @@ There exist three types of involution operations: Space inversion, reversion and
 | &#x03B5;&#x2083; | \epsilon_3 | \u03B5\u2083 | base vector representing z direction | createEz(1d) |
 
 
-#### Further symbols
+### Further symbols
 | symbol           | latex      | Unicode      | description | implementation |
 | :--------------: | -----------| ------------ | ----------- | -------------- |
 | &#x03B5;&#x208A; | \epsilon_+ | \u03B5\u208A |  | &#x03B5;&#x2080; + 0.5&#x03B5;&#x1D62;  |
@@ -188,7 +200,7 @@ There exist three types of involution operations: Space inversion, reversion and
 | &#x0045;         | E          | \u0045       | Pseudoscalar | &#x03B5;&#x2080; &#x2227; &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083; &#x2227; &#x03B5;&#x1D62; |
 
 
-### Useful equations between above symbols
+## Useful equations between above symbols
 &#x03B5;&#x2080;&#x0045;&#x2080;=-&#x03B5;&#x2080;, &#x0045;&#x2080;&#x03B5;&#x2080;=&#x03B5;&#x2080;, &#x03B5;&#x1D62;&#x0045;&#x2080;=&#x03B5;&#x1D62;, &#x0045;&#x2080;&#x03B5;&#x1D62;=-&#x03B5;&#x1D62;, &#x0045;&#x2080;&#x00B2;=1, &#x03B5;&#x2080;&#x00B2;=&#x03B5;&#x1D62;&#x00B2;=0, &#x03B5;&#x208A;&#x00B2;=1, &#x03B5;&#x208B;&#x00B2;=-1, &#x03B5;&#x208A;&#x22C5;&#x03B5;&#x208B;=0
 
 
