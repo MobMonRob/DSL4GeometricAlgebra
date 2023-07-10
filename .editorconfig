@@ -1,0 +1,8 @@
+# Improve displaying tabs in GitHub.
+
+root = true
+
+[*.md]
+indent_style = tab
+indent_size = 4
+
