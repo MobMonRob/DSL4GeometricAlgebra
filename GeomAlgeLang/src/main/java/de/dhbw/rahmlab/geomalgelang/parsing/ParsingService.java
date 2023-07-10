@@ -23,9 +23,14 @@ public final class ParsingService {
 		return functionDefinitionBody;
 	}
 
-	public static ExpressionBaseNode parseExpr(CharStreamSupplier program, GeomAlgeLangContext geomAlgeLangContext) {
-		// After function definitions are part of the language, the provided string needs to be wrapped into a syntactivally correct function.
-		FunctionDefinitionBody functionDefinitionBody = ParsingService.parse(program, geomAlgeLangContext);
+	public static ExpressionBaseNode parseExpr(String program, GeomAlgeLangContext geomAlgeLangContext) {
+		String functionProgram = String.format("""
+			fn dummy(a, b) {
+				%s
+			}
+			""", program);
+
+		FunctionDefinitionBody functionDefinitionBody = ParsingService.parse(CharStreamSupplier.from(functionProgram), geomAlgeLangContext);
 		ExpressionBaseNode retExpr = functionDefinitionBody.getFirstRetExpr();
 		return retExpr;
 	}
