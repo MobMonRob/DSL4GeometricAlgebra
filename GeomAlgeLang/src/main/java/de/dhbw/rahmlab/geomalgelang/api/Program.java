@@ -66,12 +66,12 @@ public class Program implements AutoCloseable {
 		// Do it similar to simple language: launcher / SLmain.java
 		Value bindings = this.context.getBindings(LANGUAGE_ID); //polyglotBindings
 
-		arguments.argsMap.forEach((name, value) -> {
-			bindings.putMember(name, new CgaTruffleBox(value));
-		});
-
 		Value result = null;
 		try {
+			arguments.argsMap.forEach((name, value) -> {
+				bindings.putMember(name, new CgaTruffleBox(value));
+			});
+
 			// later: execute with arguments XOR getMember "main" and execute it with arguments (instead of bindings.putMember)
 			result = this.program.execute();
 		} catch (PolyglotException ex) {

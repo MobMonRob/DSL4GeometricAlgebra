@@ -16,15 +16,16 @@ public final class GeomAlgeLangContext {
 
 	public final GlobalVariableScope globalVariableScope;
 	public final BuiltinRegistry builtinRegistry;
+	public final GeomAlgeLang truffleLanguage;
 
 	public GeomAlgeLangContext() {
-		this.globalVariableScope = new GlobalVariableScope();
-		this.builtinRegistry = new BuiltinRegistry(null);
+		this(null);
 	}
 
 	public GeomAlgeLangContext(GeomAlgeLang truffleLanguage) {
 		this.globalVariableScope = new GlobalVariableScope();
 		this.builtinRegistry = new BuiltinRegistry(truffleLanguage);
+		this.truffleLanguage = truffleLanguage;
 	}
 
 	private Source source = null;

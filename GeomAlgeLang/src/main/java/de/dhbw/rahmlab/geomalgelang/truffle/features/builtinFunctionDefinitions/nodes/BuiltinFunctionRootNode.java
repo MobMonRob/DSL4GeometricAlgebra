@@ -1,5 +1,6 @@
 package de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionDefinitions.nodes;
 
+import com.oracle.truffle.api.frame.FrameDescriptor;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.CgaTruffleBox;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLang;
@@ -13,7 +14,7 @@ public final class BuiltinFunctionRootNode extends AbstractFunctionRootNode {
 	private BuiltinFunctionBody builtinFuncBody;
 
 	public BuiltinFunctionRootNode(GeomAlgeLang language, BuiltinFunctionBody builtinFuncBody) {
-		super(language); // , new FrameDescriptor()
+		super(language, new FrameDescriptor());
 		this.builtinFuncBody = builtinFuncBody;
 	}
 

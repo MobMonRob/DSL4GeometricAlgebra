@@ -81,10 +81,11 @@ CGA multivectors and objecs of its subtypes are completely hidden - not visible 
 Inside the DSL all of these types are automatically casted into CGA multivectors. No other operations are possible based on these types inside the DSL.
 
 ## Function definitions
-Custom functions can be defined like in the following example:
+Custom functions can be defined like in the following example. \
+There needs to be at least one Function defined with the name "main".
 ```
 // Comment
-fn functionName(param1, param2) {
+fn main(param1, param2) {
 	// Comment
 	a := param1 param2
 	b := param1 + param2

@@ -15,7 +15,7 @@ options { tokenVocab=GeomAlgeLexer; }
 ///////////////////////////////////////////////////////////////////////////
 
 sourceUnit
-	:	(WHITE_LINE* function WHITE_LINE*)+
+	:	(WHITE_LINE* functions+=function WHITE_LINE*)+
 		EOF // https://stackoverflow.com/a/61402548
 	;
 

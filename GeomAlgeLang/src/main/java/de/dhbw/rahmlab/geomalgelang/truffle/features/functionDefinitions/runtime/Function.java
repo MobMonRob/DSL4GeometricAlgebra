@@ -33,6 +33,10 @@ public final class Function implements TruffleObject {
 		this.arity = arity;
 	}
 
+	public AbstractFunctionRootNode getRootNode() {
+		return this.functionRootNode;
+	}
+
 	protected void ensureArity(int presumedArity) throws ArityException {
 		if (this.arity != presumedArity) {
 			throw ArityException.create(this.arity, this.arity, presumedArity);
