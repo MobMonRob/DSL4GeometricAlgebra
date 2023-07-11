@@ -67,6 +67,7 @@ An [annotation based API](annotation-processing/README.md) useful espcially for 
 A Syntax-Highlighting plugin for the Netbeans-IDE can be found [here](https://github.com/orat/netbeans-ocga/tree/master).
 
 ### Insertion of special characters
+A Netbeans-IDE plugin which adds a submenu to insert CGA-specific symbols and operators can be found [here](https://github.com/orat/netbeans-cgasymbols).
 
 ## Types to use from outside the language
 CGA multivectors and objecs of its subtypes are completely hidden - not visible outside the DSL. Input data to and output data from the DSL is transfered by objects of the classes listed in the following table:
