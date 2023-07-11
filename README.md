@@ -64,7 +64,7 @@ An [annotation based API](annotation-processing/README.md) useful espcially for 
 ## Netbeans IDE Tooling
 
 ### Syntax-Highlighting
-A Syntax-Highlighting plugin can be found [here](https://github.com/orat/netbeans-ocga/tree/master).
+A Syntax-Highlighting plugin for the Netbeans-IDE can be found [here](https://github.com/orat/netbeans-ocga/tree/master).
 
 ### Insertion of special characters
 
