@@ -27,7 +27,7 @@ public final class FunctionDefinitionBody extends AbstractFunctionBody {
 	}
 
 	@ExplodeLoop
-	public Object directCall(VirtualFrame frame) {
+	public CgaListTruffleBox directCall(VirtualFrame frame) {
 		for (StatementBaseNode stmt : stmts) {
 			stmt.executeGeneric(frame);
 		}

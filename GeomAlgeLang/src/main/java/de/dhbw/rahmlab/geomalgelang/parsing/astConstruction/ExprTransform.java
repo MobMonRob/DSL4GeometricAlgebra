@@ -5,8 +5,11 @@ import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParser;
 import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParserBaseListener;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLangContext;
+import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.external.ValidationException;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.internal.InterpreterInternalException;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionCalls.nodes.expr.*;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.functionCalls.nodes.expr.FunctionCall;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.runtime.Function;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.literals.nodes.expr.*;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.operators.nodes.expr.binaryOps.*;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.operators.nodes.expr.unaryOps.*;
@@ -17,8 +20,10 @@ import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.Map;
 import java.util.Set;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.functionCalls.nodes.expr.FunctionCallNodeGen;
 
 /**
  * This class converts an expression subtree of an ANTLR parsetree into an expression AST in truffle.
@@ -34,14 +39,16 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 	protected final Deque<ExpressionBaseNode> nodeStack = new ArrayDeque<>();
 	protected final GeomAlgeLangContext geomAlgeLangContext;
 	protected final Set<String> unmodifiableDeclaredVariables;
+	protected final Map<String, Function> functionsView;
 
-	protected ExprTransform(GeomAlgeLangContext geomAlgeLangContext, Set<String> unmodifiableDeclaredVariables) {
+	protected ExprTransform(GeomAlgeLangContext geomAlgeLangContext, Set<String> unmodifiableDeclaredVariables, Map<String, Function> functionsView) {
 		this.geomAlgeLangContext = geomAlgeLangContext;
 		this.unmodifiableDeclaredVariables = unmodifiableDeclaredVariables;
+		this.functionsView = functionsView;
 	}
 
-	public static ExpressionBaseNode generateExprAST(GeomAlgeParser.ExprContext exprCtx, GeomAlgeLangContext geomAlgeLangContext, Set<String> declaredVariables) {
-		ExprTransform exprTransform = new ExprTransform(geomAlgeLangContext, declaredVariables);
+	public static ExpressionBaseNode generateExprAST(GeomAlgeParser.ExprContext exprCtx, GeomAlgeLangContext geomAlgeLangContext, Set<String> declaredVariables, Map<String, Function> functionsView) {
+		ExprTransform exprTransform = new ExprTransform(geomAlgeLangContext, declaredVariables, functionsView);
 
 		ParseTreeWalker.DEFAULT.walk(exprTransform, exprCtx);
 
@@ -296,16 +303,19 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 
 		String functionName = ctx.name.getText();
 
-		// Evtl. die ganze Generierung hier in eine eigene Klassse in features/functionCalls packen, um es verständlicher zu machen, was zusammen gehört.
-		// Sobald es Funktionsdefinitionen gibt:
-		// Kann auch sein: Referenz auf statische / globale Funktion
-		// Oder auch, falls Funktionen höherer Ordung unterstützt: Variable vom Typ Funktion
-		GlobalBuiltinReference globalBuiltinReference = GlobalBuiltinReferenceNodeGen.create(functionName);
-		globalBuiltinReference.setSourceSection(ctx.name.getStartIndex(), ctx.name.getStopIndex());
+		if (this.functionsView.containsKey(functionName)) {
+			Function function = this.functionsView.get(functionName);
+			FunctionCall functionCall = FunctionCallNodeGen.create(function, argumentsArray);
+			functionCall.setSourceSection(ctx.getStart().getStartIndex(), ctx.getStop().getStopIndex());
+			this.nodeStack.push(functionCall);
+		} else {
+			// throw new ValidationException(String.format("Function \"%s\" to call not found.", functionName));
+			GlobalBuiltinReference globalBuiltinReference = GlobalBuiltinReferenceNodeGen.create(functionName);
+			globalBuiltinReference.setSourceSection(ctx.name.getStartIndex(), ctx.name.getStopIndex());
 
-		BuiltinFunctionCall functionCall = BuiltinFunctionCallNodeGen.create(globalBuiltinReference, argumentsArray);
-		functionCall.setSourceSection(ctx.getStart().getStartIndex(), ctx.getStop().getStopIndex());
-
-		this.nodeStack.push(functionCall);
+			BuiltinFunctionCall functionCall = BuiltinFunctionCallNodeGen.create(globalBuiltinReference, argumentsArray);
+			functionCall.setSourceSection(ctx.getStart().getStartIndex(), ctx.getStop().getStopIndex());
+			this.nodeStack.push(functionCall);
+		}
 	}
 }

@@ -10,7 +10,6 @@ import de.dhbw.rahmlab.geomalgelang.truffle.features.variables.nodes.stmt.Global
 import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.stmtSuperClasses.StatementBaseNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.FunctionDefinitionBody;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.FunctionDefinitionRootNode;
-import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.superClasses.AbstractFunctionRootNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.runtime.Function;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.variables.nodes.stmt.GlobalVariableAssignmentNodeGen;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.variables.nodes.stmt.GlobalVariableDeclarationNodeGen;
@@ -18,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class FuncTransform extends GeomAlgeParserBaseListener {
@@ -29,13 +29,15 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 	protected final Set<String> unmodifiableDeclaredVariables = Collections.unmodifiableSet(declaredVariables);
 	protected final List<String> formalParameterList = new ArrayList<>();
 	protected String name;
+	protected final Map<String, Function> functionsView;
 
-	protected FuncTransform(GeomAlgeLangContext geomAlgeLangContext) {
+	protected FuncTransform(GeomAlgeLangContext geomAlgeLangContext, Map<String, Function> functionsView) {
 		this.geomAlgeLangContext = geomAlgeLangContext;
+		this.functionsView = functionsView;
 	}
 
-	public static Function generate(GeomAlgeParser.FunctionContext ctx, GeomAlgeLangContext geomAlgeLangContext) {
-		FuncTransform transform = new FuncTransform(geomAlgeLangContext);
+	public static Function generate(GeomAlgeParser.FunctionContext ctx, GeomAlgeLangContext geomAlgeLangContext, Map<String, Function> functionsView) {
+		FuncTransform transform = new FuncTransform(geomAlgeLangContext, functionsView);
 		SkippingParseTreeWalker.walk(transform, ctx, GeomAlgeParser.ExprContext.class);
 		FunctionDefinitionBody functionDefinitionBody = new FunctionDefinitionBody(
 			transform.stmts.toArray(StatementBaseNode[]::new),
@@ -76,7 +78,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 			this.stmts.add(declaration);
 			this.declaredVariables.add(name);
 		}
-		ExpressionBaseNode expr = ExprTransform.generateExprAST(ctx.exprContext, this.geomAlgeLangContext, this.unmodifiableDeclaredVariables);
+		ExpressionBaseNode expr = ExprTransform.generateExprAST(ctx.exprContext, this.geomAlgeLangContext, this.unmodifiableDeclaredVariables, this.functionsView);
 		GlobalVariableAssignment assignment = GlobalVariableAssignmentNodeGen.create(expr, name);
 
 		assignment.setSourceSection(ctx.assignment.getStartIndex(), ctx.assignment.getStopIndex());
@@ -86,7 +88,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 	@Override
 	public void enterRetExprStmt(GeomAlgeParser.RetExprStmtContext ctx) {
-		ExpressionBaseNode retExpr = ExprTransform.generateExprAST(ctx.exprContext, this.geomAlgeLangContext, this.declaredVariables);
+		ExpressionBaseNode retExpr = ExprTransform.generateExprAST(ctx.exprContext, this.geomAlgeLangContext, this.declaredVariables, this.functionsView);
 		this.retExprs.add(retExpr);
 	}
 }

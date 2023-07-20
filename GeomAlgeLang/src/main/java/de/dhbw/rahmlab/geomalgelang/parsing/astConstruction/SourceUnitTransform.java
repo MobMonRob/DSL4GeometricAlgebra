@@ -6,6 +6,7 @@ import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParserBaseListener;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.external.ValidationException;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.runtime.Function;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,13 +20,14 @@ public class SourceUnitTransform extends GeomAlgeParserBaseListener {
 
 	public static Function generate(GeomAlgeParser.SourceUnitContext ctx, GeomAlgeLangContext geomAlgeLangContext) {
 		Map<String, Function> functions = new HashMap<>();
+		Map<String, Function> functionsView = Collections.unmodifiableMap(functions);
 
 		/*
 		SourceUnitTransform transform = new SourceUnitTransform(geomAlgeLangContext);
 		SkippingParseTreeWalker.walk(transform, ctx, GeomAlgeParser.FunctionBodyContext.class);
 		 */
 		for (FunctionContext functionCtx : ctx.functions) {
-			Function function = FuncTransform.generate(functionCtx, geomAlgeLangContext);
+			Function function = FuncTransform.generate(functionCtx, geomAlgeLangContext, functionsView);
 			if (functions.containsKey(function.name)) {
 				// ToDo: Display position of the function.
 				throw new ValidationException(String.format("Function with name \"%s\" hab been already declared.", function.name));

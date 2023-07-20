@@ -25,11 +25,13 @@ public class App {
 
 	private static void invocationTest() throws Exception {
 		String source = """
+		fn test() {
+			314
+		}
+
 		fn main(a, b) {
-			//c:= a /0.0
-			///*
-			//z = 5
-			a, b // +y
+			c := test()
+			a, b, abs(c)
 		}
 		""";
 

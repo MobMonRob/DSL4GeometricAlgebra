@@ -9,10 +9,13 @@ import com.oracle.truffle.api.nodes.ExplodeLoop;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.CgaListTruffleBox;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.CgaTruffleBox;
+import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.external.LanguageRuntimeException;
+import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.external.ValidationException;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.internal.InterpreterInternalException;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.runtime.Function;
 import de.orat.math.cga.api.CGAMultivector;
 import java.util.Arrays;
+import java.util.List;
 
 public abstract class AbstractFunctionCall extends ExpressionBaseNode {
 
@@ -46,10 +49,24 @@ public abstract class AbstractFunctionCall extends ExpressionBaseNode {
 		try {
 			// Indirect execution in order to utilize graal optimizations.
 			// invokes FunctionRootNode::execute
-			CgaTruffleBox returnValue = (CgaTruffleBox) library.execute(function, argumentValueBoxed);
-			return returnValue.getInner();
+			Object returnValue = library.execute(function, argumentValueBoxed);
+			if (returnValue instanceof CgaTruffleBox) {
+				return ((CgaTruffleBox) returnValue).getInner();
+			} else if (returnValue instanceof CgaListTruffleBox) {
+				List<CGAMultivector> mvecs = ((CgaListTruffleBox) returnValue).getInner();
+				if (mvecs.size() != 1) {
+					throw new LanguageRuntimeException(
+						String.format("Function \"%s\" returned more than 1 value", function.name),
+						this);
+				}
+				return mvecs.get(0);
+			} else {
+				throw new LanguageRuntimeException(
+					String.format("Function \"%s\" returned object of unknonw type: ", function.name, returnValue.getClass().getSimpleName()),
+					this);
+			}
 		} catch (ArityException e) {
-			String message = "Wrong argument count in functionCall of: " + this.functionReference.getName() + "\n" + e.toString();
+			String message = "Wrong argument count in functionCall of: " + function.name + "\n" + e.toString();
 			throw new InterpreterInternalException(message);
 		} catch (UnsupportedTypeException | UnsupportedMessageException e) {
 			throw new InterpreterInternalException(e.toString());
