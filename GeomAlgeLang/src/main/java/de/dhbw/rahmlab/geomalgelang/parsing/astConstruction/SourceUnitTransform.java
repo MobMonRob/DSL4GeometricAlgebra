@@ -19,11 +19,11 @@ public class SourceUnitTransform extends GeomAlgeParserBaseListener {
 
 	public static Function generate(GeomAlgeParser.SourceUnitContext ctx, GeomAlgeLangContext geomAlgeLangContext) {
 		Map<String, Function> functions = new HashMap<>();
-		// SourceUnitTransform transform = new SourceUnitTransform(geomAlgeLangContext);
-		// Evtl. einfacher, SourceUnitTransform zumindest in die Signatur der Function schauen lassen.
-		// Und dann in FuncTransform lediglich den Rumpf der Function bearbeiten.
-		// SkippingParseTreeWalker.walk(transform, ctx, GeomAlgeParser.FunctionContext.class);
 
+		/*
+		SourceUnitTransform transform = new SourceUnitTransform(geomAlgeLangContext);
+		SkippingParseTreeWalker.walk(transform, ctx, GeomAlgeParser.FunctionBodyContext.class);
+		 */
 		for (FunctionContext functionCtx : ctx.functions) {
 			Function function = FuncTransform.generate(functionCtx, geomAlgeLangContext);
 			if (functions.containsKey(function.name)) {
@@ -39,4 +39,11 @@ public class SourceUnitTransform extends GeomAlgeParserBaseListener {
 		}
 		return main;
 	}
+
+	/*
+	@Override
+	public void enterFunctionHead_(GeomAlgeParser.FunctionHead_Context ctx) {
+		String name = ctx.name.getText();
+	}
+	 */
 }

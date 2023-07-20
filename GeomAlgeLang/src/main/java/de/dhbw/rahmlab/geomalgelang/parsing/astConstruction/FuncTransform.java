@@ -52,22 +52,17 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 	}
 
 	@Override
-	public void enterFunction_(GeomAlgeParser.Function_Context ctx) {
+	public void enterFunctionHead_(GeomAlgeParser.FunctionHead_Context ctx) {
 		if (this.name != null) {
 			throw new AssertionError();
 		}
-		String name = ctx.name.getText();
-		this.name = name;
-	}
-
-	@Override
-	public void exitFunction_(GeomAlgeParser.Function_Context ctx) {
+		this.name = ctx.name.getText();
 	}
 
 	@Override
 	public void exitFormalParameter_(GeomAlgeParser.FormalParameter_Context ctx) {
-		String name = ctx.name.getText();
-		this.formalParameterList.add(name);
+		String formalParameter = ctx.name.getText();
+		this.formalParameterList.add(formalParameter);
 	}
 
 	@Override

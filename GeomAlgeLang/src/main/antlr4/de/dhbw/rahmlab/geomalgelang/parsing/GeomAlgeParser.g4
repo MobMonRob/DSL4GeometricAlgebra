@@ -24,11 +24,16 @@ sourceUnit
 ///////////////////////////////////////////////////////////////////////////
 
 function
+	:	functionHead
+		SPACE* L_CURLY_BRACKET functionBody R_CURLY_BRACKET
+		#Function_
+	;
+
+functionHead
 	:	SPACE* FUNCTION_INDICATOR
 		SPACE+ name=IDENTIFIER
 		SPACE* L_PARENTHESIS formalParameterList R_PARENTHESIS
-		SPACE* L_CURLY_BRACKET functionBody R_CURLY_BRACKET
-		#Function_
+		#FunctionHead_
 	;
 
 formalParameterList
