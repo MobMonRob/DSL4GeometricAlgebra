@@ -1,35 +1,36 @@
 package de.dhbw.rahmlab.geomalgelang.parsing.astConstruction;
 
 import com.oracle.truffle.api.frame.FrameDescriptor;
+import com.oracle.truffle.api.frame.FrameSlotKind;
 import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParser;
 import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParserBaseListener;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLangContext;
-import de.dhbw.rahmlab.geomalgelang.truffle.features.variables.nodes.stmt.GlobalVariableAssignment;
-import de.dhbw.rahmlab.geomalgelang.truffle.features.variables.nodes.stmt.GlobalVariableDeclaration;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.stmtSuperClasses.StatementBaseNode;
+import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.external.ValidationException;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.FunctionDefinitionBody;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.FunctionDefinitionRootNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.runtime.Function;
-import de.dhbw.rahmlab.geomalgelang.truffle.features.variables.nodes.stmt.GlobalVariableAssignmentNodeGen;
-import de.dhbw.rahmlab.geomalgelang.truffle.features.variables.nodes.stmt.GlobalVariableDeclarationNodeGen;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.variables.nodes.stmt.LocalVariableAssignment;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.variables.nodes.stmt.LocalVariableAssignmentNodeGen;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class FuncTransform extends GeomAlgeParserBaseListener {
 
 	protected final GeomAlgeLangContext geomAlgeLangContext;
 	protected final List<StatementBaseNode> stmts = new ArrayList<>();
 	protected final List<ExpressionBaseNode> retExprs = new ArrayList<>();
-	protected final Set<String> declaredVariables = new HashSet<>();
-	protected final Set<String> unmodifiableDeclaredVariables = Collections.unmodifiableSet(declaredVariables);
 	protected final List<String> formalParameterList = new ArrayList<>();
 	protected String name;
 	protected final Map<String, Function> functionsView;
+
+	protected final Map<String, Integer> localVariables = new HashMap<>();
+	protected final Map<String, Integer> localVariablesView = Collections.unmodifiableMap(localVariables);
+	protected final FrameDescriptor.Builder frameDescriptorBuilder = FrameDescriptor.newBuilder();
 
 	protected FuncTransform(GeomAlgeLangContext geomAlgeLangContext, Map<String, Function> functionsView) {
 		this.geomAlgeLangContext = geomAlgeLangContext;
@@ -43,7 +44,9 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 			transform.stmts.toArray(StatementBaseNode[]::new),
 			transform.retExprs.toArray(ExpressionBaseNode[]::new));
 
-		FunctionDefinitionRootNode functionRootNode = new FunctionDefinitionRootNode(geomAlgeLangContext.truffleLanguage, new FrameDescriptor(), functionDefinitionBody);
+		FrameDescriptor frameDescriptor = transform.frameDescriptorBuilder.build();
+
+		FunctionDefinitionRootNode functionRootNode = new FunctionDefinitionRootNode(geomAlgeLangContext.truffleLanguage, frameDescriptor, functionDefinitionBody);
 		Function function = new Function(functionRootNode, transform.name, transform.formalParameterList.size());
 
 		// Tmp
@@ -69,26 +72,26 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 	@Override
 	public void enterAssgnStmt(GeomAlgeParser.AssgnStmtContext ctx) {
+		ExpressionBaseNode expr = ExprTransform.generateExprAST(ctx.exprContext, this.geomAlgeLangContext, this.functionsView, this.localVariablesView);
+
 		String name = ctx.assigned.getText();
 
-		boolean variableAlreadyDeclared = geomAlgeLangContext.globalVariableScope.variables.containsKey(name)
-			|| this.declaredVariables.contains(name);
-		if (!variableAlreadyDeclared) {
-			GlobalVariableDeclaration declaration = GlobalVariableDeclarationNodeGen.create(name);
-			this.stmts.add(declaration);
-			this.declaredVariables.add(name);
+		int frameSlot = this.frameDescriptorBuilder.addSlot(FrameSlotKind.Object, null, null);
+
+		if (this.localVariables.containsKey(name)) {
+			throw new ValidationException(String.format("\"%s\" cannot be assigned again.", name));
 		}
-		ExpressionBaseNode expr = ExprTransform.generateExprAST(ctx.exprContext, this.geomAlgeLangContext, this.unmodifiableDeclaredVariables, this.functionsView);
-		GlobalVariableAssignment assignment = GlobalVariableAssignmentNodeGen.create(expr, name);
+		this.localVariables.put(name, frameSlot);
 
-		assignment.setSourceSection(ctx.assignment.getStartIndex(), ctx.assignment.getStopIndex());
+		LocalVariableAssignment assignmentNode = LocalVariableAssignmentNodeGen.create(expr, name, frameSlot);
+		assignmentNode.setSourceSection(ctx.assignment.getStartIndex(), ctx.assignment.getStopIndex());
 
-		this.stmts.add(assignment);
+		this.stmts.add(assignmentNode);
 	}
 
 	@Override
 	public void enterRetExprStmt(GeomAlgeParser.RetExprStmtContext ctx) {
-		ExpressionBaseNode retExpr = ExprTransform.generateExprAST(ctx.exprContext, this.geomAlgeLangContext, this.declaredVariables, this.functionsView);
+		ExpressionBaseNode retExpr = ExprTransform.generateExprAST(ctx.exprContext, this.geomAlgeLangContext, this.functionsView, this.localVariablesView);
 		this.retExprs.add(retExpr);
 	}
 }

@@ -38,17 +38,17 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 
 	protected final Deque<ExpressionBaseNode> nodeStack = new ArrayDeque<>();
 	protected final GeomAlgeLangContext geomAlgeLangContext;
-	protected final Set<String> unmodifiableDeclaredVariables;
 	protected final Map<String, Function> functionsView;
+	protected final Map<String, Integer> localVariablesView;
 
-	protected ExprTransform(GeomAlgeLangContext geomAlgeLangContext, Set<String> unmodifiableDeclaredVariables, Map<String, Function> functionsView) {
+	protected ExprTransform(GeomAlgeLangContext geomAlgeLangContext, Map<String, Function> functionsView, Map<String, Integer> localVariablesView) {
 		this.geomAlgeLangContext = geomAlgeLangContext;
-		this.unmodifiableDeclaredVariables = unmodifiableDeclaredVariables;
 		this.functionsView = functionsView;
+		this.localVariablesView = localVariablesView;
 	}
 
-	public static ExpressionBaseNode generateExprAST(GeomAlgeParser.ExprContext exprCtx, GeomAlgeLangContext geomAlgeLangContext, Set<String> declaredVariables, Map<String, Function> functionsView) {
-		ExprTransform exprTransform = new ExprTransform(geomAlgeLangContext, declaredVariables, functionsView);
+	public static ExpressionBaseNode generateExprAST(GeomAlgeParser.ExprContext exprCtx, GeomAlgeLangContext geomAlgeLangContext, Map<String, Function> functionsView, Map<String, Integer> localVariablesView) {
+		ExprTransform exprTransform = new ExprTransform(geomAlgeLangContext, functionsView, localVariablesView);
 
 		ParseTreeWalker.DEFAULT.walk(exprTransform, exprCtx);
 
@@ -236,14 +236,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 
 		nodeStack.push(varRef);
 
-		if (!this.unmodifiableDeclaredVariables.contains(name)) {
-			try {
-				// Needed for semantic validation
-				geomAlgeLangContext.globalVariableScope.newVariable(name);
-			} catch (InterpreterInternalException ex) {
-				throw new AssertionError(ex);
-			}
-		}
+		throw new UnsupportedOperationException();
 	}
 
 	// https://stackoverflow.com/questions/4323599/best-way-to-parsedouble-with-comma-as-decimal-separator/4323627#4323627
