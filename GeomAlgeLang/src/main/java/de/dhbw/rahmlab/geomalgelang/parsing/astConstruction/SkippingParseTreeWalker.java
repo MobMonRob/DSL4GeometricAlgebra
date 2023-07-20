@@ -1,10 +1,7 @@
 package de.dhbw.rahmlab.geomalgelang.parsing.astConstruction;
 
-import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Deque;
 import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -19,7 +16,6 @@ public class SkippingParseTreeWalker {
 	protected final ParseTreeListener listener;
 	protected final Class<? extends RuleNode> skipBeforeEnteringRuleNodeClass;
 	protected final List<RuleNode> stoppedBefore = new ArrayList<>();
-	// protected final Deque<ParseTree> depthFirstTraversalStack = new ArrayDeque<>();
 
 	protected SkippingParseTreeWalker(ParseTreeListener listener, Class<? extends RuleNode> stopBefore) {
 		this.listener = listener;
@@ -39,11 +35,11 @@ public class SkippingParseTreeWalker {
 	 */
 	public static List<RuleNode> walk(ParseTreeListener listener, ParseTree first, Class<? extends RuleNode> skipBeforeEnteringRuleNodeClass) {
 		SkippingParseTreeWalker walker = new SkippingParseTreeWalker(listener, skipBeforeEnteringRuleNodeClass);
-		walker.walk(first);
+		walker.walkRecursive(first);
 		return Collections.unmodifiableList(walker.stoppedBefore);
 	}
 
-	protected void walk(ParseTree current) {
+	protected void walkRecursive(ParseTree current) {
 		if (current instanceof ErrorNode) {
 			this.listener.visitErrorNode((ErrorNode) current);
 			return;
@@ -63,7 +59,7 @@ public class SkippingParseTreeWalker {
 		enterRule(r);
 		int n = r.getChildCount();
 		for (int i = 0; i < n; ++i) {
-			walk(r.getChild(i));
+			walkRecursive(r.getChild(i));
 		}
 		exitRule(r);
 	}
