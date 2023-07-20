@@ -27,6 +27,8 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 	protected final List<ExpressionBaseNode> retExprs = new ArrayList<>();
 	protected final Set<String> declaredVariables = new HashSet<>();
 	protected final Set<String> unmodifiableDeclaredVariables = Collections.unmodifiableSet(declaredVariables);
+	protected final List<String> formalParameterList = new ArrayList<>();
+	protected String name;
 
 	protected FuncTransform(GeomAlgeLangContext geomAlgeLangContext) {
 		this.geomAlgeLangContext = geomAlgeLangContext;
@@ -40,9 +42,32 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 			transform.retExprs.toArray(ExpressionBaseNode[]::new));
 
 		FunctionDefinitionRootNode functionRootNode = new FunctionDefinitionRootNode(geomAlgeLangContext.truffleLanguage, new FrameDescriptor(), functionDefinitionBody);
-		Function function = new Function(functionRootNode, "main", 1);
+		Function function = new Function(functionRootNode, transform.name, transform.formalParameterList.size());
+
+		// Tmp
+		System.out.println(transform.name);
+		transform.formalParameterList.forEach(s -> System.out.println(s));
 
 		return function;
+	}
+
+	@Override
+	public void enterFunction_(GeomAlgeParser.Function_Context ctx) {
+		if (this.name != null) {
+			throw new AssertionError();
+		}
+		String name = ctx.name.getText();
+		this.name = name;
+	}
+
+	@Override
+	public void exitFunction_(GeomAlgeParser.Function_Context ctx) {
+	}
+
+	@Override
+	public void exitFormalParameter_(GeomAlgeParser.FormalParameter_Context ctx) {
+		String name = ctx.name.getText();
+		this.formalParameterList.add(name);
 	}
 
 	@Override

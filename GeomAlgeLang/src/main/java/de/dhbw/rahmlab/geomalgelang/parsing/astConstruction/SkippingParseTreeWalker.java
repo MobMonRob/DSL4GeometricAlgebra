@@ -1,5 +1,11 @@
 package de.dhbw.rahmlab.geomalgelang.parsing.astConstruction;
 
+import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Deque;
+import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -12,6 +18,8 @@ public class SkippingParseTreeWalker {
 
 	protected final ParseTreeListener listener;
 	protected final Class<? extends RuleNode> skipBeforeEnteringRuleNodeClass;
+	protected final List<RuleNode> stoppedBefore = new ArrayList<>();
+	// protected final Deque<ParseTree> depthFirstTraversalStack = new ArrayDeque<>();
 
 	protected SkippingParseTreeWalker(ParseTreeListener listener, Class<? extends RuleNode> stopBefore) {
 		this.listener = listener;
@@ -27,10 +35,12 @@ public class SkippingParseTreeWalker {
 	 * @param listener The listener used by the walker to process grammar rules
 	 * @param first The parse tree to be walked on
 	 * @param skipBeforeEnteringRuleNodeClass class of root node of a skipped subtree
+	 * @return the list of RuleNode's the walk stopped before
 	 */
-	public static void walk(ParseTreeListener listener, ParseTree first, Class<? extends RuleNode> skipBeforeEnteringRuleNodeClass) {
+	public static List<RuleNode> walk(ParseTreeListener listener, ParseTree first, Class<? extends RuleNode> skipBeforeEnteringRuleNodeClass) {
 		SkippingParseTreeWalker walker = new SkippingParseTreeWalker(listener, skipBeforeEnteringRuleNodeClass);
 		walker.walk(first);
+		return Collections.unmodifiableList(walker.stoppedBefore);
 	}
 
 	protected void walk(ParseTree current) {
@@ -46,6 +56,7 @@ public class SkippingParseTreeWalker {
 		RuleNode r = (RuleNode) current;
 
 		if (this.skipBeforeEnteringRuleNodeClass.isInstance(r)) {
+			this.stoppedBefore.add(r);
 			return;
 		}
 

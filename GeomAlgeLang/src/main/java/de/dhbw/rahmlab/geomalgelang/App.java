@@ -25,7 +25,7 @@ public class App {
 
 	private static void invocationTest() throws Exception {
 		String source = """
-		fn myTest(a, b) {
+		fn main(a, b) {
 			//c:= a /0.0
 			///*
 			//z = 5
