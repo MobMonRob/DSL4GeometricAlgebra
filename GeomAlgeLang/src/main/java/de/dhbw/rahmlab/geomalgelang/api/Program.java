@@ -7,6 +7,7 @@ import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.external.A
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.external.LanguageRuntimeException;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.external.ValidationException;
 import de.orat.math.cga.api.CGAMultivector;
+import java.util.ArrayList;
 import java.util.List;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Engine;
@@ -68,12 +69,17 @@ public class Program implements AutoCloseable {
 
 		Value result = null;
 		try {
+			/*
 			arguments.argsMap.forEach((name, value) -> {
 				bindings.putMember(name, new CgaTruffleBox(value));
 			});
+			 */
+
+			List<CGAMultivector> argsList = new ArrayList<>(arguments.argsMap.values());
+			CgaListTruffleBox args = new CgaListTruffleBox(argsList);
 
 			// later: execute with arguments XOR getMember "main" and execute it with arguments (instead of bindings.putMember)
-			result = this.program.execute();
+			result = this.program.execute(args);
 		} catch (PolyglotException ex) {
 			RuntimeException enrichedException = enrichException(ex);
 			this.context.close();

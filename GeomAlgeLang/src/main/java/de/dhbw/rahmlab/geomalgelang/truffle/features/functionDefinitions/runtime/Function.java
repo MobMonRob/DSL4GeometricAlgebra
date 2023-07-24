@@ -19,7 +19,7 @@ import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.s
  * https://github.com/graalvm/simplelanguage/blob/master/language/src/main/java/com/oracle/truffle/sl/runtime/SLFunction.java
  */
 @ExportLibrary(InteropLibrary.class)
-public final class Function implements TruffleObject {
+public class Function implements TruffleObject {
 
 	public final String name;
 
