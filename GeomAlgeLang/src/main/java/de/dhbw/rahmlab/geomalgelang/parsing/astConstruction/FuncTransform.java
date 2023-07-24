@@ -8,11 +8,13 @@ import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.exprSuperClasses.Expres
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.stmtSuperClasses.StatementBaseNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.external.ValidationException;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.FunctionArgumentReader;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.FunctionDefinitionBody;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.FunctionDefinitionRootNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.runtime.Function;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.variables.nodes.stmt.LocalVariableAssignment;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.variables.nodes.stmt.LocalVariableAssignmentNodeGen;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.FunctionArgumentReaderNodeGen;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,7 +27,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 	protected final List<StatementBaseNode> stmts = new ArrayList<>();
 	protected final List<ExpressionBaseNode> retExprs = new ArrayList<>();
 	protected final List<String> formalParameterList = new ArrayList<>();
-	protected String name;
+	protected String functionName;
 	protected final Map<String, Function> functionsView;
 
 	protected final Map<String, Integer> localVariables = new HashMap<>();
@@ -47,10 +49,10 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 		FrameDescriptor frameDescriptor = transform.frameDescriptorBuilder.build();
 
 		FunctionDefinitionRootNode functionRootNode = new FunctionDefinitionRootNode(geomAlgeLangContext.truffleLanguage, frameDescriptor, functionDefinitionBody);
-		Function function = new Function(functionRootNode, transform.name, transform.formalParameterList.size());
+		Function function = new Function(functionRootNode, transform.functionName, transform.formalParameterList.size());
 
 		// Tmp
-		System.out.println(transform.name);
+		System.out.println(transform.functionName);
 		transform.formalParameterList.forEach(s -> System.out.println(s));
 
 		return function;
@@ -58,16 +60,27 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 	@Override
 	public void enterFunctionHead_(GeomAlgeParser.FunctionHead_Context ctx) {
-		if (this.name != null) {
+		if (this.functionName != null) {
 			throw new AssertionError();
 		}
-		this.name = ctx.name.getText();
+		this.functionName = ctx.name.getText();
 	}
 
 	@Override
 	public void exitFormalParameter_(GeomAlgeParser.FormalParameter_Context ctx) {
-		String formalParameter = ctx.name.getText();
-		this.formalParameterList.add(formalParameter);
+		String name = ctx.name.getText();
+		this.formalParameterList.add(name);
+
+		// Should be valid assuming that the TreeWalker encounters formalParameters before assignments.
+		int frameSlot = this.frameDescriptorBuilder.addSlot(FrameSlotKind.Static, null, null);
+		FunctionArgumentReader functionArgumentReader = FunctionArgumentReaderNodeGen.create(frameSlot);
+
+		this.localVariables.put(name, frameSlot);
+
+		LocalVariableAssignment assignmentNode = LocalVariableAssignmentNodeGen.create(functionArgumentReader, name, frameSlot);
+		assignmentNode.setSourceSection(ctx.name.getStartIndex(), ctx.name.getStopIndex());
+
+		this.stmts.add(assignmentNode);
 	}
 
 	@Override
@@ -76,7 +89,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 		String name = ctx.assigned.getText();
 
-		int frameSlot = this.frameDescriptorBuilder.addSlot(FrameSlotKind.Object, null, null);
+		int frameSlot = this.frameDescriptorBuilder.addSlot(FrameSlotKind.Static, null, null);
 
 		if (this.localVariables.containsKey(name)) {
 			throw new ValidationException(String.format("\"%s\" cannot be assigned again.", name));

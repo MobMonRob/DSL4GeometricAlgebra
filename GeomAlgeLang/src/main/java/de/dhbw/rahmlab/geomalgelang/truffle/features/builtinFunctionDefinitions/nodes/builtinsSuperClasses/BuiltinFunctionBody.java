@@ -3,7 +3,7 @@ package de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionDefinitions
 import com.oracle.truffle.api.dsl.GenerateNodeFactory;
 import com.oracle.truffle.api.dsl.NodeChild;
 import com.oracle.truffle.api.frame.VirtualFrame;
-import de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionDefinitions.nodes.FunctionArgumentReader;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.FunctionArgumentReader;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.superClasses.AbstractFunctionBody;
 import de.orat.math.cga.api.CGAMultivector;
 

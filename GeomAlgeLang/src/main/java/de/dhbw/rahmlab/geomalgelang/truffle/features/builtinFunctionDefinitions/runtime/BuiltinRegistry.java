@@ -1,7 +1,6 @@
 package de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionDefinitions.runtime;
 
 import com.oracle.truffle.api.dsl.NodeFactory;
-import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.superClasses.GeomAlgeLangBaseNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLang;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.internal.InterpreterInternalException;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionDefinitions.nodes.BuiltinFunctionRootNode;
@@ -11,8 +10,9 @@ import de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionDefinitions.
 import de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionDefinitions.nodes.builtins.ExpFactory;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionDefinitions.nodes.builtins.NormalizeFactory;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionDefinitions.nodes.builtins.SqrtFactory;
-import de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionDefinitions.nodes.FunctionArgumentReader;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.FunctionArgumentReader;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.runtime.Function;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.FunctionArgumentReaderNodeGen;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.IntStream;
@@ -44,7 +44,7 @@ public class BuiltinRegistry {
 		final int arity = factory.getExecutionSignature().size();
 
 		FunctionArgumentReader[] functionArguments = IntStream.range(0, arity)
-			.mapToObj(i -> new FunctionArgumentReader(i))
+			.mapToObj(i -> FunctionArgumentReaderNodeGen.create(i))
 			.toArray(FunctionArgumentReader[]::new);
 
 		BuiltinFunctionBody builtinFunctionBody = factory.createNode((Object) functionArguments);

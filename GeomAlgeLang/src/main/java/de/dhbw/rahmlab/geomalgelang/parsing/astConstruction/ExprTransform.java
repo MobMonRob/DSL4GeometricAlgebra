@@ -6,7 +6,6 @@ import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParserBaseListener;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.external.ValidationException;
-import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.internal.InterpreterInternalException;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionCalls.nodes.expr.*;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionCalls.nodes.expr.FunctionCall;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.runtime.Function;
@@ -21,9 +20,9 @@ import java.text.ParseException;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Map;
-import java.util.Set;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionCalls.nodes.expr.FunctionCallNodeGen;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.variables.nodes.expr.LocalVariableReferenceNodeGen;
 
 /**
  * This class converts an expression subtree of an ANTLR parsetree into an expression AST in truffle.
@@ -230,13 +229,16 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 	@Override
 	public void exitVariableReference(GeomAlgeParser.VariableReferenceContext ctx) {
 		String name = ctx.name.getText();
-		GlobalVariableReference varRef = GlobalVariableReferenceNodeGen.create(name);
 
-		varRef.setSourceSection(ctx.name.getStartIndex(), ctx.name.getStopIndex());
+		if (!this.localVariablesView.containsKey(name)) {
+			throw new ValidationException(String.format("Variable \"%s\" has not been declared before.", name));
+		}
 
-		nodeStack.push(varRef);
+		int frameSlot = this.localVariablesView.get(name);
+		LocalVariableReference node = LocalVariableReferenceNodeGen.create(name, frameSlot);
+		node.setSourceSection(ctx.name.getStartIndex(), ctx.name.getStopIndex());
 
-		throw new UnsupportedOperationException();
+		nodeStack.push(node);
 	}
 
 	// https://stackoverflow.com/questions/4323599/best-way-to-parsedouble-with-comma-as-decimal-separator/4323627#4323627
