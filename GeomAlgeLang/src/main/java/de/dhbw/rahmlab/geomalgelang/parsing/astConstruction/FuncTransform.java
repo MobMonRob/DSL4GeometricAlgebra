@@ -51,10 +51,6 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 		FunctionDefinitionRootNode functionRootNode = new FunctionDefinitionRootNode(geomAlgeLangContext.truffleLanguage, frameDescriptor, functionDefinitionBody);
 		Function function = new Function(functionRootNode, transform.functionName, transform.formalParameterList.size());
 
-		// Tmp
-		System.out.println(transform.functionName);
-		transform.formalParameterList.forEach(s -> System.out.println(s));
-
 		return function;
 	}
 
@@ -71,7 +67,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 		String name = ctx.name.getText();
 		this.formalParameterList.add(name);
 
-		// Should be valid assuming that the TreeWalker encounters formalParameters before assignments.
+		// Valid, assuming that the TreeWalker encounters formalParameters before assignments.
 		int frameSlot = this.frameDescriptorBuilder.addSlot(FrameSlotKind.Static, null, null);
 		FunctionArgumentReader functionArgumentReader = FunctionArgumentReaderNodeGen.create(frameSlot);
 
