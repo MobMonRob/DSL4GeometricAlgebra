@@ -10,6 +10,7 @@ import de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionDefinitions.
 import de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionDefinitions.nodes.builtins.ExpFactory;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionDefinitions.nodes.builtins.NormalizeFactory;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionDefinitions.nodes.builtins.SqrtFactory;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionDefinitions.nodes.builtins.GetLastListReturnFactory;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.FunctionArgumentReader;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.runtime.Function;
 import java.util.HashMap;
@@ -31,10 +32,14 @@ public class BuiltinRegistry {
 		this.installBuiltin(ExpFactory.getInstance());
 		this.installBuiltin(NormalizeFactory.getInstance());
 		this.installBuiltin(SqrtFactory.getInstance());
+		this.installBuiltin(GetLastListReturnFactory.getInstance());
 	}
 
 	private void installBuiltin(NodeFactory<? extends BuiltinFunctionBody> factory) {
-		String name = factory.getNodeClass().getSimpleName().toLowerCase();
+		String simpleName = factory.getNodeClass().getSimpleName();
+		String first = simpleName.substring(0, 1).toLowerCase();
+		String residue = simpleName.substring(1, simpleName.length());
+		String name = first + residue;
 		installBuiltin(name, factory);
 	}
 

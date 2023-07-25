@@ -7,6 +7,7 @@ import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.truffleBox.CgaListTru
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.truffleBox.CgaMapTruffleBox;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.truffleBox.CgaTruffleBox;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLang;
+import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionCalls.nodes.expr.FunctionCall;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionCalls.nodes.expr.FunctionCallNodeGen;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.superClasses.AbstractFunctionRootNode;
@@ -41,11 +42,7 @@ public class ExecutionRootNode extends AbstractFunctionRootNode {
 		ListReader[] readers = ListReader.createArray(argsBoxed);
 		FunctionCall functionCall = FunctionCallNodeGen.create(function, readers);
 
-		CGAMultivector retVal = functionCall.executeGeneric(frame);
-		List<CGAMultivector> list = new ArrayList<>();
-		list.add(retVal);
-		CgaListTruffleBox listBox = new CgaListTruffleBox(list);
-
-		return listBox;
+		functionCall.executeGeneric(frame);
+		return GeomAlgeLangContext.get(null).lastListReturn;
 	}
 }

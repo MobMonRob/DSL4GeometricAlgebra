@@ -57,6 +57,7 @@ functionBody
 
 stmt
 	:	SPACE* assigned=IDENTIFIER SPACE* assignment=ASSIGNMENT SPACE* exprContext=expr SPACE*		#AssgnStmt
+	|	SPACE* exprContext=expr SPACE*	#ExprStmt
 	;
 
 // The list-form (1) needs iteration in the transformer while the tree-form (2) don't.

@@ -82,14 +82,22 @@ Inside the DSL all of these types are automatically casted into CGA multivectors
 
 ## Function definitions
 Custom functions can be defined like in the following example. \
-There needs to be at least one Function defined with the name "main".
+- There needs to be at least one Function defined with the name `main`.
+- A Function will return only the list in the last line of a function definition.
+- Variables cannot contain lists. Therefore only the first value returned from a function will be used in an expression or an assignment.
+- To get other values of the list returned by the directly beforehand called function, use the builtin `getLastListReturn(<index>)`.
+- Function can be called without subsequent assignment to a variable.
+- Currently, callees need to be defined above the callers.
 ```
-// Comment
-fn main(param1, param2) {
-	// Comment
-	a := param1 param2
-	b := param1 + param2
-	a, b
+fn test(a) {
+	a, 5
+}
+
+fn main(a, b) {
+	test(b)
+	d := getLastListReturn(0)
+	e := getLastListReturn(1)
+	a, b, d, e
 }
 ```
 

@@ -5,8 +5,10 @@ import com.oracle.truffle.api.TruffleLanguage.ContextReference;
 import com.oracle.truffle.api.TruffleLanguage.Env;
 import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.source.Source;
+import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.truffleBox.CgaListTruffleBox;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionDefinitions.runtime.BuiltinRegistry;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.variables.runtime.GlobalVariableScope;
+import java.util.ArrayList;
 
 public final class GeomAlgeLangContext {
 
@@ -20,6 +22,7 @@ public final class GeomAlgeLangContext {
 	public final BuiltinRegistry builtinRegistry;
 	public final GeomAlgeLang truffleLanguage;
 	public final TruffleLanguage.Env env;
+	public CgaListTruffleBox lastListReturn = new CgaListTruffleBox(new ArrayList<>());
 
 	public GeomAlgeLangContext() {
 		this(null, null);

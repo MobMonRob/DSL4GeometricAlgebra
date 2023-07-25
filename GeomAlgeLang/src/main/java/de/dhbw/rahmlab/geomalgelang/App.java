@@ -25,13 +25,15 @@ public class App {
 
 	private static void invocationTest() throws Exception {
 		String source = """
-		fn test() {
-			314
+		fn test(a) {
+			a, 5
 		}
 
 		fn main(a, b) {
-			c := test()
-			a //, b, abs(c)
+			test(b)
+			d := getLastListReturn(0)
+			e := getLastListReturn(1)
+			a, b, d, e
 		}
 		""";
 

@@ -15,6 +15,8 @@ import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.runtime
 import de.dhbw.rahmlab.geomalgelang.truffle.features.variables.nodes.stmt.LocalVariableAssignment;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.variables.nodes.stmt.LocalVariableAssignmentNodeGen;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.FunctionArgumentReaderNodeGen;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.stmt.ExprStmt;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.stmt.ExprStmtNodeGen;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -96,6 +98,16 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 		assignmentNode.setSourceSection(ctx.assignment.getStartIndex(), ctx.assignment.getStopIndex());
 
 		this.stmts.add(assignmentNode);
+	}
+
+	@Override
+	public void enterExprStmt(GeomAlgeParser.ExprStmtContext ctx) {
+		ExpressionBaseNode expr = ExprTransform.generateExprAST(ctx.exprContext, this.geomAlgeLangContext, this.functionsView, this.localVariablesView);
+
+		ExprStmt exprStmt = ExprStmtNodeGen.create(expr);
+		exprStmt.setSourceSection(ctx.start.getStartIndex(), ctx.stop.getStopIndex());
+
+		this.stmts.add(exprStmt);
 	}
 
 	@Override

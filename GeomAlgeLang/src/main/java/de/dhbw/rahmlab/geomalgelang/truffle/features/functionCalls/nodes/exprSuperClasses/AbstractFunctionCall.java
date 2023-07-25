@@ -53,11 +53,7 @@ public abstract class AbstractFunctionCall extends ExpressionBaseNode {
 				return ((CgaTruffleBox) returnValue).getInner();
 			} else if (returnValue instanceof CgaListTruffleBox) {
 				List<CGAMultivector> mvecs = ((CgaListTruffleBox) returnValue).getInner();
-				if (mvecs.size() != 1) {
-					throw new LanguageRuntimeException(
-						String.format("Function \"%s\" returned more than 1 value", function.name),
-						this);
-				}
+				super.currentLanguageContext().lastListReturn = (CgaListTruffleBox) returnValue;
 				return mvecs.get(0);
 			} else {
 				throw new LanguageRuntimeException(
