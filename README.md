@@ -81,6 +81,7 @@ CGA multivectors and objecs of its subtypes are completely hidden - not visible 
 Inside the DSL all of these types are automatically casted into CGA multivectors. No other operations are possible based on these types inside the DSL.
 
 ## Function definitions
+#### Rules
 - There needs to be at least one Function defined with the name `main`.
 - A Function will return only the list in the last line of a function definition.
 - Variables cannot contain lists. Therefore only the first value returned from a function will be used in an expression or an assignment.
@@ -88,8 +89,8 @@ Inside the DSL all of these types are automatically casted into CGA multivectors
 - Function can be called without subsequent assignment to a variable.
 - Currently, callees need to be defined above the callers.
 
-### Example
-Custom functions can be defined like in the following example.
+#### Example
+Custom functions can be defined like in the following example:
 ```
 fn test(a) {
 	a, 5
