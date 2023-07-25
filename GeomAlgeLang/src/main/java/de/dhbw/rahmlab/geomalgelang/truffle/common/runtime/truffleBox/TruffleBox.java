@@ -1,4 +1,4 @@
-package de.dhbw.rahmlab.geomalgelang.truffle.common.runtime;
+package de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.truffleBox;
 
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.interop.TruffleObject;

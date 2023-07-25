@@ -1,4 +1,4 @@
-package de.dhbw.rahmlab.geomalgelang.truffle.common.runtime;
+package de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.truffleBox;
 
 import de.orat.math.cga.api.CGAMultivector;
 import java.util.Map;

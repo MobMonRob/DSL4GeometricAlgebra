@@ -1,8 +1,8 @@
 package de.dhbw.rahmlab.geomalgelang.api;
 
 import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.superClasses.GeomAlgeLangBaseNode;
-import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.CgaListTruffleBox;
-import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.CgaMapTruffleBox;
+import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.truffleBox.CgaListTruffleBox;
+import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.truffleBox.CgaMapTruffleBox;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.external.AbstractExternalException;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.external.LanguageRuntimeException;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.external.ValidationException;
