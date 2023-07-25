@@ -43,9 +43,7 @@ public class BuiltinRegistry {
 	private void installBuiltin(String name, NodeFactory<? extends BuiltinFunctionBody> factory) {
 		final int arity = factory.getExecutionSignature().size();
 
-		FunctionArgumentReader[] functionArguments = IntStream.range(0, arity)
-			.mapToObj(i -> FunctionArgumentReaderNodeGen.create(i))
-			.toArray(FunctionArgumentReader[]::new);
+		FunctionArgumentReader[] functionArguments = FunctionArgumentReader.createArray(0, arity);
 
 		BuiltinFunctionBody builtinFunctionBody = factory.createNode((Object) functionArguments);
 		BuiltinFunctionRootNode builtinFunctionRootNode = new BuiltinFunctionRootNode(truffleLanguage, builtinFunctionBody);

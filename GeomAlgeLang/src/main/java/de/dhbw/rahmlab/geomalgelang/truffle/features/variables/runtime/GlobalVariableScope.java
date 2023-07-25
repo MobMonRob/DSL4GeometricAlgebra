@@ -1,6 +1,5 @@
 package de.dhbw.rahmlab.geomalgelang.truffle.features.variables.runtime;
 
-import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.TruffleLanguage;
 import com.oracle.truffle.api.interop.InteropLibrary;
 import com.oracle.truffle.api.interop.InvalidArrayIndexException;
@@ -64,7 +63,6 @@ public final class GlobalVariableScope implements TruffleObject {
 
 	// necessary for context.getBindings.putMember
 	@ExportMessage
-	@TruffleBoundary
 	public void writeMember(String member, Object value) throws UnsupportedMessageException, UnknownIdentifierException, UnsupportedTypeException {
 		CGAMultivector cga;
 		try {

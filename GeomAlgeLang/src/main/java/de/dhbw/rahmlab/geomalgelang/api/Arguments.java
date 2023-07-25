@@ -23,7 +23,8 @@ import de.orat.math.cga.api.CGASphereIPNS;
 import de.orat.math.cga.api.CGASphereOPNS;
 import de.orat.math.cga.api.CGATangentVectorOPNS;
 import de.orat.math.cga.api.CGATranslator;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import org.jogamp.vecmath.Point3d;
 import org.jogamp.vecmath.Tuple3d;
@@ -31,7 +32,12 @@ import org.jogamp.vecmath.Vector3d;
 
 public class Arguments {
 
-	protected final Map<String, CGAMultivector> argsMap = new HashMap<>();
+	private final Map<String, CGAMultivector> argsMap = new LinkedHashMap<>();
+	private final Map<String, CGAMultivector> argsMapView = Collections.unmodifiableMap(this.argsMap);
+
+	protected Map<String, CGAMultivector> getArgsMapView() {
+		return argsMapView;
+	}
 
 	protected void put(String argName, CGAMultivector multivector) throws IllegalArgumentException {
 		if (this.argsMap.containsKey(argName)) {
@@ -41,36 +47,36 @@ public class Arguments {
 		this.argsMap.put(argName, multivector);
 	}
 
-	public Arguments euclidean_vector(String argName, Tuple3d tuple3d){
+	public Arguments euclidean_vector(String argName, Tuple3d tuple3d) {
 		var mvec = new CGAEuclideanVector(tuple3d);
 		this.put(argName, mvec);
 		return this;
 	}
-	
-	public Arguments euclidean_bivector(String argName, Vector3d v1, Vector3d v2){
-		var mvec = new CGAEuclideanBivector(v1,v2);
+
+	public Arguments euclidean_bivector(String argName, Vector3d v1, Vector3d v2) {
+		var mvec = new CGAEuclideanBivector(v1, v2);
 		this.put(argName, mvec);
 		return this;
 	}
-        
+
 	public Arguments scalar_opns(String argName, double scalar) {
 		var mvec = new CGAScalarOPNS(scalar);
 		this.put(argName, mvec);
 		return this;
 	}
 
-    public Arguments scalar_ipns(String argName, double scalar) {
+	public Arguments scalar_ipns(String argName, double scalar) {
 		var mvec = new CGAScalarIPNS(scalar);
 		this.put(argName, mvec);
 		return this;
 	}
-	
-	public Arguments bool(String argName, boolean bool){
+
+	public Arguments bool(String argName, boolean bool) {
 		var mvec = new CGABoolean(bool);
 		this.put(argName, mvec);
 		return this;
 	}
-        
+
 	public Arguments round_point_ipns(String argName, Point3d point) {
 		var mvec = new CGARoundPointIPNS(point);
 		this.put(argName, mvec);
@@ -83,11 +89,9 @@ public class Arguments {
 		return this;
 	}
 
-	
 	// point-pair
-	
-	public Arguments pointpair_opns(String argName, Point3d point1, double weight1, 
-		                            Point3d point2, double weight2) {
+	public Arguments pointpair_opns(String argName, Point3d point1, double weight1,
+		Point3d point2, double weight2) {
 		var mvec = new CGAPointPairOPNS(point1, weight1, point2, weight2);
 		this.put(argName, mvec);
 		return this;
@@ -100,25 +104,23 @@ public class Arguments {
 	}
 
 	// direction from point-2 to point-1
-    public Arguments pointpair_ipns/*2*/(String argName, Point3d location, Vector3d normal, double radius) {
+	public Arguments pointpair_ipns/*2*/(String argName, Point3d location, Vector3d normal, double radius) {
 		//Vector3d normalizedNormal = new Vector3d(normal);
 		//normalizedNormal.normalize();
 		var mvec = new CGAPointPairIPNS(location, normal, radius);
 		this.put(argName, mvec);
 		return this;
 	}
-		
+
 	// via opns dual
 	public Arguments pointpair_ipns(String argName, Point3d point1, Point3d point2) {
-		var mvec = new CGAPointPairOPNS(new CGARoundPointIPNS(point1), 
-			       new CGARoundPointIPNS(point2)).dual();
+		var mvec = new CGAPointPairOPNS(new CGARoundPointIPNS(point1),
+			new CGARoundPointIPNS(point2)).dual();
 		this.put(argName, mvec);
 		return this;
 	}
-		
-        
+
 	// line
-	
 	public Arguments line_opns(String argName, Point3d point1, double weight1, Point3d point2, double weight2) {
 		var mvec = new CGALineOPNS(point1, weight1, point2, weight2);
 		this.put(argName, mvec);
@@ -130,22 +132,20 @@ public class Arguments {
 		this.put(argName, mvec);
 		return this;
 	}
-        
-    public Arguments line_ipns(String argName, Point3d location, Vector3d normal) {
+
+	public Arguments line_ipns(String argName, Point3d location, Vector3d normal) {
 		var mvec = new CGALineIPNS(location, normal);
 		this.put(argName, mvec);
 		return this;
 	}
 
-	
 	// sphere
-	
 	public Arguments sphere_ipns(String argName, Point3d center, double radius, double weight) {
 		var mvec = new CGASphereIPNS(center, radius, weight);
 		this.put(argName, mvec);
 		return this;
 	}
-	
+
 	public Arguments sphere_opns(String argName, Point3d center, double radius) {
 		var mvec = new CGASphereOPNS(center, radius);
 		this.put(argName, mvec);
@@ -158,9 +158,7 @@ public class Arguments {
 		return this;
 	}
 
-	
 	// plane
-	
 	public Arguments plane_ipns(String argName, Vector3d normal, double dist, double weight) {
 		var mvec = new CGAPlaneIPNS(normal, dist, weight);
 		this.put(argName, mvec);
@@ -170,25 +168,23 @@ public class Arguments {
 	public Arguments plane_ipns(String argName, Vector3d normal, double dist) {
 		return this.plane_ipns(argName, normal, dist, 1.0);
 	}
-        
-    public Arguments plane_ipns(String argName, Point3d location, Vector3d normal) {
+
+	public Arguments plane_ipns(String argName, Point3d location, Vector3d normal) {
 		var mvec = new CGAPlaneIPNS(location, normal);
 		this.put(argName, mvec);
 		return this;
 	}
-	
+
 	public Arguments plane_opns(String argName, Point3d location, Vector3d normal) {
 		var mvec = new CGAPlaneIPNS(location, normal);
 		this.put(argName, mvec);
 		return this;
 	}
-	
 
 	// circle
-	
-	public Arguments circle_opns(String argName, Point3d point1, double weight1, 
-                                                     Point3d point2, double weight2, 
-                                                     Point3d point3, double weight3) {
+	public Arguments circle_opns(String argName, Point3d point1, double weight1,
+		Point3d point2, double weight2,
+		Point3d point3, double weight3) {
 		var mvec = new CGACircleOPNS(point1, weight1, point2, weight2, point3, weight3);
 		this.put(argName, mvec);
 		return this;
@@ -199,43 +195,35 @@ public class Arguments {
 		this.put(argName, mvec);
 		return this;
 	}
-        
-    public Arguments circle_ipns(String argName, Point3d location, Vector3d normal, double radius) {
+
+	public Arguments circle_ipns(String argName, Point3d location, Vector3d normal, double radius) {
 		var mvec = new CGACircleIPNS(location, normal, radius);
 		this.put(argName, mvec);
 		return this;
 	}
-    
-	
+
 	// oriented points
-	
-    public Arguments oriented_point_ipns(String argName, Point3d location, Vector3d normal) {
+	public Arguments oriented_point_ipns(String argName, Point3d location, Vector3d normal) {
 		var mvec = new CGAOrientedPointIPNS(location, normal);
 		this.put(argName, mvec);
 		return this;
 	}
 
-	
 	// flat points
-	
-    public Arguments flat_point_ipns(String argName, Point3d location) {
+	public Arguments flat_point_ipns(String argName, Point3d location) {
 		var mvec = new CGAFlatPointIPNS(location);
 		this.put(argName, mvec);
 		return this;
 	}
-    
-	
-	// tangent
 
+	// tangent
 	public Arguments tangent_opns(String argName, Point3d location, Vector3d direction) {
 		var mvec = new CGATangentVectorOPNS(location, direction);
 		this.put(argName, mvec);
 		return this;
 	}
 
-	
 	// attitude
-	
 	public Arguments attitude_ipns(String argName, Vector3d t) {
 		var mvec = new CGAAttitudeVectorIPNS(t);
 		this.put(argName, mvec);
@@ -248,9 +236,7 @@ public class Arguments {
 		return this;
 	}
 
-	
 	// translation
-	
 	public Arguments translator(String argName, Vector3d point) {
 		var mvec = new CGATranslator(point);
 		this.put(argName, mvec);

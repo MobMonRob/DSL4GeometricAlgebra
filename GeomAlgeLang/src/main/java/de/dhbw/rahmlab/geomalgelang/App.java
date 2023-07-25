@@ -31,7 +31,7 @@ public class App {
 
 		fn main(a, b) {
 			c := test()
-			a, b, abs(c)
+			a //, b, abs(c)
 		}
 		""";
 
