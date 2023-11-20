@@ -17,8 +17,8 @@ public class SpacesTest extends AbstractParsingTest {
 	Stream<DynamicTest> R1() {
 		String expected = """
 		Addition
-			GlobalVariableReference
-			GlobalVariableReference
+			LocalVariableReference
+			LocalVariableReference
 		""";
 
 		final List<String> programs = List.of(new String[]{"a+a", "a +a", "a+ a", "a + a", "a  +  a"});
@@ -50,7 +50,7 @@ public class SpacesTest extends AbstractParsingTest {
 	@TestFactory
 	Stream<DynamicTest> R3() {
 		String expected = """
-		GlobalVariableReference
+		LocalVariableReference
 		""";
 
 		final List<String> programs = List.of(new String[]{"(a)", "( a)", "(a )", "( a )", "( a )"});
@@ -61,7 +61,7 @@ public class SpacesTest extends AbstractParsingTest {
 	@TestFactory
 	Stream<DynamicTest> R4() {
 		String expected = """
-		GlobalVariableReference
+		LocalVariableReference
 		""";
 
 		final List<String> programs = List.of(new String[]{"a", "  a", "a  "});

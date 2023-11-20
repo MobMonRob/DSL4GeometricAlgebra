@@ -30,9 +30,9 @@ public class AstStringBuilder {
 
 		/*
 		// Only needed for debugging
-		if (node instanceof GlobalVariableReference) {
-			GlobalVariableReference theCurrent = (GlobalVariableReference) node;
-			name = "GlobalVariableReference[" + theCurrent.getName() + "]";
+		if (node instanceof LocalVariableReference) {
+			LocalVariableReference theCurrent = (LocalVariableReference) node;
+			name = "LocalVariableReference[" + theCurrent.getName() + "]";
 		}
 		 */
 		this.astString.append(indentation);
@@ -61,9 +61,9 @@ public class AstStringBuilder {
 
 		/*
 		// Only needed for debugging
-		if (node instanceof GlobalVariableReference) {
-			GlobalVariableReference theCurrent = (GlobalVariableReference) node;
-			name = "GlobalVariableReference[" + theCurrent.getName() + "]";
+		if (node instanceof LocalVariableReference) {
+			LocalVariableReference theCurrent = (LocalVariableReference) node;
+			name = "LocalVariableReference[" + theCurrent.getName() + "]";
 		}
 		 */
 		this.astString.append(indentation);
@@ -142,9 +142,9 @@ public class AstStringBuilder {
 
 			/*
 			// Only needed for debugging
-			if (currentNode instanceof GlobalVariableReference) {
-				GlobalVariableReference theCurrent = (GlobalVariableReference) currentNode;
-				name = "GlobalVariableReference[" + theCurrent.getName() + "]";
+			if (currentNode instanceof LocalVariableReference) {
+				LocalVariableReference theCurrent = (LocalVariableReference) currentNode;
+				name = "LocalVariableReference[" + theCurrent.getName() + "]";
 			}
 			 */
 			astString.append(currentIndentation);

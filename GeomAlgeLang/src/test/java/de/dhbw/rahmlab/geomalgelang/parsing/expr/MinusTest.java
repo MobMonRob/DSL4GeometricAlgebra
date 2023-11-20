@@ -23,8 +23,8 @@ public class MinusTest extends AbstractParsingTest {
 			"a-b",
 			"""
 			Subtraction
-				GlobalVariableReference
-				GlobalVariableReference
+				LocalVariableReference
+				LocalVariableReference
 			""");
 		pes.add(pe);
 
@@ -32,8 +32,8 @@ public class MinusTest extends AbstractParsingTest {
 			"a -b",
 			"""
 			Subtraction
-				GlobalVariableReference
-				GlobalVariableReference
+				LocalVariableReference
+				LocalVariableReference
 			""");
 		pes.add(pe);
 
@@ -41,8 +41,8 @@ public class MinusTest extends AbstractParsingTest {
 			"a - b",
 			"""
 			Subtraction
-				GlobalVariableReference
-				GlobalVariableReference
+				LocalVariableReference
+				LocalVariableReference
 			""");
 		pes.add(pe);
 
@@ -50,8 +50,8 @@ public class MinusTest extends AbstractParsingTest {
 			"a- b",
 			"""
 			Subtraction
-				GlobalVariableReference
-				GlobalVariableReference
+				LocalVariableReference
+				LocalVariableReference
 			""");
 		pes.add(pe);
 
@@ -59,9 +59,9 @@ public class MinusTest extends AbstractParsingTest {
 			"a - -b",
 			"""
 			Subtraction
-				GlobalVariableReference
+				LocalVariableReference
 				Negate
-					GlobalVariableReference
+					LocalVariableReference
 			""");
 		pes.add(pe);
 
@@ -69,9 +69,9 @@ public class MinusTest extends AbstractParsingTest {
 			"a - - b",
 			"""
 			Subtraction
-				GlobalVariableReference
+				LocalVariableReference
 				Negate
-					GlobalVariableReference
+					LocalVariableReference
 			""");
 		pes.add(pe);
 
@@ -79,10 +79,10 @@ public class MinusTest extends AbstractParsingTest {
 			"a - - - b",
 			"""
 			Subtraction
-				GlobalVariableReference
+				LocalVariableReference
 				Negate
 					Negate
-						GlobalVariableReference
+						LocalVariableReference
 			""");
 		pes.add(pe);
 
@@ -90,10 +90,10 @@ public class MinusTest extends AbstractParsingTest {
 			"a -b / c",
 			"""
 			Subtraction
-				GlobalVariableReference
+				LocalVariableReference
 				Division
-					GlobalVariableReference
-					GlobalVariableReference
+					LocalVariableReference
+					LocalVariableReference
 			""");
 		pes.add(pe);
 
@@ -102,8 +102,8 @@ public class MinusTest extends AbstractParsingTest {
 			"""
 			GeometricProduct
 				Negate
-					GlobalVariableReference
-				GlobalVariableReference
+					LocalVariableReference
+				LocalVariableReference
 			""");
 		pes.add(pe);
 

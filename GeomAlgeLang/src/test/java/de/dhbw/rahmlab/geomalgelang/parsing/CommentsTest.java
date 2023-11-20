@@ -12,7 +12,7 @@ public class CommentsTest extends AbstractParsingTest {
 		a
 		""";
 
-		String expected = "GlobalVariableReference";
+		String expected = "LocalVariableReference";
 
 		Asserts.parsePrintAssert(program, expected);
 	}
@@ -23,7 +23,7 @@ public class CommentsTest extends AbstractParsingTest {
 		a //garbage
 		""";
 
-		String expected = "GlobalVariableReference";
+		String expected = "LocalVariableReference";
 
 		Asserts.parsePrintAssert(program, expected);
 	}

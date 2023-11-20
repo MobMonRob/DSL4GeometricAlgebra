@@ -30,16 +30,16 @@ public class ExprKombosTest extends AbstractParsingTest {
 			String _1 = """
 			Subtraction
 				Addition
-					GlobalVariableReference
-					GlobalVariableReference
-				GlobalVariableReference
+					LocalVariableReference
+					LocalVariableReference
+				LocalVariableReference
 			""";
 
 			String _2 = """
 			Addition
-				GlobalVariableReference
+				LocalVariableReference
 				Negate
-					GlobalVariableReference
+					LocalVariableReference
 			""";
 
 			String _3 = _2;
@@ -47,57 +47,57 @@ public class ExprKombosTest extends AbstractParsingTest {
 			String _4 = """
 			Addition
 				Negate
-					GlobalVariableReference
-				GlobalVariableReference
+					LocalVariableReference
+				LocalVariableReference
 			""";
 
 			String _5 = """
 			Addition
 				Reverse
-					GlobalVariableReference
-				GlobalVariableReference
+					LocalVariableReference
+				LocalVariableReference
 			""";
 
 			String _6 = """
 			Addition
-				GlobalVariableReference
+				LocalVariableReference
 				Reverse
-					GlobalVariableReference
+					LocalVariableReference
 				""";
 
 			String _7 = """
 			Negate
-				GlobalVariableReference
+				LocalVariableReference
 			""";
 
 			String _8 = """
 			Subtraction
-				GlobalVariableReference
+				LocalVariableReference
 				Negate
-					GlobalVariableReference
+					LocalVariableReference
 			""";
 
 			String _9 = """
 			Negate
 				Negate
-					GlobalVariableReference
+					LocalVariableReference
 			""";
 
 			String _10 = """
 			Negate
 				Reverse
-					GlobalVariableReference
+					LocalVariableReference
 			""";
 
 			String _11 = """
 			Reverse
-				GlobalVariableReference
+				LocalVariableReference
 			""";
 
 			String _12 = """
 			Reverse
 				Reverse
-					GlobalVariableReference
+					LocalVariableReference
 			""";
 
 			expected.add(_1);

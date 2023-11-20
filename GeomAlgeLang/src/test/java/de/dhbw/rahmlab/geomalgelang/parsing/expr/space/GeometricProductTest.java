@@ -143,9 +143,9 @@ public class GeometricProductTest extends AbstractParsingTest {
 			"""
 			GeometricProduct
 				GeometricProduct
-					GlobalVariableReference
-					GlobalVariableReference
-				GlobalVariableReference
+					LocalVariableReference
+					LocalVariableReference
+				LocalVariableReference
 			""");
 		pes.add(pe);
 
@@ -161,7 +161,7 @@ public class GeometricProductTest extends AbstractParsingTest {
 		pe = new ProgramExpected(
 			"aa",
 			"""
-			GlobalVariableReference
+			LocalVariableReference
 			""");
 		pes.add(pe);
 
@@ -169,7 +169,7 @@ public class GeometricProductTest extends AbstractParsingTest {
 			"aa˜",
 			"""
 			Reverse
-				GlobalVariableReference
+				LocalVariableReference
 			""");
 		pes.add(pe);
 
@@ -177,7 +177,7 @@ public class GeometricProductTest extends AbstractParsingTest {
 			"-aa",
 			"""
 			Negate
-				GlobalVariableReference
+				LocalVariableReference
 			""");
 		pes.add(pe);
 
@@ -186,7 +186,7 @@ public class GeometricProductTest extends AbstractParsingTest {
 			"""
 			Negate
 				Reverse
-					GlobalVariableReference
+					LocalVariableReference
 			""");
 		pes.add(pe);
 
