@@ -13,7 +13,7 @@ public class VariableAssignmentTest {
 
 	@Test
 	void passedNonExistentVariable() throws IOException {
-		String source = "a";
+		String source = "fn main(a) {a}";
 		Program program = new Program(source);
 		Arguments arguments = new Arguments();
 		arguments
@@ -33,7 +33,7 @@ public class VariableAssignmentTest {
 
 	@Test
 	void passedNotAllVariables() throws IOException {
-		String source = "a";
+		String source = "fn main (a) {a}";
 		Program program = new Program(source);
 		Arguments arguments = new Arguments();
 

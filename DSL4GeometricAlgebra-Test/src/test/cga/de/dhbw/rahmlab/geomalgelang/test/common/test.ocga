@@ -1,4 +1,8 @@
+fn main(a, b) {
+
 //hallo test 123
 c := a b
 d := atan2(c, a)
 d
+
+}

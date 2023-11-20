@@ -2,6 +2,9 @@ package de.dhbw.rahmlab.geomalgelang.api.annotation;
 
 import java.lang.annotation.*;
 
+/**
+ * Only CGA Expr and Stmt allowed within.
+ */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.SOURCE)
 public @interface CGA {
