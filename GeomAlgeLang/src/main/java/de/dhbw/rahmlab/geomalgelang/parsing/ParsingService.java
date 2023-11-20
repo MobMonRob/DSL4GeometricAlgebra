@@ -25,7 +25,7 @@ public final class ParsingService {
 
 	public static ExpressionBaseNode parseExpr(String program, GeomAlgeLangContext geomAlgeLangContext) {
 		String functionProgram = String.format("""
-			fn main(a, b) {
+			fn main(a, b, aa, c, A) {
 				%s
 			}
 			""", program);
