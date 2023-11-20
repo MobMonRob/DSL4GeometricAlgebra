@@ -7,7 +7,6 @@ import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.source.Source;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.truffleBox.CgaListTruffleBox;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionDefinitions.runtime.BuiltinRegistry;
-import de.dhbw.rahmlab.geomalgelang.truffle.features.variables.runtime.GlobalVariableScope;
 import java.util.ArrayList;
 
 public final class GeomAlgeLangContext {
@@ -18,7 +17,6 @@ public final class GeomAlgeLangContext {
 		return GeomAlgeLangContext.contextRef.get(node);
 	}
 
-	public final GlobalVariableScope globalVariableScope;
 	public final BuiltinRegistry builtinRegistry;
 	public final GeomAlgeLang truffleLanguage;
 	public final TruffleLanguage.Env env;
@@ -29,7 +27,6 @@ public final class GeomAlgeLangContext {
 	}
 
 	public GeomAlgeLangContext(GeomAlgeLang truffleLanguage, Env env) {
-		this.globalVariableScope = new GlobalVariableScope();
 		this.builtinRegistry = new BuiltinRegistry(truffleLanguage);
 		this.truffleLanguage = truffleLanguage;
 		this.env = env;

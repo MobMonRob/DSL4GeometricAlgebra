@@ -1,6 +1,5 @@
 package de.dhbw.rahmlab.geomalgelang.parsing.expr.space;
 
-import de.dhbw.rahmlab.geomalgelang.truffle.features.variables.nodes.expr.GlobalVariableReference;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.literals.nodes.expr.ScalarLiteral;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.literals.nodes.expr.Constant;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.operators.nodes.expr.unaryOps.GradeExtraction;
@@ -9,6 +8,7 @@ import de.dhbw.rahmlab.geomalgelang.parsing.AbstractParsingTest;
 import de.dhbw.rahmlab.geomalgelang.parsing._util.Asserts.ProgramExpected;
 import static de.dhbw.rahmlab.geomalgelang.parsing._util.Asserts.parsePrintAssert;
 import static de.dhbw.rahmlab.geomalgelang.parsing._util.Asserts.parsePrintAssertSyntaxError;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.variables.nodes.expr.LocalVariableReference;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,10 +24,10 @@ public class GeometricProductTest extends AbstractParsingTest {
 
 	}
 
-	static final ExampleSet parenExpr = new ExampleSet("paren", GlobalVariableReference.class.getSimpleName(), List.of(new String[]{"(a)"}));
+	static final ExampleSet parenExpr = new ExampleSet("paren", LocalVariableReference.class.getSimpleName(), List.of(new String[]{"(a)"}));
 	//ExampleSet funcExpr = new ExampleSet("func", "function", List.of(new String[]{"abs(2.0)"})); //Gibt es noch nicht
 	static final ExampleSet composExpr = new ExampleSet("compos", GradeExtraction.class.getSimpleName(), List.of(new String[]{"<a>₀"}));
-	static final ExampleSet varExpr = new ExampleSet("var", GlobalVariableReference.class.getSimpleName(), List.of(new String[]{"a"}));
+	static final ExampleSet varExpr = new ExampleSet("var", LocalVariableReference.class.getSimpleName(), List.of(new String[]{"a"}));
 	static final ExampleSet constExpr = new ExampleSet("const", Constant.class.getSimpleName(), List.of(new String[]{"π"}));
 	static final ExampleSet numExpr = new ExampleSet("num", ScalarLiteral.class.getSimpleName(), List.of(new String[]{"2.0"}));
 
