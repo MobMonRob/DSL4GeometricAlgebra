@@ -77,9 +77,11 @@ public class Result {
 	/*public Vector3d firstDecomposeAttitudeOPNS() {
 		return (new CGAAttitudeOPNS(inner.get(0))).direction();
 	}*/
+ /*
 	public Quat4d firstDecomposeRotor() {
 		return (new CGARotor(inner.get(0))).decompose();
 	}
+	 */
 
 	/*public PointPair firstDecomposePointPairIPNS() {
 		return (new CGAPointPairIPNS(inner.get(0))).decomposePoints();
