@@ -7,7 +7,9 @@ import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.source.Source;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.truffleBox.CgaListTruffleBox;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.builtinFunctionDefinitions.runtime.BuiltinRegistry;
+import de.orat.math.cga.api.CGAViewer;
 import java.util.ArrayList;
+import java.util.Optional;
 
 public final class GeomAlgeLangContext {
 
@@ -21,6 +23,7 @@ public final class GeomAlgeLangContext {
 	public final GeomAlgeLang truffleLanguage;
 	public final TruffleLanguage.Env env;
 	public CgaListTruffleBox lastListReturn = new CgaListTruffleBox(new ArrayList<>());
+	public Optional<CGAViewer> viewer = Optional.empty();
 
 	public GeomAlgeLangContext() {
 		this(null, null);

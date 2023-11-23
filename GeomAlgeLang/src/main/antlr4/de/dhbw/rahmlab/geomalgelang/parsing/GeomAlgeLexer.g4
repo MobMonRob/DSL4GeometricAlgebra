@@ -322,6 +322,10 @@ ASSIGNMENT
 	: ':='
 	;
 
+COLON
+	: ':'
+	;
+
 L_CURLY_BRACKET
 	: '{'
 	;

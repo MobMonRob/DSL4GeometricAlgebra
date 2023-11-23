@@ -106,6 +106,15 @@ fn main(a, b) {
 }
 ```
 
+## Visualization
+Variables can be visualized after assignment with a preceding colon. For correct visualization, make sure that the variable is in IPNS representation. \
+In the following example, the variable b will be visualized:
+```
+fn main(a) {
+	:b := a
+}
+```
+
 ## Operators
 Hint: Operator precedence determines how operators are parsed concerning each other. A higher precedence number
 results in a higher binding strength. Thus operators with higher precedence become the operands of operators with lower precedence.

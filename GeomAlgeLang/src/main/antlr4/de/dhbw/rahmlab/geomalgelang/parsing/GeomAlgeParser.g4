@@ -56,7 +56,7 @@ functionBody
 ///////////////////////////////////////////////////////////////////////////
 
 stmt
-	:	SPACE* assigned=IDENTIFIER SPACE* assignment=ASSIGNMENT SPACE* exprContext=expr SPACE*		#AssgnStmt
+	:	SPACE* viz=COLON? assigned=IDENTIFIER SPACE* ASSIGNMENT SPACE* exprContext=expr SPACE*		#AssgnStmt
 	|	SPACE* exprContext=expr SPACE*	#ExprStmt
 	;
 

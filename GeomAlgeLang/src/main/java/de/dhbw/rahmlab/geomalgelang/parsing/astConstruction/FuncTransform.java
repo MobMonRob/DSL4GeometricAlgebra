@@ -17,6 +17,10 @@ import de.dhbw.rahmlab.geomalgelang.truffle.features.variables.nodes.stmt.LocalV
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.FunctionArgumentReaderNodeGen;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.stmt.ExprStmt;
 import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.stmt.ExprStmtNodeGen;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.variables.nodes.expr.LocalVariableReference;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.variables.nodes.expr.LocalVariableReferenceNodeGen;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.visualization.nodes.stmt.VisualizeMultivector;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.visualization.nodes.stmt.VisualizeMultivectorNodeGen;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -85,6 +89,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 	public void enterAssgnStmt(GeomAlgeParser.AssgnStmtContext ctx) {
 		ExpressionBaseNode expr = ExprTransform.generateExprAST(ctx.exprContext, this.geomAlgeLangContext, this.functionsView, this.localVariablesView);
 
+		// Assignment
 		String name = ctx.assigned.getText();
 
 		int frameSlot = this.frameDescriptorBuilder.addSlot(FrameSlotKind.Static, null, null);
@@ -95,9 +100,20 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 		this.localVariables.put(name, frameSlot);
 
 		LocalVariableAssignment assignmentNode = LocalVariableAssignmentNodeGen.create(expr, name, frameSlot);
-		assignmentNode.setSourceSection(ctx.assignment.getStartIndex(), ctx.assignment.getStopIndex());
+		assignmentNode.setSourceSection(ctx.assigned.getStartIndex(), ctx.assigned.getStopIndex());
 
 		this.stmts.add(assignmentNode);
+
+		// Viz
+		if (ctx.viz != null) {
+			LocalVariableReference varRefNode = LocalVariableReferenceNodeGen.create(name, frameSlot);
+			varRefNode.setSourceSection(ctx.assigned.getStartIndex(), ctx.assigned.getStopIndex());
+
+			VisualizeMultivector viz = VisualizeMultivectorNodeGen.create(varRefNode);
+			viz.setSourceSection(ctx.viz.getStartIndex(), ctx.viz.getStopIndex());
+
+			this.stmts.add(viz);
+		}
 	}
 
 	@Override
