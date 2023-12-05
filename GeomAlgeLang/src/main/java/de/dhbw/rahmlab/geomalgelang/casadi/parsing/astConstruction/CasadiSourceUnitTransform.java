@@ -1,5 +1,7 @@
-package de.dhbw.rahmlab.geomalgelang.parsing.astConstruction;
+package de.dhbw.rahmlab.geomalgelang.casadi.parsing.astConstruction;
 
+import de.dhbw.rahmlab.casadi.apiPrototype.api.FunctionSymbolic;
+import de.dhbw.rahmlab.geomalgelang.casadi.features.functionDefinitions.nodes.CasadiFunctionDefinitionRootNode;
 import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParser;
 import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParser.FunctionContext;
 import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParserBaseListener;
@@ -10,36 +12,39 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SourceUnitTransform extends GeomAlgeParserBaseListener {
+public class CasadiSourceUnitTransform extends GeomAlgeParserBaseListener {
 
-	protected final GeomAlgeLangContext geomAlgeLangContext;
-
-	protected SourceUnitTransform(GeomAlgeLangContext geomAlgeLangContext) {
-		this.geomAlgeLangContext = geomAlgeLangContext;
+	protected CasadiSourceUnitTransform() {
 	}
 
 	public static Function generate(GeomAlgeParser.SourceUnitContext ctx, GeomAlgeLangContext geomAlgeLangContext) {
-		Map<String, Function> functions = new HashMap<>();
-		Map<String, Function> functionsView = Collections.unmodifiableMap(functions);
+		Map<String, FunctionSymbolic> functions = new HashMap<>();
+		Map<String, FunctionSymbolic> functionsView = Collections.unmodifiableMap(functions);
 
 		/*
 		SourceUnitTransform transform = new SourceUnitTransform(geomAlgeLangContext);
 		SkippingParseTreeWalker.walk(transform, ctx, GeomAlgeParser.FunctionBodyContext.class);
 		 */
 		for (FunctionContext functionCtx : ctx.functions) {
-			Function function = FuncTransform.generate(functionCtx, geomAlgeLangContext, functionsView);
-			if (functions.containsKey(function.name)) {
+			FunctionSymbolic function = CasadiFuncTransform.generate(functionCtx, functionsView);
+			String functionName = function.getName();
+			if (functions.containsKey(functionName)) {
 				// ToDo: Display position of the function.
-				throw new ValidationException(String.format("Function with name \"%s\" has been already declared.", function.name));
+				throw new ValidationException(String.format("Function with name \"%s\" has been already declared.", functionName));
 			}
-			functions.put(function.name, function);
+			functions.put(functionName, function);
 		}
 
-		Function main = functions.get("main");
+		FunctionSymbolic main = functions.get("main");
 		if (main == null) {
 			throw new ValidationException("No main function has been defined.");
 		}
-		return main;
+
+		// Only for Truffle interoperability.
+		var functionRootNode = new CasadiFunctionDefinitionRootNode(geomAlgeLangContext.truffleLanguage, main);
+		Function function = new Function(functionRootNode, main.getName(), main.getArity());
+
+		return function;
 	}
 
 	/*

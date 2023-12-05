@@ -57,7 +57,7 @@ functionBody
 
 stmt
 	:	SPACE* viz=COLON? assigned=IDENTIFIER SPACE* ASSIGNMENT SPACE* exprContext=expr SPACE*		#AssgnStmt
-	|	SPACE* exprContext=expr SPACE*	#ExprStmt
+	|	SPACE* exprContext=expr SPACE*	#ExprStmt // Needed currently only for LastListReturn
 	;
 
 // The list-form (1) needs iteration in the transformer while the tree-form (2) don't.

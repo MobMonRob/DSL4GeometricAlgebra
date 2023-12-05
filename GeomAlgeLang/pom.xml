@@ -16,6 +16,13 @@
 		<truffleGenSourceDir>${project.build.directory}/generated-sources/truffle-dsl-processor/gen/</truffleGenSourceDir>
 	</properties>
 	<dependencies>
+		<!-- only temporary! -->
+		<dependency>
+			<groupId>de.dhbw.rahmlab</groupId>
+			<artifactId>JCasADi</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<!-- -->
 		<dependency>
 			<groupId>org.antlr</groupId>
 			<artifactId>antlr4-runtime</artifactId>
