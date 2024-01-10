@@ -48,8 +48,8 @@ public class App {
 			test(b)
 			d := getLastListReturn(0)
 			e := getLastListReturn(1)
-			:p1 := a
-			:p2 := b
+			//:p1 := a
+			//:p2 := b
 			a, b, d, e
 		}
 		""";
