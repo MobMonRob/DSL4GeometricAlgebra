@@ -85,26 +85,42 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		ExpressionBaseNode left = nodeStack.pop();
 
 		ExpressionBaseNode current = switch (ctx.op.getType()) {
-			case GeomAlgeParser.DOT_OPERATOR ->
-				new InnerProduct(left, right);
 			case GeomAlgeParser.LOGICAL_AND ->
 				new OuterProduct(left, right);
 			case GeomAlgeParser.PLUS_SIGN ->
 				new Addition(left, right);
 			case GeomAlgeParser.HYPHEN_MINUS ->
 				new Subtraction(left, right);
-			case GeomAlgeParser.INTERSECTION ->
-				new Meet(left, right);
-			case GeomAlgeParser.UNION ->
-				new Join(left, right);
-			case GeomAlgeParser.R_CONTRACTION ->
-				new RightContraction(left, right);
 			case GeomAlgeParser.L_CONTRACTION ->
 				new LeftContraction(left, right);
+			case GeomAlgeParser.R_CONTRACTION ->
+				new RightContraction(left, right);
 			case GeomAlgeParser.LOGICAL_OR ->
 				new RegressiveProduct(left, right);
 			case GeomAlgeParser.SOLIDUS ->
 				new Division(left, right);
+			case GeomAlgeParser.DOT_OPERATOR ->
+				new InnerProduct(left, right);
+			case GeomAlgeParser.INTERSECTION ->
+				new Meet(left, right);
+			case GeomAlgeParser.UNION ->
+				new Join(left, right);
+			default ->
+				throw new UnsupportedOperationException();
+		};
+
+		current.setSourceSection(ctx.op.getStartIndex(), ctx.op.getStopIndex());
+
+		nodeStack.push(current);
+	}
+
+	@Override
+	public void exitUnOpL(GeomAlgeParser.UnOpLContext ctx) {
+		ExpressionBaseNode right = nodeStack.pop();
+
+		ExpressionBaseNode current = switch (ctx.op.getType()) {
+			case GeomAlgeParser.HYPHEN_MINUS ->
+				new Negate(right);
 			default ->
 				throw new UnsupportedOperationException();
 		};
@@ -132,23 +148,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 			case GeomAlgeParser.SUPERSCRIPT_TWO ->
 				new GeometricProduct(left, left);
 			case GeomAlgeParser.CIRCUMFLEX_ACCENT ->
-				new Involute(left);
-			default ->
-				throw new UnsupportedOperationException();
-		};
-
-		current.setSourceSection(ctx.op.getStartIndex(), ctx.op.getStopIndex());
-
-		nodeStack.push(current);
-	}
-
-	@Override
-	public void exitUnOpL(GeomAlgeParser.UnOpLContext ctx) {
-		ExpressionBaseNode right = nodeStack.pop();
-
-		ExpressionBaseNode current = switch (ctx.op.getType()) {
-			case GeomAlgeParser.HYPHEN_MINUS ->
-				new Negate(right);
+				new GradeInversion(left);
 			default ->
 				throw new UnsupportedOperationException();
 		};

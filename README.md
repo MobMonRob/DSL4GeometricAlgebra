@@ -130,8 +130,8 @@ Hint: The Unicode and Latex name for the symbol used for left contraction is "RI
 | :--------: | :------: | ------- | ------- | ---- | -------------- | ----- |
 | 4          |          |         | \u0020  | geometric product | multivector1.gp(multivector2) | Zero or more space characters are interpreted as the operator. |
 | 3          | &#x2227; | \wedge  | \u2227  | outer product (join, span for no common subspace) | multivector1.op(multivector2), not used for double, for tuple3d it makes sense but actually no implementation is available | joining linearily independend vectors/two disjoint subspaces |
-| 1          | &#x002B; | +       | \u002B  | sum | multivector1.add(multivector2) | |
-| 1          | &#x002D; | -       | \u002D  | difference | multivector1.sub(multivector2) | |
+| 1          | &#x002B; | +       | \u002B  | addition | multivector1.add(multivector2) | |
+| 1          | &#x002D; | -       | \u002D  | subtraction | multivector1.sub(multivector2) | |
 | 3          | &#x230B; | \rfloor | \u230B  | left contraction | multivetor1.ip(multivector2, LEFT_CONTRACTION) |  |
 | 3          | &#x230A; | \lfloor | \u230A  | right contraction | multivector1.ip(multivector1, RIGHT_CONTRACTION); where the grade operator for negative grades is zero. This implies that `something of higher grade cannot be contracted onto something of lower grade`. | |
 | 3          | &#x2228; | \vee    | \u2228  | regressive product (meet if intersected) | multivector1.vee(multivector2) or (multivector1* &#8743; multivector2*)* |  |

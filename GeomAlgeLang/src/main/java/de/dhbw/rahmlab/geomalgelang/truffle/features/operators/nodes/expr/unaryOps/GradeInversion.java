@@ -4,9 +4,9 @@ import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.exprSuperClasses.Expres
 import de.dhbw.rahmlab.geomalgelang.truffle.features.operators.nodes.exprSuperClasses.UnaryOp;
 import de.orat.math.cga.api.CGAMultivector;
 
-public final class Involute extends UnaryOp {
+public final class GradeInversion extends UnaryOp {
 
-	public Involute(ExpressionBaseNode argument) {
+	public GradeInversion(ExpressionBaseNode argument) {
 		super(argument);
 	}
 

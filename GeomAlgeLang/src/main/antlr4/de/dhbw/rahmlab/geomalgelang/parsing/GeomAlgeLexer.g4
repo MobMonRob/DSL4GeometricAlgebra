@@ -33,19 +33,13 @@ HYPHEN_MINUS
 	;
 
 ///////////////////////////////////////////////////////////////////////////
-// Symbols for binaryOp's
+// Symbols for: Base 2-ary operators
 ///////////////////////////////////////////////////////////////////////////
 
 // geometric_product
 // \u0020
 SPACE
 	: ' '
-	;
-
-// inner_product
-// \u22C5
-DOT_OPERATOR
-	: '⋅'
 	;
 
 // outer_product
@@ -60,28 +54,16 @@ PLUS_SIGN
 	: '+'
 	;
 
-// meet (intersection)
-// \u2229
-INTERSECTION
-	: '∩'
-	;
-
-// join (union)
-// \u222A
-UNION
-	: '∪'
+// left_contraction
+// \u230B (RIGHT FLOOR)
+L_CONTRACTION
+	: '⌋'
 	;
 
 // right_contraction
 // \u230A (LEFT FLOOR)
 R_CONTRACTION
 	: '⌊'
-	;
-
-// left_contraction
-// \u230B (RIGHT FLOOR)
-L_CONTRACTION
-	: '⌋'
 	;
 
 // regressive_product
@@ -94,6 +76,28 @@ LOGICAL_OR
 // \u002F
 SOLIDUS
 	: '/'
+	;
+
+///////////////////////////////////////////////////////////////////////////
+// Symbols for: Additional 2-ary operators
+///////////////////////////////////////////////////////////////////////////
+
+// inner_product
+// \u22C5
+DOT_OPERATOR
+	: '⋅'
+	;
+
+// meet (intersection)
+// \u2229
+INTERSECTION
+	: '∩'
+	;
+
+// join (union)
+// \u222A
+UNION
+	: '∪'
 	;
 
 ///////////////////////////////////////////////////////////////////////////
