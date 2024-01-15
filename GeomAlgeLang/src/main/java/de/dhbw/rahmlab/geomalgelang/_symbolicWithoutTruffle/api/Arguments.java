@@ -12,7 +12,7 @@ import util.cga.SparseCGAColumnVectorFactory;
 
 public class Arguments {
 
-	private final ExprGraphFactory exprGraphFactory = GAExprGraphFactoryService.instance().getExprGraphFactory().orElseThrow();
+	private final ExprGraphFactory exprGraphFactory = GAExprGraphFactoryService.getExprGraphFactoryThrowing();
 	private final Map<String, MultivectorNumeric> argsMap = new LinkedHashMap<>();
 	private final Map<String, MultivectorNumeric> argsMapView = Collections.unmodifiableMap(this.argsMap);
 

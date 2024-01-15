@@ -28,7 +28,7 @@ import java.util.List;
  */
 public class ExprTransform extends GeomAlgeParserBaseListener {
 
-	protected final ExprGraphFactory exprGraphFactory = GAExprGraphFactoryService.instance().getExprGraphFactory().orElseThrow();
+	protected final ExprGraphFactory exprGraphFactory = GAExprGraphFactoryService.getExprGraphFactoryThrowing();
 	protected final Deque<MultivectorSymbolic> nodeStack = new ArrayDeque<>();
 	protected final Map<String, FunctionSymbolic> functionsView;
 	protected final Map<String, MultivectorSymbolic> localVariablesView;

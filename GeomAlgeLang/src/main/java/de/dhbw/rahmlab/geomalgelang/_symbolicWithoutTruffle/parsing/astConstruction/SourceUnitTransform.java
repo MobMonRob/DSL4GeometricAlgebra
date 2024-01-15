@@ -1,13 +1,10 @@
 package de.dhbw.rahmlab.geomalgelang._symbolicWithoutTruffle.parsing.astConstruction;
 
-import de.dhbw.rahmlab.casadi.apiPrototype.api.FunctionSymbolic;
-import de.dhbw.rahmlab.geomalgelang.casadi.features.functionDefinitions.nodes.CasadiFunctionDefinitionRootNode;
 import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParser;
 import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParser.FunctionContext;
 import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParserBaseListener;
-import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.external.ValidationException;
-import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.runtime.Function;
+import de.orat.math.gacalc.api.FunctionSymbolic;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +14,7 @@ public class SourceUnitTransform extends GeomAlgeParserBaseListener {
 	protected SourceUnitTransform() {
 	}
 
-	public static Function generate(GeomAlgeParser.SourceUnitContext ctx, GeomAlgeLangContext geomAlgeLangContext) {
+	public static FunctionSymbolic generate(GeomAlgeParser.SourceUnitContext ctx) {
 		Map<String, FunctionSymbolic> functions = new HashMap<>();
 		Map<String, FunctionSymbolic> functionsView = Collections.unmodifiableMap(functions);
 
@@ -40,11 +37,7 @@ public class SourceUnitTransform extends GeomAlgeParserBaseListener {
 			throw new ValidationException("No main function has been defined.");
 		}
 
-		// Only for Truffle interoperability.
-		var functionRootNode = new CasadiFunctionDefinitionRootNode(geomAlgeLangContext.truffleLanguage, main);
-		Function function = new Function(functionRootNode, main.getName(), main.getArity());
-
-		return function;
+		return main;
 	}
 
 	/*

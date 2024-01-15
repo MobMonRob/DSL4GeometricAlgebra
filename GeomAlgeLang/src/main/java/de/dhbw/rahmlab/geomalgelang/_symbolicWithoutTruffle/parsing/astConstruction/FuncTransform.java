@@ -1,11 +1,13 @@
 package de.dhbw.rahmlab.geomalgelang._symbolicWithoutTruffle.parsing.astConstruction;
 
-import de.dhbw.rahmlab.casadi.apiPrototype.api.FunctionSymbolic;
-import de.dhbw.rahmlab.casadi.apiPrototype.api.MultivectorSymbolic;
 import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParser;
 import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParserBaseListener;
 import de.dhbw.rahmlab.geomalgelang.parsing.astConstruction.SkippingParseTreeWalker;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.external.ValidationException;
+import de.orat.math.gacalc.api.ExprGraphFactory;
+import de.orat.math.gacalc.api.FunctionSymbolic;
+import de.orat.math.gacalc.api.GAExprGraphFactoryService;
+import de.orat.math.gacalc.api.MultivectorSymbolic;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -14,6 +16,7 @@ import java.util.Map;
 
 public class FuncTransform extends GeomAlgeParserBaseListener {
 
+	protected final ExprGraphFactory exprGraphFactory = GAExprGraphFactoryService.getExprGraphFactoryThrowing();
 	// Momentan ist jedes Stmt eine Zuweisung, die am Ende eine Variable ergibt.
 	// Wenn anderes unterstützt werden soll, muss man sich überlegen, wie man das macht.
 	protected final List<MultivectorSymbolic> retExprs = new ArrayList<>();
@@ -32,7 +35,8 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 		FuncTransform transform = new FuncTransform(functionsView);
 		SkippingParseTreeWalker.walk(transform, ctx, GeomAlgeParser.ExprContext.class);
 
-		FunctionSymbolic function = new FunctionSymbolic(transform.functionName, transform.formalParameterList, transform.retExprs);
+		ExprGraphFactory exprGraphFactory = GAExprGraphFactoryService.getExprGraphFactoryThrowing();
+		FunctionSymbolic function = exprGraphFactory.createFunctionSymbolic(transform.functionName, transform.formalParameterList, transform.retExprs);
 		System.out.println("function: " + function);
 
 		return function;
@@ -50,7 +54,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 	public void exitFormalParameter_(GeomAlgeParser.FormalParameter_Context ctx) {
 		String name = ctx.name.getText();
 
-		var param = new MultivectorSymbolic(name);
+		var param = exprGraphFactory.createMultivectorSymbolic(name);
 
 		this.formalParameterList.add(param);
 		this.localVariables.put(name, param);
