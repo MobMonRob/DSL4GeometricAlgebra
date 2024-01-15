@@ -1,8 +1,8 @@
 package de.dhbw.rahmlab.geomalgelang._symbolicWithoutTruffle.api;
 
+import de.orat.math.gacalc.api.ExprGraphFactory;
 import de.orat.math.gacalc.api.GAExprGraphFactoryService;
 import de.orat.math.gacalc.api.MultivectorNumeric;
-import de.orat.math.gacalc.spi.iExprGraphFactory;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -12,7 +12,7 @@ import util.cga.SparseCGAColumnVectorFactory;
 
 public class Arguments {
 
-	private final iExprGraphFactory iExprGraphFactory = GAExprGraphFactoryService.instance().getExprGraphFactory().orElseThrow();
+	private final ExprGraphFactory exprGraphFactory = GAExprGraphFactoryService.instance().getExprGraphFactory().orElseThrow();
 	private final Map<String, MultivectorNumeric> argsMap = new LinkedHashMap<>();
 	private final Map<String, MultivectorNumeric> argsMapView = Collections.unmodifiableMap(this.argsMap);
 
@@ -29,7 +29,7 @@ public class Arguments {
 	}
 
 	protected Arguments createPutReturn(String argName, SparseCGAColumnVector sparseVec) throws IllegalArgumentException {
-		var mvec = this.iExprGraphFactory.createMultivectorNumeric(sparseVec.nonzeros(), sparseVec);
+		var mvec = this.exprGraphFactory.createMultivectorNumeric(sparseVec.nonzeros(), sparseVec);
 		this.put(argName, mvec);
 		return this;
 	}

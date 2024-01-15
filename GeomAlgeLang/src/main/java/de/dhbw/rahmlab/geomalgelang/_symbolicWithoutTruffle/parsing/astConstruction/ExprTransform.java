@@ -3,10 +3,13 @@ package de.dhbw.rahmlab.geomalgelang._symbolicWithoutTruffle.parsing.astConstruc
 import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParser;
 import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParserBaseListener;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.external.ValidationException;
+import de.orat.math.gacalc.api.ExprGraphFactory;
 import de.orat.math.gacalc.api.FunctionSymbolic;
+import de.orat.math.gacalc.api.GAExprGraphFactoryService;
 import de.orat.math.gacalc.api.MultivectorSymbolic;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.ParseException;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Map;
@@ -25,6 +28,7 @@ import java.util.List;
  */
 public class ExprTransform extends GeomAlgeParserBaseListener {
 
+	protected final ExprGraphFactory exprGraphFactory = GAExprGraphFactoryService.instance().getExprGraphFactory().orElseThrow();
 	protected final Deque<MultivectorSymbolic> nodeStack = new ArrayDeque<>();
 	protected final Map<String, FunctionSymbolic> functionsView;
 	protected final Map<String, MultivectorSymbolic> localVariablesView;
@@ -49,6 +53,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		MultivectorSymbolic right = nodeStack.pop();
 		MultivectorSymbolic left = nodeStack.pop();
 
+		// ExpressionBaseNode result = new GeometricProduct(left, right);
 		MultivectorSymbolic result = left.geometricProduct(right);
 
 		nodeStack.push(result);
@@ -66,31 +71,31 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 				left.outerProduct(right);
 			case GeomAlgeParser.PLUS_SIGN ->
 				// new Addition(left, right);
-				left.add(right);
+				left.addition(right);
 			case GeomAlgeParser.HYPHEN_MINUS ->
 				// new Subtraction(left, right);
-				left.subtract(right);
+				left.subtraction(right);
 			case GeomAlgeParser.L_CONTRACTION ->
 				// new LeftContraction(left, right);
-				left.lc(right);
+				left.leftContraction(right);
 			case GeomAlgeParser.R_CONTRACTION ->
 				// new RightContraction(left, right);
-				throw new UnsupportedOperationException();
+				left.rightContraction(right);
 			case GeomAlgeParser.LOGICAL_OR ->
 				// new RegressiveProduct(left, right);
-				left.vee(right);
+				left.regressiveProduct(right);
 			case GeomAlgeParser.SOLIDUS ->
 				// new Division(left, right);
-				throw new UnsupportedOperationException();
+				left.division(right);
 			case GeomAlgeParser.DOT_OPERATOR ->
 				// new InnerProduct(left, right);
-				left.lc(right);
+				left.innerProduct(right);
 			case GeomAlgeParser.INTERSECTION ->
 				// new Meet(left, right);
-				throw new UnsupportedOperationException();
+				left.meet(right);
 			case GeomAlgeParser.UNION ->
 				// new Join(left, right);
-				throw new UnsupportedOperationException();
+				left.join(right);
 			default ->
 				throw new UnsupportedOperationException();
 		};
@@ -100,22 +105,132 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 
 	@Override
 	public void exitUnOpL(GeomAlgeParser.UnOpLContext ctx) {
-		throw new UnsupportedOperationException();
+		var right = nodeStack.pop();
+
+		var result = switch (ctx.op.getType()) {
+			case GeomAlgeParser.HYPHEN_MINUS ->
+				// new Negate(right);
+				right.negate();
+			default ->
+				throw new UnsupportedOperationException();
+		};
+
+		nodeStack.push(result);
 	}
 
 	@Override
 	public void exitUnOpR(GeomAlgeParser.UnOpRContext ctx) {
-		throw new UnsupportedOperationException();
+		var left = nodeStack.pop();
+
+		var result = switch (ctx.op.getType()) {
+			case GeomAlgeParser.SUPERSCRIPT_MINUS__SUPERSCRIPT_ONE ->
+				// new GeneralInverse(left);
+				left.generalInverse();
+			case GeomAlgeParser.ASTERISK ->
+				// new Dual(left);
+				left.dual();
+			case GeomAlgeParser.SMALL_TILDE ->
+				// new Reverse(left);
+				left.reverse();
+			case GeomAlgeParser.DAGGER ->
+				// new CliffordConjugate(left);
+				left.cliffordConjugate();
+			case GeomAlgeParser.SUPERSCRIPT_MINUS__ASTERISK ->
+				// new Undual(left);
+				left.undual();
+			case GeomAlgeParser.SUPERSCRIPT_TWO ->
+				// new GeometricProduct(left, left);
+				left.square();
+			case GeomAlgeParser.CIRCUMFLEX_ACCENT ->
+				// new GradeInversion(left);
+				left.gradeInversion();
+			default ->
+				throw new UnsupportedOperationException();
+		};
+
+		nodeStack.push(result);
 	}
 
 	@Override
 	public void exitGradeExtraction(GeomAlgeParser.GradeExtractionContext ctx) {
-		throw new UnsupportedOperationException();
+		var inner = nodeStack.pop();
+
+		int grade = switch (ctx.grade.getType()) {
+			case GeomAlgeParser.SUBSCRIPT_ZERO ->
+				0;
+			case GeomAlgeParser.SUBSCRIPT_ONE ->
+				1;
+			case GeomAlgeParser.SUBSCRIPT_TWO ->
+				2;
+			case GeomAlgeParser.SUBSCRIPT_THREE ->
+				3;
+			case GeomAlgeParser.SUBSCRIPT_FOUR ->
+				4;
+			case GeomAlgeParser.SUBSCRIPT_FIVE ->
+				5;
+			default ->
+				throw new UnsupportedOperationException();
+		};
+
+		// ExpressionBaseNode result = new GradeExtraction(inner, grade);
+		var result = inner.gradeExtraction(grade);
+
+		nodeStack.push(result);
 	}
 
 	@Override
 	public void exitLiteralConstant(GeomAlgeParser.LiteralConstantContext ctx) {
-		throw new UnsupportedOperationException();
+		var node = switch (ctx.type.getType()) {
+			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_ZERO ->
+				// ConstantNodeGen.create(Constant.Kind.base_vector_origin);
+				exprGraphFactory.baseVectorOrigin;
+			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_SMALL_I ->
+				// ConstantNodeGen.create(Constant.Kind.base_vector_infinity);
+				exprGraphFactory.baseVectorInfinity;
+			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_ONE ->
+				// ConstantNodeGen.create(Constant.Kind.base_vector_x);
+				exprGraphFactory.baseVectorX;
+			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_TWO ->
+				// ConstantNodeGen.create(Constant.Kind.base_vector_y);
+				exprGraphFactory.baseVectorY;
+			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_THREE ->
+				// ConstantNodeGen.create(Constant.Kind.base_vector_z);
+				exprGraphFactory.baseVectorZ;
+			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_PLUS ->
+				// ConstantNodeGen.create(Constant.Kind.epsilon_plus);
+				exprGraphFactory.epsilonPlus;
+			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_MINUS ->
+				// ConstantNodeGen.create(Constant.Kind.epsilon_minus);
+				exprGraphFactory.epsilonMinus;
+			case GeomAlgeParser.SMALL_PI ->
+				// ConstantNodeGen.create(Constant.Kind.pi);
+				exprGraphFactory.pi;
+			case GeomAlgeParser.INFINITY ->
+				// ConstantNodeGen.create(Constant.Kind.base_vector_infinity_dorst);
+				exprGraphFactory.baseVectorInfinityDorst;
+			case GeomAlgeParser.SMALL_O ->
+				// ConstantNodeGen.create(Constant.Kind.base_vector_origin_dorst);
+				exprGraphFactory.baseVectorOriginDorst;
+			case GeomAlgeParser.SMALL_N ->
+				// ConstantNodeGen.create(Constant.Kind.base_vector_infinity_doran);
+				exprGraphFactory.baseVectorInfinityDoran;
+			case GeomAlgeParser.SMALL_N_TILDE ->
+				// ConstantNodeGen.create(Constant.Kind.base_vector_origin_doran);
+				exprGraphFactory.baseVectorOriginDoran;
+			case GeomAlgeParser.CAPITAL_E__SUBSCRIPT_ZERO ->
+				// ConstantNodeGen.create(Constant.Kind.minkovsky_bi_vector);
+				exprGraphFactory.minkovskyBiVector;
+			case GeomAlgeParser.CAPITAL_E__SUBSCRIPT_THREE ->
+				// ConstantNodeGen.create(Constant.Kind.euclidean_pseudoscalar);
+				exprGraphFactory.euclideanPseudoscalar;
+			case GeomAlgeParser.CAPITAL_E ->
+				// ConstantNodeGen.create(Constant.Kind.pseudoscalar);
+				exprGraphFactory.pseudoscalar;
+			default ->
+				throw new UnsupportedOperationException();
+		};
+
+		nodeStack.push(node);
 	}
 
 	@Override
@@ -126,9 +241,9 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 			throw new ValidationException(String.format("Variable \"%s\" has not been declared before.", name));
 		}
 
-		MultivectorSymbolic ref = this.localVariablesView.get(name);
+		MultivectorSymbolic node = this.localVariablesView.get(name);
 
-		nodeStack.push(ref);
+		nodeStack.push(node);
 	}
 
 	// https://stackoverflow.com/questions/4323599/best-way-to-parsedouble-with-comma-as-decimal-separator/4323627#4323627
@@ -146,10 +261,19 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 
 	@Override
 	public void exitLiteralDecimal(GeomAlgeParser.LiteralDecimalContext ctx) {
-		throw new UnsupportedOperationException();
+		try {
+			String decimalLiteral = ctx.value.getText();
+			double value = decimalFormat.parse(decimalLiteral).doubleValue();
+			// ScalarLiteral node = ScalarLiteralNodeGen.create(value);
+			var node = this.exprGraphFactory.createScalarLiteral(decimalLiteral, value);
+			nodeStack.push(node);
+		} catch (ParseException ex) {
+			// Should never occur because of the DECIMAL_LITERAL lexer token definition.
+			throw new AssertionError(ex);
+		}
 	}
 
-	private static final MultivectorSymbolic enterCallMarker = new MultivectorSymbolic("enterCallMarker");
+	private static final MultivectorSymbolic enterCallMarker = null;
 
 	@Override
 	public void enterCall(GeomAlgeParser.CallContext ctx) {

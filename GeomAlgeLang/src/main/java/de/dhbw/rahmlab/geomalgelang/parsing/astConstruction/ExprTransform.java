@@ -61,7 +61,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		ExpressionBaseNode right = nodeStack.pop();
 		ExpressionBaseNode left = nodeStack.pop();
 
-		ExpressionBaseNode current = new GeometricProduct(left, right);
+		ExpressionBaseNode result = new GeometricProduct(left, right);
 
 		int start;
 		int stop;
@@ -73,9 +73,9 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 			start = ctx.lhs.getStop().getStopIndex();
 			stop = start + 1;
 		}
-		current.setSourceSection(start, stop);
+		result.setSourceSection(start, stop);
 
-		nodeStack.push(current);
+		nodeStack.push(result);
 	}
 
 	@Override
@@ -84,7 +84,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		ExpressionBaseNode right = nodeStack.pop();
 		ExpressionBaseNode left = nodeStack.pop();
 
-		ExpressionBaseNode current = switch (ctx.op.getType()) {
+		ExpressionBaseNode result = switch (ctx.op.getType()) {
 			case GeomAlgeParser.LOGICAL_AND ->
 				new OuterProduct(left, right);
 			case GeomAlgeParser.PLUS_SIGN ->
@@ -109,32 +109,32 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 				throw new UnsupportedOperationException();
 		};
 
-		current.setSourceSection(ctx.op.getStartIndex(), ctx.op.getStopIndex());
+		result.setSourceSection(ctx.op.getStartIndex(), ctx.op.getStopIndex());
 
-		nodeStack.push(current);
+		nodeStack.push(result);
 	}
 
 	@Override
 	public void exitUnOpL(GeomAlgeParser.UnOpLContext ctx) {
 		ExpressionBaseNode right = nodeStack.pop();
 
-		ExpressionBaseNode current = switch (ctx.op.getType()) {
+		ExpressionBaseNode result = switch (ctx.op.getType()) {
 			case GeomAlgeParser.HYPHEN_MINUS ->
 				new Negate(right);
 			default ->
 				throw new UnsupportedOperationException();
 		};
 
-		current.setSourceSection(ctx.op.getStartIndex(), ctx.op.getStopIndex());
+		result.setSourceSection(ctx.op.getStartIndex(), ctx.op.getStopIndex());
 
-		nodeStack.push(current);
+		nodeStack.push(result);
 	}
 
 	@Override
 	public void exitUnOpR(GeomAlgeParser.UnOpRContext ctx) {
 		ExpressionBaseNode left = nodeStack.pop();
 
-		ExpressionBaseNode current = switch (ctx.op.getType()) {
+		ExpressionBaseNode result = switch (ctx.op.getType()) {
 			case GeomAlgeParser.SUPERSCRIPT_MINUS__SUPERSCRIPT_ONE ->
 				new GeneralInverse(left);
 			case GeomAlgeParser.ASTERISK ->
@@ -153,9 +153,9 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 				throw new UnsupportedOperationException();
 		};
 
-		current.setSourceSection(ctx.op.getStartIndex(), ctx.op.getStopIndex());
+		result.setSourceSection(ctx.op.getStartIndex(), ctx.op.getStopIndex());
 
-		nodeStack.push(current);
+		nodeStack.push(result);
 	}
 
 	@Override
@@ -179,16 +179,16 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 				throw new UnsupportedOperationException();
 		};
 
-		ExpressionBaseNode current = new GradeExtraction(inner, grade);
+		ExpressionBaseNode result = new GradeExtraction(inner, grade);
 
-		current.setSourceSection(ctx.getStart().getStartIndex(), ctx.getStop().getStopIndex());
+		result.setSourceSection(ctx.getStart().getStartIndex(), ctx.getStop().getStopIndex());
 
-		nodeStack.push(current);
+		nodeStack.push(result);
 	}
 
 	@Override
 	public void exitLiteralConstant(GeomAlgeParser.LiteralConstantContext ctx) {
-		ExpressionBaseNode current = switch (ctx.type.getType()) {
+		ExpressionBaseNode node = switch (ctx.type.getType()) {
 			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_ZERO ->
 				ConstantNodeGen.create(Constant.Kind.base_vector_origin);
 			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_SMALL_I ->
@@ -223,7 +223,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 				throw new UnsupportedOperationException();
 		};
 
-		nodeStack.push(current);
+		nodeStack.push(node);
 	}
 
 	@Override
