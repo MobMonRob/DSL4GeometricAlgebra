@@ -1,9 +1,12 @@
 package de.dhbw.rahmlab.geomalgelang.parsing._util;
 
+import de.dhbw.rahmlab.geomalgelang.parsing.CharStreamSupplier;
 import de.dhbw.rahmlab.geomalgelang.parsing.ParsingService;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.external.AbstractExternalException;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.FunctionDefinitionRootNode;
+import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.runtime.Function;
 import java.util.List;
 import java.util.stream.Stream;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
@@ -31,7 +34,7 @@ public class Asserts {
 
 		String actualAstString = null;
 		try {
-			ExpressionBaseNode baseNode = ParsingService.parseExpr(program, new GeomAlgeLangContext());
+			ExpressionBaseNode baseNode = Asserts.parseExpr(program, new GeomAlgeLangContext());
 			actualAstString = AstStringBuilder.getAstString(baseNode);
 		} catch (ParseCancellationException | AbstractExternalException e) {
 			// Thrown by SytaxErrorListener indicating a syntax error
@@ -52,6 +55,13 @@ public class Asserts {
 	public static Stream<DynamicTest> parsePrintAssertEquivalent(List<String> programs) {
 		final String expectedAstString = getAstString(programs.get(0));
 		return parsePrintAssert(programs, expectedAstString);
+	}
+
+	public static ExpressionBaseNode parseExpr(String program, GeomAlgeLangContext geomAlgeLangContext) {
+		String functionProgram = String.format("fn main(a, b, aa, c, A) {\n\t%s\n}\n", program);
+		Function main = ParsingService.parse(CharStreamSupplier.from(functionProgram), geomAlgeLangContext);
+		ExpressionBaseNode retExpr = ((FunctionDefinitionRootNode) main.getRootNode()).getBody().getFirstRetExpr();
+		return retExpr;
 	}
 
 	public record ProgramExpected(String program, String expected) {
@@ -96,7 +106,7 @@ public class Asserts {
 	private static String getAstString(String program, int maxActualAstStringDepth, final String programMessage) {
 		String actualAstString = null;
 		try {
-			ExpressionBaseNode baseNode = ParsingService.parseExpr(program, new GeomAlgeLangContext());
+			ExpressionBaseNode baseNode = Asserts.parseExpr(program, new GeomAlgeLangContext());
 			actualAstString = AstStringBuilder.getAstString(baseNode, maxActualAstStringDepth);
 		} catch (ParseCancellationException | AbstractExternalException e) {
 			// Thrown by SytaxErrorListener indicating a syntax error

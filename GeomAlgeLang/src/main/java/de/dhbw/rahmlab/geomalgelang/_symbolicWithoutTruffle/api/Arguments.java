@@ -34,6 +34,12 @@ public class Arguments {
 		return this;
 	}
 
+	public Arguments random(String argName) {
+		var mvec = this.exprGraphFactory.createRandomMultivectorNumeric();
+		this.put(argName, mvec);
+		return this;
+	}
+
 	public Arguments euclidean_vector(String argName, Tuple3d tuple3d) {
 		var sparseVec = SparseCGAColumnVectorFactory.euclidean_vector(tuple3d);
 		return createPutReturn(argName, sparseVec);

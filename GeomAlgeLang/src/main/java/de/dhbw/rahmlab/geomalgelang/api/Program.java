@@ -18,8 +18,8 @@ import org.graalvm.polyglot.Value;
 
 public class Program implements AutoCloseable {
 
-	protected Context context;
-	protected Value program;
+	protected final Context context;
+	protected final Value program;
 	public static final String LANGUAGE_ID = "geomalgelang";
 
 	public Program(String source) {
@@ -37,17 +37,17 @@ public class Program implements AutoCloseable {
 		this.context.initialize(LANGUAGE_ID);
 
 		try {
-			program = this.context.parse(source);
+			this.program = this.context.parse(source);
 		} catch (PolyglotException ex) {
-			RuntimeException enrichedException = enrichException(ex);
-			this.context.close();
-			throw enrichedException;
+			try (this) {
+				throw enrichException(ex);
+			}
 		}
 	}
 
 	@Override
 	public void close() {
-		this.context.close();
+		this.context.close(true);
 	}
 
 	public Result invoke(Arguments arguments) {
@@ -59,9 +59,9 @@ public class Program implements AutoCloseable {
 			List<CGAMultivector> answers = box.getInner();
 			return new Result(answers);
 		} catch (PolyglotException ex) {
-			RuntimeException enrichedException = enrichException(ex);
-			this.context.close();
-			throw enrichedException;
+			try (this) {
+				throw enrichException(ex);
+			}
 		}
 	}
 

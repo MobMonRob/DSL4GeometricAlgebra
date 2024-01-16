@@ -1,11 +1,14 @@
-package de.dhbw.rahmlab.geomalgelang.parsing;
+package de.dhbw.rahmlab.geomalgelang._symbolicWithoutTruffle.parsing;
 
-import de.dhbw.rahmlab.geomalgelang.parsing.astConstruction.SourceUnitTransform;
-import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
-import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLangContext;
+import de.dhbw.rahmlab.geomalgelang._symbolicWithoutTruffle.parsing.astConstruction.SourceUnitTransform;
+import de.dhbw.rahmlab.geomalgelang.parsing.CharStreamSupplier;
+import de.dhbw.rahmlab.geomalgelang.parsing.CustomBailErrorStrategy;
+import de.dhbw.rahmlab.geomalgelang.parsing.CustumDiagnosticErrorListener;
+import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeLexer;
+import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParser;
+import de.dhbw.rahmlab.geomalgelang.parsing.SyntaxErrorListener;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.external.ValidationException;
-import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.FunctionDefinitionRootNode;
-import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.runtime.Function;
+import de.orat.math.gacalc.api.FunctionSymbolic;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.atn.PredictionMode;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
@@ -16,19 +19,19 @@ public final class ParsingService {
 
 	}
 
-	protected static Function invoke(GeomAlgeParser parser, GeomAlgeLangContext geomAlgeLangContext) {
+	protected static FunctionSymbolic invoke(GeomAlgeParser parser) {
 		GeomAlgeParser.SourceUnitContext sourceUnit = parser.sourceUnit();
-		Function main = SourceUnitTransform.generate(sourceUnit, geomAlgeLangContext);
+		FunctionSymbolic main = SourceUnitTransform.generate(sourceUnit);
 
 		return main;
 	}
 
-	public static Function parse(CharStreamSupplier program, GeomAlgeLangContext geomAlgeLangContext) {
+	public static FunctionSymbolic parse(CharStreamSupplier program) {
 		GeomAlgeLexer lexer = ParsingService.getLexer(program);
 		GeomAlgeParser parser = ParsingService.getParser(lexer);
 		configureParserDefault(parser);
 		try {
-			return invoke(parser, geomAlgeLangContext);
+			return invoke(parser);
 		} catch (ParseCancellationException ex) {
 			System.out.println("PredictionMode.SLL failed.");
 
@@ -36,7 +39,7 @@ public final class ParsingService {
 			parser.reset();
 			configureParserDiagnostic(parser);
 			try {
-				return invoke(parser, geomAlgeLangContext);
+				return invoke(parser);
 			} catch (ParseCancellationException ex2) {
 				throw new ValidationException(ex2);
 			}

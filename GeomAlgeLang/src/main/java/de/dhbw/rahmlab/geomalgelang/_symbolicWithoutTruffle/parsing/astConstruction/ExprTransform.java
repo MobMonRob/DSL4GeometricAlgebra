@@ -180,6 +180,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 
 	@Override
 	public void exitLiteralConstant(GeomAlgeParser.LiteralConstantContext ctx) {
+		/*
 		var node = switch (ctx.type.getType()) {
 			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_ZERO ->
 				// ConstantNodeGen.create(Constant.Kind.base_vector_origin);
@@ -231,6 +232,9 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		};
 
 		nodeStack.push(node);
+		 */
+
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -273,7 +277,14 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		}
 	}
 
-	private static final MultivectorSymbolic enterCallMarker = null;
+	private static class EnterCallMarker extends MultivectorSymbolic {
+
+		private EnterCallMarker() {
+			super(null);
+		}
+	}
+
+	private static final MultivectorSymbolic enterCallMarker = new EnterCallMarker();
 
 	@Override
 	public void enterCall(GeomAlgeParser.CallContext ctx) {
