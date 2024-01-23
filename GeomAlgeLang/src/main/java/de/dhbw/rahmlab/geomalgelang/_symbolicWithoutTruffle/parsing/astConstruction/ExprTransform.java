@@ -180,61 +180,57 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 
 	@Override
 	public void exitLiteralConstant(GeomAlgeParser.LiteralConstantContext ctx) {
-		/*
 		var node = switch (ctx.type.getType()) {
 			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_ZERO ->
 				// ConstantNodeGen.create(Constant.Kind.base_vector_origin);
-				exprGraphFactory.baseVectorOrigin;
+				exprGraphFactory.getBaseVectorOrigin();
 			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_SMALL_I ->
 				// ConstantNodeGen.create(Constant.Kind.base_vector_infinity);
-				exprGraphFactory.baseVectorInfinity;
+				exprGraphFactory.getBaseVectorInfinity();
 			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_ONE ->
 				// ConstantNodeGen.create(Constant.Kind.base_vector_x);
-				exprGraphFactory.baseVectorX;
+				exprGraphFactory.getBaseVectorX();
 			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_TWO ->
 				// ConstantNodeGen.create(Constant.Kind.base_vector_y);
-				exprGraphFactory.baseVectorY;
+				exprGraphFactory.getBaseVectorY();
 			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_THREE ->
 				// ConstantNodeGen.create(Constant.Kind.base_vector_z);
-				exprGraphFactory.baseVectorZ;
+				exprGraphFactory.getBaseVectorZ();
 			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_PLUS ->
 				// ConstantNodeGen.create(Constant.Kind.epsilon_plus);
-				exprGraphFactory.epsilonPlus;
+				exprGraphFactory.getEpsilonPlus();
 			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_MINUS ->
 				// ConstantNodeGen.create(Constant.Kind.epsilon_minus);
-				exprGraphFactory.epsilonMinus;
+				exprGraphFactory.getEpsilonMinus();
 			case GeomAlgeParser.SMALL_PI ->
 				// ConstantNodeGen.create(Constant.Kind.pi);
-				exprGraphFactory.pi;
+				exprGraphFactory.getPi();
 			case GeomAlgeParser.INFINITY ->
 				// ConstantNodeGen.create(Constant.Kind.base_vector_infinity_dorst);
-				exprGraphFactory.baseVectorInfinityDorst;
+				exprGraphFactory.getBaseVectorInfinityDorst();
 			case GeomAlgeParser.SMALL_O ->
 				// ConstantNodeGen.create(Constant.Kind.base_vector_origin_dorst);
-				exprGraphFactory.baseVectorOriginDorst;
+				exprGraphFactory.getBaseVectorOriginDorst();
 			case GeomAlgeParser.SMALL_N ->
 				// ConstantNodeGen.create(Constant.Kind.base_vector_infinity_doran);
-				exprGraphFactory.baseVectorInfinityDoran;
+				exprGraphFactory.getBaseVectorInfinityDoran();
 			case GeomAlgeParser.SMALL_N_TILDE ->
 				// ConstantNodeGen.create(Constant.Kind.base_vector_origin_doran);
-				exprGraphFactory.baseVectorOriginDoran;
+				exprGraphFactory.getBaseVectorOriginDoran();
 			case GeomAlgeParser.CAPITAL_E__SUBSCRIPT_ZERO ->
 				// ConstantNodeGen.create(Constant.Kind.minkovsky_bi_vector);
-				exprGraphFactory.minkovskyBiVector;
+				exprGraphFactory.getMinkovskyBiVector();
 			case GeomAlgeParser.CAPITAL_E__SUBSCRIPT_THREE ->
 				// ConstantNodeGen.create(Constant.Kind.euclidean_pseudoscalar);
-				exprGraphFactory.euclideanPseudoscalar;
+				exprGraphFactory.getEuclideanPseudoscalar();
 			case GeomAlgeParser.CAPITAL_E ->
 				// ConstantNodeGen.create(Constant.Kind.pseudoscalar);
-				exprGraphFactory.pseudoscalar;
+				exprGraphFactory.getPseudoscalar();
 			default ->
 				throw new UnsupportedOperationException();
 		};
 
 		nodeStack.push(node);
-		 */
-
-		throw new UnsupportedOperationException();
 	}
 
 	@Override
