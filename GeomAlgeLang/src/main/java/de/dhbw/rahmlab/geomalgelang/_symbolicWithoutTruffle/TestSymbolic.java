@@ -1,9 +1,9 @@
 package de.dhbw.rahmlab.geomalgelang._symbolicWithoutTruffle;
 
-import de.dhbw.rahmlab.geomalgelang._symbolicWithoutTruffle.api.Arguments;
-import de.dhbw.rahmlab.geomalgelang._symbolicWithoutTruffle.api.Program;
-import de.dhbw.rahmlab.geomalgelang._symbolicWithoutTruffle.api.Results;
-import java.util.Arrays;
+import de.dhbw.rahmlab.geomalgelang._symbolicWithoutTruffle.api.ProgramFactory;
+import de.orat.math.sparsematrix.SparseDoubleColumnVector;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TestSymbolic {
 
@@ -25,18 +25,18 @@ public class TestSymbolic {
 
 		System.out.println("source: " + source);
 
-		try (Program program = new Program(source)) {
-			Arguments arguments = new Arguments();
-			arguments
-				.random("a")
-				.random("b");
+		var fac = new ProgramFactory();
 
-			Results answer = program.invoke(arguments);
-			double[][] answerScalar = answer.decomposeDoubleArray();
+		try (var program = fac.parse(source)) {
+			List<SparseDoubleColumnVector> arguments = new ArrayList<>();
+			arguments.add(new SparseDoubleColumnVector(0));
+			arguments.add(new SparseDoubleColumnVector(0));
+
+			List<SparseDoubleColumnVector> answer = program.invoke(arguments);
 
 			System.out.println("answer: ");
-			for (int i = 0; i < answerScalar.length; ++i) {
-				String current = Arrays.toString(answerScalar[i]);
+			for (int i = 0; i < answer.size(); ++i) {
+				String current = answer.get(i).toString();
 				System.out.println(current);
 			}
 			System.out.println();
