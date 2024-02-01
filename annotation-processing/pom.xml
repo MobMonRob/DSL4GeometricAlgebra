@@ -27,9 +27,9 @@
 		<!-- Workaround for Netbeans Bug -->
 		<!-- Dependency necessary to avoid ClassNotFound exception. -->
 		<dependency>
-			<groupId>org.jogamp.java3d</groupId>
-			<artifactId>vecmath</artifactId>
-			<version>1.7.1</version>
+			<groupId>de.orat.math.sparsematrix</groupId>
+			<artifactId>SparseMatrix</artifactId>
+			<version>1.0-SNAPSHOT</version>
 		</dependency>
 		<!-- -->
 
