@@ -10,17 +10,23 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.QualifiedNameable;
 import javax.lang.model.element.TypeElement;
 
 public class Interface {
 
 	public final String qualifiedName;
+	public final String simpleName;
+	public final String enclosingQualifiedName;
 	/**
 	 * Unmodifiable
 	 */
 	public final List<Method> methods;
 
 	public Interface(TypeElement correspondingElement, Utils utils) throws AnnotationException {
+		this.simpleName = correspondingElement.getSimpleName().toString();
+		this.enclosingQualifiedName = ((QualifiedNameable) correspondingElement.getEnclosingElement()).getQualifiedName().toString();
+
 		this.qualifiedName = correspondingElement.getQualifiedName().toString();
 		ElementKind kind = correspondingElement.getKind();
 		if (kind != ElementKind.INTERFACE) {

@@ -32,6 +32,13 @@
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 		<!-- -->
+		<!-- TMP -->
+		<dependency>
+			<groupId>org.jogamp.java3d</groupId>
+			<artifactId>vecmath</artifactId>
+			<version>1.7.1</version>
+		</dependency>
+		<!-- -->
 
 
 

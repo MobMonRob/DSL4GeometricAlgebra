@@ -1,8 +1,9 @@
 package de.dhbw.rahmlab.geomalgelang._new.annotation.processor;
 
 import de.dhbw.rahmlab.geomalgelang._new.annotation.api.GAFILES;
-import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.ExceptionHandler;
 import com.google.auto.service.AutoService;
+import de.dhbw.rahmlab.geomalgelang._new.annotation.processor.common.ExceptionHandler;
+import de.dhbw.rahmlab.geomalgelang._new.annotation.processor.generation.ClassesGenerator;
 import de.dhbw.rahmlab.geomalgelang._new.annotation.processor.representation.Interface;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +69,7 @@ public final class GAFILESProcessor extends AbstractProcessor {
 
 		this.utils.exceptionHandler().handle(() -> {
 			List<Interface> interfaces = GAFILESProcessor.computeInterfaces(roundEnv, this.utils);
+			ClassesGenerator.generate(interfaces, this.filer);
 		});
 
 		// The return boolean value should be true if your annotation processor has processed all the passed annotations, and you don't want them to be passed to other annotation processors down the list.

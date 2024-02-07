@@ -2,6 +2,8 @@ package de.dhbw.rahmlab.geomalgelang._new.annotation.processor.common;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.processing.Messager;
 import javax.lang.model.element.Element;
 import javax.tools.Diagnostic;
@@ -23,13 +25,13 @@ public class ExceptionHandler {
 		try {
 			executable.execute();
 		} catch (AnnotationException ex) {
-			error(ex.element, ex.getMessage());
-			/*
+			// error(ex.element, ex.getMessage());
+			///*
 			// For internal debugging while developing
 			String message = extractStackTrace(ex);
 			error(ex.element, message);
 			Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
-			 */
+			//*/
 		} catch (Exception ex) {
 			String message = extractStackTrace(ex);
 			error(null, message);
