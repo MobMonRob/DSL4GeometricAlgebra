@@ -13,8 +13,9 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.QualifiedNameable;
 import javax.lang.model.element.TypeElement;
 
-public class Interface {
+public final class Interface {
 
+	public final TypeElement correspondingElement;
 	public final String qualifiedName;
 	public final String simpleName;
 	public final String enclosingQualifiedName;
@@ -24,6 +25,7 @@ public class Interface {
 	public final List<Method> methods;
 
 	public Interface(TypeElement correspondingElement, Utils utils) throws AnnotationException {
+		this.correspondingElement = correspondingElement;
 		this.simpleName = correspondingElement.getSimpleName().toString();
 		this.enclosingQualifiedName = ((QualifiedNameable) correspondingElement.getEnclosingElement()).getQualifiedName().toString();
 
@@ -38,7 +40,7 @@ public class Interface {
 		this.methods = Interface.computeMethods(correspondingElement, utils);
 	}
 
-	protected static List<Method> computeMethods(TypeElement correspondingElement, Utils utils) {
+	private static List<Method> computeMethods(TypeElement correspondingElement, Utils utils) {
 		// Safe cast because
 		// - filtered for Methods
 		// - Methods are ExceutableElements.

@@ -25,9 +25,9 @@ public final class GAFILESProcessor extends AbstractProcessor {
 
 	}
 
-	protected Utils utils;
+	private Utils utils;
 
-	protected Filer filer;
+	private Filer filer;
 
 	private volatile boolean initialized = false;
 
@@ -76,7 +76,7 @@ public final class GAFILESProcessor extends AbstractProcessor {
 		return true;
 	}
 
-	public static List<Interface> computeInterfaces(RoundEnvironment roundEnv, Utils utils) {
+	private static List<Interface> computeInterfaces(RoundEnvironment roundEnv, Utils utils) {
 		// Safe cast because "@Target(ElementType.TYPE)" of GAFILES.
 		Set<TypeElement> annotatedTypes = (Set<TypeElement>) roundEnv.getElementsAnnotatedWith(GAFILES.class);
 

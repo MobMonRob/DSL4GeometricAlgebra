@@ -2,23 +2,22 @@ package de.dhbw.rahmlab.geomalgelang._new.annotation.processor.representation;
 
 import de.dhbw.rahmlab.geomalgelang._new.annotation.processor.GAFILESProcessor.Utils;
 import de.dhbw.rahmlab.geomalgelang._new.annotation.processor.common.AnnotationException;
-import de.orat.math.sparsematrix.SparseDoubleColumnVector;
+import de.dhbw.rahmlab.geomalgelang._new.annotation.processor.common.Classes;
 import javax.lang.model.element.VariableElement;
 
-public class Parameter {
+public final class Parameter {
 
-	protected static final String expectedType = SparseDoubleColumnVector.class.getCanonicalName();
-	public final String type;
+	public static final String type = Classes.sparseDoubleColumnVector.canonicalName();
 	public final String identifier;
 
 	protected Parameter(VariableElement correspondingElement, Utils utils) throws AnnotationException {
-		this.type = correspondingElement.asType().toString();
 		this.identifier = correspondingElement.getSimpleName().toString();
 
-		if (!this.type.equals(Parameter.expectedType)) {
+		String actualType = correspondingElement.asType().toString();
+		if (!actualType.equals(Parameter.type)) {
 			throw AnnotationException.create(correspondingElement,
 				"Type of parameter \"%s %s\" was not the expected one \"%s\".",
-				this.type, this.identifier, Parameter.expectedType);
+				actualType, this.identifier, Parameter.type);
 		}
 	}
 }

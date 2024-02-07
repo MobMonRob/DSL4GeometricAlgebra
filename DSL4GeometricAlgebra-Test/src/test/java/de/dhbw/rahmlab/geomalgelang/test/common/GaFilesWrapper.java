@@ -7,5 +7,5 @@ import java.util.List;
 @GAFILES
 public interface GaFilesWrapper {
 
-	List<SparseDoubleColumnVector> test(SparseDoubleColumnVector a, SparseDoubleColumnVector b);
+	List<SparseDoubleColumnVector> test1(SparseDoubleColumnVector a, SparseDoubleColumnVector b);
 }

@@ -12,7 +12,7 @@ public final class ClassesGenerator {
 
 	}
 
-	public static void generate(List<Interface> interfaces, Filer filer) throws IOException {
+	public static void generate(List<Interface> interfaces, Filer filer) throws IOException, ClassNotFoundException {
 		for (Interface i : interfaces) {
 			for (Method m : i.methods) {
 				ClassGenerator.generate(i, m, filer);

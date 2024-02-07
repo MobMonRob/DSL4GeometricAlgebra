@@ -1,46 +1,43 @@
 package de.dhbw.rahmlab.geomalgelang._new.annotation.processor.generation;
 
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
-import de.dhbw.rahmlab.geomalgelang._common.api.iProgram;
-import de.dhbw.rahmlab.geomalgelang._common.api.iProgramFactory;
+import de.dhbw.rahmlab.geomalgelang._new.annotation.processor.common.Classes;
 import de.dhbw.rahmlab.geomalgelang._new.annotation.processor.representation.Interface;
 import de.dhbw.rahmlab.geomalgelang._new.annotation.processor.representation.Method;
+import de.dhbw.rahmlab.geomalgelang._new.annotation.processor.representation.Parameter;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 import javax.annotation.processing.Filer;
 import javax.lang.model.element.Modifier;
 
-public final class ClassGenerator {
+final class ClassGenerator {
 
 	private ClassGenerator() {
 
 	}
 
-	protected static final ClassName iProgramClass = ClassName.get(iProgram.class);
-	protected static final ClassName iProgramFactoryClass = ClassName.get(iProgramFactory.class);
-
-	protected static void generate(Interface i, Method m, Filer filer) throws IOException {
+	protected static void generate(Interface i, Method m, Filer filer) throws IOException, ClassNotFoundException {
 		String packageName = String.format("%s.gen.%s", i.enclosingQualifiedName, i.simpleName.toLowerCase());
 		String className = m.name.substring(0, 1).toUpperCase() + m.name.substring(1);
 		ClassName genClass = ClassName.get(packageName, className);
 
-		FieldSpec programField = FieldSpec.builder(iProgramClass, "program", Modifier.PROTECTED)
+		FieldSpec programField = FieldSpec.builder(Classes.iProgram, "program", Modifier.PRIVATE, Modifier.FINAL)
 			.build();
 
-		MethodSpec constructor = MethodSpec.constructorBuilder()
-			.addModifiers(Modifier.PUBLIC)
-			.addParameter(iProgramFactoryClass, "programFactory")
-			.build();
+		MethodSpec constructor = ClassGenerator.constructor(i, m);
 
-		MethodSpec invokation = MethodSpec.methodBuilder(m.name)
-			.addModifiers(Modifier.PUBLIC)
-			.build();
+		MethodSpec invokation = ClassGenerator.invokation(m);
 
 		TypeSpec genClassSpec = TypeSpec.classBuilder(genClass)
-			.addModifiers(Modifier.PUBLIC)
+			.addModifiers(Modifier.PUBLIC, Modifier.FINAL)
 			.addField(programField)
 			.addMethod(constructor)
 			.addMethod(invokation)
@@ -52,5 +49,67 @@ public final class ClassGenerator {
 			.build();
 
 		javaFile.writeTo(filer);
+	}
+
+	private static MethodSpec constructor(Interface i, Method m) throws ClassNotFoundException {
+		MethodSpec.Builder constructorBuilder = MethodSpec.constructorBuilder();
+
+		// Signature
+		constructorBuilder
+			.addModifiers(Modifier.PUBLIC)
+			.addParameter(Classes.iProgramFactory, "programFactory");
+
+		// Body
+		CodeBlock.Builder bodyBuilder = CodeBlock.builder();
+		bodyBuilder
+			.addStatement("String path = \"./$L.ocga\"", m.name)
+			.beginControlFlow("try (var in = $T.class.getResourceAsStream(path))", i.correspondingElement)
+			// x
+			.beginControlFlow("if (in == null)")
+			// xx
+			.addStatement("throw new $T(String.format(\"Path not found: %s\", path))", RuntimeException.class)
+			// xx
+			.endControlFlow()
+			// x
+			.beginControlFlow("try (var reader = new $T(new $T(in)))", BufferedReader.class, InputStreamReader.class)
+			// xx
+			.addStatement("this.program = programFactory.parse(reader)")
+			// xx
+			.endControlFlow()
+			// x
+			.nextControlFlow("catch ($T ex)", IOException.class)
+			// x
+			.addStatement("throw new $T(ex)", RuntimeException.class)
+			.endControlFlow();
+
+		//
+		constructorBuilder
+			.addCode(bodyBuilder.build());
+		return constructorBuilder.build();
+	}
+
+	private static MethodSpec invokation(Method m) {
+		MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder(m.name);
+
+		// Signature
+		methodBuilder
+			.addModifiers(Modifier.PUBLIC)
+			.returns(Classes.listOfSparseDoubleColumnVector);
+
+		for (Parameter parameter : m.parameters) {
+			methodBuilder
+				.addParameter(Classes.sparseDoubleColumnVector, parameter.identifier);
+		}
+
+		// Body
+		String args = m.parameters.stream().map(p -> p.identifier).collect(Collectors.joining(", "));
+		CodeBlock.Builder bodyBuilder = CodeBlock.builder()
+			.addStatement("var arguments = $T.asList($L)", Arrays.class, args)
+			.addStatement("return this.program.invoke(arguments)");
+
+		//
+		methodBuilder
+			.addCode(bodyBuilder.build());
+		return methodBuilder.build();
 	}
 }

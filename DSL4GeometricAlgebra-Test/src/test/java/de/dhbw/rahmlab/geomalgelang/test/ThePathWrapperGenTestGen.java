@@ -1,23 +1,25 @@
-package de.dhbw.rahmlab.geomalgelang._common.api;
+package de.dhbw.rahmlab.geomalgelang.test;
 
+import de.dhbw.rahmlab.geomalgelang._common.api.iProgram;
+import de.dhbw.rahmlab.geomalgelang._common.api.iProgramFactory;
+import de.dhbw.rahmlab.geomalgelang.test.common.PathWrapper;
 import de.orat.math.sparsematrix.SparseDoubleColumnVector;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * Attrappe
  */
-public class ThePathWrapperGenTestGen /* implements PathWrapper */ {
+public final class ThePathWrapperGenTestGen {
 
-	protected iProgram program;
+	private final iProgram program;
 
 	public ThePathWrapperGenTestGen(iProgramFactory programFactory) {
 		String path = "./test.ocga";
-		try (InputStream in = ThePathWrapperGenTestGen.class.getResourceAsStream(path)) {
+		try (var in = PathWrapper.class.getResourceAsStream(path)) {
 			if (in == null) {
 				throw new RuntimeException(String.format("Path not found: %s", path));
 			}
@@ -29,16 +31,8 @@ public class ThePathWrapperGenTestGen /* implements PathWrapper */ {
 		}
 	}
 
-	// @Override
 	public List<SparseDoubleColumnVector> test(SparseDoubleColumnVector a, SparseDoubleColumnVector b) {
-		List<SparseDoubleColumnVector> arguments = new ArrayList<>();
-		arguments.add(a);
-		arguments.add(b);
+		var arguments = Arrays.asList(a, b);
 		return this.program.invoke(arguments);
-	}
-
-	// @Override
-	public List<SparseDoubleColumnVector> ik(SparseDoubleColumnVector a) {
-		throw new UnsupportedOperationException();
 	}
 }
