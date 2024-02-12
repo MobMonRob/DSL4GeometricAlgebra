@@ -1,6 +1,5 @@
 package de.dhbw.rahmlab.geomalgelang._symbolicWithoutTruffle.api;
 
-import de.dhbw.rahmlab.geomalgelang._common.api.iProgram;
 import de.dhbw.rahmlab.geomalgelang._common.api.iProgramFactory;
 import de.dhbw.rahmlab.geomalgelang._symbolicWithoutTruffle.parsing.ParsingService;
 import de.dhbw.rahmlab.geomalgelang.parsing.CharStreamSupplier;
@@ -11,12 +10,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 
-public class ProgramFactory implements iProgramFactory {
+public class ProgramFactory implements iProgramFactory<Program> {
 
 	protected final ExprGraphFactory exprGraphFactory = GAExprGraphFactoryService.getExprGraphFactoryThrowing();
 
 	@Override
-	public iProgram parse(BufferedReader sourceReader) {
+	public Program parse(BufferedReader sourceReader) {
 		FunctionSymbolic main = ProgramFactory.parse2(sourceReader);
 		Program program = new Program(main, exprGraphFactory);
 		return program;

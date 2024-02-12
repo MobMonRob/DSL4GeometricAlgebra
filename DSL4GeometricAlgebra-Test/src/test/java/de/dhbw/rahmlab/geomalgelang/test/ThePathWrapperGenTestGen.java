@@ -13,11 +13,11 @@ import java.util.List;
 /**
  * Attrappe
  */
-public final class ThePathWrapperGenTestGen {
+public final class ThePathWrapperGenTestGen<T extends iProgram> {
 
-	private final iProgram program;
+	private final T program;
 
-	public ThePathWrapperGenTestGen(iProgramFactory programFactory) {
+	public ThePathWrapperGenTestGen(iProgramFactory<T> programFactory) {
 		String path = "./test.ocga";
 		try (var in = PathWrapper.class.getResourceAsStream(path)) {
 			if (in == null) {

@@ -17,10 +17,6 @@ public class Program implements iProgram {
 	}
 
 	@Override
-	public void close() {
-	}
-
-	@Override
 	public List<SparseDoubleColumnVector> invoke(List<SparseDoubleColumnVector> arguments) {
 		var mVecArgs = arguments.stream().map(vec -> this.exprGraphFactory.createMultivectorNumeric(vec)).toList();
 		try {

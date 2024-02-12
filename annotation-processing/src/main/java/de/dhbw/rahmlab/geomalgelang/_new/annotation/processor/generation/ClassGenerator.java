@@ -38,6 +38,7 @@ final class ClassGenerator {
 
 		TypeSpec genClassSpec = TypeSpec.classBuilder(genClass)
 			.addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+			.addTypeVariable(Classes.iProgram)
 			.addField(programField)
 			.addMethod(constructor)
 			.addMethod(invokation)

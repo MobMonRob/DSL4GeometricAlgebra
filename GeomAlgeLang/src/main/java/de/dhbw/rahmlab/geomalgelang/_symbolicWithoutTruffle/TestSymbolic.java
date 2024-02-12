@@ -27,19 +27,19 @@ public class TestSymbolic {
 
 		var fac = new ProgramFactory();
 
-		try (var program = fac.parse(source)) {
-			List<SparseDoubleColumnVector> arguments = new ArrayList<>();
-			arguments.add(new SparseDoubleColumnVector(0));
-			arguments.add(new SparseDoubleColumnVector(0));
+		var program = fac.parse(source);
 
-			List<SparseDoubleColumnVector> answer = program.invoke(arguments);
+		List<SparseDoubleColumnVector> arguments = new ArrayList<>();
+		arguments.add(new SparseDoubleColumnVector(0));
+		arguments.add(new SparseDoubleColumnVector(0));
 
-			System.out.println("answer: ");
-			for (int i = 0; i < answer.size(); ++i) {
-				String current = answer.get(i).toString();
-				System.out.println(current);
-			}
-			System.out.println();
+		List<SparseDoubleColumnVector> answer = program.invoke(arguments);
+
+		System.out.println("answer: ");
+		for (int i = 0; i < answer.size(); ++i) {
+			String current = answer.get(i).toString();
+			System.out.println(current);
 		}
+		System.out.println();
 	}
 }
