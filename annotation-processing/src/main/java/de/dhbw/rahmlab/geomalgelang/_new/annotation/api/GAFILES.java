@@ -12,5 +12,5 @@ public @interface GAFILES {
 	/*
 	 * Name "value" allows to use the annotation without the methodname.
 	 */
-	String value() default "";
+	// String value() default "";
 }
