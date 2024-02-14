@@ -6,6 +6,7 @@ import de.dhbw.rahmlab.geomalgelang._new.annotation.processor.common.ExceptionHa
 import de.dhbw.rahmlab.geomalgelang._new.annotation.processor.generation.ClassesGenerator;
 import de.dhbw.rahmlab.geomalgelang._new.annotation.processor.representation.Interface;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
@@ -88,6 +89,6 @@ public final class GAFILESProcessor extends AbstractProcessor {
 			});
 		}
 
-		return interfaces;
+		return Collections.unmodifiableList(interfaces);
 	}
 }

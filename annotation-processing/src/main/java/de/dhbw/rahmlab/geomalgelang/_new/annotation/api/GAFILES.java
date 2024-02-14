@@ -1,5 +1,7 @@
 package de.dhbw.rahmlab.geomalgelang._new.annotation.api;
 
+import de.dhbw.rahmlab.geomalgelang._common.api.iProgram;
+import de.dhbw.rahmlab.geomalgelang._common.api.iProgramFactory;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -12,5 +14,5 @@ public @interface GAFILES {
 	/*
 	 * Name "value" allows to use the annotation without the methodname.
 	 */
-	// String value() default "";
+	Class<? extends iProgramFactory<? extends iProgram>> value();
 }

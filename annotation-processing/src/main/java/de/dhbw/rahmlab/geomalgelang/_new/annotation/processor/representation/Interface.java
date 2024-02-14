@@ -1,7 +1,8 @@
 package de.dhbw.rahmlab.geomalgelang._new.annotation.processor.representation;
 
+import de.dhbw.rahmlab.geomalgelang._new.annotation.api.GAFILES;
 import de.dhbw.rahmlab.geomalgelang._new.annotation.processor.GAFILESProcessor.Utils;
-import de.dhbw.rahmlab.geomalgelang.annotation.processing.common.AnnotationException;
+import de.dhbw.rahmlab.geomalgelang._new.annotation.processor.common.AnnotationException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -19,6 +20,7 @@ public final class Interface {
 	public final String qualifiedName;
 	public final String simpleName;
 	public final String enclosingQualifiedName;
+	public final Annotation annotation;
 	/**
 	 * Unmodifiable
 	 */
@@ -36,6 +38,9 @@ public final class Interface {
 				"Expected \"%s\" to be an interface, but was \"%s\".",
 				this.qualifiedName, kind);
 		}
+
+		var correspondingAnnotation = correspondingElement.getAnnotation(GAFILES.class);
+		this.annotation = new Annotation(correspondingAnnotation, utils);
 
 		this.methods = Interface.computeMethods(correspondingElement, utils);
 	}

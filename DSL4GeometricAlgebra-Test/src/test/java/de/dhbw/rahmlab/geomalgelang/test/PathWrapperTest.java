@@ -24,8 +24,7 @@ public class PathWrapperTest {
 
 	@Test
 	void test1() {
-		var fac = new ProgramFactory();
-		var test1 = new Test1(fac);
+		var test1 = new Test1();
 		var a = new SparseDoubleColumnVector(0);
 		var b = new SparseDoubleColumnVector(0);
 		var answer = test1.test1(a, b);

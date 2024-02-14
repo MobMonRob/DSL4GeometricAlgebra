@@ -29,7 +29,8 @@ final class ClassGenerator {
 		String className = m.name.substring(0, 1).toUpperCase() + m.name.substring(1);
 		ClassName genClass = ClassName.get(packageName, className);
 
-		FieldSpec programField = FieldSpec.builder(Classes.iProgram, "program", Modifier.PRIVATE, Modifier.FINAL)
+		FieldSpec programField = FieldSpec.builder(
+			ClassName.get(i.annotation.program), "program", Modifier.PRIVATE, Modifier.FINAL)
 			.build();
 
 		MethodSpec constructor = ClassGenerator.constructor(i, m);
@@ -38,7 +39,6 @@ final class ClassGenerator {
 
 		TypeSpec genClassSpec = TypeSpec.classBuilder(genClass)
 			.addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-			.addTypeVariable(Classes.iProgram)
 			.addField(programField)
 			.addMethod(constructor)
 			.addMethod(invokation)
@@ -57,8 +57,7 @@ final class ClassGenerator {
 
 		// Signature
 		constructorBuilder
-			.addModifiers(Modifier.PUBLIC)
-			.addParameter(Classes.iProgramFactory, "programFactory");
+			.addModifiers(Modifier.PUBLIC);
 
 		// Body
 		CodeBlock.Builder bodyBuilder = CodeBlock.builder();
@@ -74,6 +73,7 @@ final class ClassGenerator {
 			// x
 			.beginControlFlow("try (var reader = new $T(new $T(in)))", BufferedReader.class, InputStreamReader.class)
 			// xx
+			.addStatement("var programFactory = new $T()", ClassName.get(i.annotation.programFactory))
 			.addStatement("this.program = programFactory.parse(reader)")
 			// xx
 			.endControlFlow()
