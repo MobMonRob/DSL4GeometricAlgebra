@@ -16,7 +16,7 @@ public final class Annotation {
 	protected Annotation(GAFILES correspondingAnnotation, Utils utils) throws AnnotationException {
 		try {
 			correspondingAnnotation.value().getClass();
-			throw new AssertionError("Shoud have thrown a MirroredTypeException before this.");
+			throw new AssertionError("Should have thrown a MirroredTypeException before this.");
 		} catch (MirroredTypeException mte) {
 			// Save assumption because classes are DeclaredTypes.
 			this.programFactory = (TypeElement) ((DeclaredType) mte.getTypeMirror()).asElement();
