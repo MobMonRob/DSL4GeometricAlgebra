@@ -1,8 +1,8 @@
-package de.dhbw.rahmlab.geomalgelang._new.annotation.processor.representation;
+package de.dhbw.rahmlab.geomalgelang.annotation.processor.representation;
 
-import de.dhbw.rahmlab.geomalgelang._new.annotation.api.GAFILES;
-import de.dhbw.rahmlab.geomalgelang._new.annotation.processor.GAFILESProcessor.Utils;
-import de.dhbw.rahmlab.geomalgelang._new.annotation.processor.common.AnnotationException;
+import de.dhbw.rahmlab.geomalgelang.annotation.api.GAFILES;
+import de.dhbw.rahmlab.geomalgelang.annotation.processor.GAFILESProcessor.Utils;
+import de.dhbw.rahmlab.geomalgelang.annotation.processor.common.AnnotationException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;

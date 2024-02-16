@@ -1,9 +1,9 @@
-package de.dhbw.rahmlab.geomalgelang._new.annotation.processor.representation;
+package de.dhbw.rahmlab.geomalgelang.annotation.processor.representation;
 
-import de.dhbw.rahmlab.geomalgelang._new.annotation.api.GAFILES;
-import de.dhbw.rahmlab.geomalgelang._new.annotation.processor.GAFILESProcessor.Utils;
-import de.dhbw.rahmlab.geomalgelang._new.annotation.processor.common.AnnotationException;
-import de.dhbw.rahmlab.geomalgelang._new.annotation.processor.common.Classes;
+import de.dhbw.rahmlab.geomalgelang.annotation.api.GAFILES;
+import de.dhbw.rahmlab.geomalgelang.annotation.processor.GAFILESProcessor.Utils;
+import de.dhbw.rahmlab.geomalgelang.annotation.processor.common.AnnotationException;
+import de.dhbw.rahmlab.geomalgelang.annotation.processor.common.Classes;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.MirroredTypeException;

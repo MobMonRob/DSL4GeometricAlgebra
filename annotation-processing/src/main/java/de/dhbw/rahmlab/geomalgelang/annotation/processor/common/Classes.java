@@ -1,4 +1,4 @@
-package de.dhbw.rahmlab.geomalgelang._new.annotation.processor.common;
+package de.dhbw.rahmlab.geomalgelang.annotation.processor.common;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
