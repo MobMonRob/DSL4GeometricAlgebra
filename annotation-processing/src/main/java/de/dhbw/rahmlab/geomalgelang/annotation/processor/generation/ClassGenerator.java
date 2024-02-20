@@ -26,7 +26,7 @@ final class ClassGenerator {
 
 	protected static void generate(Interface i, Method m, Filer filer) throws IOException, ClassNotFoundException {
 		String packageName = String.format("%s.gen.%s", i.enclosingQualifiedName, i.simpleName.toLowerCase());
-		String className = m.name.substring(0, 1).toUpperCase() + m.name.substring(1);
+		String className = m.name.substring(0, 1).toUpperCase() + m.name.substring(1) + "Program";
 		ClassName genClass = ClassName.get(packageName, className);
 
 		FieldSpec programField = FieldSpec.builder(
@@ -90,7 +90,7 @@ final class ClassGenerator {
 	}
 
 	private static MethodSpec invokation(Method m) {
-		MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder(m.name);
+		MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder("invoke");
 
 		// Signature
 		methodBuilder

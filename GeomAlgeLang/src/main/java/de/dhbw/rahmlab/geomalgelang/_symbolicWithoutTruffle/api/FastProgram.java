@@ -6,12 +6,12 @@ import de.orat.math.gacalc.api.FunctionSymbolic;
 import de.orat.math.sparsematrix.SparseDoubleColumnVector;
 import java.util.List;
 
-public class Program implements iProgram {
+public class FastProgram implements iProgram {
 
 	protected final ExprGraphFactory exprGraphFactory;
 	protected final FunctionSymbolic main;
 
-	protected Program(FunctionSymbolic main, ExprGraphFactory exprGraphFactory) {
+	protected FastProgram(FunctionSymbolic main, ExprGraphFactory exprGraphFactory) {
 		this.exprGraphFactory = exprGraphFactory;
 		this.main = main;
 	}

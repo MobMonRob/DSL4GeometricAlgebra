@@ -10,14 +10,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 
-public class ProgramFactory implements iProgramFactory<Program> {
+public class FastProgramFactory implements iProgramFactory<FastProgram> {
 
 	protected final ExprGraphFactory exprGraphFactory = GAExprGraphFactoryService.getExprGraphFactoryThrowing();
 
 	@Override
-	public Program parse(BufferedReader sourceReader) {
-		FunctionSymbolic main = ProgramFactory.parse2(sourceReader);
-		Program program = new Program(main, exprGraphFactory);
+	public FastProgram parse(BufferedReader sourceReader) {
+		FunctionSymbolic main = FastProgramFactory.parse2(sourceReader);
+		FastProgram program = new FastProgram(main, exprGraphFactory);
 		return program;
 	}
 

@@ -1,6 +1,6 @@
 package de.dhbw.rahmlab.geomalgelang._symbolicWithoutTruffle;
 
-import de.dhbw.rahmlab.geomalgelang._symbolicWithoutTruffle.api.ProgramFactory;
+import de.dhbw.rahmlab.geomalgelang._symbolicWithoutTruffle.api.FastProgramFactory;
 import de.orat.math.sparsematrix.SparseDoubleColumnVector;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,7 @@ public class TestSymbolic {
 
 		System.out.println("source: " + source);
 
-		var fac = new ProgramFactory();
+		var fac = new FastProgramFactory();
 
 		var program = fac.parse(source);
 
