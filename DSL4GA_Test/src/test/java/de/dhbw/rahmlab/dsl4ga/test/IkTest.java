@@ -1,7 +1,7 @@
-package de.dhbw.rahmlab.geomalgelang.test;
+package de.dhbw.rahmlab.dsl4ga.test;
 
-import de.dhbw.rahmlab.geomalgelang.test.common.Util;
-import de.dhbw.rahmlab.geomalgelang.test.common.gen.fastwrapper.IkProgram;
+import de.dhbw.rahmlab.dsl4ga.test.common.Util;
+import de.dhbw.rahmlab.dsl4ga.test.common.gen.fastwrapper.IkProgram;
 import de.orat.math.sparsematrix.SparseDoubleColumnVector;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;

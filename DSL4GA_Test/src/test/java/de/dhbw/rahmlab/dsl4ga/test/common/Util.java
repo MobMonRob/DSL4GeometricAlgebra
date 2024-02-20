@@ -1,4 +1,4 @@
-package de.dhbw.rahmlab.geomalgelang.test.common;
+package de.dhbw.rahmlab.dsl4ga.test.common;
 
 import de.orat.math.sparsematrix.SparseDoubleColumnVector;
 import java.util.List;

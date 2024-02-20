@@ -19,7 +19,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>de.dhbw.rahmlab</groupId>
-			<artifactId>annotation-processing</artifactId>
+			<artifactId>DSL4GA_Annotation</artifactId>
 			<version>${annotation-processing.version}</version>
 			<scope>provided</scope>
 			<exclusions>
@@ -32,7 +32,7 @@
 
 		<dependency>
 			<groupId>de.dhbw.rahmlab</groupId>
-			<artifactId>DSL4GA_ImplTruffle</artifactId>
+			<artifactId>DSL4GA_Impl_Truffle</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 
