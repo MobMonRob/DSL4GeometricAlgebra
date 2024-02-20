@@ -7,7 +7,7 @@
 	<packaging>pom</packaging>
 	<modules>
 		<module>./DSL4GA_Annotation</module>
-		<module>./DSL4GA_ImplTruffle</module>
+		<module>./DSL4GA_Impl_Truffle</module>
 		<module>./DSL4GA_Test</module>
 	</modules>
 	<properties>
