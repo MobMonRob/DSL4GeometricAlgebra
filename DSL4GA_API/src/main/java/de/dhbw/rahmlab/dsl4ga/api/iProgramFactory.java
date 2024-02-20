@@ -1,4 +1,4 @@
-package de.dhbw.rahmlab.geomalgelang._common.api;
+package de.dhbw.rahmlab.dsl4ga.api;
 
 import java.io.BufferedReader;
 import java.io.IOException;

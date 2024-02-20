@@ -3,8 +3,8 @@ package de.dhbw.rahmlab.dsl4ga.annotation.processor.common;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeVariableName;
-import de.dhbw.rahmlab.geomalgelang._common.api.iProgram;
-import de.dhbw.rahmlab.geomalgelang._common.api.iProgramFactory;
+import de.dhbw.rahmlab.dsl4ga.api.iProgram;
+import de.dhbw.rahmlab.dsl4ga.api.iProgramFactory;
 import de.orat.math.sparsematrix.SparseDoubleColumnVector;
 import java.util.List;
 

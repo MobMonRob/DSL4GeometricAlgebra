@@ -1,7 +1,7 @@
 package de.dhbw.rahmlab.dsl4ga.annotation.api;
 
-import de.dhbw.rahmlab.geomalgelang._common.api.iProgram;
-import de.dhbw.rahmlab.geomalgelang._common.api.iProgramFactory;
+import de.dhbw.rahmlab.dsl4ga.api.iProgram;
+import de.dhbw.rahmlab.dsl4ga.api.iProgramFactory;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

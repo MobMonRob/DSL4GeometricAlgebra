@@ -1,6 +1,6 @@
 package de.dhbw.rahmlab.geomalgelang._symbolicWithoutTruffle.api;
 
-import de.dhbw.rahmlab.geomalgelang._common.api.iProgram;
+import de.dhbw.rahmlab.dsl4ga.api.iProgram;
 import de.orat.math.gacalc.api.ExprGraphFactory;
 import de.orat.math.gacalc.api.FunctionSymbolic;
 import de.orat.math.sparsematrix.SparseDoubleColumnVector;

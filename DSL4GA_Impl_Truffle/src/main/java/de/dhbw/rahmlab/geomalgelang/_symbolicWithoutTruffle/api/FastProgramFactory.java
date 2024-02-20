@@ -1,6 +1,6 @@
 package de.dhbw.rahmlab.geomalgelang._symbolicWithoutTruffle.api;
 
-import de.dhbw.rahmlab.geomalgelang._common.api.iProgramFactory;
+import de.dhbw.rahmlab.dsl4ga.api.iProgramFactory;
 import de.dhbw.rahmlab.geomalgelang._symbolicWithoutTruffle.parsing.ParsingService;
 import de.dhbw.rahmlab.geomalgelang.parsing.CharStreamSupplier;
 import de.orat.math.gacalc.api.ExprGraphFactory;

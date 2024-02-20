@@ -26,19 +26,21 @@
 			<groupId>de.dhbw.rahmlab</groupId>
 			<artifactId>DSL4GA_Annotation</artifactId>
 			<version>${annotation-processing.version}</version>
-			<scope>provided</scope>
-			<exclusions>
-				<exclusion>
-					<artifactId>*</artifactId>
-					<groupId>*</groupId>
-				</exclusion>
-			</exclusions>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>de.dhbw.rahmlab</groupId>
+			<artifactId>DSL4GA_API</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>de.dhbw.rahmlab</groupId>
 			<artifactId>DSL4GA_Impl_Truffle</artifactId>
 			<version>1.0-SNAPSHOT</version>
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>

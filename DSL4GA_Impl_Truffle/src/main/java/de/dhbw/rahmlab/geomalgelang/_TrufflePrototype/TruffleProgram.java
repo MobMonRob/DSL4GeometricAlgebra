@@ -1,6 +1,6 @@
 package de.dhbw.rahmlab.geomalgelang._TrufflePrototype;
 
-import de.dhbw.rahmlab.geomalgelang._common.api.iProgram;
+import de.dhbw.rahmlab.dsl4ga.api.iProgram;
 import de.orat.math.sparsematrix.SparseDoubleColumnVector;
 import java.util.List;
 
