@@ -1,4 +1,4 @@
-package de.dhbw.rahmlab.geomalgelang.parsing.astConstruction;
+package de.dhbw.rahmlab.dsl4ga.common.parsing;
 
 import java.util.ArrayList;
 import java.util.Collections;

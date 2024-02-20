@@ -1,6 +1,6 @@
 package de.dhbw.rahmlab.geomalgelang.parsing._util;
 
-import de.dhbw.rahmlab.geomalgelang.parsing.CharStreamSupplier;
+import de.dhbw.rahmlab.dsl4ga.common.parsing.CharStreamSupplier;
 import org.antlr.v4.gui.TestRig;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Lexer;

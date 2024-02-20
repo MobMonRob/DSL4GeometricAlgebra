@@ -1,6 +1,6 @@
 package de.dhbw.rahmlab.geomalgelang.parsing._util;
 
-import de.dhbw.rahmlab.geomalgelang.parsing.CharStreamSupplier;
+import de.dhbw.rahmlab.dsl4ga.common.parsing.CharStreamSupplier;
 import de.dhbw.rahmlab.geomalgelang.parsing.ParsingService;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;

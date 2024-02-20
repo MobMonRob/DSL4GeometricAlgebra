@@ -38,6 +38,13 @@
 
 		<dependency>
 			<groupId>de.dhbw.rahmlab</groupId>
+			<artifactId>DSL4GA_Impl_Fast</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>de.dhbw.rahmlab</groupId>
 			<artifactId>DSL4GA_Impl_Truffle</artifactId>
 			<version>1.0-SNAPSHOT</version>
 			<scope>test</scope>

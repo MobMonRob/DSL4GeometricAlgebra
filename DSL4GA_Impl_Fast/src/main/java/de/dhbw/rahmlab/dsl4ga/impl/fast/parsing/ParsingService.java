@@ -1,13 +1,12 @@
-package de.dhbw.rahmlab.geomalgelang._symbolicWithoutTruffle.parsing;
+package de.dhbw.rahmlab.dsl4ga.impl.fast.parsing;
 
-import de.dhbw.rahmlab.geomalgelang._symbolicWithoutTruffle.parsing.astConstruction.SourceUnitTransform;
-import de.dhbw.rahmlab.geomalgelang.parsing.CharStreamSupplier;
-import de.dhbw.rahmlab.geomalgelang.parsing.CustomBailErrorStrategy;
-import de.dhbw.rahmlab.geomalgelang.parsing.CustumDiagnosticErrorListener;
+import de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction.SourceUnitTransform;
+import de.dhbw.rahmlab.dsl4ga.common.parsing.CharStreamSupplier;
+import de.dhbw.rahmlab.dsl4ga.common.parsing.CustomBailErrorStrategy;
+import de.dhbw.rahmlab.dsl4ga.common.parsing.CustumDiagnosticErrorListener;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeLexer;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParser;
-import de.dhbw.rahmlab.geomalgelang.parsing.SyntaxErrorListener;
-import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.external.ValidationException;
+import de.dhbw.rahmlab.dsl4ga.common.parsing.SyntaxErrorListener;
 import de.orat.math.gacalc.api.FunctionSymbolic;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.atn.PredictionMode;

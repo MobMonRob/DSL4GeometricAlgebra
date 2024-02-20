@@ -1,4 +1,4 @@
-package de.dhbw.rahmlab.geomalgelang.parsing;
+package de.dhbw.rahmlab.dsl4ga.common.parsing;
 
 import java.io.PrintStream;
 import java.util.BitSet;

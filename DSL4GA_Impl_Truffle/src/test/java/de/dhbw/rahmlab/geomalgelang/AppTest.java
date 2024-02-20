@@ -1,6 +1,6 @@
 package de.dhbw.rahmlab.geomalgelang;
 
-import de.dhbw.rahmlab.geomalgelang.parsing.CharStreamSupplier;
+import de.dhbw.rahmlab.dsl4ga.common.parsing.CharStreamSupplier;
 import de.dhbw.rahmlab.geomalgelang.parsing.ParsingService;
 import de.dhbw.rahmlab.geomalgelang.parsing._util.AstStringBuilder;
 import de.dhbw.rahmlab.geomalgelang.parsing._util.GeomAlgeAntlrTestRig;

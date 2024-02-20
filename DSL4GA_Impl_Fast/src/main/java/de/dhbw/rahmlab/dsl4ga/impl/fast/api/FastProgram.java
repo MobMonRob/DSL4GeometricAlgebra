@@ -1,4 +1,4 @@
-package de.dhbw.rahmlab.geomalgelang._symbolicWithoutTruffle.api;
+package de.dhbw.rahmlab.dsl4ga.impl.fast.api;
 
 import de.dhbw.rahmlab.dsl4ga.api.iProgram;
 import de.orat.math.gacalc.api.ExprGraphFactory;

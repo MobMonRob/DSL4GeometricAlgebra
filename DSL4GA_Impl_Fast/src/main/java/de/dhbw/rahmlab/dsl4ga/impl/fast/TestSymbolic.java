@@ -1,6 +1,6 @@
-package de.dhbw.rahmlab.geomalgelang._symbolicWithoutTruffle;
+package de.dhbw.rahmlab.dsl4ga.impl.fast;
 
-import de.dhbw.rahmlab.geomalgelang._symbolicWithoutTruffle.api.FastProgramFactory;
+import de.dhbw.rahmlab.dsl4ga.impl.fast.api.FastProgramFactory;
 import de.orat.math.sparsematrix.SparseDoubleColumnVector;
 import java.util.ArrayList;
 import java.util.List;

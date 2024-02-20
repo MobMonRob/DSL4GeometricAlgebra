@@ -1,7 +1,6 @@
-package de.dhbw.rahmlab.geomalgelang.parsing;
+package de.dhbw.rahmlab.dsl4ga.common.parsing;
 
 import org.antlr.v4.runtime.BailErrorStrategy;
-import org.antlr.v4.runtime.InputMismatchException;
 import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Token;
