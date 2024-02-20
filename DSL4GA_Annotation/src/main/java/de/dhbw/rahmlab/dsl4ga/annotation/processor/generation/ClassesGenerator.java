@@ -1,7 +1,7 @@
-package de.dhbw.rahmlab.geomalgelang.annotation.processor.generation;
+package de.dhbw.rahmlab.dsl4ga.annotation.processor.generation;
 
-import de.dhbw.rahmlab.geomalgelang.annotation.processor.representation.Interface;
-import de.dhbw.rahmlab.geomalgelang.annotation.processor.representation.Method;
+import de.dhbw.rahmlab.dsl4ga.annotation.processor.representation.Interface;
+import de.dhbw.rahmlab.dsl4ga.annotation.processor.representation.Method;
 import java.io.IOException;
 import java.util.List;
 import javax.annotation.processing.Filer;

@@ -1,10 +1,10 @@
-package de.dhbw.rahmlab.geomalgelang.annotation.processor;
+package de.dhbw.rahmlab.dsl4ga.annotation.processor;
 
-import de.dhbw.rahmlab.geomalgelang.annotation.api.GAFILES;
+import de.dhbw.rahmlab.dsl4ga.annotation.api.GAFILES;
 import com.google.auto.service.AutoService;
-import de.dhbw.rahmlab.geomalgelang.annotation.processor.common.ExceptionHandler;
-import de.dhbw.rahmlab.geomalgelang.annotation.processor.generation.ClassesGenerator;
-import de.dhbw.rahmlab.geomalgelang.annotation.processor.representation.Interface;
+import de.dhbw.rahmlab.dsl4ga.annotation.processor.common.ExceptionHandler;
+import de.dhbw.rahmlab.dsl4ga.annotation.processor.generation.ClassesGenerator;
+import de.dhbw.rahmlab.dsl4ga.annotation.processor.representation.Interface;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

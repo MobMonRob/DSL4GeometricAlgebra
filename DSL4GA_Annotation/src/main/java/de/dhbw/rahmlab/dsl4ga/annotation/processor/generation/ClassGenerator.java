@@ -1,4 +1,4 @@
-package de.dhbw.rahmlab.geomalgelang.annotation.processor.generation;
+package de.dhbw.rahmlab.dsl4ga.annotation.processor.generation;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
@@ -6,10 +6,10 @@ import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
-import de.dhbw.rahmlab.geomalgelang.annotation.processor.common.Classes;
-import de.dhbw.rahmlab.geomalgelang.annotation.processor.representation.Interface;
-import de.dhbw.rahmlab.geomalgelang.annotation.processor.representation.Method;
-import de.dhbw.rahmlab.geomalgelang.annotation.processor.representation.Parameter;
+import de.dhbw.rahmlab.dsl4ga.annotation.processor.common.Classes;
+import de.dhbw.rahmlab.dsl4ga.annotation.processor.representation.Interface;
+import de.dhbw.rahmlab.dsl4ga.annotation.processor.representation.Method;
+import de.dhbw.rahmlab.dsl4ga.annotation.processor.representation.Parameter;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;

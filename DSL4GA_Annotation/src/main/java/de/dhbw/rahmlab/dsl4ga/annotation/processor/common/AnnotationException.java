@@ -1,4 +1,4 @@
-package de.dhbw.rahmlab.geomalgelang.annotation.processor.common;
+package de.dhbw.rahmlab.dsl4ga.annotation.processor.common;
 
 import javax.lang.model.element.Element;
 

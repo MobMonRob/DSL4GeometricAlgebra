@@ -1,4 +1,4 @@
-package de.dhbw.rahmlab.geomalgelang.annotation.api;
+package de.dhbw.rahmlab.dsl4ga.annotation.api;
 
 import de.dhbw.rahmlab.geomalgelang._common.api.iProgram;
 import de.dhbw.rahmlab.geomalgelang._common.api.iProgramFactory;
