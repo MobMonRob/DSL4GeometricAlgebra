@@ -1,5 +1,7 @@
 package de.dhbw.rahmlab.geomalgelang._TrufflePrototype;
 
+import de.dhbw.rahmlab.dsl4ga.common.AutoClosingFactory;
+import de.dhbw.rahmlab.dsl4ga.common.ConcurrentLazyOfWeak;
 import de.dhbw.rahmlab.geomalgelang._common.api.iProgramFactory;
 import java.io.BufferedReader;
 

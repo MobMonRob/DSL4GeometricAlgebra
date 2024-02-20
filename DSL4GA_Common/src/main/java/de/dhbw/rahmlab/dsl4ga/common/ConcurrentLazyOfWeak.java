@@ -1,4 +1,4 @@
-package de.dhbw.rahmlab.geomalgelang._TrufflePrototype;
+package de.dhbw.rahmlab.dsl4ga.common;
 
 import java.lang.ref.WeakReference;
 import java.util.function.Supplier;
