@@ -12,6 +12,7 @@ public final class Annotation {
 
 	public final TypeElement programFactory;
 	public final TypeElement program;
+	public final String path;
 
 	protected Annotation(GAFILES correspondingAnnotation, Utils utils) throws AnnotationException {
 		try {
@@ -31,5 +32,7 @@ public final class Annotation {
 
 		// Save, because iProgramFactory has only one typeArgument.
 		this.program = (TypeElement) ((DeclaredType) iProgramFactoryType.getTypeArguments().get(0)).asElement();
+
+		this.path = correspondingAnnotation.path();
 	}
 }

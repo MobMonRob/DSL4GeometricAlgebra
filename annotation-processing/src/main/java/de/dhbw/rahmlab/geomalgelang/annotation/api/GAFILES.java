@@ -18,4 +18,9 @@ public @interface GAFILES {
 	 * Name "value" allows to use the annotation without the methodname.
 	 */
 	Class<? extends iProgramFactory<? extends iProgram>> value();
+
+	/**
+	 * Either an absolute path or a relative path to the annotated interface.
+	 */
+	String path() default "./";
 }

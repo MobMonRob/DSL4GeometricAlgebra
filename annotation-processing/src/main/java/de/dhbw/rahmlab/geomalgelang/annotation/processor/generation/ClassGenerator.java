@@ -62,7 +62,7 @@ final class ClassGenerator {
 		// Body
 		CodeBlock.Builder bodyBuilder = CodeBlock.builder();
 		bodyBuilder
-			.addStatement("String path = \"./$L.ocga\"", m.name)
+			.addStatement("String path = \"$L$L.ocga\"", i.annotation.path, m.name)
 			.beginControlFlow("try (var in = $T.class.getResourceAsStream(path))", i.correspondingElement)
 			// x
 			.beginControlFlow("if (in == null)")
