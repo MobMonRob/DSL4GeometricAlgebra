@@ -1,8 +1,8 @@
 package de.dhbw.rahmlab.geomalgelang._symbolicWithoutTruffle.parsing.astConstruction;
 
-import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParser;
-import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParser.FunctionContext;
-import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParserBaseListener;
+import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParser;
+import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParser.FunctionContext;
+import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParserBaseListener;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.external.ValidationException;
 import de.orat.math.gacalc.api.FunctionSymbolic;
 import java.util.Collections;

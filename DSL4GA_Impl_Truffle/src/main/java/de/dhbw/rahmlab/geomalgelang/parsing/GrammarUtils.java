@@ -1,5 +1,6 @@
 package de.dhbw.rahmlab.geomalgelang.parsing;
 
+import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParser;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;

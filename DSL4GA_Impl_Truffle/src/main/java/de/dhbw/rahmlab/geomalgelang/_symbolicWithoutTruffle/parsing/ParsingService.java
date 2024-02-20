@@ -4,8 +4,8 @@ import de.dhbw.rahmlab.geomalgelang._symbolicWithoutTruffle.parsing.astConstruct
 import de.dhbw.rahmlab.geomalgelang.parsing.CharStreamSupplier;
 import de.dhbw.rahmlab.geomalgelang.parsing.CustomBailErrorStrategy;
 import de.dhbw.rahmlab.geomalgelang.parsing.CustumDiagnosticErrorListener;
-import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeLexer;
-import de.dhbw.rahmlab.geomalgelang.parsing.GeomAlgeParser;
+import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeLexer;
+import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParser;
 import de.dhbw.rahmlab.geomalgelang.parsing.SyntaxErrorListener;
 import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.external.ValidationException;
 import de.orat.math.gacalc.api.FunctionSymbolic;

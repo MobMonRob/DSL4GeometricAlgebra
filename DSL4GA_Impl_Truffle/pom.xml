@@ -22,6 +22,12 @@
 	</properties>
 	<dependencies>
 		<dependency>
+			<groupId>de.dhbw.rahmlab</groupId>
+			<artifactId>DSL4GA_Common</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
 			<groupId>de.orat.math.gacalc</groupId>
 			<artifactId>GACalcAPI</artifactId>
 			<version>1.0-SNAPSHOT</version>
@@ -34,12 +40,7 @@
 			<scope>runtime</scope>
 			<optional>true</optional>
 		</dependency>
-		<dependency>
-			<groupId>org.antlr</groupId>
-			<artifactId>antlr4-runtime</artifactId>
-			<version>${antlr.version}</version>
-			<scope>compile</scope>
-		</dependency>
+
 		<!-- Needed for AntlrTestRig -->
 		<dependency>
 			<groupId>org.antlr</groupId>
@@ -98,24 +99,6 @@
 	</dependencies>
 	<build>
 		<plugins>
-			<plugin>
-				<groupId>org.antlr</groupId>
-				<artifactId>antlr4-maven-plugin</artifactId>
-				<version>${antlr.version}</version>
-				<configuration>
-					<listener>true</listener>
-					<visitor>true</visitor>
-					<treatWarningsAsErrors>false</treatWarningsAsErrors>
-					<detail>true</detail>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>antlr4</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
