@@ -1,14 +1,14 @@
 package de.dhbw.rahmlab.geomalgelang.parsing.expr.space;
 
-import de.dhbw.rahmlab.geomalgelang.truffle.features.literals.nodes.expr.ScalarLiteral;
-import de.dhbw.rahmlab.geomalgelang.truffle.features.literals.nodes.expr.Constant;
-import de.dhbw.rahmlab.geomalgelang.truffle.features.operators.nodes.expr.unaryOps.GradeExtraction;
-import de.dhbw.rahmlab.geomalgelang.truffle.features.operators.nodes.expr.unaryOps.Reverse;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.literals.nodes.expr.ScalarLiteral;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.literals.nodes.expr.Constant;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOps.GradeExtraction;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOps.Reverse;
 import de.dhbw.rahmlab.geomalgelang.parsing.AbstractParsingTest;
 import de.dhbw.rahmlab.geomalgelang.parsing._util.Asserts.ProgramExpected;
 import static de.dhbw.rahmlab.geomalgelang.parsing._util.Asserts.parsePrintAssert;
 import static de.dhbw.rahmlab.geomalgelang.parsing._util.Asserts.parsePrintAssertSyntaxError;
-import de.dhbw.rahmlab.geomalgelang.truffle.features.variables.nodes.expr.LocalVariableReference;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.nodes.expr.LocalVariableReference;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;

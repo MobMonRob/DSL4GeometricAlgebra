@@ -1,11 +1,11 @@
 package de.dhbw.rahmlab.geomalgelang;
 
 import de.dhbw.rahmlab.dsl4ga.common.parsing.CharStreamSupplier;
-import de.dhbw.rahmlab.geomalgelang.parsing.ParsingService;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.ParsingService;
 import de.dhbw.rahmlab.geomalgelang.parsing._util.AstStringBuilder;
 import de.dhbw.rahmlab.geomalgelang.parsing._util.GeomAlgeAntlrTestRig;
-import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLangContext;
-import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import org.graalvm.polyglot.Context;
 
 public class AppTest {

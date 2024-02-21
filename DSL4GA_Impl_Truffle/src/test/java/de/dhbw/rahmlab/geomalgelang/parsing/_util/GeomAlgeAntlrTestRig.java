@@ -3,7 +3,7 @@ package de.dhbw.rahmlab.geomalgelang.parsing._util;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.CharStreamSupplier;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeLexer;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParser;
-import de.dhbw.rahmlab.geomalgelang.parsing.ParsingService;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.ParsingService;
 
 public class GeomAlgeAntlrTestRig {
 

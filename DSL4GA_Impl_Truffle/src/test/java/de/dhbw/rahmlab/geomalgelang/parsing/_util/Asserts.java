@@ -1,12 +1,12 @@
 package de.dhbw.rahmlab.geomalgelang.parsing._util;
 
 import de.dhbw.rahmlab.dsl4ga.common.parsing.CharStreamSupplier;
-import de.dhbw.rahmlab.geomalgelang.parsing.ParsingService;
-import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.GeomAlgeLangContext;
-import de.dhbw.rahmlab.geomalgelang.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
-import de.dhbw.rahmlab.geomalgelang.truffle.common.runtime.exceptions.external.AbstractExternalException;
-import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.nodes.FunctionDefinitionRootNode;
-import de.dhbw.rahmlab.geomalgelang.truffle.features.functionDefinitions.runtime.Function;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.ParsingService;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.AbstractExternalException;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.FunctionDefinitionRootNode;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.Function;
 import java.util.List;
 import java.util.stream.Stream;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
