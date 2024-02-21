@@ -1,4 +1,4 @@
-package de.dhbw.rahmlab.dsl4ga.impl.fast.parsing;
+package de.dhbw.rahmlab.dsl4ga.common.parsing;
 
 public class ValidationException extends RuntimeException {
 

@@ -3,7 +3,7 @@ package de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParser;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParserBaseListener;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.SkippingParseTreeWalker;
-import de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.ValidationException;
+import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationException;
 import de.orat.math.gacalc.api.ExprGraphFactory;
 import de.orat.math.gacalc.api.FunctionSymbolic;
 import de.orat.math.gacalc.api.GAExprGraphFactoryService;
@@ -27,13 +27,16 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 	protected final Map<String, MultivectorSymbolic> localVariables = new HashMap<>();
 	protected final Map<String, MultivectorSymbolic> localVariablesView = Collections.unmodifiableMap(localVariables);
 
-	protected FuncTransform(Map<String, FunctionSymbolic> functionsView) {
+	protected final GeomAlgeParser parser;
+
+	protected FuncTransform(GeomAlgeParser parser, Map<String, FunctionSymbolic> functionsView) {
 		this.functionsView = functionsView;
+		this.parser = parser;
 	}
 
-	public static FunctionSymbolic generate(GeomAlgeParser.FunctionContext ctx, Map<String, FunctionSymbolic> functionsView) {
-		FuncTransform transform = new FuncTransform(functionsView);
-		SkippingParseTreeWalker.walk(transform, ctx, GeomAlgeParser.ExprContext.class);
+	public static FunctionSymbolic generate(GeomAlgeParser parser, GeomAlgeParser.FunctionContext ctx, Map<String, FunctionSymbolic> functionsView) {
+		FuncTransform transform = new FuncTransform(parser, functionsView);
+		SkippingParseTreeWalker.walk(parser, transform, ctx, GeomAlgeParser.ExprContext.class);
 
 		ExprGraphFactory exprGraphFactory = GAExprGraphFactoryService.getExprGraphFactoryThrowing();
 		FunctionSymbolic function = exprGraphFactory.createFunctionSymbolic(transform.functionName, transform.formalParameterList, transform.retExprs);
@@ -62,7 +65,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 	@Override
 	public void enterAssgnStmt(GeomAlgeParser.AssgnStmtContext ctx) {
-		MultivectorSymbolic expr = ExprTransform.generateExprAST(ctx.exprContext, this.functionsView, this.localVariablesView);
+		MultivectorSymbolic expr = ExprTransform.generateExprAST(this.parser, ctx.exprContext, this.functionsView, this.localVariablesView);
 
 		// Assignment
 		String name = ctx.assigned.getText();
@@ -87,7 +90,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 	@Override
 	public void enterRetExprStmt(GeomAlgeParser.RetExprStmtContext ctx) {
-		MultivectorSymbolic retExpr = ExprTransform.generateExprAST(ctx.exprContext, this.functionsView, this.localVariablesView);
+		MultivectorSymbolic retExpr = ExprTransform.generateExprAST(this.parser, ctx.exprContext, this.functionsView, this.localVariablesView);
 		System.out.println("retExpr: " + retExpr);
 		this.retExprs.add(retExpr);
 	}

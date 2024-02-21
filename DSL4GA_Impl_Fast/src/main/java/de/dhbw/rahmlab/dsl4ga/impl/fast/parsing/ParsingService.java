@@ -1,5 +1,6 @@
 package de.dhbw.rahmlab.dsl4ga.impl.fast.parsing;
 
+import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationException;
 import de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction.SourceUnitTransform;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.CharStreamSupplier;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.CustomBailErrorStrategy;
@@ -20,7 +21,7 @@ public final class ParsingService {
 
 	protected static FunctionSymbolic invoke(GeomAlgeParser parser) {
 		GeomAlgeParser.SourceUnitContext sourceUnit = parser.sourceUnit();
-		FunctionSymbolic main = SourceUnitTransform.generate(sourceUnit);
+		FunctionSymbolic main = SourceUnitTransform.generate(parser, sourceUnit);
 
 		return main;
 	}

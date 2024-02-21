@@ -2,7 +2,8 @@ package de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction;
 
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParser;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParserBaseListener;
-import de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.ValidationException;
+import de.dhbw.rahmlab.dsl4ga.common.parsing.SkippingParseTreeWalker;
+import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationException;
 import de.orat.math.gacalc.api.ExprGraphFactory;
 import de.orat.math.gacalc.api.FunctionSymbolic;
 import de.orat.math.gacalc.api.GAExprGraphFactoryService;
@@ -16,8 +17,6 @@ import java.util.Map;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * This class converts an expression subtree of an ANTLR parsetree into an expression AST in truffle.
@@ -40,10 +39,10 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		this.localVariablesView = localVariablesView;
 	}
 
-	public static MultivectorSymbolic generateExprAST(GeomAlgeParser.ExprContext exprCtx, Map<String, FunctionSymbolic> functionsView, Map<String, MultivectorSymbolic> localVariablesView) {
+	public static MultivectorSymbolic generateExprAST(GeomAlgeParser parser, GeomAlgeParser.ExprContext exprCtx, Map<String, FunctionSymbolic> functionsView, Map<String, MultivectorSymbolic> localVariablesView) {
 		ExprTransform exprTransform = new ExprTransform(functionsView, localVariablesView);
 
-		ParseTreeWalker.DEFAULT.walk(exprTransform, exprCtx);
+		SkippingParseTreeWalker.walk(parser, exprTransform, exprCtx, SkippingParseTreeWalker.DummyNode.class);
 
 		MultivectorSymbolic rootNode = exprTransform.nodeStack.getFirst();
 		return rootNode;

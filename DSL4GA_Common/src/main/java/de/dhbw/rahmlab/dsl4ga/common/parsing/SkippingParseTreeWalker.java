@@ -3,10 +3,14 @@ package de.dhbw.rahmlab.dsl4ga.common.parsing;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.RuleContext;
+import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
+import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 import org.antlr.v4.runtime.tree.RuleNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
@@ -16,10 +20,16 @@ public class SkippingParseTreeWalker {
 	protected final ParseTreeListener listener;
 	protected final Class<? extends RuleNode> skipBeforeEnteringRuleNodeClass;
 	protected final List<RuleNode> stoppedBefore = new ArrayList<>();
+	protected final Parser parser;
 
-	protected SkippingParseTreeWalker(ParseTreeListener listener, Class<? extends RuleNode> stopBefore) {
+	protected SkippingParseTreeWalker(Parser parser, ParseTreeListener listener, Class<? extends RuleNode> stopBefore) {
 		this.listener = listener;
 		this.skipBeforeEnteringRuleNodeClass = stopBefore;
+		this.parser = parser;
+	}
+
+	public static List<RuleNode> walk(ParseTreeListener listener, ParseTree first, Class<? extends RuleNode> skipBeforeEnteringRuleNodeClass) {
+		return walk(null, listener, first, skipBeforeEnteringRuleNodeClass);
 	}
 
 	/**
@@ -33,10 +43,69 @@ public class SkippingParseTreeWalker {
 	 * @param skipBeforeEnteringRuleNodeClass class of root node of a skipped subtree
 	 * @return the list of RuleNode's the walk stopped before
 	 */
-	public static List<RuleNode> walk(ParseTreeListener listener, ParseTree first, Class<? extends RuleNode> skipBeforeEnteringRuleNodeClass) {
-		SkippingParseTreeWalker walker = new SkippingParseTreeWalker(listener, skipBeforeEnteringRuleNodeClass);
+	public static List<RuleNode> walk(GeomAlgeParser parser, ParseTreeListener listener, ParseTree first, Class<? extends RuleNode> skipBeforeEnteringRuleNodeClass) {
+		SkippingParseTreeWalker walker = new SkippingParseTreeWalker(parser, listener, skipBeforeEnteringRuleNodeClass);
 		walker.walkRecursive(first);
 		return Collections.unmodifiableList(walker.stoppedBefore);
+	}
+
+	public static class DummyNode implements RuleNode {
+
+		@Override
+		public RuleContext getRuleContext() {
+			throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+		}
+
+		@Override
+		public ParseTree getParent() {
+			throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+		}
+
+		@Override
+		public ParseTree getChild(int i) {
+			throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+		}
+
+		@Override
+		public void setParent(RuleContext rc) {
+			throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+		}
+
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> ptv) {
+			throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+		}
+
+		@Override
+		public String getText() {
+			throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+		}
+
+		@Override
+		public String toStringTree(Parser parser) {
+			throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+		}
+
+		@Override
+		public Interval getSourceInterval() {
+			throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+		}
+
+		@Override
+		public Object getPayload() {
+			throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+		}
+
+		@Override
+		public int getChildCount() {
+			throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+		}
+
+		@Override
+		public String toStringTree() {
+			throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+		}
+
 	}
 
 	protected void walkRecursive(ParseTree current) {
@@ -66,13 +135,29 @@ public class SkippingParseTreeWalker {
 
 	protected void enterRule(RuleNode r) {
 		ParserRuleContext ctx = (ParserRuleContext) r.getRuleContext();
-		this.listener.enterEveryRule(ctx);
-		ctx.enterRule(this.listener);
+		try {
+			this.listener.enterEveryRule(ctx);
+			ctx.enterRule(this.listener);
+		} catch (Exception ex) {
+			if (this.parser == null) {
+				throw ex;
+			}
+			var infoString = this.parser.getInputStream().getText(ctx.start, ctx.stop);
+			throw new ValidationException(infoString, ex);
+		}
 	}
 
 	protected void exitRule(RuleNode r) {
 		ParserRuleContext ctx = (ParserRuleContext) r.getRuleContext();
-		ctx.exitRule(this.listener);
-		this.listener.exitEveryRule(ctx);
+		try {
+			ctx.exitRule(this.listener);
+			this.listener.exitEveryRule(ctx);
+		} catch (Exception ex) {
+			if (this.parser == null) {
+				throw ex;
+			}
+			var infoString = this.parser.getInputStream().getText(ctx.start, ctx.stop);
+			throw new ValidationException(infoString, ex);
+		}
 	}
 }
