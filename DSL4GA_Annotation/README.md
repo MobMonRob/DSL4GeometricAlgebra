@@ -1,6 +1,6 @@
 The `@GAFILES` annotation generates a wrapper to conveniently invoke ga code.
 
-For more usage examples, see [DSL4GeometricAlgebra-Test](../DSL4GeometricAlgebra-Test/).
+For more usage examples, see [DSL4GA_Test](../DSL4GA_Test/).
 
 
 ## Variants

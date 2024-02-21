@@ -38,7 +38,7 @@ A separate directory for the new installation will be created.
 Next, you need to redo the [Netbeans configuration](#netbeans-configuration).
 
 If you are the first collaborator updating to a new version, you also need to
-- update the `graalvm.version` property in the [pom.xml of the GeomAlgeLang subproject](GeomAlgeLang/pom.xml).
+- update the `graalvm.version` property in the [pom.xml of the DSL4GA_Impl_Truffle subproject](DSL4GA_Impl_Truffle/pom.xml).
 - update the download link [in this documentation](#graalvm-setup).
 
 
@@ -55,11 +55,11 @@ and build those projects to have them available in your local Maven cache.
 
 ## Run
 In order to run the example invokation in the package 'de.dhbw.rahmlab.geomalgelang.App' make sure you successfully executed the steps [GraalVM Setup](#graalvm-setup) and [Dependencies Setup](#dependencies-setup) beforehand. \
-If you use an IDE other than Netbeans and execute the generated .class files directly rather than the generated .jar file, it might be necessary to configure the Maven execution in your IDE with the same properties set in the [GeomAlgeLang/nbactions.xml](GeomAlgeLang/nbactions.xml) file.
+If you use an IDE other than Netbeans and execute the generated .class files directly rather than the generated .jar file, it might be necessary to configure the Maven execution in your IDE with the same properties set in the [nbactions.xml](nbactions.xml) file.
 
 
 ## Annotation based API
-An [annotation based API](annotation-processing/README.md) useful espcially for testing is available.
+An [annotation based API](DSL4GA_Annotation/README.md) useful espcially for testing is available.
 
 ## Netbeans IDE Tooling
 
