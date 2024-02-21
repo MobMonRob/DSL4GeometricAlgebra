@@ -12,6 +12,7 @@
 		<module>DSL4GA_Impl_Fast</module>
 		<module>DSL4GA_Impl_Truffle</module>
 		<module>DSL4GA_Test</module>
+		<module>DSL4GA_Impl_Truffle_API</module>
 	</modules>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

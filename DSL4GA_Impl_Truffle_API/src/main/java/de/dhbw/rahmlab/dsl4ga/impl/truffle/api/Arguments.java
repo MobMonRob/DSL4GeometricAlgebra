@@ -1,4 +1,4 @@
-package de.dhbw.rahmlab.geomalgelang.api;
+package de.dhbw.rahmlab.dsl4ga.impl.truffle.api;
 
 import de.orat.math.cga.api.CGAAttitudeVectorIPNS;
 import de.orat.math.cga.api.CGAAttitudeVectorOPNS;

@@ -1,4 +1,4 @@
-package de.dhbw.rahmlab.geomalgelang._TrufflePrototype;
+package de.dhbw.rahmlab.dsl4ga.impl.truffle._TrufflePrototype;
 
 import de.dhbw.rahmlab.dsl4ga.common.AutoClosingFactory;
 import de.dhbw.rahmlab.dsl4ga.common.ConcurrentLazyOfWeak;

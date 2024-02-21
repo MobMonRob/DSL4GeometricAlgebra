@@ -1,4 +1,4 @@
-package de.dhbw.rahmlab.geomalgelang.parsing.astConstruction;
+package de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.astConstruction;
 
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParser;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParser.FunctionContext;

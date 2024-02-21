@@ -1,8 +1,8 @@
-package de.dhbw.rahmlab.geomalgelang;
+package de.dhbw.rahmlab.dsl4ga.impl.truffle;
 
-import de.dhbw.rahmlab.geomalgelang.api.Arguments;
-import de.dhbw.rahmlab.geomalgelang.api.Result;
-import de.dhbw.rahmlab.geomalgelang.api.Program;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.api.Arguments;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.api.Program;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.api.Result;
 import de.orat.math.cga.api.CGARoundPointIPNS;
 import de.orat.math.cga.api.CGAViewer;
 import java.nio.charset.Charset;
