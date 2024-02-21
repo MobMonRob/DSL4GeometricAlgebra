@@ -1,4 +1,4 @@
-package de.dhbw.rahmlab.geomalgelang.parsing._util;
+package de.dhbw.rahmlab.dsl4ga.test.parsing._util;
 
 import com.oracle.truffle.api.nodes.Node;
 import java.util.ArrayDeque;

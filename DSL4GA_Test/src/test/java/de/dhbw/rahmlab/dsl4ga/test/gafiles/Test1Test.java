@@ -1,21 +1,19 @@
-package de.dhbw.rahmlab.dsl4ga.test;
+package de.dhbw.rahmlab.dsl4ga.test.gafiles;
 
-import de.dhbw.rahmlab.dsl4ga.test.common.Util;
-import de.dhbw.rahmlab.dsl4ga.test.common.gen.fastwrapper.IkProgram;
+import de.dhbw.rahmlab.dsl4ga.test.gafiles.common.Util;
+import de.dhbw.rahmlab.dsl4ga.test.gafiles.common.gen.fastwrapper.Test1Program;
 import de.orat.math.sparsematrix.SparseDoubleColumnVector;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-// @Disabled
-public class IkTest {
+public class Test1Test {
 
-	private static IkProgram PROGRAM;
+	private static Test1Program PROGRAM;
 
 	@BeforeAll
 	static void init() {
 		System.out.println("Init:");
-		PROGRAM = new IkProgram();
+		PROGRAM = new Test1Program();
 	}
 
 	@Test

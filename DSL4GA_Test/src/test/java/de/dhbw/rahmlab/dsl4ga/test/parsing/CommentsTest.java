@@ -1,6 +1,6 @@
-package de.dhbw.rahmlab.geomalgelang.parsing;
+package de.dhbw.rahmlab.dsl4ga.test.parsing;
 
-import de.dhbw.rahmlab.geomalgelang.parsing._util.Asserts;
+import de.dhbw.rahmlab.dsl4ga.test.parsing._util.Asserts;
 import org.junit.jupiter.api.Test;
 
 public class CommentsTest extends AbstractParsingTest {

@@ -1,4 +1,4 @@
-package de.dhbw.rahmlab.dsl4ga.test.common;
+package de.dhbw.rahmlab.dsl4ga.test.gafiles.common;
 
 import de.orat.math.sparsematrix.SparseDoubleColumnVector;
 import java.util.List;

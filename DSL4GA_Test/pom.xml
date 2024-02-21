@@ -38,6 +38,13 @@
 
 		<dependency>
 			<groupId>de.dhbw.rahmlab</groupId>
+			<artifactId>DSL4GA_Common</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>de.dhbw.rahmlab</groupId>
 			<artifactId>DSL4GA_Impl_Fast</artifactId>
 			<version>1.0-SNAPSHOT</version>
 			<scope>test</scope>
@@ -45,10 +52,19 @@
 
 		<dependency>
 			<groupId>de.dhbw.rahmlab</groupId>
-			<artifactId>DSL4GA_Impl_Truffle</artifactId>
+			<artifactId>DSL4GA_Impl_Truffle_API</artifactId>
 			<version>1.0-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- Needed for AntlrTestRig -->
+		<dependency>
+			<groupId>org.antlr</groupId>
+			<artifactId>antlr4</artifactId>
+			<version>4.11.1</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- -->
 
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
@@ -124,6 +140,9 @@
 					<includes>
 						<include>*.java</include>
 					</includes>
+					<excludes>
+						<exclude>**/test/parsing/**</exclude>
+					</excludes>
 					<encoding>${project.build.sourceEncoding}</encoding>
 					<argLine>-Dfile.encoding=UTF-8 -Dstdout.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Dgraalvm.locatorDisabled=true --add-exports org.graalvm.truffle/com.oracle.truffle.api.nodes=ALL-UNNAMED --add-exports org.graalvm.truffle/com.oracle.truffle.api.exception=ALL-UNNAMED --add-exports org.graalvm.truffle/com.oracle.truffle.api=ALL-UNNAMED --add-exports org.graalvm.truffle/com.oracle.truffle.api.interop=ALL-UNNAMED</argLine>
 					<skipTests>${skipTests}</skipTests>

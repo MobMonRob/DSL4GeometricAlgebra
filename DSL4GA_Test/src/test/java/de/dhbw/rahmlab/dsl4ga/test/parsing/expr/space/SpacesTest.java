@@ -1,8 +1,8 @@
-package de.dhbw.rahmlab.geomalgelang.parsing.expr.space;
+package de.dhbw.rahmlab.dsl4ga.test.parsing.expr.space;
 
-import de.dhbw.rahmlab.geomalgelang.parsing.AbstractParsingTest;
-import static de.dhbw.rahmlab.geomalgelang.parsing._util.Asserts.parsePrintAssert;
-import static de.dhbw.rahmlab.geomalgelang.parsing._util.Asserts.parsePrintAssertSyntaxError;
+import de.dhbw.rahmlab.dsl4ga.test.parsing.AbstractParsingTest;
+import static de.dhbw.rahmlab.dsl4ga.test.parsing._util.Asserts.parsePrintAssert;
+import static de.dhbw.rahmlab.dsl4ga.test.parsing._util.Asserts.parsePrintAssertSyntaxError;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Disabled;

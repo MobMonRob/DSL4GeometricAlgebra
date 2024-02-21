@@ -1,9 +1,9 @@
-package de.dhbw.rahmlab.geomalgelang.parsing.expr;
+package de.dhbw.rahmlab.dsl4ga.test.parsing.expr;
 
-import de.dhbw.rahmlab.geomalgelang.parsing.AbstractParsingTest;
-import de.dhbw.rahmlab.geomalgelang.parsing._util.Asserts.ProgramExpected;
-import static de.dhbw.rahmlab.geomalgelang.parsing._util.Asserts.parsePrintAssert;
-import static de.dhbw.rahmlab.geomalgelang.parsing._util.Asserts.parsePrintAssertSyntaxError;
+import de.dhbw.rahmlab.dsl4ga.test.parsing.AbstractParsingTest;
+import de.dhbw.rahmlab.dsl4ga.test.parsing._util.Asserts.ProgramExpected;
+import static de.dhbw.rahmlab.dsl4ga.test.parsing._util.Asserts.parsePrintAssert;
+import static de.dhbw.rahmlab.dsl4ga.test.parsing._util.Asserts.parsePrintAssertSyntaxError;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;

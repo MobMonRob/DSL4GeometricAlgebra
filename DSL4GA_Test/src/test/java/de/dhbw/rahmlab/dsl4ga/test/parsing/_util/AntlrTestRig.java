@@ -1,4 +1,4 @@
-package de.dhbw.rahmlab.geomalgelang.parsing._util;
+package de.dhbw.rahmlab.dsl4ga.test.parsing._util;
 
 import de.dhbw.rahmlab.dsl4ga.common.parsing.CharStreamSupplier;
 import org.antlr.v4.gui.TestRig;

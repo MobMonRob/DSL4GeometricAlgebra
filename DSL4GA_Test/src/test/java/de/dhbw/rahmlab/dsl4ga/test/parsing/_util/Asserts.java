@@ -1,12 +1,12 @@
-package de.dhbw.rahmlab.geomalgelang.parsing._util;
+package de.dhbw.rahmlab.dsl4ga.test.parsing._util;
 
 import de.dhbw.rahmlab.dsl4ga.common.parsing.CharStreamSupplier;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.ParsingService;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.AbstractExternalException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.FunctionDefinitionRootNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.Function;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.ParsingService;
 import java.util.List;
 import java.util.stream.Stream;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
@@ -59,7 +59,7 @@ public class Asserts {
 
 	public static ExpressionBaseNode parseExpr(String program, GeomAlgeLangContext geomAlgeLangContext) {
 		String functionProgram = String.format("fn main(a, b, aa, c, A) {\n\t%s\n}\n", program);
-		Function main = ParsingService.parse(CharStreamSupplier.from(functionProgram), geomAlgeLangContext);
+		Function main = ParsingService.instance().parse(CharStreamSupplier.from(functionProgram), geomAlgeLangContext);
 		ExpressionBaseNode retExpr = ((FunctionDefinitionRootNode) main.getRootNode()).getBody().getFirstRetExpr();
 		return retExpr;
 	}

@@ -1,4 +1,4 @@
-package de.dhbw.rahmlab.geomalgelang.parsing;
+package de.dhbw.rahmlab.dsl4ga.test.parsing;
 
 import org.graalvm.polyglot.Context;
 import org.junit.jupiter.api.AfterAll;

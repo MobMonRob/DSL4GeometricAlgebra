@@ -6,7 +6,7 @@ import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParser;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.Function;
 
-public class ParsingService {
+public class ParsingServiceProxy {
 
 	public static Function parse(CharStreamSupplier program, GeomAlgeLangContext geomAlgeLangContext) {
 		return ParsingServiceProvider.getParsingService().parse(program, geomAlgeLangContext);

@@ -1,9 +1,9 @@
-package de.dhbw.rahmlab.geomalgelang.parsing._util;
+package de.dhbw.rahmlab.dsl4ga.test.parsing._util;
 
 import de.dhbw.rahmlab.dsl4ga.common.parsing.CharStreamSupplier;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeLexer;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParser;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.ParsingService;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.ParsingServiceProxy;
 
 public class GeomAlgeAntlrTestRig {
 
@@ -17,10 +17,10 @@ public class GeomAlgeAntlrTestRig {
 
 	public static void process(String program, String startRuleName, boolean diagnostic) throws Exception {
 		CharStreamSupplier charStream = CharStreamSupplier.from(program);
-		GeomAlgeLexer lexer = ParsingService.getLexer(charStream);
+		GeomAlgeLexer lexer = ParsingServiceProxy.getLexer(charStream);
 		AntlrTestRig antlrTestRig = new AntlrTestRig();
 
-		GeomAlgeParser parser = ParsingService.getAntlrTestRigParser(lexer);
+		GeomAlgeParser parser = ParsingServiceProxy.getAntlrTestRigParser(lexer);
 		if (diagnostic) {
 			antlrTestRig.setDiagnostics(true);
 		}

@@ -1,4 +1,4 @@
-package de.dhbw.rahmlab.dsl4ga.test.common;
+package de.dhbw.rahmlab.dsl4ga.test.gafiles.common;
 
 import de.dhbw.rahmlab.dsl4ga.annotation.api.GAFILES;
 import de.dhbw.rahmlab.dsl4ga.impl.fast.api.FastProgramFactory;
