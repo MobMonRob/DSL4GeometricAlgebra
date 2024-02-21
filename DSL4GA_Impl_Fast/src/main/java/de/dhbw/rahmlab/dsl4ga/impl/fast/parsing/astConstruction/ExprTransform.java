@@ -16,6 +16,8 @@ import java.util.Map;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class converts an expression subtree of an ANTLR parsetree into an expression AST in truffle.
@@ -289,23 +291,27 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 
 	@Override
 	public void exitCall(GeomAlgeParser.CallContext ctx) {
-		Deque<MultivectorSymbolic> arguments = new ArrayDeque<>();
 
-		for (MultivectorSymbolic currentArgument = this.nodeStack.pop();
-			currentArgument != enterCallMarker;
-			currentArgument = this.nodeStack.pop()) {
-			// rightmost argument will be pushed first
-			// therefore ordered properly at the end
-			arguments.push(currentArgument);
+		ArrayList<MultivectorSymbolic> arguments;
+		{
+			Deque<MultivectorSymbolic> argumentsDeque = new ArrayDeque<>();
+
+			for (MultivectorSymbolic currentArgument = this.nodeStack.pop();
+				currentArgument != enterCallMarker;
+				currentArgument = this.nodeStack.pop()) {
+				// rightmost argument will be pushed first
+				// therefore ordered properly at the end
+				argumentsDeque.push(currentArgument);
+			}
+
+			arguments = new ArrayList<>(argumentsDeque);
 		}
-
-		var argumentsOut = new ArrayList<>(arguments);
 
 		String functionName = ctx.name.getText();
 
 		if (this.functionsView.containsKey(functionName)) {
 			FunctionSymbolic function = this.functionsView.get(functionName);
-			List<MultivectorSymbolic> returns = function.callSymbolic(argumentsOut);
+			List<MultivectorSymbolic> returns = function.callSymbolic(arguments);
 			if (returns.size() != 1) {
 				throw new ValidationException(String.format("Function \"%s\" returns not exactly 1 value.", functionName));
 			}
@@ -313,7 +319,51 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 			this.nodeStack.push(retVal);
 		} else {
 			// Builtins
-			throw new ValidationException(String.format("Function \"%s\" to call not found.", functionName));
+			// ToDo: After GACalcAPI switched to symbolic functions for operators: Insert builtins into functionsView in SourceUnitTransform.
+			try {
+				final int count = arguments.size();
+				switch (count) {
+					case 1 -> {
+						var arg = arguments.get(0);
+
+						MultivectorSymbolic result = switch (functionName) {
+							case "exp" ->
+								arg.exp();
+							case "normalize" ->
+								arg.normalize();
+							case "abs" ->
+								arg.scalarAbs();
+							case "sqrt" ->
+								arg.scalarSqrt();
+							case "negate14" ->
+								arg.negate14();
+							default ->
+								throw new ValidationException(String.format("Function \"%s\" to call not found.", functionName));
+						};
+						this.nodeStack.push(result);
+
+					}
+					case 2 -> {
+						var arg0 = arguments.get(0);
+						var arg1 = arguments.get(1);
+
+						MultivectorSymbolic result = switch (functionName) {
+							case "atan2" ->
+								arg0.scalarAtan2(arg1);
+							default ->
+								throw new ValidationException(String.format("Function \"%s\" to call not found.", functionName));
+						};
+						this.nodeStack.push(result);
+
+					}
+					default ->
+						throw new ValidationException(String.format("Function \"%s\" to call not found.", functionName));
+				}
+			} catch (ValidationException ex) {
+				throw ex;
+			} catch (Exception ex) {
+				throw new ValidationException(ex);
+			}
 		}
 	}
 }
