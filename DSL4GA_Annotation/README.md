@@ -32,11 +32,11 @@ public interface <Name> {
 
 
 ## pom.xml
-To use it as a dependency, add the following lines to the depencencies list in your Maven pom.xml:
+To use it as a dependency, add the following line to the depencencies list in your Maven pom.xml:
 ```xml
 <dependency>
 	<groupId>de.dhbw.rahmlab</groupId>
-	<artifactId>annotation-processing</artifactId>
+	<artifactId>DSL4GA_Annotation</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<scope>provided</scope>
 	<exclusions>
@@ -46,10 +46,13 @@ To use it as a dependency, add the following lines to the depencencies list in y
 		</exclusion>
 	</exclusions>
 </dependency>
+```
 
+To use `de.dhbw.rahmlab.dsl4ga.impl.fast.api.FastProgramFactory.class` as `<Class which extends iProgramFactory>.class`, you will need it's project as dependency as well:
+```xml
 <dependency>
 	<groupId>de.dhbw.rahmlab</groupId>
-	<artifactId>GeomAlgeLang</artifactId>
+	<artifactId>DSL4GA_Impl_Fast</artifactId>
 	<version>1.0-SNAPSHOT</version>
 </dependency>
 ```
