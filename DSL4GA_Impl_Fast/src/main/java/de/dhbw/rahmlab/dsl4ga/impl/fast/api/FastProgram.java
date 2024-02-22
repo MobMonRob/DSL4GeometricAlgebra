@@ -3,7 +3,8 @@ package de.dhbw.rahmlab.dsl4ga.impl.fast.api;
 import de.dhbw.rahmlab.dsl4ga.api.iProgram;
 import de.orat.math.gacalc.api.ExprGraphFactory;
 import de.orat.math.gacalc.api.FunctionSymbolic;
-import de.orat.math.sparsematrix.SparseDoubleColumnVector;
+//import de.orat.math.sparsematrix.SparseDoubleColumnVector;
+import de.orat.math.sparsematrix.SparseDoubleMatrix;
 import java.util.List;
 
 public class FastProgram implements iProgram {
@@ -17,7 +18,7 @@ public class FastProgram implements iProgram {
 	}
 
 	@Override
-	public List<SparseDoubleColumnVector> invoke(List<SparseDoubleColumnVector> arguments) {
+	public List<SparseDoubleMatrix> invoke(List<SparseDoubleMatrix> arguments) {
 		var mVecArgs = arguments.stream().map(vec -> this.exprGraphFactory.createMultivectorNumeric(vec)).toList();
 		try {
 			var mVecResults = this.main.callNumeric(mVecArgs);

@@ -7,7 +7,7 @@ import javax.lang.model.element.VariableElement;
 
 public final class Parameter {
 
-	public static final String type = Classes.sparseDoubleColumnVector.canonicalName();
+	public static final String type = Classes.sparseDoubleMatrix.canonicalName();
 	public final String identifier;
 
 	protected Parameter(VariableElement correspondingElement, Utils utils) throws AnnotationException {

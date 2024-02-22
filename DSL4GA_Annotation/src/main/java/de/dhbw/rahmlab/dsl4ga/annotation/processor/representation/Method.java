@@ -14,7 +14,7 @@ public final class Method {
 
 	public final String name;
 	public static final String returnType = String.format("%s<%s>",
-		Classes.list.canonicalName(), Classes.sparseDoubleColumnVector.canonicalName());
+		Classes.list.canonicalName(), Classes.sparseDoubleMatrix.canonicalName());
 
 	/**
 	 * Unmodifiable

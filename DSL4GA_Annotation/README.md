@@ -14,13 +14,13 @@ The 1. variant will default the path to the package of the annotated interface. 
 ```
 @GAFILES(<Variant>)
 public interface <Name> {
-	List<SparseDoubleColumnVector> <Filename without ending>(<Parameter-List>);
+	List<SparseDoubleMatrix> <Filename without ending>(<Parameter-List>);
 
 	// ...
 }
 ```
 
-- Each Parameter consists of: `SparseDoubleColumnVector <Arbitrary identifier>`
+- Each Parameter consists of: `SparseDoubleMatrix <Arbitrary identifier>`
 - The annotation-processor will generate a class `<Filename with uppercase first letter>Program` within a subpackage of the annotated interface `.gen.<toLowerCase(Annotated interface name)>`.
 - Overloads of the methods in the annotated interface are prohibited.
 - The given class must have been compiled beforehand.

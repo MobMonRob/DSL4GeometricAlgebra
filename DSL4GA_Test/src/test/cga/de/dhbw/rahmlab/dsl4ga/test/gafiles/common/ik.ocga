@@ -28,7 +28,8 @@ Qc := (C5k⌋Pl)*
 
 // point Pc with an offset d4 from P5
 //Pc := ExtractFirstPoint(Qc)
-Pc := (Qc-sqrt(Qc²))/(-εᵢ⌋Qc)
+// workaround <>  mir ist unklar, warum das nötig sein könnte
+Pc := (Qc-sqrt(<Qc>₀²))/(-εᵢ⌋Qc)
 
 // plane through joints 1, 2, 3 and 4
 PIc := (ε₀^ε₃^Pc^εᵢ) // opns

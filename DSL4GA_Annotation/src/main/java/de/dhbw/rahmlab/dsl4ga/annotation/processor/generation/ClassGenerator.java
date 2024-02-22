@@ -95,11 +95,11 @@ final class ClassGenerator {
 		// Signature
 		methodBuilder
 			.addModifiers(Modifier.PUBLIC)
-			.returns(Classes.listOfSparseDoubleColumnVector);
+			.returns(Classes.listOfSparseDoubleMatrix);
 
 		for (Parameter parameter : m.parameters) {
 			methodBuilder
-				.addParameter(Classes.sparseDoubleColumnVector, parameter.identifier);
+				.addParameter(Classes.sparseDoubleMatrix, parameter.identifier);
 		}
 
 		// Body
