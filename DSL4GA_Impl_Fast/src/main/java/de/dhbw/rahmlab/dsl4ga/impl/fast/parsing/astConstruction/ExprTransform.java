@@ -14,7 +14,6 @@ import java.text.ParseException;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Map;
-import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +32,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 	protected final Deque<MultivectorSymbolic> nodeStack = new ArrayDeque<>();
 	protected final Map<String, FunctionSymbolic> functionsView;
 	protected final Map<String, MultivectorSymbolic> localVariablesView;
+	protected List<MultivectorSymbolic> lastCallResults = null;
 
 	protected ExprTransform(Map<String, FunctionSymbolic> functionsView, Map<String, MultivectorSymbolic> localVariablesView) {
 		this.functionsView = functionsView;
@@ -46,6 +46,14 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 
 		MultivectorSymbolic rootNode = exprTransform.nodeStack.getFirst();
 		return rootNode;
+	}
+
+	public static List<MultivectorSymbolic> generateCallAST(GeomAlgeParser parser, GeomAlgeParser.CallExprContext callExprCtx, Map<String, FunctionSymbolic> functionsView, Map<String, MultivectorSymbolic> localVariablesView) {
+		ExprTransform exprTransform = new ExprTransform(functionsView, localVariablesView);
+
+		SkippingParseTreeWalker.walk(parser, exprTransform, callExprCtx, SkippingParseTreeWalker.DummyNode.class);
+
+		return exprTransform.lastCallResults;
 	}
 
 	@Override
@@ -311,11 +319,8 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		if (this.functionsView.containsKey(functionName)) {
 			FunctionSymbolic function = this.functionsView.get(functionName);
 			List<MultivectorSymbolic> returns = function.callSymbolic(arguments);
-			if (returns.size() != 1) {
-				throw new ValidationException(String.format("Function \"%s\" returns not exactly 1 value.", functionName));
-			}
-			MultivectorSymbolic retVal = returns.get(0);
-			this.nodeStack.push(retVal);
+			this.lastCallResults = returns;
+			this.nodeStack.push(returns.get(0));
 		} else {
 			// Builtins
 			// ToDo: After GACalcAPI switched to symbolic functions for operators: Insert builtins into functionsView in SourceUnitTransform.
@@ -339,6 +344,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 							default ->
 								throw new ValidationException(String.format("Function \"%s\" to call not found.", functionName));
 						};
+						this.lastCallResults = List.of(result);
 						this.nodeStack.push(result);
 
 					}
@@ -352,6 +358,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 							default ->
 								throw new ValidationException(String.format("Function \"%s\" to call not found.", functionName));
 						};
+						this.lastCallResults = List.of(result);
 						this.nodeStack.push(result);
 
 					}

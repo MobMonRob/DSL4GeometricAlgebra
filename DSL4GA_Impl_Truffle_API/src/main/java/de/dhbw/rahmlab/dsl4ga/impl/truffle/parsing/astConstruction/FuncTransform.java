@@ -88,7 +88,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 	@Override
 	public void enterAssgnStmt(GeomAlgeParser.AssgnStmtContext ctx) {
-		ExpressionBaseNode expr = ExprTransform.generateExprAST(ctx.exprContext, this.geomAlgeLangContext, this.functionsView, this.localVariablesView);
+		ExpressionBaseNode expr = ExprTransform.generateExprAST(ctx.exprCtx, this.geomAlgeLangContext, this.functionsView, this.localVariablesView);
 
 		// Assignment
 		String name = ctx.assigned.getText();

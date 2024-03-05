@@ -56,7 +56,8 @@ functionBody
 ///////////////////////////////////////////////////////////////////////////
 
 stmt
-	:	SPACE* viz=COLON? assigned=IDENTIFIER SPACE* ASSIGNMENT SPACE* exprContext=expr SPACE*		#AssgnStmt
+	:	SPACE* assigned+=(IDENTIFIER|LOW_LINE) SPACE* (COMMA SPACE* assigned+=(IDENTIFIER|LOW_LINE) SPACE*)* ASSIGNMENT SPACE* callCtx=callExpr SPACE*		#CallStmt
+	|	SPACE* viz=COLON? assigned=IDENTIFIER SPACE* ASSIGNMENT SPACE* exprCtx=expr SPACE*		#AssgnStmt
 	|	SPACE* exprContext=expr SPACE*	#ExprStmt // Needed currently only for LastListReturn
 	;
 

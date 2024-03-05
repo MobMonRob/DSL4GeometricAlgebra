@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.antlr.v4.runtime.Token;
 
 public class FuncTransform extends GeomAlgeParserBaseListener {
 
@@ -65,7 +66,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 	@Override
 	public void enterAssgnStmt(GeomAlgeParser.AssgnStmtContext ctx) {
-		MultivectorSymbolic expr = ExprTransform.generateExprAST(this.parser, ctx.exprContext, this.functionsView, this.localVariablesView);
+		MultivectorSymbolic expr = ExprTransform.generateExprAST(this.parser, ctx.exprCtx, this.functionsView, this.localVariablesView);
 
 		// Assignment
 		String name = ctx.assigned.getText();
@@ -79,6 +80,32 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 		// Viz
 		if (ctx.viz != null) {
 			throw new UnsupportedOperationException("Visualization ist not supported in CasADi implementation.");
+		}
+	}
+
+	@Override
+	public void enterCallStmt(GeomAlgeParser.CallStmtContext ctx) {
+		List<MultivectorSymbolic> results = ExprTransform.generateCallAST(this.parser, ctx.callCtx, this.functionsView, this.localVariablesView);
+
+		final int size = ctx.assigned.size();
+
+		if (size != results.size()) {
+			throw new ValidationException(String.format("Count of assignees (%s) does not match count of results (%s).", size, results.size()));
+		}
+
+		for (int i = 0; i < size; ++i) {
+			String name = ctx.assigned.get(i).getText();
+
+			if (name.equals(GeomAlgeParser.LOW_LINE)) {
+				// Ignore result
+				continue;
+			}
+
+			if (this.localVariables.containsKey(name)) {
+				throw new ValidationException(String.format("\"%s\" cannot be assigned again.", name));
+			}
+
+			this.localVariables.put(name, results.get(i));
 		}
 	}
 

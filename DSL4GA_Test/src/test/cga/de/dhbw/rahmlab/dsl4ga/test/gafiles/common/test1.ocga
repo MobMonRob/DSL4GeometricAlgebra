@@ -1,9 +1,9 @@
 fn test(a) {
-	-5
+	-5, 3.14
 }
 
 fn main(a, b) {
-	c := test(b)
-	d := abs(c)
+	c1, _ := test(b)
+	d := abs(c1)
 	a, b, d
 }
