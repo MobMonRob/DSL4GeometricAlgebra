@@ -88,12 +88,15 @@ Inside the DSL all of these types are automatically casted into CGA multivectors
 
 ## Function definitions
 #### Rules
-- There needs to be at least one Function defined with the name `main`.
-- A Function will return only the list in the last line of a function definition.
-- Variables cannot contain lists. Therefore only the first value returned from a function will be used in an expression or an assignment.
-- To get other values of the list returned by the directly beforehand called function, use the builtin `getLastListReturn(<index>)`.
-- Function can be called without subsequent assignment to a variable.
+- There needs to be at least one function defined with the name `main`. Invokations of the program will call this one first.
 - Currently, callees need to be defined above the callers.
+- In consequence, `main` needs to be the last function defined.
+- A function will return only the list in the last line of its definition.
+- The return value of a call needs to be assigned to a variable.
+- An assignment to multiple variables in the same line is possible if the right side consists only of a call.
+- The count of the assigned variables must match the count of the result values of a call.
+- With an assignment to "_", a return value can be discarded. This is only possible for calls which return at least two values.
+- If the right side of an assignment is not only a call but a composed expression, within it are only calls allowed which return exactly one value.
 
 #### Example
 Custom functions can be defined like in the following example:
@@ -103,10 +106,8 @@ fn test(a) {
 }
 
 fn main(a, b) {
-	test(b)
-	d := getLastListReturn(0)
-	e := getLastListReturn(1)
-	a, b, d, e
+	_, c := test(b)
+	a, b, c
 }
 ```
 
