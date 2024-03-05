@@ -4,6 +4,6 @@ fn test(a) {
 
 fn main(a, b) {
 	c1, _ := test(b)
-	d := abs(c1)
+	d := abs(c1) 2.0
 	a, b, d
 }

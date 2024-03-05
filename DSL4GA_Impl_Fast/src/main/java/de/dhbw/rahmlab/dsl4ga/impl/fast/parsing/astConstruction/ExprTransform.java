@@ -319,8 +319,14 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		if (this.functionsView.containsKey(functionName)) {
 			FunctionSymbolic function = this.functionsView.get(functionName);
 			List<MultivectorSymbolic> returns = function.callSymbolic(arguments);
+
+			if (!(ctx.parent instanceof GeomAlgeParser.TupleAssgnStmtContext) && (returns.size() != 1)) {
+				throw new ValidationException(String.format("Only calls in Expr are allowed, which return exactly one result, but got %s from \"%s\".", returns.size(), functionName));
+			}
+
 			this.lastCallResults = returns;
 			this.nodeStack.push(returns.get(0));
+
 		} else {
 			// Builtins
 			// ToDo: After GACalcAPI switched to symbolic functions for operators: Insert builtins into functionsView in SourceUnitTransform.

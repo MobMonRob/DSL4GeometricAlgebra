@@ -56,9 +56,9 @@ functionBody
 ///////////////////////////////////////////////////////////////////////////
 
 stmt
-	:	SPACE* assigned+=(IDENTIFIER|LOW_LINE) SPACE* (COMMA SPACE* assigned+=(IDENTIFIER|LOW_LINE) SPACE*)* ASSIGNMENT SPACE* callCtx=callExpr SPACE*		#CallStmt
+	:	SPACE* assigned+=(IDENTIFIER|LOW_LINE) SPACE* (COMMA SPACE* assigned+=(IDENTIFIER|LOW_LINE) SPACE*)* ASSIGNMENT SPACE* callCtx=callExpr SPACE*		#TupleAssgnStmt
 	|	SPACE* viz=COLON? assigned=IDENTIFIER SPACE* ASSIGNMENT SPACE* exprCtx=expr SPACE*		#AssgnStmt
-	|	SPACE* exprContext=expr SPACE*	#ExprStmt // Needed currently only for LastListReturn
+// 	|	SPACE* exprContext=expr SPACE*	#ExprStmt // Needed currently only for LastListReturn
 	;
 
 // The list-form (1) needs iteration in the transformer while the tree-form (2) don't.

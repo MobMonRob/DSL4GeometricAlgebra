@@ -84,7 +84,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 	}
 
 	@Override
-	public void enterCallStmt(GeomAlgeParser.CallStmtContext ctx) {
+	public void enterTupleAssgnStmt(GeomAlgeParser.TupleAssgnStmtContext ctx) {
 		List<MultivectorSymbolic> results = ExprTransform.generateCallAST(this.parser, ctx.callCtx, this.functionsView, this.localVariablesView);
 
 		final int size = ctx.assigned.size();
@@ -107,12 +107,6 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 			this.localVariables.put(name, results.get(i));
 		}
-	}
-
-	@Override
-	public void enterExprStmt(GeomAlgeParser.ExprStmtContext ctx) {
-		// Needed currently only for LastListReturn which is a builtin and therefore currently not supported.
-		throw new UnsupportedOperationException();
 	}
 
 	@Override
