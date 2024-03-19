@@ -97,7 +97,7 @@ There are two implementations of the [API](DSL4GA_API):
 - [Fast](DSL4GA_Impl_Fast), which will be optimized for runtime -not parsing- performance.
 - [Truffle](DSL4GA_Impl_Truffle_API), which will be optimized for a good development experience.
 
-Their syntax will be the same in the longrun. However, during development of the language, some syntactical constructs will temporarily not supported by one or the other. \
+Their syntax will be the same in the longrun. However, during development of the language, some syntactical constructs will temporarily not supported by one or the other.
 
 The following features are supported ("x" is yes, "-" is no):
 | F | T | Feature |
