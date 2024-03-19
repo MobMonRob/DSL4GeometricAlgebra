@@ -6,6 +6,10 @@ This repository contains code to work with multivector expressions of conformal 
 ## Disclaimer
 The project is in an early state of development, so it is not advised to use it in real world applications. If you have feedback or feature suggestions, please create a new GitHub Issue.
 
+Especially be cautious regarding:
+- the documentation may not be up to date.
+- breaking changes can occur at any time.
+
 
 ## GraalVM Setup
 Download the [GraalVM 22.3.2](https://github.com/graalvm/graalvm-ce-builds/releases/tag/vm-22.3.2) (Linux (amd64), Java17).
@@ -87,8 +91,21 @@ CGA multivectors and objecs of its subtypes are completely hidden - not visible 
 
 Inside the DSL all of these types are automatically casted into CGA multivectors. No other operations are possible based on these types inside the DSL.
 
-## Language
-#### Expressions
+
+## Implementations
+There are two implementations of the [API](DSL4GA_API):
+- [Fast](DSL4GA_Impl_Fast)
+- [Truffle](DSL4GA_Impl_Truffle_API)
+
+They support the following features ("x" is yes, "-" is no):
+| F | T | Feature |
+| - | - | ------- |
+| - | x | Visualization |
+| - | - | Debugging |
+| x | - | Multiple assignment |
+
+
+## Expressions
 - Numeric literals like "0.5" and scalar constants like "π" are in OPNS representation.
 
 ## Function definitions
