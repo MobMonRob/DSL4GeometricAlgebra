@@ -68,7 +68,7 @@ If you use an IDE other than Netbeans and execute the generated .class files dir
 
 
 ## Annotation based API
-An [annotation based API](DSL4GA_Annotation/README.md) useful espcially for testing is available.
+An [annotation based API](DSL4GA_Annotation/README.md) useful especially for testing is available.
 
 ## Netbeans IDE Tooling
 
@@ -78,6 +78,7 @@ A Syntax-Highlighting plugin for the Netbeans-IDE can be found [here](https://gi
 ### Insertion of special characters
 A Netbeans-IDE plugin which adds a submenu into the context-menu of the editor to insert CGA-specific symbols and operators can be found [here](https://github.com/orat/netbeans-cgasymbols).
 
+<!--
 ## Types to use from outside the language
 CGA multivectors and objecs of its subtypes are completely hidden - not visible outside the DSL. Input data to and output data from the DSL is transfered by objects of the classes listed in the following table:
 | Name | implementation class | hints |
@@ -90,6 +91,7 @@ CGA multivectors and objecs of its subtypes are completely hidden - not visible 
 | ComplexNumber | de.orat.math.vecmath.ext.ComplexNumber | |
 
 Inside the DSL all of these types are automatically casted into CGA multivectors. No other operations are possible based on these types inside the DSL.
+-->
 
 
 ## Implementations
@@ -103,7 +105,7 @@ The following features are supported ("x" is yes, "-" is no):
 | F | T | Feature |
 | - | - | ------- |
 | - | x | Visualization |
-| - | - | Debugging |
+| - | - | Debugger |
 | x | - | Multiple assignment |
 
 
