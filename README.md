@@ -12,14 +12,14 @@ Especially be cautious regarding:
 
 
 ## GraalVM Setup
-Download the [GraalVM 22.3.2](https://github.com/graalvm/graalvm-ce-builds/releases/tag/vm-22.3.2) (Linux (amd64), Java17).
+Download [GraalVM (23.1.2) for JDK 21 Community 21.0.2](https://github.com/graalvm/graalvm-ce-builds/releases/tag/jdk-21.0.2) (Linux (amd64), Java21).
 
 Extract the downloaded archive to an arbitrary location.
 
 
 ### Netbeans configuration
 Add a new java platform with the name "GraalVM". \
-Within the Netbeans 17 IDE you can do this if you follow these steps:
+Within the Netbeans 21 IDE you can do this if you follow these steps:
 - open project properties via right-click on the project
 - navigate to Build / Compile
 - click "Manage Java Platforms..."
@@ -40,15 +40,12 @@ or navigate to this point via the Tools main menu.
 
 
 ## GraalVM Update
-To update the GraalVM, navigate into the parent directory of your GraalVM installation and execute the following (customized) command: \
-`./<foldername of your GraalVM installation>/bin/gu upgrade` \
-A separate directory for the new installation will be created.
-
-Next, you need to redo the [Netbeans configuration](#netbeans-configuration).
+Redo the [GraalVM Setup](#graalvm-setup) with the new version. If you use same path and foldername as before, you can skip the step [Netbeans configuration](#netbeans-configuration).
 
 If you are the first collaborator updating to a new version, you also need to
-- update the `graalvm.version` property in the [pom.xml of the DSL4GA_Impl_Truffle subproject](DSL4GA_Impl_Truffle/pom.xml).
 - update the download link [in this documentation](#graalvm-setup).
+- update the `graalvm.version` property in the [pom.xml of the DSL4GA_Impl_Truffle subproject](DSL4GA_Impl_Truffle/pom.xml). Note, that it differs from the JDK Version. "Language runtimes" is the keyword for it in the text of the download page.
+- try building the project and fix broken code.
 
 
 ## Dependencies Setup
