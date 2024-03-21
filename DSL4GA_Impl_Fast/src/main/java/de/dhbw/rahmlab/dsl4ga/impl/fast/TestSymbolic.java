@@ -14,12 +14,12 @@ public class TestSymbolic {
 	private static void invocationTest() throws Exception {
 		String source = """
 		fn test(a) {
-			5
+			a, 5
 		}
 
 		fn main(a, b) {
-			c := test(b)
-			a, b, c
+			c, d := test(b)
+			a, b, c, d
 		}
 		""";
 

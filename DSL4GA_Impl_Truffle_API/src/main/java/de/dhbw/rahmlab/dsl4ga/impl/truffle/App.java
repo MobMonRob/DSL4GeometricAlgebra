@@ -45,8 +45,7 @@ public class App {
 		}
 
 		fn main(a, b) {
-			test(b)
-			d := getLastListReturn(0)
+			d := test(b)
 			e := getLastListReturn(1)
 			//:p1 := a
 			//:p2 := b

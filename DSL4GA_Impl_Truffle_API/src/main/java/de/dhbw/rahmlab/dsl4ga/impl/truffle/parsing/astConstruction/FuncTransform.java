@@ -117,18 +117,6 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 		}
 	}
 
-	/*
-	@Override
-	public void enterExprStmt(GeomAlgeParser.ExprStmtContext ctx) {
-		ExpressionBaseNode expr = ExprTransform.generateExprAST(ctx.exprContext, this.geomAlgeLangContext, this.functionsView, this.localVariablesView);
-
-		ExprStmt exprStmt = ExprStmtNodeGen.create(expr);
-		exprStmt.setSourceSection(ctx.start.getStartIndex(), ctx.stop.getStopIndex());
-
-		this.stmts.add(exprStmt);
-	}
-	 */
-
 	@Override
 	public void enterRetExprStmt(GeomAlgeParser.RetExprStmtContext ctx) {
 		ExpressionBaseNode retExpr = ExprTransform.generateExprAST(ctx.exprContext, this.geomAlgeLangContext, this.functionsView, this.localVariablesView);
