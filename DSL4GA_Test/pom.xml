@@ -52,7 +52,7 @@
 
 		<dependency>
 			<groupId>de.dhbw.rahmlab</groupId>
-			<artifactId>DSL4GA_Impl_Truffle_API</artifactId>
+			<artifactId>DSL4GA_Impl_Truffle</artifactId>
 			<version>1.0-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>

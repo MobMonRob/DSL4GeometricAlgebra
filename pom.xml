@@ -11,7 +11,6 @@
 		<module>DSL4GA_Common</module>
 		<module>DSL4GA_Impl_Fast</module>
 		<module>DSL4GA_Impl_Truffle</module>
-		<module>DSL4GA_Impl_Truffle_API</module>
 		<module>DSL4GA_Test</module>
 	</modules>
 	<properties>
