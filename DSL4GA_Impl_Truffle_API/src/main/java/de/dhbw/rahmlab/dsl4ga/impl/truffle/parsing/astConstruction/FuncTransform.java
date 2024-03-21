@@ -118,6 +118,11 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 	}
 
 	@Override
+	public void enterTupleAssgnStmt(GeomAlgeParser.TupleAssgnStmtContext ctx) {
+		throw new ValidationException("Assignment to multiple values is currently not supported in the Truffle variant.");
+	}
+
+	@Override
 	public void enterRetExprStmt(GeomAlgeParser.RetExprStmtContext ctx) {
 		ExpressionBaseNode retExpr = ExprTransform.generateExprAST(ctx.exprContext, this.geomAlgeLangContext, this.functionsView, this.localVariablesView);
 		this.retExprs.add(retExpr);
