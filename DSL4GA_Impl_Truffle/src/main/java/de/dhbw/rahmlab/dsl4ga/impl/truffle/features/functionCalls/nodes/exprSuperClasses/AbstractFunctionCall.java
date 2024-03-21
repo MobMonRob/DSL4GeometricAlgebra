@@ -1,6 +1,8 @@
 package de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionCalls.nodes.exprSuperClasses;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
+import com.oracle.truffle.api.instrumentation.StandardTags;
+import com.oracle.truffle.api.instrumentation.Tag;
 import com.oracle.truffle.api.interop.ArityException;
 import com.oracle.truffle.api.interop.InteropLibrary;
 import com.oracle.truffle.api.interop.UnsupportedMessageException;
@@ -66,5 +68,13 @@ public abstract class AbstractFunctionCall extends ExpressionBaseNode {
 		} catch (UnsupportedTypeException | UnsupportedMessageException e) {
 			throw new InterpreterInternalException(e.toString());
 		}
+	}
+
+	@Override
+	public boolean hasTag(Class<? extends Tag> tag) {
+		if (tag == StandardTags.CallTag.class) {
+			return true;
+		}
+		return super.hasTag(tag);
 	}
 }

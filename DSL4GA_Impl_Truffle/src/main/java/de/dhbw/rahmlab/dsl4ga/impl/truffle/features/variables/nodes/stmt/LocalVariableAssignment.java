@@ -7,6 +7,8 @@ import com.oracle.truffle.api.dsl.NodeField;
 import com.oracle.truffle.api.dsl.Specialization;
 import com.oracle.truffle.api.frame.FrameSlotKind;
 import com.oracle.truffle.api.frame.VirtualFrame;
+import com.oracle.truffle.api.instrumentation.StandardTags;
+import com.oracle.truffle.api.instrumentation.Tag;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.stmtSuperClasses.StatementBaseNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.truffleBox.CgaTruffleBox;
@@ -28,5 +30,10 @@ public abstract class LocalVariableAssignment extends StatementBaseNode {
 		int frameSlot = this.getFrameSlot();
 		CgaTruffleBox box = new CgaTruffleBox(exprValue);
 		frame.setObjectStatic(frameSlot, box);
+	}
+
+	@Override
+	public boolean hasTag(Class<? extends Tag> tag) {
+		return tag == StandardTags.WriteVariableTag.class || super.hasTag(tag);
 	}
 }
