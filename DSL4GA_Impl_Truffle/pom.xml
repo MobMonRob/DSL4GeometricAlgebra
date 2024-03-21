@@ -17,7 +17,7 @@
 		<maven.compiler.target>17</maven.compiler.target>
 		<skipTests>true</skipTests>
 		<graalvm.version>23.1.2</graalvm.version>
-		<truffleGenSourceDir>${project.build.directory}/generated-sources/truffle-dsl-processor/gen/</truffleGenSourceDir>
+		<truffleGenSourceDir>${project.build.directory}/generated-sources/truffle-dsl-processor</truffleGenSourceDir>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -45,36 +45,6 @@
 			<scope>runtime</scope>
 			<optional>true</optional>
 		</dependency>
-
-		<dependency>
-			<groupId>org.graalvm.truffle</groupId>
-			<artifactId>truffle-api</artifactId>
-			<version>${graalvm.version}</version>
-		</dependency>
-		<!-- Workaround to make netbeans recognize generated source files from truffle. Otherwise unnecessary. -->
-		<dependency>
-			<groupId>org.graalvm.truffle</groupId>
-			<artifactId>truffle-dsl-processor</artifactId>
-			<version>${graalvm.version}</version>
-			<!-- Prevents dependent projects from using this dependency transitively. But also includes it in the compile classpath. -->
-			<scope>provided</scope>
-			<!-- -->
-			<!-- Prevents the dependency (but not it's dependencies) from being included in the compile classpath. And prevents thereby conflicts between it's included version of the antlr-runtime and our antlr-runtime dependency. -->
-			<type>pom</type>
-			<!-- -->
-			<!-- Prevents dependent projects from using this dependency transitively. (redundant) -->
-			<optional>true</optional>
-			<!-- -->
-		</dependency>
-		<!-- -->
-		<!-- https://www.graalvm.org/22.0/reference-manual/embed-languages/#dependency-setup -->
-		<dependency>
-			<groupId>org.graalvm.sdk</groupId>
-			<artifactId>graal-sdk</artifactId>
-			<version>${graalvm.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<!-- -->
 		<!-- indirect dependency introduced via ConformalGeometricAlgebra -->
 		<dependency>
 			<groupId>de.orat.math.ga</groupId>
@@ -82,74 +52,69 @@
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 		<!-- -->
-	 <dependency>
-	  <groupId>de.orat.math.cga</groupId>
-	  <artifactId>ConformalGeometricAlgebra</artifactId>
-	  <version>1.0-SNAPSHOT</version>
-	 </dependency>
+		<dependency>
+			<groupId>de.orat.math.cga</groupId>
+			<artifactId>ConformalGeometricAlgebra</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.graalvm.polyglot</groupId>
+			<artifactId>polyglot</artifactId>
+			<version>${graalvm.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.graalvm.truffle</groupId>
+			<artifactId>truffle-api</artifactId>
+			<version>${graalvm.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.graalvm.truffle</groupId>
+			<artifactId>truffle-runtime</artifactId>
+			<version>${graalvm.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+
 	</dependencies>
 	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.11.0</version>
-				<configuration>
-					<encoding>${project.build.sourceEncoding}</encoding>
-					<compilerArgs>
-						<arg>--add-exports</arg>
-						<arg>org.graalvm.truffle/com.oracle.truffle.api.nodes=ALL-UNNAMED</arg>
-						<arg>--add-exports</arg>
-						<arg>org.graalvm.truffle/com.oracle.truffle.api.exception=ALL-UNNAMED</arg>
-						<arg>--add-exports</arg>
-						<arg>org.graalvm.truffle/com.oracle.truffle.api=ALL-UNNAMED</arg>
-						<arg>--add-exports</arg>
-						<arg>org.graalvm.truffle/com.oracle.truffle.api.interop=ALL-UNNAMED</arg>
-					</compilerArgs>
-					<!-- Workaround to make netbeans recognize generated source files from truffle. -->
-					<generatedSourcesDirectory>${truffleGenSourceDir}</generatedSourcesDirectory>
-					<!-- -->
-					<annotationProcessorPaths>
-						<!-- Prevents conflicts between truffle and antlr-runtime. -->
-						<annotationProcessorPath>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.11.0</version>
+					<configuration>
+						<source>17</source>
+						<target>17</target>
+						<annotationProcessorPaths>
+							<path>
+								<groupId>org.graalvm.truffle</groupId>
+								<artifactId>truffle-dsl-processor</artifactId>
+								<version>${graalvm.version}</version>
+							</path>
+						</annotationProcessorPaths>
+						<generatedSourcesDirectory>${truffleGenSourceDir}</generatedSourcesDirectory>
+						<compilerArgs>
+							<arg>--add-exports</arg>
+							<arg>org.graalvm.truffle/com.oracle.truffle.api.nodes=ALL-UNNAMED</arg>
+							<arg>--add-exports</arg>
+							<arg>org.graalvm.truffle/com.oracle.truffle.api.exception=ALL-UNNAMED</arg>
+							<arg>--add-exports</arg>
+							<arg>org.graalvm.truffle/com.oracle.truffle.api=ALL-UNNAMED</arg>
+							<arg>--add-exports</arg>
+							<arg>org.graalvm.truffle/com.oracle.truffle.api.interop=ALL-UNNAMED</arg>
+						</compilerArgs>
+					</configuration>
+					<dependencies>
+						<dependency>
 							<groupId>org.graalvm.truffle</groupId>
 							<artifactId>truffle-dsl-processor</artifactId>
 							<version>${graalvm.version}</version>
-						</annotationProcessorPath>
-						<!-- -->
-					</annotationProcessorPaths>
-					<failOnError>true</failOnError>
-				</configuration>
-				<dependencies>
-					<!-- Prevents conflicts between truffle and antlr-runtime. -->
-					<!-- truffle-dsl-processor is indeed only needed at compile time. -->
-					<dependency>
-						<groupId>org.graalvm.truffle</groupId>
-						<artifactId>truffle-dsl-processor</artifactId>
-						<version>${graalvm.version}</version>
-					</dependency>
-					<!-- -->
-					<!-- -->
-				</dependencies>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>build-helper-maven-plugin</artifactId>
-				<version>3.3.0</version>
-				<executions>
-					<execution>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>add-source</goal>
-						</goals>
-						<configuration>
-							<sources>
-								<source>${truffleGenSourceDir}</source>
-							</sources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
+						</dependency>
+					</dependencies>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<finalName>DSL4GA_Impl_Truffle</finalName>
 	</build>
 </project>
