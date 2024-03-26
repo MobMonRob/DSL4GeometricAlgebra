@@ -210,15 +210,15 @@ There exist three types of involution operations: Space inversion, reversion and
 ### Base functions
 | symbol      | description | implementation |
 | :---------- | ------------ | -------------- |
-| exp()       | exponential | CGAMultivector.exp() |
-| normalize() | normalize | CGAMultivector.normalize() |
-| norm()      | norm of a mulitvector | not yet implemented |
+| exp()       | exponential | MultivectorSymbolic.exp() |
+| normalize() | normalize by squared norm | MultivectorSymbolic.normalize() |
+| squaredNorm()      | squared norm of a mulitvector | MultivectorSymbolic.squaredNorm() |
 | scp()       | scalar product | not yet implemented |
 | dot()       | dot product | not yet implemented |
 | abs()       | absolute value of a scalar only | Math.abs(CGAScalar) |
 | sqrt()      | square root of a scalar only | new CGAScalar(Math.sqrt(CGAScalar)) |
 | atan2(x,y)     | arcus tansgens 2 (Converts the coordinates (x,y) to coordinates (r, theta) and returns the angle theta as the couterclockwise angle in radians between -pi and pi of the point (x,y) to the positive x-axis.)| new CGAScalar(Math.atan2(CGAScalar, CGAScalar)) |
-| negate14()  | negate the signs of the vector- and 4-vector parts of an multivector. Usable to implement gerneral inverse. | multivector.negate14() |
+| negate14()  | negate the signs of the vector- and 4-vector parts of an multivector. Usable to implement gerneral inverse. | MultivectorSymbolic.negate14() |
 
 
 ### Additional functions to create transformations
