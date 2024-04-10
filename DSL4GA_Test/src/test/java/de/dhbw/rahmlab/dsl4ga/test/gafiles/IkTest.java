@@ -13,8 +13,14 @@ public class IkTest {
 
 	private static IkProgram PROGRAM;
 
-	public static void main(String args[]) {
-		init();
+	public static void main(String args[]) throws InterruptedException {
+		while (true) {
+			init();
+			System.gc();
+			System.runFinalization();
+			Thread.sleep(1000);
+			new IkTest().dummy();
+		}
 	}
 
 	@BeforeAll
