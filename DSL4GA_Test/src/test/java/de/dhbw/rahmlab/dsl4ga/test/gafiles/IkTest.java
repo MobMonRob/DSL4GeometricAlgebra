@@ -20,7 +20,7 @@ public class IkTest {
 	@BeforeAll
 	static void init() {
 		System.out.println("Init:");
-		CGASymbolicFunctionCache.instance().resetCache();
+		CGASymbolicFunctionCache.instance().clearCache();
 		PROGRAM = new IkProgram();
 		System.out.println("......CachedFunctionUsage");
 		System.out.println(CGASymbolicFunctionCache.instance().cachedFunctionUsageToString());
