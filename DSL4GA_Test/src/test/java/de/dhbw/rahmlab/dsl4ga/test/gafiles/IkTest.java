@@ -14,6 +14,16 @@ public class IkTest {
 	private static IkProgram PROGRAM;
 
 	public static void main(String args[]) throws InterruptedException {
+		tut();
+		// absturz();
+	}
+
+	protected static void tut() {
+		init();
+		new IkTest().dummy();
+	}
+
+	protected static void absturz() throws InterruptedException {
 		while (true) {
 			init();
 			System.gc();
@@ -26,7 +36,7 @@ public class IkTest {
 	@BeforeAll
 	static void init() {
 		System.out.println("Init:");
-		CGASymbolicFunctionCache.instance().clearCache();
+		// CGASymbolicFunctionCache.instance().clearCache();
 		PROGRAM = new IkProgram();
 		System.out.println("......CachedFunctionUsage");
 		System.out.println(CGASymbolicFunctionCache.instance().cachedFunctionUsageToString());
