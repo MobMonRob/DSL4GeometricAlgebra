@@ -14,23 +14,8 @@ public class IkTest {
 	private static IkProgram PROGRAM;
 
 	public static void main(String args[]) throws InterruptedException {
-		tut();
-		// absturz();
-	}
-
-	protected static void tut() {
 		init();
 		new IkTest().dummy();
-	}
-
-	protected static void absturz() throws InterruptedException {
-		while (true) {
-			init();
-			System.gc();
-			System.runFinalization();
-			Thread.sleep(1000);
-			new IkTest().dummy();
-		}
 	}
 
 	@BeforeAll
