@@ -24,7 +24,7 @@ public class IkTest {
 		// CGASymbolicFunctionCache.instance().clearCache();
 		PROGRAM = new IkProgram();
 		System.out.println("......CachedFunctionUsage");
-		System.out.println(CachedSparseCGASymbolicMultivector.CACHE.cachedFunctionUsageToString());
+		System.out.println(CachedSparseCGASymbolicMultivector.getCache().cachedFunctionUsageToString());
 		System.out.println("....../CachedFunctionUsage");
 	}
 
