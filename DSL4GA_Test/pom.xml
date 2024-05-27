@@ -16,8 +16,8 @@
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>
 		<annotation-processing.version>1.0-SNAPSHOT</annotation-processing.version>
-		<generatedSourcesDirectory>${project.build.directory}/generated-sources/annotation-processing</generatedSourcesDirectory>
-		<generatedTestSourcesDirectory>${project.build.directory}/generated-test-sources/annotation-processing</generatedTestSourcesDirectory>
+		<generatedSourcesDirectory>${project.build.directory}/generated-sources/DSL4GA_Annotation</generatedSourcesDirectory>
+		<generatedTestSourcesDirectory>${project.build.directory}/generated-test-sources/DSL4GA_Annotation</generatedTestSourcesDirectory>
 		<skipTests>false</skipTests>
 	</properties>
 
