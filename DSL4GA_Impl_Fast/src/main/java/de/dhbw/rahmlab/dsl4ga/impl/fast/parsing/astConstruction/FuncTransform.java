@@ -7,6 +7,7 @@ import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationException;
 import de.orat.math.gacalc.api.ExprGraphFactory;
 import de.orat.math.gacalc.api.FunctionSymbolic;
 import de.orat.math.gacalc.api.GAExprGraphFactoryService;
+import de.orat.math.gacalc.api.MultivectorPurelySymbolic;
 import de.orat.math.gacalc.api.MultivectorSymbolic;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,7 +22,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 	// Momentan ist jedes Stmt eine Zuweisung, die am Ende eine Variable ergibt.
 	// Wenn anderes unterstützt werden soll, muss man sich überlegen, wie man das macht.
 	protected final List<MultivectorSymbolic> retExprs = new ArrayList<>();
-	protected final List<MultivectorSymbolic> formalParameterList = new ArrayList<>();
+	protected final List<MultivectorPurelySymbolic> formalParameterList = new ArrayList<>();
 	protected String functionName;
 	protected final Map<String, FunctionSymbolic> functionsView;
 
@@ -58,7 +59,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 	public void exitFormalParameter_(GeomAlgeParser.FormalParameter_Context ctx) {
 		String name = ctx.name.getText();
 
-		var param = exprGraphFactory.createMultivectorSymbolic(name);
+		var param = exprGraphFactory.createMultivectorPurelySymbolic(name);
 
 		this.formalParameterList.add(param);
 		this.localVariables.put(name, param);
