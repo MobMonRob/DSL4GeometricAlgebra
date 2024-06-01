@@ -4,6 +4,7 @@ import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParser;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParserBaseListener;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.SkippingParseTreeWalker;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationException;
+import de.orat.math.gacalc.api.ConstantsProvider;
 import de.orat.math.gacalc.api.ExprGraphFactory;
 import de.orat.math.gacalc.api.FunctionSymbolic;
 import de.orat.math.gacalc.api.GAExprGraphFactoryService;
@@ -29,6 +30,7 @@ import java.util.List;
 public class ExprTransform extends GeomAlgeParserBaseListener {
 
 	protected final ExprGraphFactory exprGraphFactory = GAExprGraphFactoryService.getExprGraphFactoryThrowing();
+	protected final ConstantsProvider constants = exprGraphFactory.constants();
 	protected final Deque<MultivectorSymbolic> nodeStack = new ArrayDeque<>();
 	protected final Map<String, FunctionSymbolic> functionsView;
 	protected final Map<String, MultivectorSymbolic> localVariablesView;
@@ -192,49 +194,49 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		var node = switch (ctx.type.getType()) {
 			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_ZERO ->
 				// ConstantNodeGen.create(Constant.Kind.base_vector_origin);
-				exprGraphFactory.getBaseVectorOrigin();
+				constants.getBaseVectorOrigin();
 			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_SMALL_I ->
 				// ConstantNodeGen.create(Constant.Kind.base_vector_infinity);
-				exprGraphFactory.getBaseVectorInfinity();
+				constants.getBaseVectorInfinity();
 			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_ONE ->
 				// ConstantNodeGen.create(Constant.Kind.base_vector_x);
-				exprGraphFactory.getBaseVectorX();
+				constants.getBaseVectorX();
 			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_TWO ->
 				// ConstantNodeGen.create(Constant.Kind.base_vector_y);
-				exprGraphFactory.getBaseVectorY();
+				constants.getBaseVectorY();
 			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_THREE ->
 				// ConstantNodeGen.create(Constant.Kind.base_vector_z);
-				exprGraphFactory.getBaseVectorZ();
+				constants.getBaseVectorZ();
 			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_PLUS ->
 				// ConstantNodeGen.create(Constant.Kind.epsilon_plus);
-				exprGraphFactory.getEpsilonPlus();
+				constants.getEpsilonPlus();
 			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_MINUS ->
 				// ConstantNodeGen.create(Constant.Kind.epsilon_minus);
-				exprGraphFactory.getEpsilonMinus();
+				constants.getEpsilonMinus();
 			case GeomAlgeParser.SMALL_PI ->
 				// ConstantNodeGen.create(Constant.Kind.pi);
-				exprGraphFactory.getPi();
+				constants.getPi();
 			case GeomAlgeParser.INFINITY ->
 				// ConstantNodeGen.create(Constant.Kind.base_vector_infinity_dorst);
-				exprGraphFactory.getBaseVectorInfinityDorst();
+				constants.getBaseVectorInfinityDorst();
 			case GeomAlgeParser.SMALL_O ->
 				// ConstantNodeGen.create(Constant.Kind.base_vector_origin_dorst);
-				exprGraphFactory.getBaseVectorOriginDorst();
+				constants.getBaseVectorOriginDorst();
 			case GeomAlgeParser.SMALL_N ->
 				// ConstantNodeGen.create(Constant.Kind.base_vector_infinity_doran);
-				exprGraphFactory.getBaseVectorInfinityDoran();
+				constants.getBaseVectorInfinityDoran();
 			case GeomAlgeParser.SMALL_N_TILDE ->
 				// ConstantNodeGen.create(Constant.Kind.base_vector_origin_doran);
-				exprGraphFactory.getBaseVectorOriginDoran();
+				constants.getBaseVectorOriginDoran();
 			case GeomAlgeParser.CAPITAL_E__SUBSCRIPT_ZERO ->
 				// ConstantNodeGen.create(Constant.Kind.minkovsky_bi_vector);
-				exprGraphFactory.getMinkovskyBiVector();
+				constants.getMinkovskyBiVector();
 			case GeomAlgeParser.CAPITAL_E__SUBSCRIPT_THREE ->
 				// ConstantNodeGen.create(Constant.Kind.euclidean_pseudoscalar);
-				exprGraphFactory.getEuclideanPseudoscalar();
+				constants.getEuclideanPseudoscalar();
 			case GeomAlgeParser.CAPITAL_E ->
 				// ConstantNodeGen.create(Constant.Kind.pseudoscalar);
-				exprGraphFactory.getPseudoscalar();
+				constants.getPseudoscalar();
 			default ->
 				throw new UnsupportedOperationException();
 		};
