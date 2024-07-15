@@ -1,0 +1,11 @@
+fn test(z) {
+	a := 3.14
+	b := z+a
+	b
+}
+
+fn main() {
+	a := 5
+	b := test(a)
+	a, b
+}

@@ -2,6 +2,7 @@ package de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime;
 
 import com.oracle.truffle.api.CallTarget;
 import com.oracle.truffle.api.TruffleLanguage;
+import com.oracle.truffle.api.debug.DebuggerTags;
 import com.oracle.truffle.api.instrumentation.ProvidedTags;
 import com.oracle.truffle.api.instrumentation.StandardTags;
 import com.oracle.truffle.api.source.Source;
@@ -21,7 +22,8 @@ import java.io.IOException;
 	StandardTags.StatementTag.class,
 	StandardTags.ExpressionTag.class,
 	StandardTags.ReadVariableTag.class,
-	StandardTags.WriteVariableTag.class
+	StandardTags.WriteVariableTag.class,
+	DebuggerTags.AlwaysHalt.class
 })
 public class GeomAlgeLang extends TruffleLanguage<GeomAlgeLangContext> {
 

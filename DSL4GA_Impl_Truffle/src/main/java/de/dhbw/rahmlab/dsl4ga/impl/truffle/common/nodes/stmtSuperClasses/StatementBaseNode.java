@@ -1,5 +1,6 @@
 package de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.stmtSuperClasses;
 
+import com.oracle.truffle.api.debug.DebuggerTags;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.GenerateWrapper;
 import com.oracle.truffle.api.instrumentation.InstrumentableNode;
@@ -26,6 +27,11 @@ public abstract class StatementBaseNode extends GeomAlgeLangBaseNode implements 
 
 	@Override
 	public boolean hasTag(Class<? extends Tag> tag) {
+		// dbg
+//		if (tag == DebuggerTags.AlwaysHalt.class) {
+//			return true;
+//		}
+		// dbg
 		if (tag == StandardTags.StatementTag.class) {
 			return true;
 		}
