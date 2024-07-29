@@ -21,16 +21,17 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.su
 @ExportLibrary(InteropLibrary.class)
 public class Function implements TruffleObject {
 
-	public final String name;
-
 	protected final AbstractFunctionRootNode functionRootNode;
 
 	protected final int arity;
 
-	public Function(AbstractFunctionRootNode functionRootNode, String name, int arity) {
+	public Function(AbstractFunctionRootNode functionRootNode, int arity) {
 		this.functionRootNode = functionRootNode;
-		this.name = name;
 		this.arity = arity;
+	}
+
+	public String getName() {
+		return this.functionRootNode.getName();
 	}
 
 	public AbstractFunctionRootNode getRootNode() {

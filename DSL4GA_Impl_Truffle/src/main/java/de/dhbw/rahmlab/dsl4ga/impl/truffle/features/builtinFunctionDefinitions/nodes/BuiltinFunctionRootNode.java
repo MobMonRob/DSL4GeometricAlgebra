@@ -13,8 +13,8 @@ public final class BuiltinFunctionRootNode extends AbstractFunctionRootNode {
 	@Child
 	private BuiltinFunctionBody builtinFuncBody;
 
-	public BuiltinFunctionRootNode(GeomAlgeLang language, BuiltinFunctionBody builtinFuncBody) {
-		super(language, new FrameDescriptor());
+	public BuiltinFunctionRootNode(GeomAlgeLang language, BuiltinFunctionBody builtinFuncBody, String name) {
+		super(language, new FrameDescriptor(), name);
 		this.builtinFuncBody = builtinFuncBody;
 	}
 

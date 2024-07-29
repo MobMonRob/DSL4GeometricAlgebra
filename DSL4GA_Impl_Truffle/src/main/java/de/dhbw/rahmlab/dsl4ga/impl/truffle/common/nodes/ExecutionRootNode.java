@@ -27,7 +27,7 @@ public class ExecutionRootNode extends AbstractFunctionRootNode {
 	}
 
 	public ExecutionRootNode(GeomAlgeLang language, Function function) {
-		super(language, frameDescriptor());
+		super(language, frameDescriptor(), function.getName());
 		this.function = function;
 	}
 
