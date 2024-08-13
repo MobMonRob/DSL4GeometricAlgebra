@@ -47,7 +47,7 @@
                   <filtering>true</filtering>
                   <directory>${project.basedir}/</directory>
                   <includes>
-                    <include>sl</include>
+                    <include>ga</include>
                   </includes>
                 </resource>
               </resources>
@@ -83,7 +83,7 @@
                                         -p %classpath
                                         -H:+ReportExceptionStackTraces
                                         -m ${launcherClass}
-                                        -o ${project.build.directory}/slnative
+                                        -o ${project.build.directory}/ganative
                                     </commandlineArgs>
                                 </configuration>
                             </execution>
