@@ -8,9 +8,9 @@
     </parent>
     <artifactId>DSL4GA_Launcher</artifactId>
     <!--packaging>jar</packaging-->
-    <properties>
+    <!--properties>
         <graalvm.version>23.1.2</graalvm.version>
-    </properties>
+    </properties-->
     <build>
         <!--plugins>
           <plugin>

@@ -16,7 +16,7 @@
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>
 		<skipTests>true</skipTests>
-		<graalvm.version>23.1.2</graalvm.version>
+		<!--graalvm.version>23.1.2</graalvm.version-->
 		<truffleGenSourceDir>${project.build.directory}/generated-sources/truffle-dsl-processor</truffleGenSourceDir>
 	</properties>
 	<dependencies>
