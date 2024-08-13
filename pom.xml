@@ -13,6 +13,7 @@
 		<module>DSL4GA_Impl_Truffle</module>
 		<module>DSL4GA_Test</module>
 	    <module>DSL4GA_Launcher</module>
+	    <module>DSL4GA_Standalone</module>
 	</modules>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -20,5 +21,6 @@
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>
 		<graalvm.version>23.1.2</graalvm.version>
+		<launcherClass>org.graalvm.sl.launcher/de.dhbw.rahmlab.dsl4ga.launcher.DSL4GAMain</launcherClass>
 	</properties>
 </project>
