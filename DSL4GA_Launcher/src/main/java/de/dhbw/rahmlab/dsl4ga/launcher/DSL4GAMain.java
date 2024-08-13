@@ -13,12 +13,16 @@ import org.graalvm.polyglot.PolyglotException;
 import org.graalvm.polyglot.Source;
 import org.graalvm.polyglot.Value;
 
+//import de.dhbw.rahmlab.dsl4ga.impl.truffle.api.Program;
+
 /**
  * @author Oliver Rettig (Oliver.Rettig@orat.de)
  */
 public final class DSL4GAMain {
 
-    private static final String GA = "ga";
+    // corresponding to the language id in the annotation bzw. in Program.LANGUAGE_ID
+    //FIXME usage not possible because than module-info.java breaks
+    private static final String GA = "geomalgelang"; //Program.LANGUAGE_ID;
 
     /**
      * The main entry point.
