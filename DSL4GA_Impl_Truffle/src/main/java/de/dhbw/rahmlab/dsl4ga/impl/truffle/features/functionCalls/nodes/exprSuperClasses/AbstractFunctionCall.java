@@ -59,11 +59,11 @@ public abstract class AbstractFunctionCall extends ExpressionBaseNode {
 				return mvecs.get(0);
 			} else {
 				throw new LanguageRuntimeException(
-					String.format("Function \"%s\" returned object of unknonw type: ", function.name, returnValue.getClass().getSimpleName()),
+					String.format("Function \"%s\" returned object of unknonw type: ", function.getName(), returnValue.getClass().getSimpleName()),
 					this);
 			}
 		} catch (ArityException e) {
-			String message = "Wrong argument count in functionCall of: " + function.name + "\n" + e.toString();
+			String message = "Wrong argument count in functionCall of: " + function.getName() + "\n" + e.toString();
 			throw new InterpreterInternalException(message);
 		} catch (UnsupportedTypeException | UnsupportedMessageException e) {
 			throw new InterpreterInternalException(e.toString());

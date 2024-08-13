@@ -55,8 +55,8 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 		FrameDescriptor frameDescriptor = transform.frameDescriptorBuilder.build();
 
-		FunctionDefinitionRootNode functionRootNode = new FunctionDefinitionRootNode(geomAlgeLangContext.truffleLanguage, frameDescriptor, functionDefinitionBody);
-		Function function = new Function(functionRootNode, transform.functionName, transform.formalParameterList.size());
+		FunctionDefinitionRootNode functionRootNode = new FunctionDefinitionRootNode(geomAlgeLangContext.truffleLanguage, frameDescriptor, functionDefinitionBody, transform.functionName);
+		Function function = new Function(functionRootNode, transform.formalParameterList.size());
 
 		return function;
 	}

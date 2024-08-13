@@ -44,10 +44,10 @@ public class BuiltinRegistry {
 		FunctionArgumentReader[] functionArguments = FunctionArgumentReader.createArray(0, arity);
 
 		BuiltinFunctionBody builtinFunctionBody = factory.createNode((Object) functionArguments);
-		BuiltinFunctionRootNode builtinFunctionRootNode = new BuiltinFunctionRootNode(truffleLanguage, builtinFunctionBody);
-		Function function = new Function(builtinFunctionRootNode, name, arity);
+		BuiltinFunctionRootNode builtinFunctionRootNode = new BuiltinFunctionRootNode(truffleLanguage, builtinFunctionBody, name);
+		Function function = new Function(builtinFunctionRootNode, arity);
 
-		this.builtins.put(function.name, function);
+		this.builtins.put(function.getName(), function);
 	}
 
 	public Function getBuiltinFunction(String name) throws InterpreterInternalException {

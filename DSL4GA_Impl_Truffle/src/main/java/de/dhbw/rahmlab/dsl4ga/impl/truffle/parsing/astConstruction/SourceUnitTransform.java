@@ -28,11 +28,12 @@ public class SourceUnitTransform extends GeomAlgeParserBaseListener {
 		 */
 		for (FunctionContext functionCtx : ctx.functions) {
 			Function function = FuncTransform.generate(functionCtx, geomAlgeLangContext, functionsView);
-			if (functions.containsKey(function.name)) {
+			String name = function.getName();
+			if (functions.containsKey(name)) {
 				// ToDo: Display position of the function.
-				throw new ValidationException(String.format("Function with name \"%s\" has been already declared.", function.name));
+				throw new ValidationException(String.format("Function with name \"%s\" has been already declared.", name));
 			}
-			functions.put(function.name, function);
+			functions.put(name, function);
 		}
 
 		Function main = functions.get("main");

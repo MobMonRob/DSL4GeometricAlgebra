@@ -11,8 +11,8 @@ public final class FunctionDefinitionRootNode extends AbstractFunctionRootNode {
 	@Child
 	private FunctionDefinitionBody funcDefBodyNode;
 
-	public FunctionDefinitionRootNode(GeomAlgeLang language, FrameDescriptor frameDescriptor, FunctionDefinitionBody funcDefBodyNode) {
-		super(language, frameDescriptor);
+	public FunctionDefinitionRootNode(GeomAlgeLang language, FrameDescriptor frameDescriptor, FunctionDefinitionBody funcDefBodyNode, String name) {
+		super(language, frameDescriptor, name);
 		this.funcDefBodyNode = funcDefBodyNode;
 	}
 
