@@ -1,0 +1,99 @@
+// Inverse Kinematics following A. Marzabal and I. Zaplana: Closed-form inverse kinematics 
+// solututions for a class of serial robots without a spherical wrist using conformal geometric algebra.
+// Example: UR5e robot placed at the origin of the frame
+
+fn main() {
+
+	// nominal dh parameters UR5e, the d-parameters correspond to the link lengths
+    // and fullfill the assumption to apply the approach
+	a2 := -0.425
+	a3 := -0.3922
+	d1 := 0.1625
+	d4 := 0.1333
+	d5 := 0.0997
+	d6 := 0.0996
+
+	// robots end-effector pose
+    p6 := rp(-0.5, 0.0, 0.0)
+    R6 := //TODO
+
+    // robots origin
+    p0 := ε₀ // equivalent to rp(0.0, 0.0, 0.0)
+
+	// p5 is the translation of p6 along the (minus) z-axis
+	// about a distance d6, which is the length of the last link
+	T56 := 1 - 0.5d6ε₃εᵢ //FIX e3 und einf tauschen?
+	p5 = T56 p6 T56˜
+
+	// p1 lies between links 1 and 2
+    // defined by translation of p0 along the z-axis of the reference distance d1
+    // which is the first link
+	T10 := 1 + 0.5d1ε₃εᵢ //FIXME e3 und einf tauschen?
+    p1 := T10 p0 T10˜
+
+	// p4 with 4 possible solutions
+
+    // sphere with center p5 and radius d5
+	S5 := sp(p5, d5) // S5 := p5 - 0.5d5²εᵢ
+    // plane with normal vector from p5 to p6 through p5
+	v56 := ep(p6)-ep(p5) 
+    PI5 := v56 + (p5⋅v56)εᵢ
+    //alternative fomulation: plane between p5 and p5 tranlated into p5 (half distance subtraction)
+    //PI5 := p6-p5-0.5.... TODO
+
+    // TODO define dm as norm of the middle point of the projection of the segment Op5 to
+    // the xy-plane
+    Sm := m-0.5dm²εᵢ
+	S0 := sp(ε₀, d4) //S0 :=ε₀-0.5d4²εᵢ
+    PIxy := ε₃
+	// intersection of the above three geometric objects
+    // = outer representation of the pair of points v1, v2 representing the normal vectors
+    // of the two possible vertical planes that contains p5 and have 
+    // a distance vector d4 to the origin
+    Btan := (Sm∧S0∧PIxy)* // outer representation of a point pair, representing normal vectors of
+    // two possible planes that contains pt5 and have a distance d4 to the origin
+    v1, v2 = epp(Btan) // decompose the euclidean points coordinates from a point pair 
+    // inner representation of these two planes:
+    PI41 := v1+d4εᵢ
+	PI42 := v2+d4εᵢ
+
+    B4 := PI5∧S5∧PI41 // bivector representing two points
+    //TODO extract 4 possibilities of p4 from B4
+    
+    // p3 as translation of p4 along v4 by an amount d4
+    T34 := 1-0.5d4εᵢv4
+	p31 := T34 p41 T34˜
+	p32 := T34 p42 T34˜
+	p33 := T34 p43 T34˜
+	p34 := T34 p44 T34˜
+
+    // TODO define all variants based on the 4 variants of p3
+    S1 := p1 - 0.5a2²εᵢ
+    S3 := p3 - 0.5a3²εᵢ
+    PI := (p0∧p2∧p3∧εᵢ)*
+    
+    // TODO outer representation of the two possible values for p2 for each of the 4 points p3
+    B2 := S1∧S3∧PI 
+
+    // define the geometric objects to determine the joint angles
+    PIxy = 
+}
+
+// round point from 3 euclidean coordinates
+fn rp(x,y,z){
+	p := xε₁+yε₂+zε₃
+    p + 0.5p²εᵢ+ε₀
+}
+// sphere from midpoint and radius
+fn sp(m,r){
+	m - 0.5r²εᵢ
+}
+// three euclidean coordinates from a rount point
+fn ep(rp){
+	(ε₀∧εᵢ)⋅(rp∧(ε₀∧εᵢ))
+}
+// euclidean points from a point pair
+fn epp(pp){
+	ppnorm := sqrt(squaredNorm(pp)
+    (pp+ppnorm)/(-εᵢ⋅pp), (pp-ppnorm)/(-εᵢ⋅pp)
+}
