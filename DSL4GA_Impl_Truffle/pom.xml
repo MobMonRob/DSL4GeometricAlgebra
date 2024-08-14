@@ -56,12 +56,6 @@
 			<groupId>de.orat.math.cga</groupId>
 			<artifactId>ConformalGeometricAlgebra</artifactId>
 			<version>1.0-SNAPSHOT</version>
-		 <exclusions>
-		  <exclusion>
-		   <groupId>de.orat.math.view</groupId>
-		   <artifactId>EuclidView3d</artifactId>
-		  </exclusion>
-		 </exclusions>
 		</dependency>
 
 		<dependency>
@@ -120,6 +114,6 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
-		<finalName>DSL4GA_Impl_Truffle</finalName>
+		<!--finalName>DSL4GA_Impl_Truffle</finalName-->
 	</build>
 </project>
