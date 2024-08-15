@@ -12,6 +12,7 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.su
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.Function;
 import de.orat.math.cga.api.CGAMultivector;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +34,13 @@ public class ExecutionRootNode extends AbstractFunctionRootNode {
 
 	@Override
 	public Object execute(VirtualFrame frame) {
-		Map<String, CGAMultivector> arguments = ((CgaMapTruffleBox) frame.getArguments()[0]).getInner();
+		Map<String, CGAMultivector> arguments;
+		Object[] oArgs = frame.getArguments();
+		if (oArgs.length != 0) {
+			arguments = ((CgaMapTruffleBox) oArgs[0]).getInner();
+		} else {
+			arguments = new HashMap<>();
+		}
 
 		List<CGAMultivector> argsList = new ArrayList<>(arguments.values());
 		CgaListTruffleBox argsBoxed = new CgaListTruffleBox(argsList);

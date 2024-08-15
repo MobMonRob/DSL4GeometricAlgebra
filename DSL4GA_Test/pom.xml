@@ -19,10 +19,11 @@
 		<generatedSourcesDirectory>${project.build.directory}/generated-sources/DSL4GA_Annotation</generatedSourcesDirectory>
 		<generatedTestSourcesDirectory>${project.build.directory}/generated-test-sources/DSL4GA_Annotation</generatedTestSourcesDirectory>
 		<skipTests>false</skipTests>
+		<graalvm.version>23.1.2</graalvm.version>
 	</properties>
 
 	<dependencies>
-				<dependency>
+		<dependency>
 			<groupId>de.orat.math.cgacasadi</groupId>
 			<artifactId>CGACasADi</artifactId>
 			<version>1.0-SNAPSHOT</version>
@@ -61,6 +62,19 @@
 			<groupId>de.dhbw.rahmlab</groupId>
 			<artifactId>DSL4GA_Impl_Truffle</artifactId>
 			<version>1.0-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.graalvm.polyglot</groupId>
+			<artifactId>polyglot</artifactId>
+			<version>${graalvm.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.graalvm.truffle</groupId>
+			<artifactId>truffle-api</artifactId>
+			<version>${graalvm.version}</version>
 			<scope>test</scope>
 		</dependency>
 

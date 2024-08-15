@@ -21,11 +21,15 @@
 			<groupId>de.dhbw.rahmlab</groupId>
 			<artifactId>DSL4GA_API</artifactId>
 			<version>1.0-SNAPSHOT</version>
+			<!-- needs to be transitive as part of the own API -->
+			<optional>false</optional>
 		</dependency>
 		<dependency>
 			<groupId>de.orat.math.sparsematrix</groupId>
 			<artifactId>SparseMatrix</artifactId>
 			<version>1.0-SNAPSHOT</version>
+			<!-- needs to be transitive as part of the own API -->
+			<optional>false</optional>
 		</dependency>
 		<dependency>
 			<groupId>com.google.auto.service</groupId>
@@ -38,6 +42,8 @@
 			<groupId>com.squareup</groupId>
 			<artifactId>javapoet</artifactId>
 			<version>1.13.0</version>
+			<!-- Needed for annotation execution in dependent projects. -->
+			<optional>false</optional>
 		</dependency>
 	</dependencies>
 </project>
