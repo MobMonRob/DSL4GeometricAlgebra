@@ -55,7 +55,7 @@ if [ -d "$JAVA_HOME/lib/graalvm" ]; then
         -dump)
             JAVA_ARGS+=("-Dpolyglot.engine.AllowExperimentalOptions=true" "-Dgraal.PrintGraph=Network" "-Dgraal.Dump=Truffle:1" "-Dpolyglot.engine.BackgroundCompilation=false" "-Dpolyglot.engine.TraceCompilation=true" "-Dpolyglot.engine.TraceCompilationDetails=true") ;;
         -lsp)
-            JAVA_ARGS+=("-Dpolyglotimpl.TraceClassPathIsolation=true -Dpolyglot.engine.AllowExperimentalOptions=true" "-D--lsp" "-Dfile.encoding=UTF-8" "-Dstdout.encoding=UTF-8" "-Dsun.stdout.encoding=UTF-8" "-Dgraalvm.locatorDisabled=true" "-D--add-exports org.graalvm.truffle/com.oracle.truffle.api.nodes=ALL-UNNAMED" "-D--add-exports org.graalvm.truffle/com.oracle.truffle.api.exception=ALL-UNNAMED" "-D--add-exports org.graalvm.truffle/com.oracle.truffle.api=ALL-UNNAMED" "-D--add-exports org.graalvm.truffle/com.oracle.truffle.api.interop=ALL-UNNAMED") ;;
+            JAVA_ARGS+=("-Dpolyglot.engine.AllowExperimentalOptions=true" "-D--lsp" "-Dfile.encoding=UTF-8" "-Dstdout.encoding=UTF-8" "-Dsun.stdout.encoding=UTF-8" "-Dgraalvm.locatorDisabled=true" "-D--add-exports org.graalvm.truffle/com.oracle.truffle.api.nodes=ALL-UNNAMED" "-D--add-exports org.graalvm.truffle/com.oracle.truffle.api.exception=ALL-UNNAMED" "-D--add-exports org.graalvm.truffle/com.oracle.truffle.api=ALL-UNNAMED" "-D--add-exports org.graalvm.truffle/com.oracle.truffle.api.interop=ALL-UNNAMED") ;;
         -disassemble)
             JAVA_ARGS+=("-Dpolyglot.engine.AllowExperimentalOptions=true" "-XX:CompileCommand=print,*.*" "-XX:CompileCommand=exclude,*OptimizedCallTarget.profiledPERoot" "-Dpolyglot.engine.BackgroundCompilation=false" "-Dpolyglot.engine.TraceCompilation=true" "-Dpolyglot.engine.TraceCompilationDetails=true") ;;
         -J*)
