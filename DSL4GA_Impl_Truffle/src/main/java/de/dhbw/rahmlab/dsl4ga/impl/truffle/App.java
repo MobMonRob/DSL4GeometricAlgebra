@@ -5,6 +5,7 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.api.Program;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.api.Result;
 import de.orat.math.cga.api.CGARoundPointIPNS;
 import de.orat.math.cga.api.CGAViewer;
+import de.orat.math.view.euclidview3d.GeometryView3d;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Optional;
@@ -13,9 +14,15 @@ import org.jogamp.vecmath.Point3d;
 public class App {
 
 	public static void main(String[] args) throws Exception {
+		// vizTest2();
+		 vizTest();
 		// encodingTest();
-		invocationTest();
-		// vizTest();
+		//invocationTest();
+	}
+
+	private static void vizTest2() throws Exception {
+		// DemoView.main(null);
+		GeometryView3d.main(null);
 	}
 
 	private static void vizTest() {
@@ -47,8 +54,8 @@ public class App {
 		fn main(a, b) {
 			d := test(b)
 			e := getLastListReturn(1)
-			//:p1 := a
-			//:p2 := b
+			:p1 := a
+			:p2 := b
 			a, b, d, e
 		}
 		""";
@@ -58,8 +65,8 @@ public class App {
 		try (Program program = new Program(source)) {
 			Arguments arguments = new Arguments();
 			arguments
-				.sphere_ipns("a", new Point3d(0.2, 0.2, 0.2), 0.2)
-				.sphere_ipns("b", new Point3d(0.5, 0.5, 0.5), 0.2);
+				.round_point_ipns("a", new Point3d(1, 0.3, -0.7))
+				.round_point_ipns("b", new Point3d(0.5, 0.5, 0.5));
 
 			Result answer = program.invoke(arguments);
 			double[][] answerScalar = answer.decomposeDoubleArray();
