@@ -19,7 +19,7 @@ public abstract class VisualizeMultivector extends StatementBaseNode {
 	protected abstract LocalVariableReference getVarRef();
 
 	@Specialization
-	protected void execute(VirtualFrame frame, CGAMultivector varRefValue, @Cached("getVarRef()") LocalVariableReference varRefObject, @Cached("currentLanguageContext()") GeomAlgeLangContext context) {
+	protected void execute(VirtualFrame frame, CGAMultivector varRefValue, @Cached("currentLanguageContext()") GeomAlgeLangContext context) {
 		// Could be cached.
 		if (context.viewer.isEmpty()) {
 			Optional<CGAViewer> instance = CGAViewer.getInstance();
@@ -30,7 +30,7 @@ public abstract class VisualizeMultivector extends StatementBaseNode {
 		}
 		CGAViewer viewer = context.viewer.get();
 
-		String name = varRefObject.getName();
+		String name = this.getVarRef().getName();
 
 		if (varRefValue instanceof CGAKVector mv) {
 			viewer.addCGAObject(mv, name);
