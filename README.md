@@ -1,6 +1,9 @@
 # DSL4GeometricAlgebra
 
-This repository contains code to work with multivector expressions of conformal geometric algebra. The code is used as a reference implementation to demonstrate and test the software pipeline of [truffle/graal](https://www.graalvm.org/latest/graalvm-as-a-platform/language-implementation-framework/) in the context of geometric algebra and underlaying multivector implementations.
+This repository contains code to work with multivector expressions of geometric algebra. The idea is to realise a complete toolchain with a geometric algebra specific domain specific language based on [truffle/graal](https://www.graalvm.org/latest/graalvm-as-a-platform/language-implementation-framework/) with state of the art smart editing features, debugging functionality and a fast implementation based on [JCasADi](https://web.casadi.org/). 
+
+## Disclaimer
+The project is in an early state of development, so it is not advised to use it in real world applications. If you have feedback or feature suggestions, please create a new GitHub Issue.
 
 ## GraalVM Setup
 Download the [GraalVM 22.3.2](https://github.com/graalvm/graalvm-ce-builds/releases/tag/vm-22.3.2) (Linux (amd64), Java17).
