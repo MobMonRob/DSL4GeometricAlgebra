@@ -1,0 +1,16 @@
+model cga {"1", "ε₁", "ε₂", "ε₃",
+        "ε₀", "εᵢ", "ε₁₂", "e₁₃",  
+        "ε₁ᵢ", "ε₁ᵢ", "ε₂₃", "ε₂₀",
+        "ε₂ᵢ", "ε₃₀", "ε₃ᵢ", "ε₀ᵢ",
+        "ε₁₂₃", "ε₁₂₀", "ε₁₂ᵢ", "ε₁₃₀",
+        "ε₁₃ᵢ", "ε₁₀ᵢ", "ε₂₃₀", "ε₂₃ᵢ",
+        "ε₂₀ᵢ", "ε₃₀ᵢ", "ε₁₂₃₀", "e₁₂₃ᵢ",
+        "ε₁₂₀ᵢ", "ε₁₃₀ᵢ", "ε₂₃₀ᵢ", "ε₁₂₃₀ᵢ}
+type ipns_sphere {ε₀=1, ε₁,ε₂,ε₃,εᵢ}
+type ipns_rpoint {ε₀=1, ε₁,ε₂,ε₃,εᵢ=0.5(ε₁²+ε₂²+ε₃²)}
+type ipns_plane {ε₁,ε₂,ε₃,εᵢ}
+type ipns_line {ε₁₂, ε₁₃, ε₂₃, ε₁ᵢ, ε₂ᵢ, ε₃ᵢ}
+
+ipns_plane pl := nxε₁+nyε₂+nzε₃+dεᵢ // plane with normalvector (nx,ny,nz) and distance d to the origin
+ipns_line l:= ...
+ipns_fpoint fp := pl^l

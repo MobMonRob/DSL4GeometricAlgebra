@@ -2,6 +2,25 @@
 // solututions for a class of serial robots without a spherical wrist using conformal geometric algebra.
 // Example: UR5e robot placed at the origin of the frame
 
+// round point from 3 euclidean coordinates
+fn rp(x,y,z){
+	p := xε₁+yε₂+zε₃
+    p + 0.5p²εᵢ+ε₀
+}
+// sphere from midpoint and radius
+fn sp(m,r){
+	m - 0.5r²εᵢ
+}
+// three euclidean coordinates from a rount point
+fn ep(rp){
+	(ε₀∧εᵢ)⋅(rp∧(ε₀∧εᵢ))
+}
+// euclidean points from a point pair
+fn epp(pp){
+	ppnorm := sqrt(squaredNorm(pp)
+    (pp+ppnorm)/(-εᵢ⋅pp), (pp-ppnorm)/(-εᵢ⋅pp)
+}
+
 fn main() {
 
 	// nominal dh parameters UR5e, the d-parameters correspond to the link lengths
@@ -77,23 +96,4 @@ fn main() {
 
     // define the geometric objects to determine the joint angles
     PIxy = 
-}
-
-// round point from 3 euclidean coordinates
-fn rp(x,y,z){
-	p := xε₁+yε₂+zε₃
-    p + 0.5p²εᵢ+ε₀
-}
-// sphere from midpoint and radius
-fn sp(m,r){
-	m - 0.5r²εᵢ
-}
-// three euclidean coordinates from a rount point
-fn ep(rp){
-	(ε₀∧εᵢ)⋅(rp∧(ε₀∧εᵢ))
-}
-// euclidean points from a point pair
-fn epp(pp){
-	ppnorm := sqrt(squaredNorm(pp)
-    (pp+ppnorm)/(-εᵢ⋅pp), (pp-ppnorm)/(-εᵢ⋅pp)
 }
