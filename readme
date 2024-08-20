@@ -1,0 +1,4 @@
+https://www.graalvm.org/latest/graalvm-as-a-platform/implement-instrument/
+--> add LSP-Server to a specific classpath of the GraalVM to be available to start
+
+- only lsp.jar neede, api is to extend the LS
