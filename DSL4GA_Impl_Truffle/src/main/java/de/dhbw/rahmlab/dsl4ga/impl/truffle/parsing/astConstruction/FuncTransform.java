@@ -16,10 +16,10 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.nodes.stmt.LocalVariableAssignment;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.nodes.stmt.LocalVariableAssignmentNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.FunctionArgumentReaderNodeGen;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.stmt.ExprStmt;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.stmt.ExprStmtNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.nodes.expr.LocalVariableReference;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.nodes.expr.LocalVariableReferenceNodeGen;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.visualization.nodes.stmt.CleanupVisualizer;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.visualization.nodes.stmt.CleanupVisualizerNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.visualization.nodes.stmt.VisualizeMultivector;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.visualization.nodes.stmt.VisualizeMultivectorNodeGen;
 import java.util.ArrayList;
@@ -30,6 +30,7 @@ import java.util.Map;
 
 public class FuncTransform extends GeomAlgeParserBaseListener {
 
+	protected boolean hasViz = false;
 	protected final GeomAlgeLangContext geomAlgeLangContext;
 	protected final List<StatementBaseNode> stmts = new ArrayList<>();
 	protected final List<ExpressionBaseNode> retExprs = new ArrayList<>();
@@ -49,6 +50,12 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 	public static Function generate(GeomAlgeParser.FunctionContext ctx, GeomAlgeLangContext geomAlgeLangContext, Map<String, Function> functionsView) {
 		FuncTransform transform = new FuncTransform(geomAlgeLangContext, functionsView);
 		SkippingParseTreeWalker.walk(transform, ctx, GeomAlgeParser.ExprContext.class);
+
+		if (transform.hasViz) {
+			CleanupVisualizer cleanupNode = CleanupVisualizerNodeGen.create();
+			transform.stmts.add(cleanupNode);
+		}
+
 		FunctionDefinitionBody functionDefinitionBody = new FunctionDefinitionBody(
 			transform.stmts.toArray(StatementBaseNode[]::new),
 			transform.retExprs.toArray(ExpressionBaseNode[]::new));
@@ -107,6 +114,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 		// Viz
 		if (ctx.viz != null) {
+			this.hasViz = true;
 			LocalVariableReference varRefNode = LocalVariableReferenceNodeGen.create(name, frameSlot);
 			varRefNode.setSourceSection(ctx.assigned.getStartIndex(), ctx.assigned.getStopIndex());
 

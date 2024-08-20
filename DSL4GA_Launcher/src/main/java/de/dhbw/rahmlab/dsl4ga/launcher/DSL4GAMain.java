@@ -22,10 +22,10 @@ public final class DSL4GAMain {
 
 		Source source = Source.newBuilder(Program.LANGUAGE_ID, new File(file)).build();
 
-		System.exit(executeSource(source));
+		executeSource(source);
 	}
 
-	private static int executeSource(Source source) {
+	private static void executeSource(Source source) {
 		try (Program program = new Program(source)) {
 			Arguments arguments = new Arguments();
 
@@ -39,7 +39,5 @@ public final class DSL4GAMain {
 			}
 			System.out.println();
 		}
-
-		return 0;
 	}
 }
