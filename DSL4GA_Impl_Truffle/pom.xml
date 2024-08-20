@@ -26,13 +26,13 @@
 			<artifactId>Euclid3DViewAPI</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
+		-->
 		<dependency>
 			<groupId>de.orat.math.view</groupId>
 			<artifactId>EuclidView3d</artifactId>
 			<version>1.0-SNAPSHOT</version>
 			<scope>runtime</scope>
 		</dependency>
-		-->
 
 		<dependency>
 			<groupId>de.dhbw.rahmlab</groupId>

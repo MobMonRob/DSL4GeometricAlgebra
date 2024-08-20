@@ -4,8 +4,8 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.api.Arguments;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.api.Program;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.api.Result;
 import de.orat.math.cga.api.CGARoundPointIPNS;
+import de.orat.math.cga.api.CGAViewObject;
 import de.orat.math.cga.api.CGAViewer;
-import de.orat.math.view.euclidview3d.GeometryView3d;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Optional;
@@ -15,24 +15,25 @@ import org.jogamp.vecmath.Point3d;
 public class App {
 
 	public static void main(String[] args) throws Exception {
-		// vizTest2();
 		// vizTest();
 		// encodingTest();
 		invocationTest();
 	}
 
-	private static void vizTest2() throws Exception {
-		// DemoView.main(null);
-		GeometryView3d.main(null);
-	}
+	private static void vizTest() throws InterruptedException {
+		Optional<CGAViewer> viewerOptional = CGAViewer.getInstance();
+		if (viewerOptional.isPresent()) {
+			CGAViewer viewer = viewerOptional.get();
 
-	private static void vizTest() {
-		Optional<CGAViewer> viewer = CGAViewer.getInstance();
-		if (viewer.isPresent()) {
-			CGAViewer viewer3D = viewer.get();
-
-			CGARoundPointIPNS pm = new CGARoundPointIPNS(new Point3d(1, 0.3, -0.7));
-			viewer3D.addCGAObject(pm, "pm");
+			for (int i = 0;; ++i) {
+				CGARoundPointIPNS pm = new CGARoundPointIPNS(new Point3d(i, 0.3, -0.7));
+				CGAViewObject addedObject = viewer.addCGAObject(pm, "pm");
+				System.out.println("Added " + i);
+				// Thread.sleep(1000);
+				addedObject.remove();
+				System.out.println("Removed " + i);
+				// Thread.sleep(1000);
+			}
 		}
 	}
 
