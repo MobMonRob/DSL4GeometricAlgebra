@@ -1,11 +1,19 @@
-fn test(a) {
-	a, 5
+fn test2(g, h) {
+	:i := h
+	:j := g
+	g, 10
+}
+
+fn test1(c, d) {
+	p22 := test2(c, d)
+	:e := c
+	:f := d
+	c, 5
 }
 
 fn main(a, b) {
-	d := test(b)
+	d := test1(a, b)
 	e := getLastListReturn(1)
-	:p1 := a
-	:p2 := b
-	a, b, d, e
+	p1 := a
+	a, b, d, e, p1
 }
