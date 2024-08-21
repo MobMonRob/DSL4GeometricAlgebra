@@ -1,6 +1,5 @@
 # DSL4GeometricAlgebra
-
-This repository contains code to work with multivector expressions of conformal geometric algebra. The code is used to demonstrate and test the software framework of [Truffle/GraalVM](https://www.graalvm.org/latest/graalvm-as-a-platform/language-implementation-framework/) in the context of geometric algebra and underlaying multivector implementations.
+This repository contains code to work with multivector expressions of geometric algebra. The idea is to realise a complete toolchain with a geometric algebra specific domain specific language based on [truffle/graal](https://www.graalvm.org/latest/graalvm-as-a-platform/language-implementation-framework/) with state of the art smart editing features, debugging functionality and a fast implementation based on [JCasADi](https://web.casadi.org/).
 
 
 ## Disclaimer
@@ -58,7 +57,7 @@ Clone and checkout
 3. [SparseMatrix](https://github.com/orat/SparseMatrix)
 4. [CGACasADi](https://github.com/orat/CGACasADi)
 
-and build those projects to have them available in your local Maven cache. SparseMatrix is a simple Java sparse matrix implementation used primarily as interface between the annotation based Java API and the DSL. So it allows to write code independend from GA-specific objects. CGACasADi is a fast symbolic implementation of CGA based on [CasADI](www.casadi.org/). A Java-Wrapper for CasADI based on [Swig](https://www.swig.org/) is used for Java integration.
+and build those projects to have them available in your local Maven cache. SparseMatrix is a simple Java sparse matrix implementation used primarily as interface between the annotation based Java API and the DSL. So it allows to write code independend from GA-specific objects. CGACasADi is a fast symbolic implementation of CGA based on [CasADI](https://web.casadi.org/). A Java-Wrapper for CasADI based on [Swig](https://www.swig.org/) is used for Java integration.
 
 
 ## Run
@@ -260,65 +259,4 @@ There exist three types of involution operations: Space inversion, reversion and
 ### Useful equations between above symbols
 &#x03B5;&#x2080;&#x0045;&#x2080;=-&#x03B5;&#x2080;, &#x0045;&#x2080;&#x03B5;&#x2080;=&#x03B5;&#x2080;, &#x03B5;&#x1D62;&#x0045;&#x2080;=&#x03B5;&#x1D62;, &#x0045;&#x2080;&#x03B5;&#x1D62;=-&#x03B5;&#x1D62;, &#x0045;&#x2080;&#x00B2;=1, &#x03B5;&#x2080;&#x00B2;=&#x03B5;&#x1D62;&#x00B2;=0, &#x03B5;&#x208A;&#x00B2;=1, &#x03B5;&#x208B;&#x00B2;=-1, &#x03B5;&#x208A;&#x22C5;&#x03B5;&#x208B;=0
 
-
-## Important formulae
-### Formulae to compose conformal geometric objects
-#### Geometric objects in outer product null space representation
-| description | formula | grade | class |
-| :---------- | :------ | :----| :-------- |
-| Point pair from  two conformal points (p1, p2) | p1&#8743;p2 | 2 | round |
-| (Flat) Finite-infinite point pair or Flat point from  one conformal point (p) | p&#8743;&#x03B5;&#7522; | 2 | flat |
-| Circle from three ipns Points (p1, p2, p3) | p1&#8743;p2&#8743;p3 | 3 |  round |
-| Line from two conformal planes (p1, p2) | p1&#8743;p2&#8743;&#x03B5;&#7522; | 3 | flat |
-| Sphere from four ipns points (p1, p2, p3, p4) | p1&#8743;p2&#8743;p3&#8743;p4| 4 |  round |
-| Plane from three ipns points (p1, p2, p3) | p1&#8743;p2&#8743;p3&#8743;&#x03B5;&#7522;| 4 | flat |
-| Plane between two ipns points (p1, p2) | $ (\vec{p}_1\wedge\vec{p}_2)*\wedge\epsilon_\infinity $ | 4 | flat |
-
-The conformal points in the table above have to be given in inner product null space represenation.
-
-
-#### Geometric objects in inner product null space representation (dual)
-| description | formula | grade |
-| :---------- | :------ | :----|
-| Point from euclidian vector (x) | x+0.5x&sup2;&#x03B5;&#7522;+&#x03B5;&#8320; | 1 |
-| Sphere from conformal point (P) and radius (r) | P-0.5r&sup2;&#x03B5;&#7522; | 1 |
-| Plane from euclidian normal vector (n) and distance to origin (d) | n+d&#x03B5;&#7522; | 1 |
-| Circle from two conformal spheres (s1, s2) | s1&#8743;s2 | 2 |
-| Line from two conformal planes (p1, p2) | p1&#8743;p2 | 2 |
-| Point pair from  three conformal spheres (s1, s2, s3) | s1&#8743;s2&#8743;s3 | 3 |
-
-
-### Formulae to decompose conformal object representations
-| description | formula |
-| :---------- | :------ |
-| Backprojection of a conformal point (P) into an euclidian vector. The formula in the first bracket normalizes the point. Then this normalized point is rejected from the minkowski plane. | (P/(P&#x22C5;&#x03B5;&#7522;))&#x2227;E&#8320;E&#8320;&#x207B;&#x00B9; |
-| Location of a round (X) or a tangent (X) represented in 3d coordinates | -0.5(X&#x03B5;&#7522;X)/(&#x03B5;&#7522;&#8901;X)&sup2; |
-| Direction vector (attitude) of a dual line (L*) represented as 3d coordinates of (&#949;&#8321;, &#949;&#8322;, &#949;&#8323;). | (L*&#8901;&#x03B5;&#8320;)&#8901;&#x03B5;&#7522; |
-| Radius (r) of a conformal sphere (S) | r&#x00B2; = (S&#x002A;)&#x00B2; = S&#x002A;&#x22C5;S&#x002A; |
-| Distance (d) between the the center of a conformal sphere (S) and a conformal point (P) | d&#x00B2; = S&#x22C5;S-2S&#x22C5;P |
-
-
-### Formulae to implement base functionalitity of CGA
-| description | formula |
-| :---------- | :------ |
-| Matrix free implementation of the inverse | x&#x207B;&#x00B9; =  (x&#x2020; x&#x5e; x&#x02DC; negate14(x)(x x&#x2020; x&#x5e; x&#x02DC;))/(x x&#x2020; x&#x5e; x&#x02DC; negate14(x) (x x&#x2020; x&#x5e; x&#x02DC;)) |
-
-
-### General useful equations
-| name | equation | description |
-| :---------- | :------------------ | ---------------------- |
-| anticommutivity | u &#8743; v = - (v &#8743; u) | |
-| distributivity | u &#8743; (v + w) = u &#8743; v + u &#8743; w | |
-| associativity | u &#8743; (v &#8743; w) = (u &#8743; v) &#8743; w | |
-| | (A &#8970; B)&#732; = B&#732; C&#8743; A&#732; | |
-| | A &#8743; B * C = A * (B &#8971; C) | |
-| | C * (B &#8743; A) = (C &#8970; B) * A | |
-| intersection | (A &#x2228; B)* = B* &#8743; A* | Intersection = outer product in the ipns representation; B* &#8743; A* means computing the union of everything which is not B and everything that is not A. The dual of that must be what have A and B in common.|
-| projection | (A &#x230B; B) B&#x207B;&#x00B9; | Projection of A onto B |
-| rejection | (A &#x2227; B) B&#x207B;&#x00B9; | Rejection of A from B |
-| duality | (A &#x230B; B)* = A ∧ B* | |
-|| A &#x230B; (B &#x230B; C) = (A ∧ B) &#x230B; C ||
-|| (A &#x230B; B) &#x230B; C = A ∧ (B &#x230B; C) | if C contains A|
-|down projection| (&#x03B5;&#x1D62; ∧ &#x03B5;&#x2080;) &#x230B; (X ∧ (&#x03B5;&#x1D62; ∧ &#x03B5;&#x2080;))| extracts the pure euclidean part of the given multivector |
-|| $P=\frac{1}{2}(\epsilon_0+L \epsilon_0 L))$ | Determines an arbitrary point $P$ on a line $L$ by reflecion of $\epsilon_0$ on the line. The midpoint between $\epsilon_0$ and its reflection $L \epsilon_0 L$, lays on the line $L$. This is equivalent to projecting the point $\epsilon_0$ onto the line $L$. |
 
