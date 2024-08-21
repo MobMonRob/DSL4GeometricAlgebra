@@ -90,6 +90,16 @@ public class Program implements AutoCloseable {
 		}
 
 		if (origin instanceof LanguageRuntimeException langException) {
+//			// Hier würde noch der Ort im ocga Quelltext fehlen.
+//			// Und auch die Nachricht der geworfenen Exception.
+//			Iterable<PolyglotException.StackFrame> polyglotStackTrace = ex.getPolyglotStackTrace();
+//			String truffleStackFrames = StreamSupport.stream(polyglotStackTrace.spliterator(), false).filter(sf -> sf.isGuestFrame()).map(sf -> sf.getRootName()).collect(Collectors.joining("\n"));
+//			return new RuntimeException("\n->TruffleStackFrames:\n" + truffleStackFrames + "\n");
+			//
+//			List<TruffleStackTraceElement> stackTrace = TruffleStackTrace.getStackTrace(langException);
+//			String collect = stackTrace.stream().map(el -> el.getTarget().getRootNode().getName()).collect(Collectors.joining("\n"));
+//			return new LanguageRuntimeException("\nCollect: " + collect + "\n", langException.location());
+			//
 			return enrichLanguageRuntimeException(ex, langException);
 		} else if (origin instanceof ValidationException validationException) {
 			return enrichValidationException(ex, validationException);

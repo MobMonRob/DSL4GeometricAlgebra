@@ -8,7 +8,7 @@ import com.oracle.truffle.api.interop.NodeLibrary;
 import com.oracle.truffle.api.library.ExportLibrary;
 import com.oracle.truffle.api.library.ExportMessage;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.superClasses.GeomAlgeLangBaseNode;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.superClasses.AbstractFunctionRootNode;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.FunctionDefinitionRootNode;
 import java.util.Objects;
 
 @ExportLibrary(value = NodeLibrary.class)
@@ -41,7 +41,7 @@ public abstract class StatementBaseNode extends GeomAlgeLangBaseNode implements 
 	// Needed for Debugger Callstack.
 	@ExportMessage
 	final Object getRootInstance(@SuppressWarnings("unused") Frame frame) {
-		var rootNode = ((AbstractFunctionRootNode) super.getRootNode());
+		var rootNode = (FunctionDefinitionRootNode) super.getRootNode();
 		return rootNode;
 	}
 }
