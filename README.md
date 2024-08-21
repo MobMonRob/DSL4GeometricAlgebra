@@ -44,7 +44,7 @@ Redo the [GraalVM Setup](#graalvm-setup) with the new version. If you use same p
 
 If you are the first collaborator updating to a new version, you also need to
 - update the download link [in this documentation](#graalvm-setup).
-- update the `graalvm.version` property in the [pom.xml of the DSL4GA_Impl_Truffle subproject](DSL4GA_Impl_Truffle/pom.xml). Note, that it differs from the JDK Version. "Language runtimes" is the keyword for it in the text of the download page.
+- update the `graalvm.version` property in the [pom.xml of the DSL4GA__Parent](pom.xml). Note, that it differs from the JDK Version. "Language runtimes" is the keyword for it in the text of the download page.
 - try building the project and fix broken code.
 
 

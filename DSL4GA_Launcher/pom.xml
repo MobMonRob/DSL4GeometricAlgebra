@@ -8,9 +8,6 @@
 	</parent>
 	<artifactId>DSL4GA_Launcher</artifactId>
 	<packaging>jar</packaging>
-	<properties>
-		<graalvm.version>23.1.2</graalvm.version>
-	</properties>
 	<build>
 		<pluginManagement>
 			<plugins>
@@ -48,11 +45,11 @@
 			<artifactId>DSL4GA_Impl_Truffle</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
-	 <dependency>
-	  <groupId>org.graalvm.tools</groupId>
-	  <artifactId>lsp</artifactId>
-	  <version>23.0.5</version>
-	  <scope>runtime</scope>
-	 </dependency>
+		<dependency>
+			<groupId>org.graalvm.tools</groupId>
+			<artifactId>lsp-tool</artifactId>
+			<version>${graalvm.version}</version>
+			<scope>runtime</scope>
+		</dependency>
 	</dependencies>
 </project>
