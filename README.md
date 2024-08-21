@@ -104,7 +104,7 @@ The following features are supported ("x" is yes, "-" is no):
 | F | T | Feature |
 | - | - | ------- |
 | - | x | Visualization |
-| - | - | Debugger |
+| - | x | Debugger |
 | x | - | Multiple assignment |
 
 
@@ -116,6 +116,7 @@ The following features are supported ("x" is yes, "-" is no):
 - There needs to be at least one function defined with the name `main`. Invokations of the program will call this one first.
 - Currently, callees need to be defined above the callers.
 - In consequence, `main` needs to be the last function defined.
+- Function overloading is currently not supported and will lead to an exception.
 - A function will return only the list in the last line of its definition.
 - The return value of a call needs to be assigned to a variable.
 - An assignment to multiple variables in the same line is possible if the right side consists only of a call.
