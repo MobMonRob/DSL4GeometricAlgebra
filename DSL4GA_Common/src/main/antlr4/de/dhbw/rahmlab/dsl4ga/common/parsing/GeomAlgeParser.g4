@@ -64,8 +64,8 @@ stmt
 // enterRetExprStmt inverses the order if retExpr is left-recursive.
 retExpr
 	//:	exprContext+=expr (COMMA exprContext+=expr)*	#RetExprStmt
-	:	exprContext=expr				#RetExprStmt
-	|	exprContext=expr COMMA retExpr	#RetExprStmt
+	:	exprContext=expr				#RetExprStmtExpr
+	|	exprContext=expr COMMA retExpr	#RetExprStmtExpr
 	;
 
 ///////////////////////////////////////////////////////////////////////////

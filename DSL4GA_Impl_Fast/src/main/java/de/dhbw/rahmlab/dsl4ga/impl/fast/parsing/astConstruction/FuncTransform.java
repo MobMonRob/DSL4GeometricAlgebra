@@ -111,7 +111,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 	}
 
 	@Override
-	public void enterRetExprStmt(GeomAlgeParser.RetExprStmtContext ctx) {
+	public void enterRetExprStmtExpr(GeomAlgeParser.RetExprStmtExprContext ctx) {
 		MultivectorSymbolic retExpr = ExprTransform.generateExprAST(this.parser, ctx.exprContext, this.functionsView, this.localVariablesView);
 		System.out.println("retExpr: " + retExpr);
 		this.retExprs.add(retExpr);
