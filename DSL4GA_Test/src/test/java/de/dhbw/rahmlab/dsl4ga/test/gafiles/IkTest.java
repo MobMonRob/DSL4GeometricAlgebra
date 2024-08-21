@@ -2,7 +2,7 @@ package de.dhbw.rahmlab.dsl4ga.test.gafiles;
 
 import de.dhbw.rahmlab.dsl4ga.test.gafiles.common.Util;
 import de.dhbw.rahmlab.dsl4ga.test.gafiles.common.gen.fastwrapper.IkProgram;
-//import de.orat.math.cgacasadi.impl.gen.CachedSparseCGASymbolicMultivector;
+import de.orat.math.cgacasadi.impl.gen.CachedSparseCGASymbolicMultivector;
 import de.orat.math.sparsematrix.SparseDoubleMatrix;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
@@ -24,7 +24,7 @@ public class IkTest {
 		// CGASymbolicFunctionCache.instance().clearCache();
 		PROGRAM = new IkProgram();
 		System.out.println("......CachedFunctionUsage");
-		// System.out.println(CachedSparseCGASymbolicMultivector.getCache().cachedFunctionUsageToString());
+		System.out.println(CachedSparseCGASymbolicMultivector.getCache().cachedFunctionUsageToString());
 		System.out.println("....../CachedFunctionUsage");
 	}
 

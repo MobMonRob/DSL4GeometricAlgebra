@@ -19,10 +19,11 @@ public class ConferenceTruffleIkDebugging {
 	 * ik.ocga Breakpoint installieren per IDE.
 	 * Rechtsklick auf die Datei ConferenceTruffleIkDebugging.java "Debug file".
 	 * Breakpoint und durchsteppen sollte funktionieren. Ebenso Visualisierung.
+	 * Es braucht ein paar Sekunden bis sich das Visualisierungsfenster öffnet beim ersten Doppelpunkt.
 	 * </pre>
 	 */
 	private static void invocationTest() throws Exception {
-		String path = "./gafiles/common/ik.ocga";
+		String path = "./gafiles/common/vizTest2.ocga";
 		Program program;
 		var uri = ConferenceTruffleIkDebugging.class.getResource(path);
 		if (uri == null) {
