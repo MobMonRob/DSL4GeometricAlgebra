@@ -51,7 +51,7 @@ public class RetExprStmt extends StatementBaseNode {
 	}
 
 	@Override
-	protected int getScopeVisibleVariablesIndex() {
+	public int getScopeVisibleVariablesIndex() {
 		return this.scopeVisibleVariablesIndex;
 	}
 
