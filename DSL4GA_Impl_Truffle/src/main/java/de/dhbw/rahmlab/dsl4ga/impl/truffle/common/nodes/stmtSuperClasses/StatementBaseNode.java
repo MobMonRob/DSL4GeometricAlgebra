@@ -10,7 +10,7 @@ import com.oracle.truffle.api.library.ExportLibrary;
 import com.oracle.truffle.api.library.ExportMessage;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.superClasses.GeomAlgeLangBaseNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.FunctionDefinitionRootNode;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.DebugLocalScope;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.DebuggerLocalVariablesScope;
 import java.util.Objects;
 
 @ExportLibrary(value = NodeLibrary.class)
@@ -19,11 +19,13 @@ public abstract class StatementBaseNode extends GeomAlgeLangBaseNode implements 
 
 	public abstract int getScopeVisibleVariablesIndex();
 
+	// Needed for Debugger.
 	@Override
 	public final boolean isInstrumentable() {
 		return Objects.nonNull(super.getSourceSection());
 	}
 
+	// Needed for Debugger.
 	@Override
 	public boolean hasTag(Class<? extends Tag> tag) {
 		// dbg
@@ -62,7 +64,7 @@ public abstract class StatementBaseNode extends GeomAlgeLangBaseNode implements 
 		if (!isInstrumentable() || rootNode == null) {
 			return null;
 		} else {
-			return new DebugLocalScope(frame, rootNode, getScopeVisibleVariablesIndex());
+			return new DebuggerLocalVariablesScope(frame, rootNode, getScopeVisibleVariablesIndex());
 		}
 	}
 }

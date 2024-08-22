@@ -24,7 +24,7 @@ public abstract class LocalVariableAssignment extends NonReturningStatementBaseN
 
 	public abstract String getName();
 
-	protected abstract int getFrameSlot();
+	public abstract int getFrameSlot();
 
 	protected abstract boolean isPseudoStatement();
 
