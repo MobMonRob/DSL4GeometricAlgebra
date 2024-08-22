@@ -24,12 +24,16 @@ public class RetExprStmt extends StatementBaseNode {
 	@Children
 	protected final ExpressionBaseNode[] retExprs;
 
+	protected final int scopeVisibleVariablesIndex;
+
 	protected RetExprStmt() {
 		this.retExprs = null;
+		this.scopeVisibleVariablesIndex = -1;
 	}
 
-	public RetExprStmt(ExpressionBaseNode[] retExprs) {
+	public RetExprStmt(ExpressionBaseNode[] retExprs, int scopeVisibleVariablesIndex) {
 		this.retExprs = retExprs;
+		this.scopeVisibleVariablesIndex = scopeVisibleVariablesIndex;
 	}
 
 	public ExpressionBaseNode getFirstRetExpr() {
@@ -44,6 +48,11 @@ public class RetExprStmt extends StatementBaseNode {
 			rets.add(ret);
 		}
 		return new CgaListTruffleBox(rets);
+	}
+
+	@Override
+	protected int getScopeVisibleVariablesIndex() {
+		return this.scopeVisibleVariablesIndex;
 	}
 
 }

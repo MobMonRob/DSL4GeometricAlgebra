@@ -31,6 +31,7 @@ import java.util.Map;
 
 public class FuncTransform extends GeomAlgeParserBaseListener {
 
+	protected int scopeVisibleVariablesIndex = 0;
 	protected boolean hasViz = false;
 	protected final GeomAlgeLangContext geomAlgeLangContext;
 	protected final List<NonReturningStatementBaseNode> stmts = new ArrayList<>();
@@ -48,11 +49,15 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 		this.functionsView = functionsView;
 	}
 
+	protected int getNewScopeVisibleVariablesIndex() {
+		return this.scopeVisibleVariablesIndex++;
+	}
+
 	public static Function generate(GeomAlgeParser.FunctionContext ctx, GeomAlgeLangContext geomAlgeLangContext, Map<String, Function> functionsView) {
 		FuncTransform transform = new FuncTransform(geomAlgeLangContext, functionsView);
 		SkippingParseTreeWalker.walk(transform, ctx, GeomAlgeParser.ExprContext.class);
 
-		RetExprStmt retExprStmt = new RetExprStmt(transform.retExprs.toArray(ExpressionBaseNode[]::new));
+		RetExprStmt retExprStmt = new RetExprStmt(transform.retExprs.toArray(ExpressionBaseNode[]::new), transform.getNewScopeVisibleVariablesIndex());
 		if (!transform.retExprs.isEmpty()) {
 			int fromIndex = transform.retExprs.getFirst().getSourceSection().getCharIndex();
 			int toIndexInclusive = transform.retExprs.getLast().getSourceSection().getCharEndIndex() - 1;
@@ -61,7 +66,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 		CleanupVisualizer cleanupViz = null;
 		if (transform.hasViz) {
-			cleanupViz = CleanupVisualizerNodeGen.create();
+			cleanupViz = CleanupVisualizerNodeGen.create(transform.getNewScopeVisibleVariablesIndex());
 		}
 
 		FunctionDefinitionBody functionDefinitionBody = new FunctionDefinitionBody(
@@ -96,7 +101,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 		this.localVariables.put(name, frameSlot);
 
-		LocalVariableAssignment assignmentNode = LocalVariableAssignmentNodeGen.create(functionArgumentReader, name, frameSlot, true);
+		LocalVariableAssignment assignmentNode = LocalVariableAssignmentNodeGen.create(functionArgumentReader, getNewScopeVisibleVariablesIndex(), name, frameSlot, true);
 		assignmentNode.setSourceSection(ctx.name.getStartIndex(), ctx.name.getStopIndex());
 
 		this.stmts.add(assignmentNode);
@@ -116,7 +121,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 		}
 		this.localVariables.put(name, frameSlot);
 
-		LocalVariableAssignment assignmentNode = LocalVariableAssignmentNodeGen.create(expr, name, frameSlot, false);
+		LocalVariableAssignment assignmentNode = LocalVariableAssignmentNodeGen.create(expr, getNewScopeVisibleVariablesIndex(), name, frameSlot, false);
 		assignmentNode.setSourceSection(ctx.assigned.getStartIndex(), ctx.assigned.getStopIndex());
 
 		this.stmts.add(assignmentNode);
@@ -127,7 +132,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 			LocalVariableReference varRefNode = LocalVariableReferenceNodeGen.create(name, frameSlot);
 			varRefNode.setSourceSection(ctx.assigned.getStartIndex(), ctx.assigned.getStopIndex());
 
-			VisualizeMultivector viz = VisualizeMultivectorNodeGen.create(varRefNode);
+			VisualizeMultivector viz = VisualizeMultivectorNodeGen.create(varRefNode, getNewScopeVisibleVariablesIndex());
 			viz.setSourceSection(ctx.viz.getStartIndex(), ctx.viz.getStopIndex());
 
 			this.stmts.add(viz);

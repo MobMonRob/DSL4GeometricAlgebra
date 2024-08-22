@@ -23,7 +23,11 @@ public final class FunctionDefinitionBody extends AbstractFunctionBody {
 	public ExpressionBaseNode getFirstRetExpr() {
 		return this.retExprStmt.getFirstRetExpr();
 	}
-	
+
+	public NonReturningStatementBaseNode[] getStmts() {
+		return this.stmts;
+	}
+
 	public FunctionDefinitionBody(NonReturningStatementBaseNode[] stmts, RetExprStmt retExprStmt, CleanupVisualizer nulleableCleanupVizualizer) {
 		this.stmts = stmts;
 		this.retExprStmt = retExprStmt;
