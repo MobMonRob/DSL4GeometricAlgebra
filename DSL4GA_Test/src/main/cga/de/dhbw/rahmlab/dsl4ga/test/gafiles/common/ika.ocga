@@ -63,16 +63,18 @@ fn main() {
 	// ?
 	Pl := P5∧ε₁^ε₂^εᵢ
 	// ipns point pair - intersection of circle C5k and the above plane Pl, eq. 44
-	:Qc := (C5k⌋Pl)*
+	Qc := (C5k⌋Pl)*
 
-	// ipns point Pc - with an offset d4 from P5
-	// opns point pair needed as input
+    // opns point pair
+	Qc2 := Qc⁻*
+    // ipns point Pc - with an offset d4 from P5
 	//TODO use klr
-    :Pc := (Qc⁻*-sqrt(Qc⁻*²))/(-εᵢ⌋Qc⁻*) // eq. 45
+    :Pc := (Qc2+sqrt(Qc2²))/(-εᵢ⌋Qc2) // eq. 45
 
 	// opns plane (grade 4) - through joints 1, 2, 3 and 4, eq. 46
 	PIc := ε₀^ε₃^Pc*^εᵢ
 
+    dummy := print(PIc)
     // Variable PIc2 = (-0.1284755081432713*e1 - 0.46446221999999937*e2 - 0.004979999999999996*e1^e2^e3 - 0.12847550814327136*eo^e1^ei - 0.46446221999999954*eo^e2^ei - 0.004979999999999997*eo^e1^e2^e3^ei) is no k-vector!
     :PIc2 := PIc*
 
