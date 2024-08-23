@@ -9,6 +9,11 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.Express
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.stmtSuperClasses.NonReturningStatementBaseNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.ValidationException;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionCalls.nodes.expr.BuiltinFunctionCall;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionCalls.nodes.expr.BuiltinFunctionCallNodeGen;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionCalls.nodes.expr.GlobalBuiltinReference;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionCalls.nodes.expr.GlobalBuiltinReferenceNodeGen;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionCalls.nodes.exprSuperClasses.AbstractFunctionCall;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.FunctionArgumentReader;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.FunctionDefinitionBody;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.FunctionDefinitionRootNode;
@@ -16,7 +21,10 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.nodes.stmt.LocalVariableAssignment;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.nodes.stmt.LocalVariableAssignmentNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.FunctionArgumentReaderNodeGen;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.stmt.CallStmt;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.stmt.RetExprStmt;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.literals.nodes.expr.ScalarLiteral;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.literals.nodes.expr.ScalarLiteralNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.nodes.expr.LocalVariableReference;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.nodes.expr.LocalVariableReferenceNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.visualization.nodes.stmt.CleanupVisualizer;
@@ -28,6 +36,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.antlr.v4.runtime.Token;
 
 public class FuncTransform extends GeomAlgeParserBaseListener {
 
@@ -114,11 +123,10 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 		// Assignment
 		String name = ctx.assigned.getText();
 
-		int frameSlot = this.frameDescriptorBuilder.addSlot(FrameSlotKind.Static, null, null);
-
 		if (this.localVariables.containsKey(name)) {
 			throw new ValidationException(String.format("\"%s\" cannot be assigned again.", name));
 		}
+		int frameSlot = this.frameDescriptorBuilder.addSlot(FrameSlotKind.Static, null, null);
 		this.localVariables.put(name, frameSlot);
 
 		LocalVariableAssignment assignmentNode = LocalVariableAssignmentNodeGen.create(expr, getNewScopeVisibleVariablesIndex(), name, frameSlot, false);
@@ -141,7 +149,42 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 	@Override
 	public void enterTupleAssgnStmt(GeomAlgeParser.TupleAssgnStmtContext ctx) {
-		throw new ValidationException("Assignment to multiple values is currently not supported in the Truffle variant.");
+		AbstractFunctionCall callExpr = ExprTransform.generateCallAST(ctx.callCtx, this.geomAlgeLangContext, this.functionsView, this.localVariablesView);
+
+		final int currenScopeVisibleVariablesIndex = getNewScopeVisibleVariablesIndex();
+
+		CallStmt callStmt = new CallStmt(callExpr, currenScopeVisibleVariablesIndex);
+		callStmt.setSourceSection(ctx.getStart().getStartIndex(), ctx.getStop().getStopIndex());
+		this.stmts.add(callStmt);
+
+		List<Token> allAssigned = ctx.assigned;
+
+		final int size = allAssigned.size();
+		String LOW_LINE = GeomAlgeParser.VOCABULARY.getLiteralName(GeomAlgeParser.LOW_LINE);
+		// remove ''
+		LOW_LINE = LOW_LINE.substring(1, LOW_LINE.length() - 1);
+		final GlobalBuiltinReference globalBuiltinReference = GlobalBuiltinReferenceNodeGen.create("getLastListReturn");
+
+		for (int i = 0; i < size; ++i) {
+			String name = allAssigned.get(i).getText();
+
+			if (name.equals(LOW_LINE)) {
+				continue;
+			}
+
+			if (this.localVariables.containsKey(name)) {
+				throw new ValidationException(String.format("\"%s\" cannot be assigned again.", name));
+			}
+			int frameSlot = this.frameDescriptorBuilder.addSlot(FrameSlotKind.Static, null, null);
+			this.localVariables.put(name, frameSlot);
+
+			ScalarLiteral scalarLiteral = ScalarLiteralNodeGen.create(i);
+			BuiltinFunctionCall functionCall = BuiltinFunctionCallNodeGen.create(
+				globalBuiltinReference, new ScalarLiteral[]{scalarLiteral});
+			LocalVariableAssignment assignmentNode = LocalVariableAssignmentNodeGen.create(functionCall, currenScopeVisibleVariablesIndex, name, frameSlot, true);
+
+			this.stmts.add(assignmentNode);
+		}
 	}
 
 	@Override

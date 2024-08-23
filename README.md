@@ -104,7 +104,6 @@ The following features are supported ("x" is yes, "-" is no):
 | - | - | ------- |
 | - | x | Visualization |
 | - | x | Debugger |
-| x | - | Multiple assignment |
 
 
 ## Expressions
@@ -153,6 +152,8 @@ Exceptions from the precedence rules:
 - Expressions like `a-b` evaluate to `subtraction(a, b)` instead of `geometric_product(a, negate(b))`.
 
 ### 2-ary operators
+All 2-ary operators are left-associative.
+
 #### Base 2-ary operators
 Hint: The Unicode and Latex name for the symbol used for left contraction is "RIGHT FLOOR" and for right contraction is "LEFT FLOOR". Please be cautious to this detail when writing Latex or programming tools which work with the language.
 
