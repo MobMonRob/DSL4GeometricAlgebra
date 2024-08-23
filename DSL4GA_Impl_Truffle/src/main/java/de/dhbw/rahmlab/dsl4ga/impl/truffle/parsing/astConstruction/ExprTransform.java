@@ -43,6 +43,7 @@ import java.util.Deque;
 import java.util.Map;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionCalls.nodes.expr.FunctionCallNodeGen;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionCalls.nodes.exprSuperClasses.AbstractFunctionCall;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.literals.nodes.expr.ConstantNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.literals.nodes.expr.ScalarLiteralNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.nodes.expr.LocalVariableReferenceNodeGen;
@@ -75,6 +76,15 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		ParseTreeWalker.DEFAULT.walk(exprTransform, exprCtx);
 
 		ExpressionBaseNode rootNode = exprTransform.nodeStack.getFirst();
+		return rootNode;
+	}
+
+	public static AbstractFunctionCall generateCallAST(GeomAlgeParser.CallExprContext callExprCtx, GeomAlgeLangContext geomAlgeLangContext, Map<String, Function> functionsView, Map<String, Integer> localVariablesView) {
+		ExprTransform exprTransform = new ExprTransform(geomAlgeLangContext, functionsView, localVariablesView);
+
+		ParseTreeWalker.DEFAULT.walk(exprTransform, callExprCtx);
+
+		AbstractFunctionCall rootNode = (AbstractFunctionCall) exprTransform.nodeStack.getFirst();
 		return rootNode;
 	}
 

@@ -104,7 +104,6 @@ The following features are supported ("x" is yes, "-" is no):
 | - | - | ------- |
 | - | x | Visualization |
 | - | x | Debugger |
-| x | - | Multiple assignment |
 
 
 ## Expressions

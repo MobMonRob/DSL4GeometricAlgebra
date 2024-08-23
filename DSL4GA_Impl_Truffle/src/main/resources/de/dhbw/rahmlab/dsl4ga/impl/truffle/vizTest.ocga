@@ -7,7 +7,8 @@ fn test2(g, h) {
 }
 
 fn test1(c, d) {
-	p22 := test2(c, d)
+	m := 44
+	_, p22 := test2(c, d)
 	a := 22
 	:e := c
 	:f := d
@@ -16,8 +17,7 @@ fn test1(c, d) {
 }
 
 fn main(a, b) {
-	d := test1(a, b)
-	e := getLastListReturn(1)
+	d, e := test1(a, b)
 	p1 := a
 	a, b, d, e, p1
 }
