@@ -32,11 +32,13 @@ public class VisualizerService {
 	}
 
 	public void add(CGAMultivector mv, String name) throws InterpreterInternalException {
-		if (mv instanceof CGAKVector cgakVector) {
+		CGAKVector mv2 = CGAKVector.specialize(mv, true);
+		if (mv2 instanceof CGAKVector cgakVector) {
 			CGAViewObject cgaViewObject = this.viewer.addCGAObject(cgakVector, name);
 			this.viewObjects.add(cgaViewObject);
 		} else {
-			throw new InterpreterInternalException(String.format("Variable \"%s\" is no CGAKVector.", name));
+			throw new InterpreterInternalException(
+				String.format("Variable "+mv.toString(name)+" is no k-vector!", name));
 		}
 	}
 

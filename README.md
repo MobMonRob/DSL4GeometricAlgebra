@@ -18,7 +18,7 @@ Extract the downloaded archive to an arbitrary location.
 
 ### Netbeans configuration
 Add a new java platform with the name "GraalVM". \
-Within the Netbeans 21 IDE you can do this if you follow these steps:
+If you use Netbeans IDE with newer version than 21 you have to start the IDE with JDK 21 to be able to build because the build configuration is configured to use the default JDK which is the JDK the IDE is started or you can configure explicit the platform to build by following steps and further the project configuration steps:\
 - open project properties via right-click on the project
 - navigate to Build / Compile
 - click "Manage Java Platforms..."
