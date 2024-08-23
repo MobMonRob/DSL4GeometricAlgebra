@@ -72,36 +72,34 @@ fn main() {
 	//TODO use klr
     :Pc := (Qc2+sqrt(Qc2²))/(-εᵢ⌋Qc2) // eq. 45
 
-    // 1.0000000000000002*eo + 0.46446222*e1 + 0.1284755081432715*e2 - 0.004980000000000002*e3 + 0.11612795520000001*ei
-	//dummy1 := print(Pc)
-
 	// opns plane (grade 4) - through joints 1, 2, 3 and 4, eq. 46
-    // 0.00498 + 0.46446221999999976*e1^e3 + 0.1284755081432714*e2^e3 - 0.004979999999999999*eo^ei 
-    // - 0.46446221999999976*eo^e1^e3^ei - 0.1284755081432714*eo^e2^e3^ei
-    //FIXME die letzten 2 blades vom grade 4 sind richtig, die vorherigen blades dürften gar nicht auftauchen
-    PIc := ε₀^ε₃^Pc^εᵢ // Klammern setzen ändert an der Zusammensetzung der blades nicht, ändert nur Vorzeichen wie zu erwarten
-    // mit dual falsch
-    // -0.1284755081432713*e1 + 0.46446221999999937*e2 + 0.004979999999999995*e1^e2^e3 - 0.12847550814327133*eo^e1^ei + 0.46446221999999937*eo^e2^ei + 0.004979999999999995*eo^e1^e2^e3^ei
-    dummy := print(PIc)
-    // Variable PIc2 = (-0.1284755081432713*e1 - 0.46446221999999937*e2 - 0.004979999999999996*e1^e2^e3 - 0.12847550814327136*eo^e1^ei - 0.46446221999999954*eo^e2^ei - 0.004979999999999997*eo^e1^e2^e3^ei) is no k-vector!
+    PIc := ε₀∧ε₃∧Pc∧εᵢ 
     :PIc2 := PIc*
+
 
 	// finding P4
 
 	// ipns plane - parallel to PIc that contains P4 and P5
-	:PIc_parallel := PIc + (P5⌊PIc)εᵢ // eq. 47
+	:PIc_parallel := PIc2 + (P5⌊PIc2)εᵢ // eq. 47
 
 
 	// calculate the line through P4 and P5 from the following object:
 
-	// plane
-	PI56_orthogonal := ((P5^Pe)*^εᵢ)* // eq. 48 l.1
+	// ipns plane - grade 1
+	PI56_perp := ((P5∧Pe)*∧εᵢ)* // eq. 48 l.1
 
-	n56_orthogonal  := -((PI56_orthogonal⋅ε₀)⋅εᵢ)/abs((PI56_orthogonal⋅ε₀)⋅εᵢ) // eq. 48, l. 2
-	// plane containing P4, P5 and which is orthogonal to the norm of PIc
-	PIc_orthogonal := (P5^n56_orthogonal^εᵢ)* // eq. 48 l4
+    // argument von abs() ist -2.4800399999970758E-5*ei und damit kein skalar
+    //n56_perp  := -((PI56_perp⋅ε₀)⋅εᵢ)/abs((PI56_perp⋅ε₀)⋅εᵢ) // eq. 48, l. 2
+    // ca. einf
+	n56_perp  := -normalize((PI56_perp⌋ε₀)⌋εᵢ) // eq. 48, l. 2
+
+	// ipns plane - grade 1 - containing P4, P5 and which is perp to the norm of PIc
+    // FIXME das ist jetzt 0
+    :PIc_perp := (P5∧n56_perp∧εᵢ)* // eq. 48 l.4
+
 	// ipns line
-	:L45 := PIc_parallel^PIc_orthogonal* // eq. 48 l4
+    // FIXME is 0
+	L45 := PIc_parallel∧PIc_perp // eq. 48 l4
 
 
 	// calculation of P4:
