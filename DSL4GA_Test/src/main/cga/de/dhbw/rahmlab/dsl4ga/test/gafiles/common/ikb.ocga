@@ -1,6 +1,6 @@
 // IK for 6-axis robot with (quasi) spherical joint configuration corresponding to
 // Kleppe2016: Inverse Kinematics for  Industrial Robots using Conformal geometric algebra
-// following the nomenclature of the above paper
+// following original clucalc script from the above paper
 
 // euclidean vector from 3 euclidean coordinates
 fn ev(x,y,z){
@@ -39,9 +39,9 @@ fn main() {
 	kfn := 1.0 // wrist is not flipped, -1 for wrist is flipped, eq. 42
 
 	// ipns round points: position of the end-effector and joint 5, eq. 39
-	:Pe :=  p+0.5p²εᵢ+ε₀ // rp(p)
+	:X0 :=  p+0.5p²εᵢ+ε₀ // rp(p)
 	t := p-(d6 ae)
-	:P5 := rp(t) // t+0.5t²εᵢ+ε₀
+	:X5 := rp(t) // t+0.5t²εᵢ+ε₀
 
 
 	// finding the verticalplane PIc through the joint 1,2,3,4
@@ -52,56 +52,43 @@ fn main() {
 	:Sc := sp(P5, d4) // eq. 43, P5-0.5d4²εᵢ
 
 	// ipns sphere around the origin, eq. 43
-	:K0 := ε₀+(Sc⋅ε₀)εᵢ
+	:K0 := ε₀-(Sc*⋅ε₀)εᵢ
 
 	// ipns circle - intersection of Sc and K0, eq. 43
-	:C5k := Sc^K0
+	:C5k := Sc⋅K0
 
 
 	// The point pair Q with two solutaitons for PC:
 
-	// horizontal plane through P5, eq. 44
-	// ?
-	Pl := P5∧ε₁^ε₂^εᵢ
 	// ipns point pair - intersection of circle C5k and the above plane Pl, eq. 44
-	Qc := (C5k⌋Pl)*
+	Qc := (X5∧ε₁^ε₂^εᵢ)⋅C5k*
 
-    // opns point pair
-	Qc2 := Qc⁻*
     // ipns point Pc - with an offset d4 from P5
 	//TODO use klr
-    :Pc := (Qc2+sqrt(Qc2²))/(-εᵢ⌋Qc2) // eq. 45
+    :Xc := (Qc+sqrt(abs(Qc2⋅Qc2)))/(-εᵢ⌋Qc) // eq. 45
 
-    // 1.0000000000000002*eo + 0.46446222*e1 + 0.1284755081432715*e2 - 0.004980000000000002*e3 + 0.11612795520000001*ei
-	//dummy1 := print(Pc)
+    //dummy1 := print(Xc)
 
 	// opns plane (grade 4) - through joints 1, 2, 3 and 4, eq. 46
-    // 0.00498 + 0.46446221999999976*e1^e3 + 0.1284755081432714*e2^e3 - 0.004979999999999999*eo^ei 
-    // - 0.46446221999999976*eo^e1^e3^ei - 0.1284755081432714*eo^e2^e3^ei
-    //FIXME die letzten 2 blades vom grade 4 sind richtig, die vorherigen blades dürften gar nicht auftauchen
-    PIc := ε₀^ε₃^Pc^εᵢ // Klammern setzen ändert an der Zusammensetzung der blades nicht, ändert nur Vorzeichen wie zu erwarten
-    // mit dual falsch
-    // -0.1284755081432713*e1 + 0.46446221999999937*e2 + 0.004979999999999995*e1^e2^e3 - 0.12847550814327133*eo^e1^ei + 0.46446221999999937*eo^e2^ei + 0.004979999999999995*eo^e1^e2^e3^ei
+    Pc := ε₀^ε₃^Xc^εᵢ 
     dummy := print(PIc)
-    // Variable PIc2 = (-0.1284755081432713*e1 - 0.46446221999999937*e2 - 0.004979999999999996*e1^e2^e3 - 0.12847550814327136*eo^e1^ei - 0.46446221999999954*eo^e2^ei - 0.004979999999999997*eo^e1^e2^e3^ei) is no k-vector!
-    :PIc2 := PIc*
 
 	// finding P4
 
 	// ipns plane - parallel to PIc that contains P4 and P5
-	:PIc_parallel := PIc + (P5⌊PIc)εᵢ // eq. 47
+	:Pc_parallel := Pc* + (X5⌊Pc*)εᵢ // eq. 47
 
 
 	// calculate the line through P4 and P5 from the following object:
 
 	// plane
-	PI56_orthogonal := ((P5^Pe)*^εᵢ)* // eq. 48 l.1
+	P56_perp := ((X5^Xe)*^εᵢ)* // eq. 48 l.1
 
-	n56_orthogonal  := -((PI56_orthogonal⋅ε₀)⋅εᵢ)/abs((PI56_orthogonal⋅ε₀)⋅εᵢ) // eq. 48, l. 2
+	n56_perp  := -((PI56_perp⋅ε₀)⋅εᵢ)/abs((PI56_perp⋅ε₀)⋅εᵢ) // eq. 48, l. 2
 	// plane containing P4, P5 and which is orthogonal to the norm of PIc
-	PIc_orthogonal := (P5^n56_orthogonal^εᵢ)* // eq. 48 l4
+	Pc_perp := (X5^n56_perp^εᵢ) // eq. 48 l4
 	// ipns line
-	:L45 := PIc_parallel^PIc_orthogonal* // eq. 48 l4
+	:L45 := Pc_parallel⋅PIc_perp // eq. 48 l4
 
 
 	// calculation of P4:
@@ -112,7 +99,7 @@ fn main() {
 	Q4  := (L45*⋅S5*)
 	// selection of a point from the point pair
 	//TODO use kfn to define which of the two points to use
-	P4 := (Q4-sqrt(<Q4>₀²))/(-εᵢ⌋Q4)
+	X4 := (Q4-sqrt(abs(Q4⋅Q4)))/(-εᵢ⌋Q4)
 
 
 	// finding point P3:
@@ -120,13 +107,13 @@ fn main() {
 	// ipns sphere, eq. 50, l. 1
 	S4  := sp(P4, d4) // P4 + (0.5d4²εᵢ)
 	//fixme dual
-	:L34 := (P4^PIc*^εᵢ)* // eq. 50, l. 2
-	Q3  := (S4*⋅L34*)* // eq. 50, l. 3
-	:P3 := (Q3-sqrt(<Q3>₀²))/(-εᵢ⌋Q3) // eq. 50, l. 4
+	:L34 := (X4^Pc*^εᵢ)* // eq. 50, l. 2
+	Q3  := (S4*⋅L34*) // eq. 50, l. 3
+	:X3 := (Q3-sqrt(abs(Q3⋅Q3)))/(-εᵢ⌋Q3) // eq. 50, l. 4
 
 
 	// ipns round point with distance d1 in z direction above the origin
-	:P1 := rp2(0, 0, d1) // eq. 51
+	:X1 := rp2(0, 0, d1) // eq. 51
 
 
 	// finding P2:
@@ -136,11 +123,11 @@ fn main() {
 	// ipns sphere
 	S3 := sp(P3, a3) // P3+0.5a3²εᵢ eq. 52 l.2
 	// ipns circle
-	C2 := S1^S3 // eq. 52, l.3
+	C2 := S1*^S3* // eq. 52, l.3
 	// point pair
-	Q2 := (C2*⋅PIc*)* // eq. 52, l4
+	Q2 := (C2⋅Pc)* // eq. 52, l4
 	// TODO select a point by kud
-	P2 := (Q2-sqrt(<Q2>₀²))/(-εᵢ⌋Q2) 
+	:X2 := (Q2-sqrt(abs(Q2⋅Q2)))/(-εᵢ⌋Q2) 
 
-    P5
+    X0, X1, X2, X3, X4, X5, Xe
 }
