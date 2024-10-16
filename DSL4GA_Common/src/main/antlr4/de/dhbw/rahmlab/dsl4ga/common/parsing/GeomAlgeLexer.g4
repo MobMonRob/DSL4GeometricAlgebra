@@ -22,6 +22,9 @@ FUNCTION_INDICATOR
 	: 'fn'
 	;
 
+FOR_INDICATOR
+	: 'for'
+	;
 ///////////////////////////////////////////////////////////////////////////
 // Symbols for multiple Op's
 ///////////////////////////////////////////////////////////////////////////
@@ -340,6 +343,14 @@ L_CURLY_BRACKET
 
 R_CURLY_BRACKET
 	: '}'
+	;
+
+L_EDGE_BRACKET
+	: '['
+	;
+
+R_EDGE_BRACKET
+	: ']'
 	;
 
 

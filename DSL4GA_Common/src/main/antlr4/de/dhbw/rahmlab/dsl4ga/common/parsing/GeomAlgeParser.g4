@@ -58,7 +58,17 @@ functionBody
 stmt
 	:	SPACE* viz=COLON? assigned=IDENTIFIER SPACE* ASSIGNMENT SPACE* exprCtx=expr SPACE*		#AssgnStmt
 	|	SPACE* assigned+=(IDENTIFIER|LOW_LINE) SPACE* (COMMA SPACE* assigned+=(IDENTIFIER|LOW_LINE) SPACE*)* ASSIGNMENT SPACE* callCtx=callExpr SPACE*		#TupleAssgnStmt
+	|	SPACE* loop  SPACE* # LoopStmt
 	;
+
+loop
+	:	SPACE* FOR_INDICATOR SPACE* L_PARENTHESIS SPACE* IDENTIFIER SPACE* R_PARENTHESIS SPACE* WHITE_LINE* L_EDGE_BRACKET loopBody SPACE* R_EDGE_BRACKET;
+
+loopBody
+	:	
+        SPACE* WHITE_LINE* 
+        (stmt WHITE_LINE+)*
+      ;
 
 // The list-form (1) needs iteration in the transformer while the tree-form (2) don't.
 // enterRetExprStmt inverses the order if retExpr is left-recursive.

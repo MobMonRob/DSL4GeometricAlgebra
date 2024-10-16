@@ -14,6 +14,9 @@ public class TestSymbolic {
 	private static void invocationTest() throws Exception {
 		String source = """
 		fn test(a) {
+            for (x) [
+                  z := 3
+                 ] 
 			a, 5
 		}
 
