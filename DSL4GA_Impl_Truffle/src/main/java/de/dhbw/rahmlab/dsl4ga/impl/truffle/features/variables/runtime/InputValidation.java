@@ -1,8 +1,8 @@
 package de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.runtime;
 
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.internal.InterpreterInternalException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.truffleBox.CgaTruffleBox;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.truffleBox.TruffleBox;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.internal.InterpreterInternalException;
 import de.orat.math.gacalc.api.MultivectorNumeric;
 
 public abstract class InputValidation {

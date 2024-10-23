@@ -7,9 +7,9 @@ import com.oracle.truffle.api.instrumentation.ProvidedTags;
 import com.oracle.truffle.api.instrumentation.StandardTags;
 import com.oracle.truffle.api.source.Source;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.CharStreamSupplier;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.ParsingServiceProxy;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.ExecutionRootNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.Function;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.ParsingServiceProxy;
 import java.io.IOException;
 
 @TruffleLanguage.Registration(
