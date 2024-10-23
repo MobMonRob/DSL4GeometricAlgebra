@@ -7,13 +7,13 @@ import com.oracle.truffle.api.instrumentation.ProbeNode;
 import com.oracle.truffle.api.instrumentation.StandardTags;
 import com.oracle.truffle.api.instrumentation.Tag;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.superClasses.GeomAlgeLangBaseNode;
-import de.orat.math.cga.api.CGAMultivector;
+import de.orat.math.gacalc.api.MultivectorNumeric;
 import java.util.Objects;
 
 @GenerateWrapper
 public abstract class ExpressionBaseNode extends GeomAlgeLangBaseNode implements InstrumentableNode {
 
-	public abstract CGAMultivector executeGeneric(VirtualFrame frame);
+	public abstract MultivectorNumeric executeGeneric(VirtualFrame frame);
 
 	@Override
 	public WrapperNode createWrapper(ProbeNode probeNode) {

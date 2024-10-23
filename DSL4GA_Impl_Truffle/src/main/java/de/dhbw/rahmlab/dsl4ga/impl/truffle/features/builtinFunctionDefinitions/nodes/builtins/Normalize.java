@@ -2,12 +2,12 @@ package de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.
 
 import com.oracle.truffle.api.dsl.Specialization;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.builtinsSuperClasses.BuiltinFunctionBody;
-import de.orat.math.cga.api.CGAMultivector;
+import de.orat.math.gacalc.api.MultivectorNumeric;
 
 public abstract class Normalize extends BuiltinFunctionBody {
 
 	@Specialization
-	protected CGAMultivector execute(CGAMultivector input) {
+	protected MultivectorNumeric execute(MultivectorNumeric input) {
 		return input.normalize();
 	}
 }

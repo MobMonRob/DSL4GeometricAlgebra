@@ -1,11 +1,7 @@
 package de.dhbw.rahmlab.dsl4ga.test;
 
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.api.Arguments;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.api.Program;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.api.Result;
-import java.util.Arrays;
-import org.graalvm.polyglot.Source;
-import org.jogamp.vecmath.Point3d;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.api.TruffleProgramFactory;
+import java.util.Collections;
 
 public class ConferenceTruffleIkDebugging {
 
@@ -24,26 +20,17 @@ public class ConferenceTruffleIkDebugging {
 	 */
 	private static void invocationTest() throws Exception {
 		String path = "./gafiles/common/ika.ocga";
-		Program program;
 		var uri = ConferenceTruffleIkDebugging.class.getResource(path);
 		if (uri == null) {
 			throw new RuntimeException(String.format("Path not found: %s", path));
 		}
-		Source ss = Source.newBuilder(Program.LANGUAGE_ID, uri).build();
-		program = new Program(ss);
-		Arguments arguments = new Arguments();
-		//arguments
-		//	.round_point_ipns("a", new Point3d(1, 0.3, -0.7))
-		//	.round_point_ipns("b", new Point3d(0.5, 0.5, 0.5));
 
-		Result answer = program.invoke(arguments);
-		double[][] answerScalar = answer.decomposeDoubleArray();
+		var fac = new TruffleProgramFactory();
+		var prog = fac.parse(uri);
+		var res = prog.invoke(Collections.emptyList());
 
 		System.out.println("answer: ");
-		for (int i = 0; i < answerScalar.length; ++i) {
-			String current = Arrays.toString(answerScalar[i]);
-			System.out.println(current);
-		}
+		res.forEach(System.out::println);
 		System.out.println();
 	}
 }

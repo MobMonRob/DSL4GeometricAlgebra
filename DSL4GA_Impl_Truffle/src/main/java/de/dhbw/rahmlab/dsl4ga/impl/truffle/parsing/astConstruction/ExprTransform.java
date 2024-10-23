@@ -34,7 +34,7 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionCalls.nodes.e
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionCalls.nodes.expr.GlobalBuiltinReferenceNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionCalls.nodes.expr.FunctionCall;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.Function;
-import de.orat.math.cga.api.CGAMultivector;
+import de.orat.math.gacalc.api.MultivectorNumeric;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
@@ -303,7 +303,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 	private static class EnterCallMarker extends ExpressionBaseNode {
 
 		@Override
-		public CGAMultivector executeGeneric(VirtualFrame frame) {
+		public MultivectorNumeric executeGeneric(VirtualFrame frame) {
 			throw new UnsupportedOperationException();
 		}
 	}

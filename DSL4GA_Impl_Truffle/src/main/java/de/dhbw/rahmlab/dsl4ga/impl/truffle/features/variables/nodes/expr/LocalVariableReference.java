@@ -9,7 +9,7 @@ import com.oracle.truffle.api.instrumentation.Tag;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.truffleBox.CgaTruffleBox;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
-import de.orat.math.cga.api.CGAMultivector;
+import de.orat.math.gacalc.api.MultivectorNumeric;
 
 @NodeField(name = "name", type = String.class)
 @NodeField(name = "frameSlot", type = int.class)
@@ -20,7 +20,7 @@ public abstract class LocalVariableReference extends ExpressionBaseNode {
 	protected abstract int getFrameSlot();
 
 	@Specialization
-	protected CGAMultivector execute(VirtualFrame frame, @Cached("currentLanguageContext()") GeomAlgeLangContext context) {
+	protected MultivectorNumeric execute(VirtualFrame frame, @Cached("currentLanguageContext()") GeomAlgeLangContext context) {
 		int frameSlot = this.getFrameSlot();
 		CgaTruffleBox box = (CgaTruffleBox) frame.getObjectStatic(frameSlot);
 		return box.getInner();

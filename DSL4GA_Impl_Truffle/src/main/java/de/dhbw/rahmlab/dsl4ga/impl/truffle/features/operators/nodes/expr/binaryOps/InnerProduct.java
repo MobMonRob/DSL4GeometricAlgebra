@@ -2,7 +2,7 @@ package de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binary
 
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.exprSuperClasses.BinaryOp;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
-import de.orat.math.cga.api.CGAMultivector;
+import de.orat.math.gacalc.api.MultivectorNumeric;
 
 public final class InnerProduct extends BinaryOp {
 
@@ -11,7 +11,7 @@ public final class InnerProduct extends BinaryOp {
 	}
 
 	@Override
-	protected CGAMultivector execute(CGAMultivector left, CGAMultivector right) {
-		return left.ip(right);
+	protected MultivectorNumeric execute(MultivectorNumeric left, MultivectorNumeric right) {
+		return left.innerProduct(right);
 	}
 }

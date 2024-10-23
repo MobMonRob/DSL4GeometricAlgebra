@@ -3,17 +3,17 @@ package de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.runtime;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.truffleBox.CgaTruffleBox;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.truffleBox.TruffleBox;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.internal.InterpreterInternalException;
-import de.orat.math.cga.api.CGAMultivector;
+import de.orat.math.gacalc.api.MultivectorNumeric;
 
 public abstract class InputValidation {
 
-	public static CGAMultivector ensureIsCGA(Object object) throws InterpreterInternalException {
+	public static MultivectorNumeric ensureIsCGA(Object object) throws InterpreterInternalException {
 		if (object instanceof CgaTruffleBox) {
 			CgaTruffleBox cgaTruffleBox = (CgaTruffleBox) object;
 			return cgaTruffleBox.getInner();
 		} else if (object instanceof TruffleBox) {
 			TruffleBox truffleBox = (TruffleBox) object;
-			String expectedInnerClassName = CGAMultivector.class.getSimpleName();
+			String expectedInnerClassName = MultivectorNumeric.class.getSimpleName();
 			String actualInnerClassName = truffleBox.getInner().getClass().getSimpleName();
 
 			throw new InterpreterInternalException(String.format(

@@ -27,6 +27,8 @@ import java.io.IOException;
 })
 public class GeomAlgeLang extends TruffleLanguage<GeomAlgeLangContext> {
 
+	public static final String LANGUAGE_ID = "geomalgelang";
+
 	private GeomAlgeLangContext context;
 
 	@Override

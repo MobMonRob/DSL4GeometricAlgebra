@@ -9,7 +9,7 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.truffleBox.CgaListTruf
 import static de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.CatchAndRethrow.catchAndRethrow;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionCalls.nodes.exprSuperClasses.AbstractFunctionCall;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.Function;
-import de.orat.math.cga.api.CGAMultivector;
+import de.orat.math.gacalc.api.MultivectorNumeric;
 
 public abstract class FunctionCall extends AbstractFunctionCall {
 
@@ -21,7 +21,7 @@ public abstract class FunctionCall extends AbstractFunctionCall {
 	}
 
 	@Specialization
-	protected CGAMultivector call(VirtualFrame frame, @CachedLibrary(limit = "2") InteropLibrary library) {
+	protected MultivectorNumeric call(VirtualFrame frame, @CachedLibrary(limit = "2") InteropLibrary library) {
 		CgaListTruffleBox argumentValueBoxed = super._executeArguments(frame);
 
 		return catchAndRethrow(this, () -> {

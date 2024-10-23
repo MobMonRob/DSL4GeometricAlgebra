@@ -2,7 +2,7 @@ package de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryO
 
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.exprSuperClasses.UnaryOp;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
-import de.orat.math.cga.api.CGAMultivector;
+import de.orat.math.gacalc.api.MultivectorNumeric;
 
 public final class GradeExtraction extends UnaryOp {
 
@@ -14,7 +14,7 @@ public final class GradeExtraction extends UnaryOp {
 	}
 
 	@Override
-	protected CGAMultivector execute(CGAMultivector input) {
-		return input.extractGrade(this.grade);
+	protected MultivectorNumeric execute(MultivectorNumeric input) {
+		return input.gradeExtraction(this.grade);
 	}
 }

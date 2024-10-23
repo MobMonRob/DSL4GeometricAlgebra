@@ -11,15 +11,21 @@ import java.util.function.Supplier;
  */
 public final class AutoClosingFactory<RESOURCE extends AutoCloseable, PRODUCT> {
 
-	private final Cleaner cleaner = Cleaner.create();
+	private static final Cleaner cleaner = Cleaner.create();
 	private final RESOURCE resource;
 	private final Function<RESOURCE, PRODUCT> productCreator;
 
-	public AutoClosingFactory(Supplier<RESOURCE> resourceCreator, Function<RESOURCE, PRODUCT> productCreator) {
-		this.resource = resourceCreator.get();
+	private AutoClosingFactory(RESOURCE resource, Function<RESOURCE, PRODUCT> productCreator) {
+		this.resource = resource;
 		this.productCreator = productCreator;
+	}
+
+	public static <RESOURCE extends AutoCloseable, PRODUCT> AutoClosingFactory<RESOURCE, PRODUCT> create(Supplier<RESOURCE> resourceCreator, Function<RESOURCE, PRODUCT> productCreator) {
+		var resource = resourceCreator.get();
+		var autoClosingFactory = new AutoClosingFactory(resource, productCreator);
 		// After the factory got phantom reachable, close() will be called on the resource.
-		this.cleaner.register(this, AutoClosingFactory.closeCleanup(this.resource));
+		cleaner.register(autoClosingFactory, AutoClosingFactory.closeCleanup(resource));
+		return autoClosingFactory;
 	}
 
 	// Prevents lambda variable capturing of "this".
@@ -43,7 +49,7 @@ public final class AutoClosingFactory<RESOURCE extends AutoCloseable, PRODUCT> {
 		// Caller (Factory) is responsible for close() of Resource.
 		var product = productCreator.apply(this.resource);
 		// The factory will be hard referenced at least as long as there are hard references to its products.
-		this.cleaner.register(product, AutoClosingFactory.reachabilityCleanup(this));
+		cleaner.register(product, AutoClosingFactory.reachabilityCleanup(this));
 		return product;
 	}
 }

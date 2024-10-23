@@ -1,74 +1,75 @@
 package de.dhbw.rahmlab.dsl4ga.impl.truffle.api;
 
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.ParsingServiceProvider;
+import de.dhbw.rahmlab.dsl4ga.api.iProgram;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.superClasses.GeomAlgeLangBaseNode;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLang;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.truffleBox.CgaListTruffleBox;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.truffleBox.CgaMapTruffleBox;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.AbstractExternalException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.LanguageRuntimeException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.ValidationException;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.ParsingService;
-import de.orat.math.cga.api.CGAMultivector;
+import de.orat.math.gacalc.api.ExprGraphFactory;
+import de.orat.math.gacalc.api.MultivectorNumeric;
+import de.orat.math.sparsematrix.SparseDoubleMatrix;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.net.URL;
 import java.util.List;
-import java.util.Map;
 import org.graalvm.polyglot.Context;
-import org.graalvm.polyglot.Engine;
 import org.graalvm.polyglot.PolyglotException;
 import org.graalvm.polyglot.Source;
 import org.graalvm.polyglot.SourceSection;
 import org.graalvm.polyglot.Value;
 
-public class Program implements AutoCloseable {
+public class TruffleProgram implements iProgram {
 
-	public final Context context;
-	public final Value program;
-	public static final String LANGUAGE_ID = "geomalgelang";
-	public final Engine engine;
-	public final Source source;
+	private final ExprGraphFactory exprGraphFactory;
+	private final Context context;
+	private final Source source;
+	private final Value program;
 
-	public Program(String source) {
-		this(Source.create(LANGUAGE_ID, source));
-	}
-
-	public Program(Source source) {
-		this.source = source;
-		engine = Engine.create(LANGUAGE_ID);
-
-		Context.Builder builder = Context.newBuilder(LANGUAGE_ID)
-			.allowAllAccess(true)
-			.engine(engine);
-
-		this.context = builder.build();
-		this.context.initialize(LANGUAGE_ID);
-
-		ParsingServiceProvider.setParsingService(ParsingService.instance());
-
+	protected TruffleProgram(ExprGraphFactory exprGraphFactory, Context context, BufferedReader sourceReader) {
+		this.exprGraphFactory = exprGraphFactory;
+		this.context = context;
+		try {
+			this.source = Source.newBuilder(GeomAlgeLang.LANGUAGE_ID, sourceReader, "").build();
+		} catch (IOException ex) {
+			throw new RuntimeException(ex);
+		}
 		try {
 			this.program = this.context.parse(source);
 		} catch (PolyglotException ex) {
-			try (this) {
-				throw enrichException(ex);
-			}
+			throw enrichException(ex);
+		}
+	}
+
+	protected TruffleProgram(ExprGraphFactory exprGraphFactory, Context context, URL url) {
+		this.exprGraphFactory = exprGraphFactory;
+		this.context = context;
+		try {
+			this.source = Source.newBuilder(GeomAlgeLang.LANGUAGE_ID, url).build();
+		} catch (IOException ex) {
+			throw new RuntimeException(ex);
+		}
+		try {
+			this.program = this.context.parse(source);
+		} catch (PolyglotException ex) {
+			throw enrichException(ex);
 		}
 	}
 
 	@Override
-	public void close() {
-		this.context.close(true);
-	}
+	public List<SparseDoubleMatrix> invoke(List<SparseDoubleMatrix> arguments) {
+		List<MultivectorNumeric> mVecArgs = arguments.stream().map(vec -> this.exprGraphFactory.createMultivectorNumeric(vec)).toList();
 
-	public Result invoke(Arguments arguments) {
 		try {
-			Map<String, CGAMultivector> argsMapView = arguments.getArgsMapView();
-			CgaMapTruffleBox args = new CgaMapTruffleBox(argsMapView);
-			Value result = this.program.execute(args);
-			CgaListTruffleBox box = result.as(CgaListTruffleBox.class);
-			List<CGAMultivector> answers = box.getInner();
-			return new Result(answers);
+			CgaListTruffleBox truffleArgs = new CgaListTruffleBox(mVecArgs);
+			Value result = this.program.execute(truffleArgs);
+			CgaListTruffleBox truffleResults = result.as(CgaListTruffleBox.class);
+			List<MultivectorNumeric> mVecResults = truffleResults.getInner();
+			List<SparseDoubleMatrix> results = mVecResults.stream().map(mvec -> mvec.elements()).toList();
+			return results;
 		} catch (PolyglotException ex) {
-			try (this) {
-				throw enrichException(ex);
-			}
+			throw enrichException(ex);
 		}
 	}
 

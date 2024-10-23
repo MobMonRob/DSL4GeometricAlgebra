@@ -25,10 +25,9 @@ public class BuiltinRegistry {
 		this.installBuiltin(AbsFactory.getInstance());
 		this.installBuiltin(Atan2Factory.getInstance());
 		this.installBuiltin(ExpFactory.getInstance());
+		// this.installBuiltin(GetLastListReturnFactory.getInstance()); // Only for internal use
 		this.installBuiltin(NormalizeFactory.getInstance());
 		this.installBuiltin(SqrtFactory.getInstance());
-		this.installBuiltin(GetLastListReturnFactory.getInstance());
-		this.installBuiltin(PrintFactory.getInstance());
 	}
 
 	private void installBuiltin(NodeFactory<? extends BuiltinFunctionBody> factory) {

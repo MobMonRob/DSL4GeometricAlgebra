@@ -14,7 +14,7 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.truffleBox.CgaTruffleB
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.LanguageRuntimeException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.internal.InterpreterInternalException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.Function;
-import de.orat.math.cga.api.CGAMultivector;
+import de.orat.math.gacalc.api.MultivectorNumeric;
 import java.util.Arrays;
 import java.util.List;
 
@@ -39,14 +39,14 @@ public abstract class AbstractFunctionCall extends ExpressionBaseNode {
 	@ExplodeLoop
 	protected CgaListTruffleBox _executeArguments(VirtualFrame frame) {
 		// CompilerAsserts.compilationConstant(this.arguments.length);
-		CGAMultivector[] argumentValues = new CGAMultivector[this.arguments.length];
+		MultivectorNumeric[] argumentValues = new MultivectorNumeric[this.arguments.length];
 		for (int i = 0; i < this.arguments.length; ++i) {
 			argumentValues[i] = this.arguments[i].executeGeneric(frame);
 		}
 		return new CgaListTruffleBox(Arrays.asList(argumentValues));
 	}
 
-	protected CGAMultivector _executeFunction(Function function, CgaListTruffleBox argumentValueBoxed, InteropLibrary library) throws InterpreterInternalException {
+	protected MultivectorNumeric _executeFunction(Function function, CgaListTruffleBox argumentValueBoxed, InteropLibrary library) throws InterpreterInternalException {
 		try {
 			// Indirect execution in order to utilize graal optimizations.
 			// invokes FunctionRootNode::execute
@@ -54,7 +54,7 @@ public abstract class AbstractFunctionCall extends ExpressionBaseNode {
 			if (returnValue instanceof CgaTruffleBox) {
 				return ((CgaTruffleBox) returnValue).getInner();
 			} else if (returnValue instanceof CgaListTruffleBox) {
-				List<CGAMultivector> mvecs = ((CgaListTruffleBox) returnValue).getInner();
+				List<MultivectorNumeric> mvecs = ((CgaListTruffleBox) returnValue).getInner();
 				super.currentLanguageContext().lastListReturn = (CgaListTruffleBox) returnValue;
 				return mvecs.get(0);
 			} else {
