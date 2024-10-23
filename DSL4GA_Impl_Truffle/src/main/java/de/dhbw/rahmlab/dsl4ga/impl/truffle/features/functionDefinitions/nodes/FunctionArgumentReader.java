@@ -14,7 +14,7 @@ public abstract class FunctionArgumentReader extends ExpressionBaseNode {
 	protected abstract int getIndex();
 
 	@Specialization
-	public MultivectorNumeric executeReadFunctionArgument(VirtualFrame frame) {
+	public MultivectorNumeric readFunctionArgument(VirtualFrame frame) {
 		return ((CgaListTruffleBox) frame.getArguments()[0]).getInner().get(this.getIndex());
 	}
 

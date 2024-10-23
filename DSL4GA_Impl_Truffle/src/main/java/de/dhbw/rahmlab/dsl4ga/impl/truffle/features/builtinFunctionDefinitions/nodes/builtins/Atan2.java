@@ -7,7 +7,7 @@ import de.orat.math.gacalc.api.MultivectorNumeric;
 public abstract class Atan2 extends BuiltinFunctionBody {
 
 	@Specialization
-	protected MultivectorNumeric execute(MultivectorNumeric x, MultivectorNumeric y) {
+	protected MultivectorNumeric doExecute(MultivectorNumeric x, MultivectorNumeric y) {
 		return x.scalarAtan2(y);
 	}
 }

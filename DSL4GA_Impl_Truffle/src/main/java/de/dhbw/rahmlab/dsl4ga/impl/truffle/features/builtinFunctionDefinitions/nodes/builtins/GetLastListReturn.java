@@ -15,7 +15,7 @@ public abstract class GetLastListReturn extends BuiltinFunctionBody {
 	protected abstract int getIndex();
 
 	@Specialization
-	protected MultivectorNumeric execute(VirtualFrame frame) {
+	protected MultivectorNumeric doExecute(VirtualFrame frame) {
 		return super.currentLanguageContext().lastListReturn.getInner().get(this.getIndex());
 	}
 }

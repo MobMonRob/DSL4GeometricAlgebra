@@ -11,7 +11,7 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.visualization.runtime.Visual
 public abstract class CleanupVisualizer extends NonReturningStatementBaseNode {
 
 	@Specialization
-	protected void execute(VirtualFrame frame) {
+	protected void doExecute(VirtualFrame frame) {
 		catchAndRethrow(this, () -> {
 			// VisualizerService.instance().removeAll();
 		});

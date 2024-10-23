@@ -17,7 +17,7 @@ public abstract class VisualizeMultivector extends NonReturningStatementBaseNode
 	protected abstract LocalVariableReference getVarRef();
 
 	@Specialization
-	protected void execute(VirtualFrame frame, MultivectorNumeric varRefValue) {
+	protected void doExecute(VirtualFrame frame, MultivectorNumeric varRefValue) {
 		String name = this.getVarRef().getName();
 
 		catchAndRethrow(this, () -> {

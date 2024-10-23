@@ -20,7 +20,7 @@ public abstract class LocalVariableReference extends ExpressionBaseNode {
 	protected abstract int getFrameSlot();
 
 	@Specialization
-	protected MultivectorNumeric execute(VirtualFrame frame, @Cached("currentLanguageContext()") GeomAlgeLangContext context) {
+	protected MultivectorNumeric doExecute(VirtualFrame frame, @Cached(value = "currentLanguageContext()", neverDefault = true) GeomAlgeLangContext context) {
 		int frameSlot = this.getFrameSlot();
 		CgaTruffleBox box = (CgaTruffleBox) frame.getObjectStatic(frameSlot);
 		return box.getInner();

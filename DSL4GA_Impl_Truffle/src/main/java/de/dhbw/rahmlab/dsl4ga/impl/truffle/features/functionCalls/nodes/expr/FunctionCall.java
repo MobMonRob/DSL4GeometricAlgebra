@@ -38,15 +38,15 @@ public abstract class FunctionCall extends ExpressionBaseNode {
 
 	@Specialization
 	protected MultivectorNumeric call(VirtualFrame frame, @CachedLibrary(limit = "2") InteropLibrary library) {
-		CgaListTruffleBox argumentValueBoxed = _executeArguments(frame);
+		CgaListTruffleBox argumentValueBoxed = doExecuteArguments(frame);
 
 		return catchAndRethrow(this, () -> {
-			return _executeFunction(this.function, argumentValueBoxed, library);
+			return doExecuteFunction(this.function, argumentValueBoxed, library);
 		});
 	}
 
 	@ExplodeLoop
-	protected CgaListTruffleBox _executeArguments(VirtualFrame frame) {
+	protected CgaListTruffleBox doExecuteArguments(VirtualFrame frame) {
 		// CompilerAsserts.compilationConstant(this.arguments.length);
 		MultivectorNumeric[] argumentValues = new MultivectorNumeric[this.arguments.length];
 		for (int i = 0; i < this.arguments.length; ++i) {
@@ -55,7 +55,7 @@ public abstract class FunctionCall extends ExpressionBaseNode {
 		return new CgaListTruffleBox(Arrays.asList(argumentValues));
 	}
 
-	protected MultivectorNumeric _executeFunction(Function function, CgaListTruffleBox argumentValueBoxed, InteropLibrary library) throws InterpreterInternalException {
+	protected MultivectorNumeric doExecuteFunction(Function function, CgaListTruffleBox argumentValueBoxed, InteropLibrary library) throws InterpreterInternalException {
 		try {
 			// Indirect execution in order to utilize graal optimizations.
 			// invokes FunctionRootNode::execute

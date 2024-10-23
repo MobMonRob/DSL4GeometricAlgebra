@@ -17,7 +17,7 @@ public abstract class ListReader extends ExpressionBaseNode {
 	protected abstract CgaListTruffleBox getArguments();
 
 	@Specialization
-	public MultivectorNumeric executeReadFunctionArgument(VirtualFrame frame) {
+	public MultivectorNumeric readFunctionArgument(VirtualFrame frame) {
 		return this.getArguments().getInner().get(this.getIndex());
 	}
 

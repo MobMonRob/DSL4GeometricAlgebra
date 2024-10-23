@@ -7,7 +7,7 @@ import de.orat.math.gacalc.api.MultivectorNumeric;
 public abstract class Abs extends BuiltinFunctionBody {
 
 	@Specialization
-	protected MultivectorNumeric execute(MultivectorNumeric input) {
+	protected MultivectorNumeric doExecute(MultivectorNumeric input) {
 		return input.scalarAbs();
 	}
 }
