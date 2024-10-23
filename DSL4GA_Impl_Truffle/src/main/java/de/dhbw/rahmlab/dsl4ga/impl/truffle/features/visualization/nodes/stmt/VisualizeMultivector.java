@@ -21,7 +21,7 @@ public abstract class VisualizeMultivector extends NonReturningStatementBaseNode
 		String name = this.getVarRef().getName();
 
 		catchAndRethrow(this, () -> {
-			// VisualizerService.instance().add(varRefValue, name);
+			VisualizerService.instance().add(varRefValue, name);
 		});
 	}
 
