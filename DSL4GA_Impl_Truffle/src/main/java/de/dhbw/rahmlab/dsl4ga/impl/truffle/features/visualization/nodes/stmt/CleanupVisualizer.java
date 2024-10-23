@@ -13,7 +13,7 @@ public abstract class CleanupVisualizer extends NonReturningStatementBaseNode {
 	@Specialization
 	protected void execute(VirtualFrame frame) {
 		catchAndRethrow(this, () -> {
-			VisualizerService.instance().removeAll();
+			// VisualizerService.instance().removeAll();
 		});
 	}
 

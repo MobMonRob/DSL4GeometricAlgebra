@@ -1,39 +1,40 @@
 package de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.astConstruction;
 
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOps.Dual;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.GeometricProduct;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.Subtraction;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.literals.nodes.expr.ScalarLiteral;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.Division;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.RegressiveProduct;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOps.Reverse;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOps.GradeInversion;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOps.Negate;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOps.GeneralInverse;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.RightContraction;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionCalls.nodes.expr.BuiltinFunctionCall;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.Addition;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.OuterProduct;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.literals.nodes.expr.Constant;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.InnerProduct;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.Join;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionCalls.nodes.expr.GlobalBuiltinReference;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.nodes.expr.LocalVariableReference;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOps.CliffordConjugate;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOps.GradeExtraction;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOps.Undual;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.LeftContraction;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.Meet;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParser;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParserBaseListener;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
+import static de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.CatchAndRethrow.catchAndRethrow;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.ValidationException;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionCalls.nodes.expr.BuiltinFunctionCallNodeGen;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionCalls.nodes.expr.GlobalBuiltinReferenceNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionCalls.nodes.expr.FunctionCall;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionCalls.nodes.expr.FunctionCallNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.Function;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.literals.nodes.expr.Constant;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.literals.nodes.expr.ConstantNodeGen;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.literals.nodes.expr.ScalarLiteral;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.literals.nodes.expr.ScalarLiteralNodeGen;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.Addition;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.Division;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.GeometricProduct;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.InnerProduct;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.Join;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.LeftContraction;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.Meet;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.OuterProduct;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.RegressiveProduct;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.RightContraction;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.Subtraction;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOps.CliffordConjugate;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOps.Dual;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOps.GeneralInverse;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOps.GradeExtraction;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOps.GradeInversion;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOps.Negate;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOps.Reverse;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOps.Undual;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.nodes.expr.LocalVariableReference;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.nodes.expr.LocalVariableReferenceNodeGen;
 import de.orat.math.gacalc.api.MultivectorNumeric;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -42,11 +43,6 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Map;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionCalls.nodes.expr.FunctionCallNodeGen;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionCalls.nodes.exprSuperClasses.AbstractFunctionCall;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.literals.nodes.expr.ConstantNodeGen;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.literals.nodes.expr.ScalarLiteralNodeGen;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.nodes.expr.LocalVariableReferenceNodeGen;
 
 /**
  * This class converts an expression subtree of an ANTLR parsetree into an expression AST in truffle.
@@ -79,12 +75,12 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		return rootNode;
 	}
 
-	public static AbstractFunctionCall generateCallAST(GeomAlgeParser.CallExprContext callExprCtx, GeomAlgeLangContext geomAlgeLangContext, Map<String, Function> functionsView, Map<String, Integer> localVariablesView) {
+	public static FunctionCall generateCallAST(GeomAlgeParser.CallExprContext callExprCtx, GeomAlgeLangContext geomAlgeLangContext, Map<String, Function> functionsView, Map<String, Integer> localVariablesView) {
 		ExprTransform exprTransform = new ExprTransform(geomAlgeLangContext, functionsView, localVariablesView);
 
 		ParseTreeWalker.DEFAULT.walk(exprTransform, callExprCtx);
 
-		AbstractFunctionCall rootNode = (AbstractFunctionCall) exprTransform.nodeStack.getFirst();
+		FunctionCall rootNode = (FunctionCall) exprTransform.nodeStack.getFirst();
 		return rootNode;
 	}
 
@@ -331,19 +327,17 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 
 		String functionName = ctx.name.getText();
 
+		Function function;
 		if (this.functionsView.containsKey(functionName)) {
-			Function function = this.functionsView.get(functionName);
-			FunctionCall functionCall = FunctionCallNodeGen.create(function, argumentsArray);
-			functionCall.setSourceSection(ctx.getStart().getStartIndex(), ctx.getStop().getStopIndex());
-			this.nodeStack.push(functionCall);
+			function = this.functionsView.get(functionName);
 		} else {
 			// throw new ValidationException(String.format("Function \"%s\" to call not found.", functionName));
-			GlobalBuiltinReference globalBuiltinReference = GlobalBuiltinReferenceNodeGen.create(functionName);
-			globalBuiltinReference.setSourceSection(ctx.name.getStartIndex(), ctx.name.getStopIndex());
-
-			BuiltinFunctionCall functionCall = BuiltinFunctionCallNodeGen.create(globalBuiltinReference, argumentsArray);
-			functionCall.setSourceSection(ctx.getStart().getStartIndex(), ctx.getStop().getStopIndex());
-			this.nodeStack.push(functionCall);
+			function = catchAndRethrow(null, () -> {
+				return this.geomAlgeLangContext.builtinRegistry.getBuiltinFunction(functionName);
+			});
 		}
+		FunctionCall functionCall = FunctionCallNodeGen.create(function, argumentsArray);
+		functionCall.setSourceSection(ctx.getStart().getStartIndex(), ctx.getStop().getStopIndex());
+		this.nodeStack.push(functionCall);
 	}
 }
