@@ -6,63 +6,65 @@ import de.orat.math.cga.api.CGAViewObject;
 import de.orat.math.cga.api.CGAViewer;
 import de.orat.math.sparsematrix.DenseDoubleColumnVector;
 import de.orat.math.sparsematrix.SparseDoubleMatrix;
+import de.orat.math.view.euclidview3d.GeometryView3d;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Optional;
 import org.jogamp.vecmath.Point3d;
 
 public class App {
-
+	
 	public static void main(String[] args) throws Exception {
+		System.setProperty("jogamp.debug", "true");
+		System.setProperty("jogamp.verbose", "true");
+		GeometryView3d.main(new String[0]);
 		// vizTest();
 		// encodingTest();
-		invocationTest();
+		// invocationTest();
 	}
-
+	
 	private static void vizTest() throws InterruptedException {
 		Optional<CGAViewer> viewerOptional = CGAViewer.getInstance();
-		if (viewerOptional.isPresent()) {
-			CGAViewer viewer = viewerOptional.get();
-
-			for (int i = 0;; ++i) {
-				CGARoundPointIPNS pm = new CGARoundPointIPNS(new Point3d(i, 0.3, -0.7));
-				CGAViewObject addedObject = viewer.addCGAObject(pm, "pm");
-				System.out.println("Added " + i);
-				// Thread.sleep(1000);
-				addedObject.remove();
-				System.out.println("Removed " + i);
-				// Thread.sleep(1000);
-			}
+		CGAViewer viewer = viewerOptional.orElseThrow();
+		
+		for (int i = 0;; ++i) {
+			CGARoundPointIPNS pm = new CGARoundPointIPNS(new Point3d(i, 0.3, -0.7));
+			CGAViewObject addedObject = viewer.addCGAObject(pm, "pm");
+			System.out.println("Added " + i);
+			// Thread.sleep(1000);
+			addedObject.remove();
+			System.out.println("Removed " + i);
+			// Thread.sleep(1000);
 		}
 	}
-
+	
 	private static void encodingTest() {
 		System.out.println(System.getProperty("stdout.encoding"));
 		System.out.println(System.getProperty("sun.stdout.encoding"));
 		System.out.println(System.getProperty("native.encoding"));
 		System.out.println(Charset.defaultCharset().toString());
 		System.out.println(System.getProperty("file.encoding"));
-
+		
 		System.out.println("ä π");
 	}
-
+	
 	private static void invocationTest() throws Exception {
 		String path = "./vizTest.ocga";
 		var url = DebuggerTest.class.getResource(path);
 		if (url == null) {
 			throw new RuntimeException(String.format("Path not found: %s", path));
 		}
-
+		
 		var a = new CGARoundPointIPNS(new Point3d(1, 0.3, -0.7)).extractCoordinates();
 		var b = new CGARoundPointIPNS(new Point3d(0.5, 0.5, 0.5)).extractCoordinates();
 		var aMatrix = new SparseDoubleMatrix(new DenseDoubleColumnVector(a).toMatrix());
 		var bMatrix = new SparseDoubleMatrix(new DenseDoubleColumnVector(b).toMatrix());
 		var args = List.of(aMatrix, bMatrix);
-
+		
 		var fac = new TruffleProgramFactory();
 		var prog = fac.parse(url);
 		var res = prog.invoke(args);
-
+		
 		System.out.println("answer: ");
 		res.forEach(System.out::println);
 		System.out.println();
