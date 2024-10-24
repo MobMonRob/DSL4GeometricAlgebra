@@ -52,7 +52,7 @@
 			<artifactId>EuclidView3d</artifactId>
 			<version>1.0-SNAPSHOT</version>
 			<type>jar</type>
-			<!-- <scope>runtime</scope> -->
+			<scope>runtime</scope>
 		</dependency>
 
 		<!-- Currently incompatible with EuclidView3d. -->
