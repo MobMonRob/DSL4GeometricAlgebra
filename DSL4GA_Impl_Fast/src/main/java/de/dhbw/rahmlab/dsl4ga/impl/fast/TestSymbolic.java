@@ -12,19 +12,12 @@ public class TestSymbolic {
 	}
 
 	private static void invocationTest() throws Exception {
-		String source = """
-		fn test(a) {
-            for (a) {
-                z := 3
-                y := 5
-            }
-			a, 5, z
-		}
-
-		fn main(a, b) { 
-			c, d, e := test(b)
-                  c, d, e := test(b)
-			a, b, c, d, e
+		String source = """                  
+		fn main() {
+            n[] := {4}
+            a [] := {6,67, b x, εᵢ, p6 + 0.5p6²εᵢ+5ε₀+εᵢ}
+            a [0] := 12.2
+			b
 		}
 		""";
 
@@ -35,8 +28,8 @@ public class TestSymbolic {
 		var program = fac.parse(source);
 
 		List<SparseDoubleMatrix> arguments = new ArrayList<>();
-		arguments.add(new SparseDoubleMatrix(0,0));
-		arguments.add(new SparseDoubleMatrix(0,0));
+		//arguments.add(new SparseDoubleMatrix(0,0));
+		//arguments.add(new SparseDoubleMatrix(0,0));
 
 		List<SparseDoubleMatrix> answer = program.invoke(arguments);
 

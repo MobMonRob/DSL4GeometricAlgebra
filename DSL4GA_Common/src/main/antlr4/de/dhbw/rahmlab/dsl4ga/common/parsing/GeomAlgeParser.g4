@@ -57,26 +57,29 @@ functionBody
 
 stmt
 	:	SPACE* viz=COLON? assigned=IDENTIFIER SPACE* ASSIGNMENT SPACE* exprCtx=expr SPACE*		#AssgnStmt
-	|	SPACE* assigned+=(IDENTIFIER|LOW_LINE) SPACE* (COMMA SPACE* assigned+=(IDENTIFIER|LOW_LINE) SPACE*)* ASSIGNMENT SPACE* callCtx=callExpr SPACE*		#TupleAssgnStmt
-	|	SPACE* loop  SPACE* # LoopStmt
+	|	SPACE* assigned+=(IDENTIFIER|LOW_LINE) SPACE* (COMMA SPACE* assigned+=(IDENTIFIER|LOW_LINE) SPACE*)* ASSIGNMENT SPACE* callCtx=callExpr SPACE*		# TupleAssgnStmt
+	|  SPACE* IDENTIFIER SPACE* L_EDGE_BRACKET R_EDGE_BRACKET SPACE* ASSIGNMENT SPACE* L_CURLY_BRACKET SPACE* arrayExpr SPACE* R_CURLY_BRACKET SPACE* # ArrayInitStmt
+	|   SPACE* IDENTIFIER SPACE* L_EDGE_BRACKET DIGIT+ R_EDGE_BRACKET SPACE* ASSIGNMENT SPACE* expr SPACE* # ArrayAssgnStmt
 	;
 
-loop
-	:	SPACE* FOR_INDICATOR SPACE* L_PARENTHESIS SPACE* loopVar=IDENTIFIER SPACE* R_PARENTHESIS SPACE* WHITE_LINE* L_CURLY_BRACKET loopBody SPACE* R_CURLY_BRACKET;
-
-loopBody
-	:	
-        SPACE* WHITE_LINE* 
-        (loopStmts+=stmt WHITE_LINE+)+
-      ;
-
-// The list-form (1) needs iteration in the transformer while the tree-form (2) don't.
+// The list-form (1) needs iteration in the transformer while thetree-form (2) don't.
 // enterRetExprStmt inverses the order if retExpr is left-recursive.
 retExpr
 	//:	exprContext+=expr (COMMA exprContext+=expr)*	#RetExprStmt
 	:	exprContext=expr				#RetExprStmtExpr
 	|	exprContext=expr COMMA retExpr	#RetExprStmtExpr
 	;
+
+
+///////////////////////////////////////////////////////////////////////////
+// ArrayExpr
+///////////////////////////////////////////////////////////////////////////
+
+arrayExpr
+	:   expr							#ArrayExprStmtExpr
+	|   expr COMMA arrayExpr			#ArrayExprStmtExpr
+	;
+
 
 ///////////////////////////////////////////////////////////////////////////
 // Expr

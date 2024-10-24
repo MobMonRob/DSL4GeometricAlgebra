@@ -84,19 +84,6 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 		}
 	}
 	
-	
-	
-	
-	@Override
-	public void enterLoop(GeomAlgeParser.LoopContext ctx)	{
-		System.out.println(ctx.loopVar.getText());
-	}
-	
-	@Override
-	public void enterLoopBody(GeomAlgeParser.LoopBodyContext ctx) { 
-	}
-	
-	
 
 	@Override
 	public void enterTupleAssgnStmt(GeomAlgeParser.TupleAssgnStmtContext ctx) {
