@@ -62,12 +62,12 @@ stmt
 	;
 
 loop
-	:	SPACE* FOR_INDICATOR SPACE* L_PARENTHESIS SPACE* IDENTIFIER SPACE* R_PARENTHESIS SPACE* WHITE_LINE* L_EDGE_BRACKET loopBody SPACE* R_EDGE_BRACKET;
+	:	SPACE* FOR_INDICATOR SPACE* L_PARENTHESIS SPACE* loopVar=IDENTIFIER SPACE* R_PARENTHESIS SPACE* WHITE_LINE* L_CURLY_BRACKET loopBody SPACE* R_CURLY_BRACKET;
 
 loopBody
 	:	
         SPACE* WHITE_LINE* 
-        (stmt WHITE_LINE+)*
+        (loopStmts+=stmt WHITE_LINE+)+
       ;
 
 // The list-form (1) needs iteration in the transformer while the tree-form (2) don't.

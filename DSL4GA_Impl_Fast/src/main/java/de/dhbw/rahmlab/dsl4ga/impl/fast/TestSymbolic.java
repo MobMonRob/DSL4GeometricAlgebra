@@ -14,15 +14,17 @@ public class TestSymbolic {
 	private static void invocationTest() throws Exception {
 		String source = """
 		fn test(a) {
-            for (x) [
-                  z := 3
-                 ] 
-			a, 5
+            for (a) {
+                z := 3
+                y := 5
+            }
+			a, 5, z
 		}
 
-		fn main(a, b) {
-			c, d := test(b)
-			a, b, c, d
+		fn main(a, b) { 
+			c, d, e := test(b)
+                  c, d, e := test(b)
+			a, b, c, d, e
 		}
 		""";
 
