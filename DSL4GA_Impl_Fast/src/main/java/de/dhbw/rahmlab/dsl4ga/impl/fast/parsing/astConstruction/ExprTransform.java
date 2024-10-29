@@ -57,6 +57,29 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 
 		return exprTransform.lastCallResults;
 	}
+	
+	public static MultivectorSymbolic[] generateArrayAST(GeomAlgeParser parser, GeomAlgeParser.ArrayExprContext arrayExprCtx, Map<String, FunctionSymbolic> functionsView, Map<String, MultivectorSymbolic> localVariablesView) {
+		ExprTransform exprTransform = new ExprTransform(functionsView, localVariablesView);
+		
+		SkippingParseTreeWalker.walk(parser, exprTransform, arrayExprCtx, SkippingParseTreeWalker.DummyNode.class);
+		
+		int i = 0;
+		MultivectorSymbolic[] arrayVars = new MultivectorSymbolic[exprTransform.nodeStack.size()];
+		while (exprTransform.nodeStack.size() != 0){
+			arrayVars[i] = exprTransform.nodeStack.pop();
+			i ++;
+		}
+		return arrayVars;
+	}
+	
+		public static MultivectorSymbolic generateArrayAssgnAST(GeomAlgeParser parser, GeomAlgeParser.ExprContext exprCtx, Map<String, FunctionSymbolic> functionsView, Map<String, MultivectorSymbolic> localVariablesView) {
+		ExprTransform exprTransform = new ExprTransform(functionsView, localVariablesView);
+
+		SkippingParseTreeWalker.walk(parser, exprTransform, exprCtx, SkippingParseTreeWalker.DummyNode.class);
+
+		MultivectorSymbolic rootNode = exprTransform.nodeStack.getFirst();
+		return rootNode;
+	}
 
 	@Override
 	public void exitGP(GeomAlgeParser.GPContext ctx) {
@@ -248,7 +271,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 	public void exitVariableReference(GeomAlgeParser.VariableReferenceContext ctx) {
 		String name = ctx.name.getText();
 
-		if (!this.localVariablesView.containsKey(name)) {
+		if (!this.localVariablesView.containsKey(name) ) {
 			throw new ValidationException(String.format("Variable \"%s\" has not been declared before.", name));
 		}
 
@@ -283,7 +306,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 			throw new AssertionError(ex);
 		}
 	}
-
+	
 	private static class EnterCallMarker extends MultivectorSymbolic {
 
 		private EnterCallMarker() {

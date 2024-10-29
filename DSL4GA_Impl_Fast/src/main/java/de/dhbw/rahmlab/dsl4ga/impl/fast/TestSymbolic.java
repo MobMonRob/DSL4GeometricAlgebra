@@ -12,11 +12,12 @@ public class TestSymbolic {
 	}
 
 	private static void invocationTest() throws Exception {
-		String source = """                  
+		String source = """            
 		fn main() {
-            n[] := {4}
-            a [] := {6,67, b x, εᵢ, p6 + 0.5p6²εᵢ+5ε₀+εᵢ}
-            a [0] := 12.2
+			b := 8
+            //x [] := {4, b+2}
+            a [] := {6,67, b, εᵢ, 0.5²εᵢ+5ε₀+εᵢ}
+            a [3.2] := 12.2
 			b
 		}
 		""";

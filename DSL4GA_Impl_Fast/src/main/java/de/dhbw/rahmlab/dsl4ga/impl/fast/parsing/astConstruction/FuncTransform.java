@@ -27,8 +27,8 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 	protected final Map<String, FunctionSymbolic> functionsView;
 
 	protected final Map<String, MultivectorSymbolic> localVariables = new HashMap<>();
+	protected final Map<String, MultivectorSymbolic[]> localArrays = new HashMap<>();
 	protected final Map<String, MultivectorSymbolic> localVariablesView = Collections.unmodifiableMap(localVariables);
-
 	protected final GeomAlgeParser parser;
 
 	protected FuncTransform(GeomAlgeParser parser, Map<String, FunctionSymbolic> functionsView) {
@@ -72,7 +72,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 		// Assignment
 		String name = ctx.assigned.getText();
 
-		if (this.localVariables.containsKey(name)) {
+		if (this.localVariables.containsKey(name) || this.localArrays.containsKey(name)) {
 			throw new ValidationException(String.format("\"%s\" cannot be assigned again.", name));
 		}
 
@@ -103,12 +103,45 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 				continue;
 			}
 
-			if (this.localVariables.containsKey(name)) {
+			if (this.localVariables.containsKey(name) || this.localArrays.containsKey(name)) {
 				throw new ValidationException(String.format("\"%s\" cannot be assigned again.", name));
 			}
 
 			this.localVariables.put(name, results.get(i));
 		}
+	}
+	
+	@Override
+	public void enterArrayInitStmt (GeomAlgeParser.ArrayInitStmtContext ctx) {
+		MultivectorSymbolic [] array = ExprTransform.generateArrayAST(this.parser, ctx.arrayCtx, this.functionsView, this.localVariablesView);
+		
+		// Assignment
+		String name = ctx.assigned.getText();
+
+		if (this.localVariables.containsKey(name) || this.localArrays.containsKey(name)) {
+			throw new ValidationException(String.format("\"%s\" cannot be assigned again.", name));
+		}
+
+		this.localArrays.put(name, array);
+	}
+	
+	@Override 
+	public void enterArrayAssgnStmt (GeomAlgeParser.ArrayAssgnStmtContext ctx){
+		String name = ctx.assigned.getText();
+		int index = 0;
+		try {
+			index = Integer.parseInt(ctx.index.getText());
+		}
+		catch (NumberFormatException e) {
+			throw new AssertionError(String.format("'%s' is no integer!", ctx.index.getText()));
+		}
+		if (!this.localArrays.containsKey(name))
+			throw new ValidationException(String.format("Array \"%s\" has not been declared before.", name));
+		MultivectorSymbolic [] array = this.localArrays.get(name);
+		MultivectorSymbolic expr = ExprTransform.generateArrayAssgnAST(this.parser, ctx.accessCtx, this.functionsView, this.localVariablesView);
+		array [index] = expr;
+		this.localArrays.remove(name);
+		this.localArrays.put(name, array);
 	}
 
 	@Override
