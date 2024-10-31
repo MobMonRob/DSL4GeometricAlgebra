@@ -13,8 +13,8 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.
 import java.io.IOException;
 
 @TruffleLanguage.Registration(
-	id = "geomalgelang",
-	name = "GeomAlgeLang",
+	id = "ga",
+	name = "ga",
 	version = "0.0.1"
 )
 @ProvidedTags({

@@ -27,15 +27,14 @@ public class ConferenceTruffleIkDebugging {
 		Program program;
 		var uri = ConferenceTruffleIkDebugging.class.getResource(path);
 		if (uri == null) {
-			throw new RuntimeException(String.format("Path not found: %s", path));
+			throw new RuntimeException(
+				String.format("Path not found: %s", path));
 		}
-		Source ss = Source.newBuilder(Program.LANGUAGE_ID, uri).build();
+		Source ss = Source.newBuilder(
+			Program.LANGUAGE_ID, uri).build();
 		program = new Program(ss);
+		
 		Arguments arguments = new Arguments();
-		//arguments
-		//	.round_point_ipns("a", new Point3d(1, 0.3, -0.7))
-		//	.round_point_ipns("b", new Point3d(0.5, 0.5, 0.5));
-
 		Result answer = program.invoke(arguments);
 		double[][] answerScalar = answer.decomposeDoubleArray();
 
@@ -46,4 +45,9 @@ public class ConferenceTruffleIkDebugging {
 		}
 		System.out.println();
 	}
+	
+	//arguments
+		//	.round_point_ipns("a", new Point3d(1, 0.3, -0.7))
+		//	.round_point_ipns("b", new Point3d(0.5, 0.5, 0.5));
+
 }

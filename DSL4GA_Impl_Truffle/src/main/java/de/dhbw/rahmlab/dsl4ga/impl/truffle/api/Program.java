@@ -22,7 +22,7 @@ public class Program implements AutoCloseable {
 
 	public final Context context;
 	public final Value program;
-	public static final String LANGUAGE_ID = "geomalgelang";
+	public static final String LANGUAGE_ID = "ga"; //geomalgelang";
 	public final Engine engine;
 	public final Source source;
 
