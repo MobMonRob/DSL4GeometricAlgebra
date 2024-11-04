@@ -16,6 +16,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Map;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -34,6 +35,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 	protected final Deque<MultivectorSymbolic> nodeStack = new ArrayDeque<>();
 	protected final Map<String, FunctionSymbolic> functionsView;
 	protected final Map<String, MultivectorSymbolic> localVariablesView;
+	protected static Map<String, MultivectorSymbolic[]> localArrays = new HashMap<>();
 	protected List<MultivectorSymbolic> lastCallResults = null;
 
 	protected ExprTransform(Map<String, FunctionSymbolic> functionsView, Map<String, MultivectorSymbolic> localVariablesView) {
@@ -49,6 +51,10 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		MultivectorSymbolic rootNode = exprTransform.nodeStack.getFirst();
 		return rootNode;
 	}
+	
+	public static void updateArrays(Map<String, MultivectorSymbolic[]> arrayMap){
+		localArrays = arrayMap;
+	}
 
 	public static List<MultivectorSymbolic> generateCallAST(GeomAlgeParser parser, GeomAlgeParser.CallExprContext callExprCtx, Map<String, FunctionSymbolic> functionsView, Map<String, MultivectorSymbolic> localVariablesView) {
 		ExprTransform exprTransform = new ExprTransform(functionsView, localVariablesView);
@@ -63,11 +69,11 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		
 		SkippingParseTreeWalker.walk(parser, exprTransform, arrayExprCtx, SkippingParseTreeWalker.DummyNode.class);
 		
-		int i = 0;
+		int i = exprTransform.nodeStack.size()-1;
 		MultivectorSymbolic[] arrayVars = new MultivectorSymbolic[exprTransform.nodeStack.size()];
 		while (exprTransform.nodeStack.size() != 0){
 			arrayVars[i] = exprTransform.nodeStack.pop();
-			i ++;
+			i --;
 		}
 		return arrayVars;
 	}
@@ -307,6 +313,36 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		}
 	}
 	
+	@Override
+	public void exitLiteralInteger(GeomAlgeParser.LiteralIntegerContext ctx) {
+		try {
+			String integerLiteral = ctx.value.getText();
+			int value = Integer.parseInt(integerLiteral);
+			var node = this.exprGraphFactory.createScalarLiteral(integerLiteral, value);
+			nodeStack.push(node);
+		} catch (NumberFormatException ex) {
+			throw new AssertionError(ex);
+		}
+	}
+		
+	@Override
+	public void exitArrayAccessExpression (GeomAlgeParser.ArrayAccessExpressionContext ctx){
+		String arrayName = ctx.array.getText();
+		int index = 0;
+		try {
+			index = Integer.parseInt(ctx.index.getText());
+		}
+		catch (NumberFormatException e) {
+			throw new AssertionError(String.format("Value \"%s\" cannot be resolved as integer.", ctx.index.getText()));
+		}
+		if (!this.localArrays.containsKey(arrayName)){
+			throw new ValidationException(String.format("Array \"%s\" has not been declared before.", arrayName));	
+		}
+		MultivectorSymbolic [] array = this.localArrays.get(arrayName);
+		var node = array[index];
+		nodeStack.push(node);
+	}
+
 	private static class EnterCallMarker extends MultivectorSymbolic {
 
 		private EnterCallMarker() {

@@ -30,12 +30,12 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 	protected final Map<String, MultivectorSymbolic[]> localArrays = new HashMap<>();
 	protected final Map<String, MultivectorSymbolic> localVariablesView = Collections.unmodifiableMap(localVariables);
 	protected final GeomAlgeParser parser;
-
+	
 	protected FuncTransform(GeomAlgeParser parser, Map<String, FunctionSymbolic> functionsView) {
 		this.functionsView = functionsView;
 		this.parser = parser;
 	}
-
+	
 	public static FunctionSymbolic generate(GeomAlgeParser parser, GeomAlgeParser.FunctionContext ctx, Map<String, FunctionSymbolic> functionsView) {
 		FuncTransform transform = new FuncTransform(parser, functionsView);
 		SkippingParseTreeWalker.walk(parser, transform, ctx, GeomAlgeParser.ExprContext.class);
@@ -94,6 +94,8 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 		if (size != results.size()) {
 			throw new ValidationException(String.format("Count of assignees (%s) does not match count of results (%s).", size, results.size()));
 		}
+		
+		int arrayIndex = 0;
 
 		for (int i = 0; i < size; ++i) {
 			String name = ctx.assigned.get(i).getText();
@@ -103,11 +105,25 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 				continue;
 			}
 
-			if (this.localVariables.containsKey(name) || this.localArrays.containsKey(name)) {
+			if (this.localVariables.containsKey(name)) {
 				throw new ValidationException(String.format("\"%s\" cannot be assigned again.", name));
+			} else if (this.localArrays.containsKey(name)){
+				MultivectorSymbolic[] array = localArrays.get(name);
+				String indexStr;
+				try {
+					indexStr = ctx.indices.get(arrayIndex).getText();
+				} catch (IndexOutOfBoundsException e){
+					throw new ValidationException (String.format("All arrays in a call need an index."));
+				}
+				int index = Integer.parseInt(indexStr);
+				array[index] = results.get(i);
+				this.localArrays.remove(name);
+				this.localArrays.put(name, array);
+				ExprTransform.updateArrays(localArrays);
+				arrayIndex++;
+			} else if (!this.localVariables.containsKey(name)){
+				this.localVariables.put(name, results.get(i));
 			}
-
-			this.localVariables.put(name, results.get(i));
 		}
 	}
 	
@@ -123,6 +139,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 		}
 
 		this.localArrays.put(name, array);
+		ExprTransform.updateArrays(localArrays);
 	}
 	
 	@Override 
@@ -133,15 +150,17 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 			index = Integer.parseInt(ctx.index.getText());
 		}
 		catch (NumberFormatException e) {
-			throw new AssertionError(String.format("'%s' is no integer!", ctx.index.getText()));
+			throw new AssertionError(String.format("Value \"%s\" cannot be resolved as integer.", ctx.index.getText()));
 		}
-		if (!this.localArrays.containsKey(name))
+		if (!this.localArrays.containsKey(name)){
 			throw new ValidationException(String.format("Array \"%s\" has not been declared before.", name));
+		}
 		MultivectorSymbolic [] array = this.localArrays.get(name);
 		MultivectorSymbolic expr = ExprTransform.generateArrayAssgnAST(this.parser, ctx.accessCtx, this.functionsView, this.localVariablesView);
 		array [index] = expr;
 		this.localArrays.remove(name);
 		this.localArrays.put(name, array);
+		ExprTransform.updateArrays(localArrays);
 	}
 
 	@Override

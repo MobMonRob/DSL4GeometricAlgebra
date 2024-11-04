@@ -57,9 +57,9 @@ functionBody
 
 stmt
 	:	SPACE* viz=COLON? assigned=IDENTIFIER SPACE* ASSIGNMENT SPACE* exprCtx=expr SPACE*		#AssgnStmt
-	|	SPACE* assigned+=(IDENTIFIER|LOW_LINE) SPACE* (COMMA SPACE* assigned+=(IDENTIFIER|LOW_LINE) SPACE*)* ASSIGNMENT SPACE* callCtx=callExpr SPACE*		# TupleAssgnStmt
-	|  SPACE* assigned=IDENTIFIER SPACE* L_EDGE_BRACKET R_EDGE_BRACKET SPACE* ASSIGNMENT SPACE* L_CURLY_BRACKET SPACE* arrayCtx=arrayExpr SPACE* R_CURLY_BRACKET SPACE* # ArrayInitStmt
-	|   SPACE* assigned=IDENTIFIER SPACE* L_EDGE_BRACKET index=DECIMAL_LITERAL R_EDGE_BRACKET SPACE* ASSIGNMENT SPACE* accessCtx=expr SPACE* # ArrayAssgnStmt
+	|	SPACE* ((assigned+=(IDENTIFIER|LOW_LINE)) | (assigned+=IDENTIFIER SPACE* L_EDGE_BRACKET SPACE* indices+=INTEGER_LITERAL SPACE* R_EDGE_BRACKET)) SPACE* (COMMA SPACE* ((assigned+=(IDENTIFIER|LOW_LINE))|(assigned+=IDENTIFIER SPACE* L_EDGE_BRACKET SPACE* indices+=INTEGER_LITERAL SPACE* R_EDGE_BRACKET)) SPACE*)* ASSIGNMENT SPACE* callCtx=callExpr SPACE*		# TupleAssgnStmt
+	|	SPACE* assigned=IDENTIFIER SPACE* L_EDGE_BRACKET R_EDGE_BRACKET SPACE* ASSIGNMENT SPACE* L_CURLY_BRACKET SPACE* arrayCtx=arrayExpr SPACE* R_CURLY_BRACKET SPACE* # ArrayInitStmt
+	|   SPACE* assigned=IDENTIFIER SPACE* L_EDGE_BRACKET SPACE* index=INTEGER_LITERAL SPACE* R_EDGE_BRACKET SPACE* ASSIGNMENT SPACE* accessCtx=expr SPACE* # ArrayAssgnStmt
 	;
 
 // The list-form (1) needs iteration in the transformer while thetree-form (2) don't.
@@ -191,6 +191,7 @@ nonOuterRecursiveExpr
 	:	callExpr
 	|	literalExpr
 	|	innerRecursiveExpr
+	|	arrayAccessExpr
 	;
 
 innerRecursiveExpr
@@ -221,10 +222,15 @@ literalExpr
 				)					#LiteralConstant
 	|	value=	DECIMAL_LITERAL		#LiteralDecimal
 	|	name=	IDENTIFIER			#VariableReference
+	|	value=	INTEGER_LITERAL		#LiteralInteger
 	;
 
 parenExpr
 	:	L_PARENTHESIS expr R_PARENTHESIS
+	;
+
+arrayAccessExpr
+	: array=IDENTIFIER SPACE* L_EDGE_BRACKET SPACE* index=INTEGER_LITERAL SPACE* R_EDGE_BRACKET # ArrayAccessExpression
 	;
 
 gradeExtractionExpr

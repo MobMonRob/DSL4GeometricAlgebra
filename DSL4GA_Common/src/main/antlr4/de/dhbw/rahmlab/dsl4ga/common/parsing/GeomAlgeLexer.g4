@@ -302,7 +302,11 @@ fragment LETTER_OR_DIGIT
     ;
 
 DECIMAL_LITERAL
-	: DIGIT+ ('.' DIGIT+)?
+	: DIGIT+ '.' DIGIT+
+	;
+
+INTEGER_LITERAL
+    : DIGIT+
 	;
 
 IDENTIFIER
