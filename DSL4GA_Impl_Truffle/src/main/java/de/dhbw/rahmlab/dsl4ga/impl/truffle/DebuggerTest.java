@@ -28,7 +28,7 @@ public class DebuggerTest {
 			throw new RuntimeException(String.format("Path not found: %s", path));
 		}
 		Source ss = Source.newBuilder(Program.LANGUAGE_ID, uri).build();
-		program = new Program(ss);
+		program = new Program(ss, null);
 		Arguments arguments = new Arguments();
 
 		Result answer = program.invoke(arguments);

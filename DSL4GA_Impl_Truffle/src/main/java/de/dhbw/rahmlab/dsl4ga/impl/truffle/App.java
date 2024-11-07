@@ -55,7 +55,7 @@ public class App {
 			throw new RuntimeException(String.format("Path not found: %s", path));
 		}
 		Source ss = Source.newBuilder(Program.LANGUAGE_ID, uri).build();
-		program = new Program(ss);
+		program = new Program(ss, null);
 		Arguments arguments = new Arguments();
 		arguments
 			.round_point_ipns("a", new Point3d(1, 0.3, -0.7))

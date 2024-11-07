@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Engine;
+import org.graalvm.polyglot.Engine.Builder;
 import org.graalvm.polyglot.PolyglotException;
 import org.graalvm.polyglot.Source;
 import org.graalvm.polyglot.SourceSection;
@@ -27,18 +28,27 @@ public class Program implements AutoCloseable {
 	public final Source source;
 
 	public Program(String source) {
-		this(Source.create(LANGUAGE_ID, source));
+		this(Source.create(LANGUAGE_ID, source), null);
 	}
 
-	public Program(Source source) {
+	public Program(Source source, Map<String,String> options) {
+		
 		this.source = source;
-		engine = Engine.create(LANGUAGE_ID);
-
-		Context.Builder builder = Context.newBuilder(LANGUAGE_ID)
+		
+		//engine = Engine.create(LANGUAGE_ID);
+		Builder engineBuilder = Engine.newBuilder(LANGUAGE_ID);
+		if (options != null){
+			/*for (String key: options.keySet()){
+				System.out.println("key=\""+key+"\""+" value=\""+options.get(key)+"\"");
+			}*/
+			engineBuilder = engineBuilder.options(options);
+		}
+		//engineBuilder = engineBuilder.option("lsp", "true");
+		engine = engineBuilder.build();
+		
+		this.context = Context.newBuilder(LANGUAGE_ID)
 			.allowAllAccess(true)
-			.engine(engine);
-
-		this.context = builder.build();
+			.in(System.in).out(System.out).engine(engine).build();
 		this.context.initialize(LANGUAGE_ID);
 
 		ParsingServiceProvider.setParsingService(ParsingService.instance());
