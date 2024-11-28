@@ -11,6 +11,8 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.ParsingService;
 import de.orat.math.cga.api.CGAMultivector;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Engine;
 import org.graalvm.polyglot.Engine.Builder;
@@ -22,7 +24,7 @@ import org.graalvm.polyglot.Value;
 public class Program implements AutoCloseable {
 
 	public final Context context;
-	public final Value program;
+	public Value parsedProgram;
 	public static final String LANGUAGE_ID = "ga"; //geomalgelang";
 	public final Engine engine;
 	public final Source source;
@@ -32,33 +34,33 @@ public class Program implements AutoCloseable {
 	}
 
 	public Program(Source source, Map<String,String> options) {
-		
 		this.source = source;
-		
-		//engine = Engine.create(LANGUAGE_ID);
 		Builder engineBuilder = Engine.newBuilder(LANGUAGE_ID);
-		if (options != null){
-			/*for (String key: options.keySet()){
-				System.out.println("key=\""+key+"\""+" value=\""+options.get(key)+"\"");
-			}*/
-			engineBuilder = engineBuilder.options(options);
-		}
-		//engineBuilder = engineBuilder.option("lsp", "true");
 		engine = engineBuilder.build();
-		
-		this.context = Context.newBuilder(LANGUAGE_ID)
-			.allowAllAccess(true)
-			.in(System.in).out(System.out).engine(engine).build();
+		Context.Builder contextBuilder = Context.newBuilder(LANGUAGE_ID)
+			.allowAllAccess(true);
+		if (source != null){
+			//FIXME wozu?
+			contextBuilder = contextBuilder.in(System.in).out(System.out);
+		}
+		this.context = contextBuilder.engine(engine).build();
 		this.context.initialize(LANGUAGE_ID);
-
+		//FIXME warum ist das nötig?
+		// im Zusammenhang mit dem LSP und Test-Code korrespondierend zu simple language
+		// schlägt das parsing fehl, da dort der parsingService nicht gesetzt wird
 		ParsingServiceProvider.setParsingService(ParsingService.instance());
 
-		try {
-			this.program = this.context.parse(source);
-		} catch (PolyglotException ex) {
-			try (this) {
-				throw enrichException(ex);
+		if (source != null){
+			try {
+				this.parsedProgram = this.context.parse(source);
+				System.out.println("Program parsed!");
+			} catch (PolyglotException ex) {
+				try (this) {
+					throw enrichException(ex);
+				}
 			}
+		} else {
+			System.out.println("No program to parse!");
 		}
 	}
 
@@ -71,7 +73,7 @@ public class Program implements AutoCloseable {
 		try {
 			Map<String, CGAMultivector> argsMapView = arguments.getArgsMapView();
 			CgaMapTruffleBox args = new CgaMapTruffleBox(argsMapView);
-			Value result = this.program.execute(args);
+			Value result = this.parsedProgram.execute(args);
 			CgaListTruffleBox box = result.as(CgaListTruffleBox.class);
 			List<CGAMultivector> answers = box.getInner();
 			return new Result(answers);

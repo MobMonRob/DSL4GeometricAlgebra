@@ -38,7 +38,8 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>3.2.0</version>
+                <!--version>3.2.0</version-->
+                <version>3.3.1</version>
                 <executions>
                     <execution>
                         <id>copy-resources</id>
@@ -54,6 +55,13 @@
                                     <directory>${project.basedir}/</directory>
                                     <includes>
                                         <include>ga</include>
+                                    </includes>
+                                </resource>
+                                <resource>
+                                    <filtering>false</filtering>
+                                    <directory>${project.basedir}/</directory>
+                                    <includes>
+                                        <include>lsp-tool-24.1.1.jar</include>
                                     </includes>
                                 </resource>
                             </resources>

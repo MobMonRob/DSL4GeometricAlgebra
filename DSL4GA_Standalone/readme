@@ -1,4 +1,4 @@
 sudo update-alternatives --config java
 sudo update-alternatives --install "usr/bin/java" "java" "/home/oliver/graalvm-jdk-23.0.1+11.1/bin/java" 1^C
 
-
+"-Dtruffle.class.path.append=lsp.jar"

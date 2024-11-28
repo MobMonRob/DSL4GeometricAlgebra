@@ -57,7 +57,7 @@ if [ -d "$JAVA_HOME/lib/graalvm" ]; then
             JAVA_ARGS+=("-Dpolyglot.engine.AllowExperimentalOptions=true" "-Dgraal.PrintGraph=Network" "-Dgraal.Dump=Truffle:1" "-Dpolyglot.engine.BackgroundCompilation=false" "-Dpolyglot.engine.TraceCompilation=true" "-Dpolyglot.engine.TraceCompilationDetails=true") ;;
         -lsp)
             echo "NOTE: -lsp option process..."
-            JAVA_ARGS+=("-Dtruffle.class.path.append=lsp.jar" "-Dpolyglot.engine.AllowExperimentalOptions=true" "-Dfile.encoding=UTF-8" "-Dstdout.encoding=UTF-8" "-Dsun.stdout.encoding=UTF-8" "-Dgraalvm.locatorDisabled=true" "-D--add-exports org.graalvm.truffle/com.oracle.truffle.api.nodes=ALL-UNNAMED" "-D--add-exports org.graalvm.truffle/com.oracle.truffle.api.exception=ALL-UNNAMED" "-D--add-exports org.graalvm.truffle/com.oracle.truffle.api=ALL-UNNAMED" "-D--add-exports org.graalvm.truffle/com.oracle.truffle.api.interop=ALL-UNNAMED")
+            JAVA_ARGS+=("-Dtruffle.class.path.append=lsp-tool-24.1.1.jar" "-Dpolyglot.engine.AllowExperimentalOptions=true" "-Dfile.encoding=UTF-8" "-Dstdout.encoding=UTF-8" "-Dsun.stdout.encoding=UTF-8" "-Dgraalvm.locatorDisabled=true" "-D--add-exports org.graalvm.truffle/com.oracle.truffle.api.nodes=ALL-UNNAMED" "-D--add-exports org.graalvm.truffle/com.oracle.truffle.api.exception=ALL-UNNAMED" "-D--add-exports org.graalvm.truffle/com.oracle.truffle.api=ALL-UNNAMED" "-D--add-exports org.graalvm.truffle/com.oracle.truffle.api.interop=ALL-UNNAMED")
             PROGRAM_ARGS+=("--lsp") ;;
         -disassemble)
             JAVA_ARGS+=("-Dpolyglot.engine.AllowExperimentalOptions=true" "-XX:CompileCommand=print,*.*" "-XX:CompileCommand=exclude,*OptimizedCallTarget.profiledPERoot" "-Dpolyglot.engine.BackgroundCompilation=false" "-Dpolyglot.engine.TraceCompilation=true" "-Dpolyglot.engine.TraceCompilationDetails=true") ;;
@@ -91,5 +91,6 @@ else
 fi
 
 echo ${JAVA_ARGS[@]}
+echo "${DIR}/"@@launcherClass@@
 
 "$JAVA_HOME/bin/java" "${JAVA_ARGS[@]}" -jar "${DIR}/"@@launcherClass@@ "${PROGRAM_ARGS[@]}"

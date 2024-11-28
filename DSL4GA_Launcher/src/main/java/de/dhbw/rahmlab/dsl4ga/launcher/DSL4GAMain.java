@@ -8,16 +8,16 @@ import org.graalvm.polyglot.Source;
 
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.api.Program;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.api.Result;
-import java.io.InputStream;
+//import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.PrintStream;
+//import java.io.PrintStream;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import org.graalvm.polyglot.Context;
-import org.graalvm.polyglot.PolyglotException;
-import org.graalvm.polyglot.Value;
+//import org.graalvm.polyglot.Context;
+//import org.graalvm.polyglot.PolyglotException;
+//import org.graalvm.polyglot.Value;
 
 public final class DSL4GAMain {
 
@@ -57,22 +57,27 @@ public final class DSL4GAMain {
                 }
             }
         }
-		for (String key: options.keySet()){
-			System.out.println("key=\""+key+"\""+" value=\""+options.get(key)+"\"");
-	    }
-		Source source = Source.newBuilder(Program.LANGUAGE_ID, 
-			                     new File(file)).build();
+		/*for (String key: options.keySet()){
+			System.out.println("key=\""+key+"\""+" parsedProgram=\""+options.get(key)+"\"");
+	    }*/
+		//Source source = Source.newBuilder(Program.LANGUAGE_ID, 
+		//	                     new File(file)).build();
 
-		/*if (file == null) {
+		Source source = null;
+		if (file == null) {
             // @formatter:off
-            source = Source.newBuilder(Program.LANGUAGE_ID, 
-				new InputStreamReader(System.in),
-				"<stdin>").interactive(!launcherOutput).build();
+			if (!options.containsKey("lsp") || !options.get("lsp").equals("true")){
+				source = Source.newBuilder(Program.LANGUAGE_ID, 
+					new InputStreamReader(System.in),
+					"<stdin>").interactive(!launcherOutput).build();
+			} else {
+				System.out.println("No source because LSP-Server should be started!");
+			}
             // @formatter:on
         } else {
             source = Source.newBuilder(Program.LANGUAGE_ID, 
 				new File(file)).interactive(!launcherOutput).build();
-        }*/
+        }
 		 
 		executeSource(source, options);
 			
@@ -114,6 +119,11 @@ public final class DSL4GAMain {
 			options, launcherOutput));
 	}*/
 
+	/**
+	 * 
+	 * @param source == null if LSP should be started
+	 * @param options 
+	 */
 	private static void executeSource(Source source, Map<String,String> options) {
 		try (Program program = new Program(source, options)) {
 			//TODO arguments die der main()-Methode mitgegeben werden sollen

@@ -45,12 +45,13 @@
 			<artifactId>DSL4GA_Impl_Truffle</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
-		<dependency>
+		<!--dependency>
 			<groupId>org.graalvm.tools</groupId>
 			<artifactId>lsp-tool</artifactId>
 			<version>${graalvm.version}</version>
 			<scope>runtime</scope>
-		</dependency>
+		</dependency-->
+		
 	</dependencies>
     <description>Launcher for our language "ga" implemented as main-class, deployed in a jar file.</description>
 </project>
