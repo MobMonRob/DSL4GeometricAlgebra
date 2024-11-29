@@ -14,6 +14,7 @@
 		<module>DSL4GA_Test</module>
 		<module>DSL4GA_Launcher</module>
 		<module>DSL4GA_Standalone</module>
+		<module>DSL4GA_LSP</module>
 	</modules>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

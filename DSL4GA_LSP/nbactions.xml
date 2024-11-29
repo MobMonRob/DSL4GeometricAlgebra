@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+        <action>
+            <actionName>run</actionName>
+            <packagings>
+                <packaging>jar</packaging>
+            </packagings>
+            <goals>
+                <goal>process-classes</goal>
+                <goal>org.codehaus.mojo:exec-maven-plugin:3.1.0:exec</goal>
+            </goals>
+            <properties>
+                <exec.args>${exec.vmArgs} -classpath %classpath ${exec.mainClass} ${exec.appArgs}</exec.args>
+                <exec.appArgs></exec.appArgs>
+                <!--exec.mainClass>de.orat.math.graalvmlsp.Graalvmlsp</exec.mainClass-->
+                <exec.mainClass>${packageClassName}</exec.mainClass>
+                <exec.vmArgs>-Dfile.encoding=UTF-8 -Dstdout.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Dgraalvm.locatorDisabled=true --add-exports org.graalvm.truffle/com.oracle.truffle.api.nodes=ALL-UNNAMED --add-exports org.graalvm.truffle/com.oracle.truffle.api.exception=ALL-UNNAMED --add-exports org.graalvm.truffle/com.oracle.truffle.api=ALL-UNNAMED --add-exports org.graalvm.truffle/com.oracle.truffle.api.interop=ALL-UNNAMED</exec.vmArgs>
+                <exec.executable>/home/oliver/graalvm-jdk-23.0.1+11.1/bin/java</exec.executable>
+                <!--exec.executable>/home/oliver/graalvm-community-openjdk-21.0.2+13.1/bin/java</exec.executable-->
+                <!--exec.executable>/home/oliver/jdk-22.0.2/bin/java</exec.executable-->
+                <exec.classpathScope>${classPathScope}</exec.classpathScope>
+            </properties>
+        </action>
+        <action>
+            <actionName>debug</actionName>
+            <packagings>
+                <packaging>jar</packaging>
+            </packagings>
+            <goals>
+                <goal>process-classes</goal>
+                <goal>org.codehaus.mojo:exec-maven-plugin:3.1.0:exec</goal>
+            </goals>
+            <properties>
+                <exec.vmArgs>-agentlib:jdwp=transport=dt_socket,server=n,address=${jpda.address}</exec.vmArgs>
+                <exec.args>${exec.vmArgs} -classpath %classpath ${exec.mainClass} ${exec.appArgs}</exec.args>
+                <exec.appArgs></exec.appArgs>
+                <exec.mainClass>de.orat.math.graalvmlsp.Graalvmlsp</exec.mainClass>
+                <exec.executable>java</exec.executable>
+                <jpda.listen>true</jpda.listen>
+            </properties>
+        </action>
+        <action>
+            <actionName>profile</actionName>
+            <packagings>
+                <packaging>jar</packaging>
+            </packagings>
+            <goals>
+                <goal>process-classes</goal>
+                <goal>org.codehaus.mojo:exec-maven-plugin:3.1.0:exec</goal>
+            </goals>
+            <properties>
+                <exec.args>${exec.vmArgs} -classpath %classpath ${exec.mainClass} ${exec.appArgs}</exec.args>
+                <!--exec.mainClass>de.orat.math.graalvmlsp.Graalvmlsp</exec.mainClass-->
+                <exec.mainClass>${packageClassName}</exec.mainClass>
+                <exec.executable>/home/oliver/graalvm-jdk-23.0.1+11.1/bin/java</exec.executable>
+                <!--exec.executable>/home/oliver/graalvm-community-openjdk-21.0.2+13.1/bin/java</exec.executable-->
+                <!--exec.executable>/home/oliver/jdk-22.0.2/bin/java</exec.executable-->
+                <exec.args>${exec.vmArgs} -classpath %classpath ${exec.mainClass} ${exec.appArgs}</exec.args>
+            
+                <exec.vmArgs>-Dfile.encoding=UTF-8 -Dstdout.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Dgraalvm.locatorDisabled=true --add-exports org.graalvm.truffle/com.oracle.truffle.api.nodes=ALL-UNNAMED --add-exports org.graalvm.truffle/com.oracle.truffle.api.exception=ALL-UNNAMED --add-exports org.graalvm.truffle/com.oracle.truffle.api=ALL-UNNAMED --add-exports org.graalvm.truffle/com.oracle.truffle.api.interop=ALL-UNNAMED</exec.vmArgs>
+            
+                <exec.classpathScope>${classPathScope}</exec.classpathScope>
+            </properties>
+        </action>
+    </actions>
+
+
+    

@@ -11,8 +11,6 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.ParsingService;
 import de.orat.math.cga.api.CGAMultivector;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Engine;
 import org.graalvm.polyglot.Engine.Builder;
@@ -44,6 +42,8 @@ public class Program implements AutoCloseable {
 			contextBuilder = contextBuilder.in(System.in).out(System.out);
 		}
 		this.context = contextBuilder.engine(engine).build();
+		//FIXME
+		// warum ist das hier nötig? im lsp Test fehlt dieser Aufruf
 		this.context.initialize(LANGUAGE_ID);
 		//FIXME warum ist das nötig?
 		// im Zusammenhang mit dem LSP und Test-Code korrespondierend zu simple language
