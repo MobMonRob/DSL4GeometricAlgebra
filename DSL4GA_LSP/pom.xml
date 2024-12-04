@@ -144,6 +144,6 @@
         <maven.compiler.release>21</maven.compiler.release>
         <exec.mainClass>de.orat.math.graalvmlsp.GraalVMLSPStarter</exec.mainClass>
         <graalvm.version>24.1.1</graalvm.version>
-        <skipTests>true</skipTests>
+        <!--skipTests>true</skipTests-->
     </properties>
 </project>

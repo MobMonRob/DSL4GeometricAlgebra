@@ -63,6 +63,9 @@ public class HoverTest extends TruffleLSPTest {
     @Test
     public void hoverWithCoverageDataAvailable() throws InterruptedException, ExecutionException {
         URI uri = createDummyFileUriForGA();
+        // PredictionMode.SLL failed.
+        // PredictionMode.SLL failed.
+        // org.graalvm.tools.lsp.exceptions.DiagnosticsNotification
         Future<?> futureOpen = truffleAdapter.parse(PROG_OBJ, LANGUAGE_ID, uri);
         futureOpen.get();
 

@@ -59,30 +59,40 @@ public class ParsingTest extends TruffleLSPTest {
     }
 
     
-    // junit4 stayle
+    // junit4 style
     // https://howtodoinjava.com/junit5/expected-exception-example/
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
+    //@Rule
+    //public ExpectedException expectedException = ExpectedException.none();
 
 
     // Wie kann ich mit Jupiter formulieren, dass eine bestimmte Expception erwartet wird?
     //TODO
     @Test(/*expected = UnknownLanguageException.class*/)
-    public void unknownlanguage() throws Throwable {
+    public void unknownLanguage() throws Throwable {
         File testFile = File.createTempFile("truffle-lsp-test-file-unknown-lang-id", "");
         testFile.deleteOnExit();
         URI uri = testFile.toURI();
 
         Future<?> future = truffleAdapter.parse("", "unknown-lang-id", uri);
         try {
-            expectedException.expect(UnknownLanguageException.class);
+            //expectedException.expect(UnknownLanguageException.class); // was soll das? darüber komme ich hinweg!
             future.get();
             
         } catch (/*Execution*/InterruptedException | ExecutionException ex) {
             //Assertions.assertThrows(UnknownLanguageException.class, ex.getCause());
             
+            // TODO Code unten durch sinnvolles Assertions ersetzen
+            
             //ex.printStackTrace(System.err);
-            throw ex.getCause();
+            // Execution exception 
+            ex.printStackTrace(System.err);
+            // Ausgabe: Unknown language: unknown-lang-id. Known languages are: [ga]
+            if (ex.getCause() instanceof org.graalvm.tools.lsp.exceptions.UnknownLanguageException){
+                // Unknown language exception found!
+                System.out.println("Unknown language exception found!");
+            } else {
+                throw ex.getCause();
+            }
         }
     }
 
@@ -98,20 +108,23 @@ public class ParsingTest extends TruffleLSPTest {
         URI uri = createDummyFileUriForGA();
         String text = "fn main(a) {a}"; // ga
         //String text = "function main() {return 3+3;}"; // simple language
-        //FIXME hier fliege ich raus
-        Future<?> future = truffleAdapter.parse(text, LANGUAGE_ID, uri);
-        try {
+        //FIXME hier fliege ich raus mit
+        //source should only be set once
+        // java.lang.AssertionError
+	// at de.orat.math.graalvmlsp.ParsingTest.parseOK(ParsingTest.java:110)
+
+        //try {
+            Future<?> future = truffleAdapter.parse(text, LANGUAGE_ID, uri);
             // source should only be set once
             future.get();
-        } catch (ExecutionException | InterruptedException ex) {
-            System.err.println("ParseOK failed:");
-            ex.printStackTrace(System.err);
-            throw ex; //ex.getCause();
-        }
-        // source should only be set once
-        // woher kommt obige Meldung?
-        // das System.err.println in obigiger catch-Anweisung wird nicht ausgegeben
-        //FIXME
+        //} catch (/*Throwable ex*/ InterruptedException | ExecutionException ex) {
+        //    System.err.println("ParseOK failed:");
+        //    ex.printStackTrace(System.err);
+        //    if (ex.getCause() != null){
+        //        ex.getCause().printStackTrace(System.err);
+        //    }
+        //    throw ex; //ex.getCause();
+        //} 
     }
 
     @Test

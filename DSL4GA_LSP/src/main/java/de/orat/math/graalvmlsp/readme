@@ -1,11 +1,12 @@
 TODO
 - test simple language source code durch ga source code ersetzen in TruffleLSPTest
 - Tests schlagen fehl, vermutlich da parsing nicht klappt, FIXME
-- debug test classes to fixe the above problem
+- debug test classes to fix the above problem
 - weitere Tests aus simple language adaptieren
+  https://github.com/oracle/graal/tree/master/tools/src/org.graalvm.tools.lsp.test/src/org/graalvm/tools/lsp/test/server
 - https://ncona.com/2021/12/implementing-a-language-server-protocol-client
   damit einen einfachen unit-test zur Kommunikation mit dem lsp realisieren
--  ParsingServiceProvider.setParsingService(ParsingService.instance());
+- ParsingServiceProvider.setParsingService(ParsingService.instance());
   ursprünglich aus Program.java, loswerden, warum gibt es das? 
 - add ParameterizedTest stuff (commented out in TruffleLSPTest)
 

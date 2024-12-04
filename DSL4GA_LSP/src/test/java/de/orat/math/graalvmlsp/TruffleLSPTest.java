@@ -69,6 +69,18 @@ public abstract class TruffleLSPTest extends TestCase {
     @Parameter(0) public Boolean useBytecode;*/
 
     protected static final String PROG_OBJ = "" +
+                    "fn main() {\n" + // 0
+                    "    abc();\n" +        // 1
+                    "    x = abc();\n" +    // 2
+                    "}\n" +                 // 3
+                    "\n" +                  // 4
+                    "fn abc() {\n" +  // 5
+                    "  test := 2;\n" +    // 6
+                    "  x := 1;\n" +      // 7
+                    "  x;\n" +     // 8
+                    "}\n";                  // 9
+    
+    protected static final String PROG_OBJ_SL = "" +
                     "function main() {\n" + // 0
                     "    abc();\n" +        // 1
                     "    x = abc();\n" +    // 2
@@ -86,7 +98,7 @@ public abstract class TruffleLSPTest extends TestCase {
                     "    return x;\n" +     // 2
                     "}\n" +                 // 3
                     "\n" +                  // 4
-                    "function abc() {\n" +  // 5
+                    "fn abc() {\n" +  // 5
                     "  obj = new();\n" +    // 6
                     "  obj.p = 1;\n" +      // 7
                     "  return obj;\n" +     // 8
