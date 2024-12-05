@@ -16,7 +16,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>3.1.2</version>
+				<version>3.4.2</version>
                 <configuration>
                     <archive>
                         <manifest>
@@ -61,7 +61,8 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.3.1</version>
                 <executions>
                     <execution>
                         <id>copy-resources</id>
@@ -87,9 +88,9 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.0.0-M3</version>
+					<version>3.3.1</version>
                     <configuration>
-                        <jvm>/home/oliver/graalvm-jdk-23.0.1+11.1/bin/java</jvm>
+						<jvm>/home/oliver/graalvm-jdk-23.0.1+11.1/bin/java</jvm>
                         <!--forkMode>pertest</forkMode>
                         <forkCount>1</forkCount>
                         <reuseForks>false</reuseForks-->
@@ -130,14 +131,7 @@
             <artifactId>junit-jupiter-engine</artifactId>
             <version>5.10.3</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.2</version>
-            <scope>test</scope>
-            <type>jar</type>
-        </dependency>
+		</dependency>
     </dependencies>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

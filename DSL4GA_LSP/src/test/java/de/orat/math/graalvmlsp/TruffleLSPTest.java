@@ -37,7 +37,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import junit.framework.TestCase;
+// import junit.framework.TestCase;
 
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Context.Builder;
@@ -58,7 +58,7 @@ import org.junit.jupiter.api.BeforeEach;
 
 // https://github.com/oracle/graal/blob/master/tools/src/org.graalvm.tools.lsp.test/src/org/graalvm/tools/lsp/test/server/HoverTest.java
 //@RunWith(Parameterized.class)
-public abstract class TruffleLSPTest extends TestCase {
+public abstract class TruffleLSPTest /*extends TestCase*/ {
 
     
     /*@Parameters(name = "useBytecode={0}")
@@ -68,46 +68,49 @@ public abstract class TruffleLSPTest extends TestCase {
 
     @Parameter(0) public Boolean useBytecode;*/
 
-    protected static final String PROG_OBJ = "" +
-                    "fn main() {\n" + // 0
-                    "    abc();\n" +        // 1
-                    "    x = abc();\n" +    // 2
-                    "}\n" +                 // 3
-                    "\n" +                  // 4
-                    "fn abc() {\n" +  // 5
-                    "  test := 2;\n" +    // 6
-                    "  x := 1;\n" +      // 7
-                    "  x;\n" +     // 8
-                    "}\n";                  // 9
-    
-    protected static final String PROG_OBJ_SL = "" +
-                    "function main() {\n" + // 0
-                    "    abc();\n" +        // 1
-                    "    x = abc();\n" +    // 2
-                    "}\n" +                 // 3
-                    "\n" +                  // 4
-                    "function abc() {\n" +  // 5
-                    "  obj = new();\n" +    // 6
-                    "  obj.p = 1;\n" +      // 7
-                    "  return obj;\n" +     // 8
-                    "}\n";                  // 9
+	protected static final String PROG_OBJ = """
+    fn abc() {     // 0
+    test := 2      // 1
+    x := 1         // 2
+    x              // 3
+    }              // 4
+                   // 5
+    fn main() {    // 6
+       x := abc()  // 7
+       x           // 8
+    }              // 9
+    """;
 
-    protected static final String PROG_OBJ_NOT_CALLED = "" +
-                    "function main() {\n" + // 0
-                    "    x = abc();\n" +    // 1
-                    "    return x;\n" +     // 2
-                    "}\n" +                 // 3
-                    "\n" +                  // 4
-                    "fn abc() {\n" +  // 5
-                    "  obj = new();\n" +    // 6
-                    "  obj.p = 1;\n" +      // 7
-                    "  return obj;\n" +     // 8
-                    "}\n" +                 // 9
-                    "\n" +                  // 10
-                    "function notCalled() {\n" + // 11
-                    "  abc();\n" +          // 12
-                    "  return abc();\n" +   // 13
-                    "}\n";                  // 14
+	protected static final String PROG_OBJ_SL = """
+												function main() {
+												    abc();
+												    x = abc();
+												}
+
+												function abc() {
+												  obj = new();
+												  obj.p = 1;
+												  return obj;
+												}
+												""";
+
+	protected static final String PROG_OBJ_NOT_CALLED = """
+														function main() {
+														    x = abc();
+														    return x;
+														}
+
+														fn abc() {
+														  obj = new();
+														  obj.p = 1;
+														  return obj;
+														}
+
+														function notCalled() {
+														  abc();
+														  return abc();
+														}
+														""";
 
     protected Engine engine;
     protected TruffleAdapter truffleAdapter;
@@ -134,15 +137,15 @@ public abstract class TruffleLSPTest extends TestCase {
 
         Builder contextBuilder = Context.newBuilder();
         contextBuilder.allowAllAccess(true);
-        contextBuilder.allowIO(IOAccess.newBuilder().fileSystem(LSPFileSystem.
-                newReadOnlyFileSystem(truffleAdapter)).build());
+		// contextBuilder.allowIO(IOAccess.newBuilder().fileSystem(LSPFileSystem.
+		//        newReadOnlyFileSystem(truffleAdapter)).build());
         contextBuilder.engine(engine);
         //contextBuilder.option("gl.UseBytecode", useBytecode.toString());
         context = contextBuilder.build();
         
         //context.enter();
         //WORKAROUND
-        //context.initialize(LANGUAGE_ID);
+        // context.initialize(LANGUAGE_ID);
         ParsingServiceProvider.setParsingService(ParsingService.instance());
 
         context.enter();

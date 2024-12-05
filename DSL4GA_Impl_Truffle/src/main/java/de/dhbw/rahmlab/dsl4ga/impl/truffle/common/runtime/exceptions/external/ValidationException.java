@@ -6,7 +6,7 @@ package de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external;
 public class ValidationException extends AbstractExternalException {
 
 	public ValidationException(Throwable cause) {
-		super(null, cause, null);
+		super(cause.getMessage(), cause, null);
 	}
 
 	public ValidationException(String message) {

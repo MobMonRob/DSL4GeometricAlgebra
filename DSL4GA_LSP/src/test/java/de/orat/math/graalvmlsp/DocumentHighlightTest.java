@@ -30,11 +30,10 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.graalvm.tools.lsp.server.types.DocumentHighlight;
 import org.graalvm.tools.lsp.server.types.DocumentHighlightKind;
@@ -67,8 +66,8 @@ public class DocumentHighlightTest extends TruffleLSPTest {
         for (int i = 0; i < verifiedHighlights.length; i++) {
             DocumentHighlight vh = verifiedHighlights[i];
             DocumentHighlight h = highlights.get(i);
-            assertEquals(Integer.toString(i), vh.getKind(), h.getKind());
-            assertTrue(Integer.toString(i), rangeCheck(vh.getRange(), h.getRange()));
+			assertEquals(vh.getKind(), h.getKind(), Integer.toString(i));
+			assertTrue(rangeCheck(vh.getRange(), h.getRange()), Integer.toString(i));
         }
     }
 }

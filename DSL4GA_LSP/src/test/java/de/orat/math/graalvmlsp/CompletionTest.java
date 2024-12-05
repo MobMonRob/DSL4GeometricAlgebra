@@ -24,13 +24,11 @@
  */
 package de.orat.math.graalvmlsp;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.net.URI;
 import java.util.Arrays;
@@ -50,7 +48,7 @@ import org.graalvm.tools.lsp.server.types.PublishDiagnosticsParams;
 import org.graalvm.tools.lsp.server.types.Range;
 import org.graalvm.tools.lsp.server.types.ServerCapabilities;
 import org.graalvm.tools.lsp.server.types.TextDocumentContentChangeEvent;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.oracle.truffle.api.nodes.NodeInfo;
 
@@ -72,7 +70,7 @@ public class CompletionTest extends TruffleLSPTest {
                         "  varB = p1 * p2;\n" +      // 6
                         "  return varA;\n" +         // 7
                         "}\n";                       // 8
-        Future<?> future = truffleAdapter.parse(text, "sl", uri);
+        Future<?> future = truffleAdapter.parse(text, "ga", uri);
         future.get();
 
         int numberOfGlobalsItems = -1;
@@ -106,9 +104,9 @@ public class CompletionTest extends TruffleLSPTest {
             String var = (String) vars[i];
             boolean present = (boolean) vars[i + 1];
             if (present) {
-                assertTrue(var + " should be found in function scope", items.stream().anyMatch(item -> item.getLabel().startsWith(var)));
+				assertTrue(items.stream().anyMatch(item -> item.getLabel().startsWith(var)), var + " should be found in function scope");
             } else {
-                assertTrue(var + " should not be found in main-function scope", items.stream().noneMatch(item -> item.getLabel().startsWith(var)));
+				assertTrue(items.stream().noneMatch(item -> item.getLabel().startsWith(var)), var + " should not be found in main-function scope");
             }
         }
         if (numberOfGlobalsItems != -1) {
@@ -159,12 +157,12 @@ public class CompletionTest extends TruffleLSPTest {
         try {
             future.get();
             assertNull(diagMessage);
-        } catch (ExecutionException e) {
-            assertFalse(diagMessage, diagMessage.isEmpty());
+		} catch (ExecutionException e) {
+			assertFalse(diagMessage.isEmpty(), diagMessage);
             Collection<PublishDiagnosticsParams> diagnosticParamsCollection = ((DiagnosticsNotification) e.getCause()).getDiagnosticParamsCollection();
             assertEquals(1, diagnosticParamsCollection.size());
             String message = diagnosticParamsCollection.iterator().next().getDiagnostics().get(0).getMessage();
-            assertTrue(message, message.contains(diagMessage));
+			assertTrue(message.contains(diagMessage), message);
         }
     }
 

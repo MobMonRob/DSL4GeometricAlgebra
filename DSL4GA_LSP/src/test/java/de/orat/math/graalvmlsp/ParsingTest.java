@@ -42,11 +42,14 @@ import org.graalvm.tools.lsp.server.types.TextDocumentContentChangeEvent;
 import org.graalvm.tools.lsp.exceptions.DiagnosticsNotification;
 import org.graalvm.tools.lsp.exceptions.UnknownLanguageException;
 import org.graalvm.tools.lsp.server.utils.TextDocumentSurrogate;
-import org.junit.Rule;
-import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+// import org.junit.Rule;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.junit.jupiter.api.Test;
-import org.junit.rules.ExpectedException;
+// import org.junit.rules.ExpectedException;
 
 public class ParsingTest extends TruffleLSPTest {
 
@@ -133,7 +136,7 @@ public class ParsingTest extends TruffleLSPTest {
         Future<?> future = truffleAdapter.parse(text, LANGUAGE_ID, uri);
         try {
             future.get();
-            fail();
+			fail();
         } catch (ExecutionException ex) {
             Collection<PublishDiagnosticsParams> diagnosticParams = ((DiagnosticsNotification) ex.getCause()).getDiagnosticParamsCollection();
             assertEquals(1, diagnosticParams.size());
