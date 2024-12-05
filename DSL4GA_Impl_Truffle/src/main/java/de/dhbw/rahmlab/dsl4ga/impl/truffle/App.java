@@ -16,9 +16,9 @@ public class App {
 	public static void main(String[] args) throws Exception {
 		System.setProperty("jogamp.debug", "true");
 		System.setProperty("jogamp.verbose", "true");
-		vizTest();
+		// vizTest();
 		// encodingTest();
-		// invocationTest();
+		invocationTest();
 	}
 
 	private static void vizTest() throws InterruptedException {
