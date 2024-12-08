@@ -88,11 +88,22 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 	@Override
 	public void enterTupleAssgnStmt(GeomAlgeParser.TupleAssgnStmtContext ctx) {
 		List<MultivectorSymbolic> results = ExprTransform.generateCallAST(this.parser, ctx.callCtx, this.functionsView, this.localVariablesView);
-
+		HashMap<String, Integer> arrayMap = new HashMap();
 		final int size = ctx.assigned.size();
 
 		if (size != results.size()) {
 			throw new ValidationException(String.format("Count of assignees (%s) does not match count of results (%s).", size, results.size()));
+		}
+		
+		int numOfArrays = 0;
+		int numOfIndices = ctx.indices.size();
+		for (int i = 0; i<size; ++i){
+			String name = ctx.assigned.get(i).getText();
+			if (this.localArrays.containsKey(name))
+				numOfArrays++;
+		}
+		if (numOfArrays != numOfIndices) {
+			throw new ValidationException (String.format("Count of array variables (%s) does not match count of array indices (%s).", numOfArrays, numOfIndices));
 		}
 		
 		int arrayIndex = 0;
@@ -110,12 +121,12 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 			} else if (this.localArrays.containsKey(name)){
 				MultivectorSymbolic[] array = localArrays.get(name);
 				String indexStr;
-				try {
-					indexStr = ctx.indices.get(arrayIndex).getText();
-				} catch (IndexOutOfBoundsException e){
-					throw new ValidationException (String.format("All arrays in a call need an index."));
-				}
+				indexStr = ctx.indices.get(arrayIndex).getText();
 				int index = Integer.parseInt(indexStr);
+				if (arrayMap.containsKey(name) && arrayMap.get(name) == index){
+					throw new ValidationException (String.format("You are trying to assign \"%s[%d]\" twice in the same call.", name, index));
+				}
+				arrayMap.put(name, index);
 				array[index] = results.get(i);
 				this.localArrays.remove(name);
 				this.localArrays.put(name, array);
