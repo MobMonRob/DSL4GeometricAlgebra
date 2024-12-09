@@ -69,17 +69,17 @@ public abstract class TruffleLSPTest /*extends TestCase*/ {
     @Parameter(0) public Boolean useBytecode;*/
 
 	protected static final String PROG_OBJ = """
-    fn abc() {     // 0
-    test := 2      // 1
-    x := 1         // 2
-    x              // 3
-    }              // 4
-                   // 5
-    fn main() {    // 6
-       x := abc()  // 7
-       x           // 8
-    }              // 9
-    """;
+fn abc() {     // 0
+test := 2      // 1
+x := 1         // 2
+x              // 3
+}              // 4
+               // 5
+fn main() {    // 6
+   x := abc()  // 7
+   x           // 8
+}              // 9
+""";
 
 	protected static final String PROG_OBJ_SL = """
 												function main() {

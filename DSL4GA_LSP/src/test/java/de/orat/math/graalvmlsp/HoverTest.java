@@ -63,9 +63,9 @@ public class HoverTest extends TruffleLSPTest {
         Future<?> futureOpen = truffleAdapter.parse(PROG_OBJ, LANGUAGE_ID, uri);
         futureOpen.get();
 
-        checkHover(uri, 1, 5, Range.create(Position.create(1, 4), Position.create(1, 7)));
-        checkHover(uri, 1, 8, Range.create(Position.create(1, 4), Position.create(1, 9)));
-        checkHover(uri, 0, 10, Range.create(Position.create(0, 9), Position.create(3, 1)));
+        checkHover(uri, 7, 9, Range.create(Position.create(7, 8), Position.create(7, 11)));
+        checkHover(uri, 7, 12, Range.create(Position.create(7, 8), Position.create(7, 13)));
+        checkHover(uri, 0, 4, Range.create(Position.create(0, 3), Position.create(4, 0)));
     }
 
     @Test
@@ -111,7 +111,7 @@ public class HoverTest extends TruffleLSPTest {
 
     private Hover checkHover(URI uri, int line, int column, Range range) throws InterruptedException, ExecutionException {
         Future<Hover> future = truffleAdapter.hover(uri, line, column);
-        Hover hover = future.get();
+        Hover hover = future.get(); // FIXME hover.getRange()==null
         assertTrue(rangeCheck(range, hover.getRange()));
         return hover;
     }
