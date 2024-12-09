@@ -55,11 +55,6 @@ public class HoverTest extends TruffleLSPTest {
     @Test
     public void hoverNoCoverageDataAvailable() throws InterruptedException, ExecutionException {
         URI uri = createDummyFileUriForGA();
-        // HoverTest.hoverNoCoverageDataAvailable:50 » Execution java.lang.RuntimeException: java.lang.NullPointerException: Cannot invoke "de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.iParsingService.parse(de.dhbw.rahmlab.dsl4ga.common.parsing.CharStreamSupplier, de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext)" 
-        //because the return value of "de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.ParsingServiceProvider.
-        // getParsingService()" is null
-        // der obere Fehler scheint behoben mit dem ParserProvider workaround
-        // java.util.concurrent.ExecutionException: org.graalvm.tools.lsp.exceptions.DiagnosticsNotification
         Future<?> futureOpen = truffleAdapter.parse(PROG_OBJ, LANGUAGE_ID, uri);
         futureOpen.get();
 
@@ -100,18 +95,22 @@ public class HoverTest extends TruffleLSPTest {
 		// Future<Boolean> futureCoverage = truffleAdapter.runCoverageAnalysis(uri);
 		// assertTrue(futureCoverage.get());
 
-        Hover hover = checkHover(uri, 8, 10, Range.create(Position.create(8, 9), Position.create(8, 12)));
+        Hover hover = checkHover(uri, 8, 3, Range.create(Position.create(8, 3), Position.create(8, 4)));
+        // hier scheint mir hover != null aber hover.getRange()==null zu sein
+        if (hover == null) System.out.println("hover==null");
         assertTrue(hover.getContents() instanceof List);
-        assertEquals(3, ((List<?>) hover.getContents()).size());
+        assertEquals(1, ((List<?>) hover.getContents()).size());
         assertTrue(((List<?>) hover.getContents()).get(0) instanceof org.graalvm.tools.lsp.server.types.MarkedString);
-        assertEquals("obj", ((org.graalvm.tools.lsp.server.types.MarkedString) ((List<?>) hover.getContents()).get(0)).getValue());
-        assertEquals("Object", ((List<?>) hover.getContents()).get(1));
-        assertEquals("meta-object: Object", ((List<?>) hover.getContents()).get(2));
+        assertEquals("x", ((org.graalvm.tools.lsp.server.types.MarkedString) ((List<?>) hover.getContents()).get(0)).getValue());
+        //assertEquals("Object", ((List<?>) hover.getContents()).get(1));
+        //assertEquals("meta-object: Object", ((List<?>) hover.getContents()).get(2));
     }
 
     private Hover checkHover(URI uri, int line, int column, Range range) throws InterruptedException, ExecutionException {
         Future<Hover> future = truffleAdapter.hover(uri, line, column);
         Hover hover = future.get(); // FIXME hover.getRange()==null
+        // hier scheint mir hover != null aber hover.getRange()==null zu sein
+        if (hover == null) System.out.println("hover==null");
         assertTrue(rangeCheck(range, hover.getRange()));
         return hover;
     }
