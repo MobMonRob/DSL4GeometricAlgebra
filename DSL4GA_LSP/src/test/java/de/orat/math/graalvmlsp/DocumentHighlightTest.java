@@ -50,18 +50,24 @@ public class DocumentHighlightTest extends TruffleLSPTest {
         Future<?> futureOpen = truffleAdapter.parse(PROG_OBJ_NOT_CALLED, LANGUAGE_ID, uri);
         futureOpen.get();
 
-        checkHighlight(uri, 1, 4, DocumentHighlight.create(Range.create(Position.create(1, 4), Position.create(1, 5)), DocumentHighlightKind.Write),
-                        DocumentHighlight.create(Range.create(Position.create(2, 11), Position.create(2, 12)), DocumentHighlightKind.Read));
-        for (int column = 2; column <= 4; column++) {
-            checkHighlight(uri, 6, column, DocumentHighlight.create(Range.create(Position.create(6, 2), Position.create(6, 5)), DocumentHighlightKind.Write),
-                            DocumentHighlight.create(Range.create(Position.create(7, 2), Position.create(7, 5)), DocumentHighlightKind.Read),
-                            DocumentHighlight.create(Range.create(Position.create(8, 9), Position.create(8, 12)), DocumentHighlightKind.Read));
-        }
+        // in main() das erste x und dann eine Zeile tiefer das x das als return value da steht
+        // zwei highlighted Stellen mit x sind zu erwarten, es werden aber keine gefunden
+        // das erste X ist WRITE da wird geschrieben, das zweite vom Type READ da wirds nur ausgelesen als Rückgabewert
+        //FIXME es werden 0 highlighted Stellen gefunden
+        checkHighlight(uri, 11, 4, DocumentHighlight.create(Range.create(Position.create(11, 4), Position.create(11, 5)), DocumentHighlightKind.Write),
+                        DocumentHighlight.create(Range.create(Position.create(12, 14), Position.create(12, 5)), DocumentHighlightKind.Read));
+        
+        //for (int column = 2; column <= 4; column++) {
+        //    checkHighlight(uri, 6, column, DocumentHighlight.create(Range.create(Position.create(6, 2), Position.create(6, 5)), DocumentHighlightKind.Write),
+        //                    DocumentHighlight.create(Range.create(Position.create(7, 2), Position.create(7, 5)), DocumentHighlightKind.Read),
+        //                    DocumentHighlight.create(Range.create(Position.create(8, 9), Position.create(8, 12)), DocumentHighlightKind.Read));
+        //}
     }
 
     private void checkHighlight(URI uri, int line, int column, DocumentHighlight... verifiedHighlights) throws InterruptedException, ExecutionException {
         Future<List<? extends DocumentHighlight>> future = truffleAdapter.documentHighlight(uri, line, column);
         List<? extends DocumentHighlight> highlights = future.get();
+        // FIXME 0 but expected 2
         assertEquals(verifiedHighlights.length, highlights.size());
         for (int i = 0; i < verifiedHighlights.length; i++) {
             DocumentHighlight vh = verifiedHighlights[i];

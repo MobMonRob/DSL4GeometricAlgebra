@@ -69,49 +69,34 @@ public abstract class TruffleLSPTest /*extends TestCase*/ {
     @Parameter(0) public Boolean useBytecode;*/
 
 	protected static final String PROG_OBJ = """
-fn abc() {     // 0
-test := 2      // 1
-x := 1         // 2
-x              // 3
-}              // 4
-               // 5
-fn main() {    // 6
-   x := abc()  // 7
-   x           // 8
-}              // 9
-""";
+                                                fn abc() {
+                                                test := 2
+                                                x := 1
+                                                x
+                                                }
 
-	protected static final String PROG_OBJ_SL = """
-												function main() {
-												    abc();
-												    x = abc();
-												}
+                                                fn main() {
+                                                   x := abc()
+                                                   x
+                                                }""";
 
-												function abc() {
-												  obj = new();
-												  obj.p = 1;
-												  return obj;
-												}
-												""";
-
-	protected static final String PROG_OBJ_NOT_CALLED = """
-														function main() {
-														    x = abc();
-														    return x;
-														}
-
-														fn abc() {
-														  obj = new();
-														  obj.p = 1;
-														  return obj;
-														}
-
-														function notCalled() {
-														  abc();
-														  return abc();
-														}
-														""";
-
+    protected static final String PROG_OBJ_NOT_CALLED = """
+                                                        fn abc() {
+                                                          obj := 1
+                                                          obj
+                                                        }
+                                                        
+                                                        fn notCalled() {
+                                                          obj := abc()
+                                                          obj
+                                                        }
+                                                        
+                                                        fn main() {
+                                                            x := abc()
+                                                            x
+                                                        }
+                                                        """;
+    
     protected Engine engine;
     protected TruffleAdapter truffleAdapter;
     protected Context context;
@@ -122,9 +107,6 @@ fn main() {    // 6
         engine = Engine.newBuilder(LANGUAGE_ID).allowExperimentalOptions(true).build();
         Instrument instrument = engine.getInstruments().get("lsp");
         EnvironmentProvider envProvider = instrument.lookup(EnvironmentProvider.class);
-
-        //WORKAROUND hat nichts gebracht
-        //ParsingServiceProvider.setParsingService(ParsingService.instance());
 
         // This class delegates LSP requests of LanguageServerImpl to specific 
         // implementations of AbstractRequestHandler.

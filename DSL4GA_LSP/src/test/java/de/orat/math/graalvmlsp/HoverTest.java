@@ -108,9 +108,9 @@ public class HoverTest extends TruffleLSPTest {
 
     private Hover checkHover(URI uri, int line, int column, Range range) throws InterruptedException, ExecutionException {
         Future<Hover> future = truffleAdapter.hover(uri, line, column);
-        Hover hover = future.get(); // FIXME hover.getRange()==null
-        // hier scheint mir hover != null aber hover.getRange()==null zu sein
-        if (hover == null) System.out.println("hover==null");
+        Hover hover = future.get(); 
+        // hover.getRange()==null zu sein
+        if (hover == null) System.out.println("hover==null!");
         assertTrue(rangeCheck(range, hover.getRange()));
         return hover;
     }

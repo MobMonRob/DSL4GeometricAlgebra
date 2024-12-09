@@ -61,15 +61,17 @@ public class CompletionTest extends TruffleLSPTest {
     @Test
     public void globalsAndLocals() throws InterruptedException, ExecutionException {
         URI uri = createDummyFileUriForGA();
-        String text = "function main() {\n" +        // 0
-                        "  return 3+3;\n" +          // 1
-                        "}\n" +                      // 2
-                        "function abc(p1, p2) {\n" + // 3
-                        "  varA = p1 + p2;\n" +      // 4
-                        "\n" +                       // 5
-                        "  varB = p1 * p2;\n" +      // 6
-                        "  return varA;\n" +         // 7
-                        "}\n";                       // 8
+        String text = """
+                fn main() {
+                   3+3
+                }
+                fn abc(p1, p2) {
+                  varA := p1 + p2
+                  varB := p1 p2
+                  varA
+                }
+                """;
+     
         Future<?> future = truffleAdapter.parse(text, "ga", uri);
         future.get();
 
@@ -87,7 +89,8 @@ public class CompletionTest extends TruffleLSPTest {
     }
 
     private int checkGlobalsAndLocals(URI uri, int line, int column, int numberOfGlobalsItems, Object... vars) throws InterruptedException, ExecutionException {
-        Future<CompletionList> futureCompletions = truffleAdapter.completion(uri, line, column, null);
+        Future<CompletionList> futureCompletions = 
+                truffleAdapter.completion(uri, line, column, null);
         CompletionList completionList = futureCompletions.get();
         assertFalse(completionList.isIncomplete());
 
