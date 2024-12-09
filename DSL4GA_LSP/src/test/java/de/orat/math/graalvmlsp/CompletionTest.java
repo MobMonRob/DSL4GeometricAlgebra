@@ -62,17 +62,19 @@ public class CompletionTest extends TruffleLSPTest {
     public void globalsAndLocals() throws InterruptedException, ExecutionException {
         URI uri = createDummyFileUriForGA();
         String text = """
-                fn main() {
-                   3+3
-                }
                 fn abc(p1, p2) {
                   varA := p1 + p2
                   varB := p1 p2
                   varA
                 }
+                fn main() {
+                    3+3
+                }
                 """;
      
-        Future<?> future = truffleAdapter.parse(text, "ga", uri);
+        // FIXME empty blocks are not allowed
+        // damit fliege ich hier raus
+        Future<?> future = truffleAdapter.parse(text, LANGUAGE_ID, uri);
         future.get();
 
         int numberOfGlobalsItems = -1;
@@ -107,9 +109,9 @@ public class CompletionTest extends TruffleLSPTest {
             String var = (String) vars[i];
             boolean present = (boolean) vars[i + 1];
             if (present) {
-				assertTrue(items.stream().anyMatch(item -> item.getLabel().startsWith(var)), var + " should be found in function scope");
+		assertTrue(items.stream().anyMatch(item -> item.getLabel().startsWith(var)), var + " should be found in function scope");
             } else {
-				assertTrue(items.stream().noneMatch(item -> item.getLabel().startsWith(var)), var + " should not be found in main-function scope");
+		assertTrue(items.stream().noneMatch(item -> item.getLabel().startsWith(var)), var + " should not be found in main-function scope");
             }
         }
         if (numberOfGlobalsItems != -1) {
@@ -133,7 +135,12 @@ public class CompletionTest extends TruffleLSPTest {
         Future<?> future = truffleAdapter.parse(PROG_OBJ_NOT_CALLED, LANGUAGE_ID, uri);
         future.get();
 
+        // Completing provider started bei einem "." - das macht bei unserer Sprache
+        // aber keinen Sinn
         setTriggerCharacters();
+        
+        // Zeichen nach dem "x" durch einen Punkte ersetzen
+        // FIXME hier fliege ich raus
         replace(uri, Range.create(Position.create(2, 12), Position.create(2, 12)), ".", "missing IDENTIFIER");
         Future<CompletionList> futureC = truffleAdapter.completion(uri, 2, 13, null);
         CompletionList completionList = futureC.get();
@@ -154,16 +161,30 @@ public class CompletionTest extends TruffleLSPTest {
         }
     }
 
+    /**
+     * 
+     * @param uri
+     * @param range to replace
+     * @param replacement replace with the value of this argument
+     * @param diagMessage
+     * @throws InterruptedException 
+     */
     private void replace(URI uri, Range range, String replacement, String diagMessage) throws InterruptedException {
         TextDocumentContentChangeEvent event = TextDocumentContentChangeEvent.create(replacement).setRange(range).setRangeLength(replacement.length());
         Future<?> future = truffleAdapter.processChangesAndParse(Arrays.asList(event), uri);
         try {
             future.get();
+            
+            // sicherstellen, dass diagMessage != null and not empty
             assertNull(diagMessage);
 		} catch (ExecutionException e) {
 			assertFalse(diagMessage.isEmpty(), diagMessage);
+                        
             Collection<PublishDiagnosticsParams> diagnosticParamsCollection = ((DiagnosticsNotification) e.getCause()).getDiagnosticParamsCollection();
             assertEquals(1, diagnosticParamsCollection.size());
+            // hier fliege ich raus, da das Diagnostic object kein json object mit prop message hat
+            // bei obectPropertyCompletionLocal()
+            //FIXME
             String message = diagnosticParamsCollection.iterator().next().getDiagnostics().get(0).getMessage();
 			assertTrue(message.contains(diagMessage), message);
         }
@@ -176,10 +197,15 @@ public class CompletionTest extends TruffleLSPTest {
         Future<?> future = truffleAdapter.parse(PROG_OBJ_NOT_CALLED, LANGUAGE_ID, uri);
         future.get();
 
+        //FIXME
+        // hier fliege ich raus
         Future<Boolean> futureCoverage = truffleAdapter.runCoverageAnalysis(uri);
         futureCoverage.get();
 
+        // Completing provider started bei einem "." - das macht bei unserer Sprache
+        // aber keinen Sinn
         setTriggerCharacters();
+        
         replace(uri, Range.create(Position.create(8, 12), Position.create(8, 12)), ".", "missing IDENTIFIER");
         Future<CompletionList> futureC = truffleAdapter.completion(uri, 8, 13, null);
         CompletionList completionList = futureC.get();
@@ -195,6 +221,6 @@ public class CompletionTest extends TruffleLSPTest {
         CompletionOptions completionProvider = CompletionOptions.create();
         completionProvider.setTriggerCharacters(Collections.singletonList("."));
         capabilities.setCompletionProvider(completionProvider);
-        truffleAdapter.setServerCapabilities("sl", capabilities);
+        truffleAdapter.setServerCapabilities(LANGUAGE_ID, capabilities);
     }
 }

@@ -144,6 +144,7 @@ public class ParsingTest extends TruffleLSPTest {
             assertEquals(uri.toString(), param.getUri());
             List<Diagnostic> diagnostics = param.getDiagnostics();
             //JSONObject["message"] not found.
+            System.out.println("message="+diagnostics.get(0).getMessage());
             assertTrue(diagnostics.get(0).getMessage().contains("EOF"));
         }
     }
