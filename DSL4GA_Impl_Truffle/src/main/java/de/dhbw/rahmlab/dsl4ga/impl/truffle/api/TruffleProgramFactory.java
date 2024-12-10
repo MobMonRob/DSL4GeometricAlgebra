@@ -8,7 +8,7 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.ParsingService;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.ParsingServiceProvider;
 import de.orat.math.gacalc.api.ExprGraphFactory;
 import de.orat.math.gacalc.api.GAExprGraphFactoryService;
-import java.io.BufferedReader;
+import java.io.Reader;
 import java.net.URL;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Engine;
@@ -32,18 +32,21 @@ public class TruffleProgramFactory implements iProgramFactory<TruffleProgram> {
 	private final AutoCloser<Context> contextCloser = AutoCloser.create(createContext());
 	private final ExprGraphFactory exprGraphFactory = GAExprGraphFactoryService.getExprGraphFactoryThrowing();
 
+	/**
+	 * Debugging needs the URL to the file.
+	 */
 	@Override
-	public TruffleProgram parse(BufferedReader sourceReader) {
+	public TruffleProgram parse(URL url) {
 		var context = contextCloser.get();
-		var truffleProgam = new TruffleProgram(exprGraphFactory, context, sourceReader);
+		var truffleProgam = new TruffleProgram(exprGraphFactory, context, url);
 		LifeTimeExtender.extend(contextCloser, truffleProgam);
 		return truffleProgam;
 	}
 
-	// Debugging needs the url to the file.
-	public TruffleProgram parse(URL url) {
+	@Override
+	public TruffleProgram parse(Reader sourceReader) {
 		var context = contextCloser.get();
-		var truffleProgam = new TruffleProgram(exprGraphFactory, context, url);
+		var truffleProgam = new TruffleProgram(exprGraphFactory, context, sourceReader);
 		LifeTimeExtender.extend(contextCloser, truffleProgam);
 		return truffleProgam;
 	}

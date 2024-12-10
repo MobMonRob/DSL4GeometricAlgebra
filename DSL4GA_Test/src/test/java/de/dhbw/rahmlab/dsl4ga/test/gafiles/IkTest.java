@@ -31,8 +31,12 @@ public class IkTest {
 	@Test
 	void dummy() {
 		System.out.println("Create args:");
-		var a = new SparseDoubleMatrix(0, 0);
-		var b = new SparseDoubleMatrix(0, 0);
+		double[][] arr = new double[1][1];
+		arr[0][0] = 24;
+		var a = new SparseDoubleMatrix(arr);
+		var b = new SparseDoubleMatrix(arr);
+		// var a = new SparseDoubleMatrix(1, 1);
+		// var b = new SparseDoubleMatrix(1, 1);
 		System.out.println("Invoke:");
 		var answer = PROGRAM.invoke(a, b); // 11x SparseDoubleMatrix Pe, P5, Sc, K0, C5k, Pl, Qc, Pc, PIc, PIc_parallel, PI56_orthogonal
 		Util.print(answer);

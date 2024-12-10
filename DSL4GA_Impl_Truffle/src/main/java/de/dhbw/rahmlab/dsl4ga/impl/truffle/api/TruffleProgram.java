@@ -10,8 +10,8 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.truffleBox.CgaListTruf
 import de.orat.math.gacalc.api.ExprGraphFactory;
 import de.orat.math.gacalc.api.MultivectorNumeric;
 import de.orat.math.sparsematrix.SparseDoubleMatrix;
-import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.net.URL;
 import java.util.List;
 import org.graalvm.polyglot.Context;
@@ -27,11 +27,11 @@ public class TruffleProgram implements iProgram {
 	private final Source source;
 	private final Value program;
 
-	protected TruffleProgram(ExprGraphFactory exprGraphFactory, Context context, BufferedReader sourceReader) {
+	protected TruffleProgram(ExprGraphFactory exprGraphFactory, Context context, Reader sourceReader) {
 		this.exprGraphFactory = exprGraphFactory;
 		this.context = context;
 		try {
-			this.source = Source.newBuilder(GeomAlgeLang.LANGUAGE_ID, sourceReader, "").build();
+			this.source = Source.newBuilder(GeomAlgeLang.LANGUAGE_ID, sourceReader, "TruffleProgram").build();
 		} catch (IOException ex) {
 			throw new RuntimeException(ex);
 		}
