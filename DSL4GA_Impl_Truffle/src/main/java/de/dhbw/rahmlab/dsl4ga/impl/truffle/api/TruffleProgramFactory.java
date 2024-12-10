@@ -4,8 +4,6 @@ import de.dhbw.rahmlab.dsl4ga.api.iProgramFactory;
 import de.dhbw.rahmlab.dsl4ga.common.AutoCloser;
 import de.dhbw.rahmlab.dsl4ga.common.LifeTimeExtender;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLang;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.ParsingService;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.ParsingServiceProvider;
 import de.orat.math.gacalc.api.ExprGraphFactory;
 import de.orat.math.gacalc.api.GAExprGraphFactoryService;
 import java.io.Reader;
@@ -14,10 +12,6 @@ import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Engine;
 
 public class TruffleProgramFactory implements iProgramFactory<TruffleProgram> {
-
-	static {
-		ParsingServiceProvider.setParsingService(ParsingService.instance());
-	}
 
 	private static Context createContext() {
 		Engine engine = Engine.create(GeomAlgeLang.LANGUAGE_ID);
