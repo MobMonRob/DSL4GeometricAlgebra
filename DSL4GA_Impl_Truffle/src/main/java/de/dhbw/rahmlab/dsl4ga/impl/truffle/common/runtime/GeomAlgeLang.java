@@ -52,9 +52,9 @@ public class GeomAlgeLang extends TruffleLanguage<GeomAlgeLangContext> {
 		 * 
 		 * https://github.com/oracle/graal/blob/master/truffle/src/com.oracle.truffle.api/src/com/oracle/truffle/api/TruffleFile.java
          */
-        Class<? extends TruffleFile.FileTypeDetector>[] fileTypeDetectors(){
+        /*Class<? extends TruffleFile.FileTypeDetector>[] fileTypeDetectors(){
 			return new TruffleFile.FileTypeDetector.class{GAFileTypeDetector.class};
-		}
+		}*/
 	
 	@Override
 	protected CallTarget parse(ParsingRequest request) throws IOException {

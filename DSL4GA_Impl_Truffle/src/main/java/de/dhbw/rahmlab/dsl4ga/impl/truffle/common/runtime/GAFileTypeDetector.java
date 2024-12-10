@@ -12,6 +12,7 @@ public class GAFileTypeDetector implements TruffleFile.FileTypeDetector {
 
 	@Override
 	public String findMimeType(TruffleFile file) throws IOException {
+		return null;
 		//return file.detectMimeType();
 		// so geht das vermutlich nicht, da hier auch wieder der GAFileTypeDetector verwendet wird???
 	}
