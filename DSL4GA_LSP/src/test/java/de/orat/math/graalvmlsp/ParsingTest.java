@@ -100,7 +100,15 @@ public class ParsingTest extends TruffleLSPTest {
     @Test
     public void unknownlanguageIdButMIMETypeFound() throws InterruptedException, ExecutionException {
         URI uri = createDummyFileUriForGA();
+        // dabei wird findLanguageInfo() vom TruffleAdapter aufgerufen mit der langId als Argument
+        // dieses kann "ga" oder aber der Mimetype sein und wenn das nicht gefunden wird dann wird
+        // die uri ausgewertet um die Sprache zu bestimmen.
+        // das geht dann via Source.findLanguage
+        // https://github.com/oracle/graal/blob/master/truffle/src/com.oracle.truffle.api/src/com/oracle/truffle/api/source/Source.java
+        // das überschreibt unsere Sprache vermutlich nicht korrekt
+        //FIXME
         Future<?> future = truffleAdapter.parse("fn main(a) {a}", "unknown-lang-id", uri);
+        // Caused by: org.graalvm.tools.lsp.exceptions.UnknownLanguageException: Unknown language: unknown-lang-id. Known languages are: [ga]
         future.get();
     }
 
@@ -171,7 +179,6 @@ public class ParsingTest extends TruffleLSPTest {
                         "fn main(a) {a}");
 
         // Replace
-        //FIXME hier fliege ich raus
         checkChange(uri, Range.create(Position.create(0, 12), Position.create(0, 13)), "\n42\n}",
                         "fn main() {\n42\n}");
 
@@ -190,17 +197,31 @@ public class ParsingTest extends TruffleLSPTest {
                         "function main() {return 1;}");
         // Replace to empty
         try {
+            // java.util.concurrent.ExecutionException: org.graalvm.tools.lsp.exceptions.DiagnosticsNotification
             checkChange(uri, Range.create(Position.create(0, 0), 
-                    Position.create(0, 30)), "", null);
+                    Position.create(0, 14)), "", null);
+            // hier fliege ich raus mit org.opentest4j.AssertionFailedError
+            //FIXME
             fail();
         } catch (ExecutionException e) {
-            Collection<PublishDiagnosticsParams> diagnosticParamsCollection = ((DiagnosticsNotification) e.getCause()).getDiagnosticParamsCollection();
+            // stacktrace beschaffen
+            StringBuilder sb = new StringBuilder();
+            var diag = ((DiagnosticsNotification) e.getCause()).getDiagnosticParamsCollection();
+            diag.forEach(par -> par.getDiagnostics().forEach(d -> sb.append(d.getMessage())));
+            String msg = sb.toString();
+            System.out.println("Stack:"+msg);
+
+            Collection<PublishDiagnosticsParams> diagnosticParamsCollection = 
+                    ((DiagnosticsNotification) e.getCause()).getDiagnosticParamsCollection();
             assertEquals(1, diagnosticParamsCollection.size());
             PublishDiagnosticsParams diagnosticsParams = diagnosticParamsCollection.iterator().next();
             List<Diagnostic> diagnostics = diagnosticsParams.getDiagnostics();
             assertTrue(diagnostics.get(0).getMessage().contains("EOF"));
+        } catch (Throwable f){
+            System.out.println("failed:");
+            f.printStackTrace(System.out);
         }
-        assertEquals("", surrogate.getEditorText());
+        assertEquals("", surrogate.getEditorText()); // surrogate==null
     }
 
     /**
@@ -218,12 +239,14 @@ public class ParsingTest extends TruffleLSPTest {
         Future<TextDocumentSurrogate> future = truffleAdapter.processChangesAndParse(Arrays.asList(event), uri);
         try {
             TextDocumentSurrogate surrogate = future.get();
-            // testweise
+            // testweise Test: fn main(a) {a+a}=fn main(a) {a+a}
             System.out.println("Test: "+surrogate.getEditorText()+"="+editorText);
             assertEquals(editorText, surrogate.getEditorText());
             assertSame(surrogate.getEditorText(), surrogate.getEditorText());
             return surrogate;
         } catch (Throwable t){
+            // Caused by: org.graalvm.tools.lsp.exceptions.DiagnosticsNotification
+            //TODO
             t.printStackTrace(System.out);
         }
         return null;

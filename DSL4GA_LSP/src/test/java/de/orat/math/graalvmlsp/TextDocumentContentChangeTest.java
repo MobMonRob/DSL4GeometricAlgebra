@@ -48,6 +48,7 @@ public class TextDocumentContentChangeTest {
 
     private static Source createSource(String oldText) {
         return Source.newBuilder("dummy", oldText, TextDocumentContentChangeTest.class.getSimpleName()).build();
+        //return Source.newBuilder("ga", oldText, TextDocumentContentChangeTest.class.getSimpleName()).build();
     }
 
     @Test

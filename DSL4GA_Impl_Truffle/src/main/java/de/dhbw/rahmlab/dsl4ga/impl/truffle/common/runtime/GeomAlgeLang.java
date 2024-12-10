@@ -1,6 +1,7 @@
 package de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime;
 
 import com.oracle.truffle.api.CallTarget;
+import com.oracle.truffle.api.TruffleFile;
 import com.oracle.truffle.api.TruffleLanguage;
 import com.oracle.truffle.api.debug.DebuggerTags;
 import com.oracle.truffle.api.instrumentation.ProvidedTags;
@@ -35,6 +36,24 @@ public class GeomAlgeLang extends TruffleLanguage<GeomAlgeLangContext> {
 		return this.context;
 	}
 
+	//TODO
+	// hier muss ich vermutlich noch ein paar mehr Methoden überschreiben
+	   /**
+         * Declarative list of {@link TruffleFile.FileTypeDetector} classes provided by this
+         * language.
+         * <p>
+         * The language has to support all MIME types recognized by the registered
+         * {@link TruffleFile.FileTypeDetector file type detectors}.
+         *
+         * @return list of file type detectors
+         * @since 19.0
+		 * 
+		 * https://github.com/oracle/graal/blob/master/truffle/src/com.oracle.truffle.api/src/com/oracle/truffle/api/TruffleFile.java
+         */
+        Class<? extends TruffleFile.FileTypeDetector>[] fileTypeDetectors(){
+			return new TruffleFile.FileTypeDetector.class{GAFileTypeDetector.class};
+		}
+	
 	@Override
 	protected CallTarget parse(ParsingRequest request) throws IOException {
 		Source source = request.getSource();
