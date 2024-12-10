@@ -1,4 +1,17 @@
 https://www.graalvm.org/latest/graalvm-as-a-platform/implement-instrument/
 --> add LSP-Server to a specific classpath of the GraalVM to be available to start
 
-- only lsp.jar neede, api is to extend the LS
+- only lsp.jar needed, api is to extend the LS
+
+-Dtruffle.class.path.append=lsp-tool-24.1.1.jar
+
+The Truffle framework offers a clear separation between the language/tooling code and the application code. 
+For this reason, putting the JAR file on the class path will not result in the framework realizing a new tool 
+is needed. To achieve this we use --vm.Dtruffle.class.path.append=/path/to/simpletool-<version>.jar as is 
+illustrated in a launcher script for our simple tool. This script also shows we can set the CLI options we 
+specified for Simple Tool. This means that if we execute ./simpletool js example.js, we will launch the js 
+launcher of GraalVM, add the tool to the framework class path, and run the included example.js file with 
+Simple Tool enabled.
+
+
+"-Dtruffle.class.path.append=lsp-tool-24.1.1.jar" 

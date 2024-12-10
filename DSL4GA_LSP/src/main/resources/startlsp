@@ -1,0 +1,1 @@
+java -jar -cp ${graalvmlsp.cp} ${project.artefactId}-${baseVersion}.jar

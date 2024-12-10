@@ -1,0 +1,2 @@
+cd /home/oliver/JAVA/PROJECTS/graalvmlsp/target
+/home/oliver/graalvm-jdk-23.0.1+11.1/bin/java -Duser.dir=/home/oliver/JAVA/PROJECTS/graalvmlsp/target -jar graalvmlsp-1.0-SNAPSHOT.jar

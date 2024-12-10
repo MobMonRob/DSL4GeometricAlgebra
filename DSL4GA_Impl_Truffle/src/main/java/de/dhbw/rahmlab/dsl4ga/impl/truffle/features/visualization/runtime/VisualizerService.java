@@ -55,5 +55,4 @@ public class VisualizerService {
 		}
 		this.viewObjects.clear();
 	}
-
 }

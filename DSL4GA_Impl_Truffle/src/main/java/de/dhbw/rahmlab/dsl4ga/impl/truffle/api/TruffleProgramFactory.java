@@ -13,7 +13,7 @@ import org.graalvm.polyglot.Engine;
 
 public class TruffleProgramFactory implements iProgramFactory<TruffleProgram> {
 
-	private static Context createContext() {
+	protected static Context createContext() {
 		Engine engine = Engine.create(GeomAlgeLang.LANGUAGE_ID);
 		Context.Builder builder = Context.newBuilder(GeomAlgeLang.LANGUAGE_ID)
 			.allowAllAccess(true)

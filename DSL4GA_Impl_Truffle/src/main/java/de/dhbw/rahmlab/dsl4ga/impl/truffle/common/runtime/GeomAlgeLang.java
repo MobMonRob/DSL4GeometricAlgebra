@@ -13,8 +13,8 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.ParsingService;
 import java.io.IOException;
 
 @TruffleLanguage.Registration(
-	id = "geomalgelang",
-	name = "GeomAlgeLang",
+	id = "ga",
+	name = "ga",
 	version = "0.0.1"
 )
 @ProvidedTags({
@@ -27,7 +27,7 @@ import java.io.IOException;
 })
 public class GeomAlgeLang extends TruffleLanguage<GeomAlgeLangContext> {
 
-	public static final String LANGUAGE_ID = "geomalgelang";
+	public static final String LANGUAGE_ID = "ga";
 
 	private GeomAlgeLangContext context;
 

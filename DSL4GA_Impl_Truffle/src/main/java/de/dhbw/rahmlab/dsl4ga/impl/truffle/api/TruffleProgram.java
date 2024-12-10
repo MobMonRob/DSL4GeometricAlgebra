@@ -23,20 +23,29 @@ import org.graalvm.polyglot.Value;
 public class TruffleProgram implements iProgram {
 
 	private final ExprGraphFactory exprGraphFactory;
-	private final Context context;
 	private final Source source;
-	private final Value program;
+	private final Value parsedProgram;
+
+	@Deprecated
+	public TruffleProgram(ExprGraphFactory exprGraphFactory, Source source) {
+		this.exprGraphFactory = exprGraphFactory;
+		this.source = source;
+		try {
+			this.parsedProgram = TruffleProgramFactory.createContext().parse(source);
+		} catch (PolyglotException ex) {
+			throw enrichException(ex);
+		}
+	}
 
 	protected TruffleProgram(ExprGraphFactory exprGraphFactory, Context context, Reader sourceReader) {
 		this.exprGraphFactory = exprGraphFactory;
-		this.context = context;
 		try {
 			this.source = Source.newBuilder(GeomAlgeLang.LANGUAGE_ID, sourceReader, "TruffleProgram").build();
 		} catch (IOException ex) {
 			throw new RuntimeException(ex);
 		}
 		try {
-			this.program = this.context.parse(source);
+			this.parsedProgram = context.parse(source);
 		} catch (PolyglotException ex) {
 			throw enrichException(ex);
 		}
@@ -44,14 +53,13 @@ public class TruffleProgram implements iProgram {
 
 	protected TruffleProgram(ExprGraphFactory exprGraphFactory, Context context, URL url) {
 		this.exprGraphFactory = exprGraphFactory;
-		this.context = context;
 		try {
 			this.source = Source.newBuilder(GeomAlgeLang.LANGUAGE_ID, url).build();
 		} catch (IOException ex) {
 			throw new RuntimeException(ex);
 		}
 		try {
-			this.program = this.context.parse(source);
+			this.parsedProgram = context.parse(source);
 		} catch (PolyglotException ex) {
 			throw enrichException(ex);
 		}
@@ -63,7 +71,7 @@ public class TruffleProgram implements iProgram {
 
 		try {
 			CgaListTruffleBox truffleArgs = new CgaListTruffleBox(mVecArgs);
-			Value result = this.program.execute(truffleArgs);
+			Value result = this.parsedProgram.execute(truffleArgs);
 			CgaListTruffleBox truffleResults = result.as(CgaListTruffleBox.class);
 			List<MultivectorNumeric> mVecResults = truffleResults.getInner();
 			List<SparseDoubleMatrix> results = mVecResults.stream().map(mvec -> mvec.elements()).toList();
