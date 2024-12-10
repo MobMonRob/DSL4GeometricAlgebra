@@ -1,23 +1,6 @@
-//
-fn test2(g, h) {
-	:i := h
-	:j := g
-	a := 25
-	g, 10
-}
-
-fn test1(c, d) {
-	m := 44
-	_, p22 := test2(c, d)
-	a := 22
-	:e := c
-	:f := d
-	b := 36
-	c, 5
-}
-
 fn main(a, b) {
-	d, e := test1(a, b)
-	p1 := a
-	a, b, d, e, p1
+	:c := a
+	:d := b
+	e := 5
+	a, b
 }

@@ -51,8 +51,8 @@ import org.graalvm.tools.lsp.server.types.TextDocumentContentChangeEvent;
 import org.junit.jupiter.api.Test;
 
 import com.oracle.truffle.api.nodes.NodeInfo;
+import static de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLang.LANGUAGE_ID;
 
-import static de.dhbw.rahmlab.dsl4ga.impl.truffle.api.Program.LANGUAGE_ID;
 //import com.oracle.truffle.sl.SLLanguage;
 //import com.oracle.truffle.sl.builtins.SLHelloEqualsWorldBuiltin;
 

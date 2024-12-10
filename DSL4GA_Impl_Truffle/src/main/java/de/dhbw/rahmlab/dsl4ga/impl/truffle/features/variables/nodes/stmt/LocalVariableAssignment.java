@@ -11,9 +11,9 @@ import com.oracle.truffle.api.instrumentation.StandardTags;
 import com.oracle.truffle.api.instrumentation.Tag;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.stmtSuperClasses.NonReturningStatementBaseNode;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.truffleBox.CgaTruffleBox;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
-import de.orat.math.cga.api.CGAMultivector;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.truffleBox.CgaTruffleBox;
+import de.orat.math.gacalc.api.MultivectorNumeric;
 
 @NodeChild(value = "expr", type = ExpressionBaseNode.class)
 @NodeField(name = "name", type = String.class)
@@ -29,7 +29,7 @@ public abstract class LocalVariableAssignment extends NonReturningStatementBaseN
 	protected abstract boolean isPseudoStatement();
 
 	@Specialization
-	protected void execute(VirtualFrame frame, CGAMultivector exprValue, @Cached("currentLanguageContext()") GeomAlgeLangContext context) {
+	protected void doExecute(VirtualFrame frame, MultivectorNumeric exprValue, @Cached(value = "currentLanguageContext()", neverDefault = true) GeomAlgeLangContext context) {
 		int frameSlot = this.getFrameSlot();
 		CgaTruffleBox box = new CgaTruffleBox(exprValue);
 		frame.setObjectStatic(frameSlot, box);

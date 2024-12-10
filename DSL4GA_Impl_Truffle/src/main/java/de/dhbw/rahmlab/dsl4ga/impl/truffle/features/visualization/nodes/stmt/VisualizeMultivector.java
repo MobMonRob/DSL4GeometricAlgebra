@@ -9,7 +9,7 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.stmtSuperClasses.NonRetu
 import static de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.CatchAndRethrow.catchAndRethrow;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.nodes.expr.LocalVariableReference;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.visualization.runtime.VisualizerService;
-import de.orat.math.cga.api.CGAMultivector;
+import de.orat.math.gacalc.api.MultivectorNumeric;
 
 @NodeChild(value = "varRef", type = LocalVariableReference.class)
 public abstract class VisualizeMultivector extends NonReturningStatementBaseNode {
@@ -17,7 +17,7 @@ public abstract class VisualizeMultivector extends NonReturningStatementBaseNode
 	protected abstract LocalVariableReference getVarRef();
 
 	@Specialization
-	protected void execute(VirtualFrame frame, CGAMultivector varRefValue) {
+	protected void doExecute(VirtualFrame frame, MultivectorNumeric varRefValue) {
 		String name = this.getVarRef().getName();
 
 		catchAndRethrow(this, () -> {

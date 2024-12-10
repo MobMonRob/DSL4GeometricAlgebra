@@ -1,10 +1,7 @@
 package de.dhbw.rahmlab.dsl4ga.impl.truffle;
 
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.api.Arguments;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.api.Program;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.api.Result;
-import java.util.Arrays;
-import org.graalvm.polyglot.Source;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.api.TruffleProgramFactory;
+import java.util.Collections;
 
 public class DebuggerTest {
 
@@ -22,23 +19,17 @@ public class DebuggerTest {
 	 */
 	private static void invocationTest() throws Exception {
 		String path = "./debugTest.ocga";
-		Program program;
-		var uri = DebuggerTest.class.getResource(path);
-		if (uri == null) {
+		var url = DebuggerTest.class.getResource(path);
+		if (url == null) {
 			throw new RuntimeException(String.format("Path not found: %s", path));
 		}
-		Source ss = Source.newBuilder(Program.LANGUAGE_ID, uri).build();
-		program = new Program(ss, null);
-		Arguments arguments = new Arguments();
 
-		Result answer = program.invoke(arguments);
-		double[][] answerScalar = answer.decomposeDoubleArray();
+		var fac = new TruffleProgramFactory();
+		var prog = fac.parse(url);
+		var res = prog.invoke(Collections.emptyList());
 
 		System.out.println("answer: ");
-		for (int i = 0; i < answerScalar.length; ++i) {
-			String current = Arrays.toString(answerScalar[i]);
-			System.out.println(current);
-		}
+		res.forEach(System.out::println);
 		System.out.println();
 	}
 }

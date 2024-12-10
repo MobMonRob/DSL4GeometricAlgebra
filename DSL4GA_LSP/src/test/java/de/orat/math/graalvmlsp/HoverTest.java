@@ -28,7 +28,7 @@ package de.orat.math.graalvmlsp;
 //import static org.junit.Assert.assertEquals;
 //import static org.junit.Assert.assertTrue;
 
-import static de.dhbw.rahmlab.dsl4ga.impl.truffle.api.Program.LANGUAGE_ID;
+import static de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLang.LANGUAGE_ID;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;

@@ -3,18 +3,15 @@ package de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes;
 import com.oracle.truffle.api.frame.FrameDescriptor;
 import com.oracle.truffle.api.frame.FrameSlotKind;
 import com.oracle.truffle.api.frame.VirtualFrame;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.truffleBox.CgaListTruffleBox;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.truffleBox.CgaMapTruffleBox;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLang;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.truffleBox.CgaListTruffleBox;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionCalls.nodes.expr.*;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.superClasses.AbstractFunctionRootNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.Function;
-import de.orat.math.cga.api.CGAMultivector;
-import java.util.ArrayList;
-import java.util.HashMap;
+import de.orat.math.gacalc.api.MultivectorNumeric;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 public class ExecutionRootNode extends AbstractFunctionRootNode {
 
@@ -34,15 +31,14 @@ public class ExecutionRootNode extends AbstractFunctionRootNode {
 
 	@Override
 	public Object execute(VirtualFrame frame) {
-		Map<String, CGAMultivector> arguments;
+		List<MultivectorNumeric> argsList;
 		Object[] oArgs = frame.getArguments();
 		if (oArgs.length != 0) {
-			arguments = ((CgaMapTruffleBox) oArgs[0]).getInner();
+			argsList = ((CgaListTruffleBox) oArgs[0]).getInner();
 		} else {
-			arguments = new HashMap<>();
+			argsList = Collections.emptyList();
 		}
 
-		List<CGAMultivector> argsList = new ArrayList<>(arguments.values());
 		CgaListTruffleBox argsBoxed = new CgaListTruffleBox(argsList);
 		ListReader[] readers = ListReader.createArray(argsBoxed);
 		FunctionCall functionCall = FunctionCallNodeGen.create(function, readers);

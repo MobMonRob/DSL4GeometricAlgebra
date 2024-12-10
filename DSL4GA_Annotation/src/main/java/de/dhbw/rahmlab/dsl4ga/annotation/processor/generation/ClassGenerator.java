@@ -10,10 +10,8 @@ import de.dhbw.rahmlab.dsl4ga.annotation.processor.common.Classes;
 import de.dhbw.rahmlab.dsl4ga.annotation.processor.representation.Interface;
 import de.dhbw.rahmlab.dsl4ga.annotation.processor.representation.Method;
 import de.dhbw.rahmlab.dsl4ga.annotation.processor.representation.Parameter;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 import javax.annotation.processing.Filer;
 import javax.lang.model.element.Modifier;
@@ -63,25 +61,12 @@ final class ClassGenerator {
 		CodeBlock.Builder bodyBuilder = CodeBlock.builder();
 		bodyBuilder
 			.addStatement("String path = \"$L$L.ocga\"", i.annotation.path, m.name)
-			.beginControlFlow("try (var in = $T.class.getResourceAsStream(path))", i.correspondingElement)
-			// x
-			.beginControlFlow("if (in == null)")
-			// xx
+			.addStatement("var url = this.getClass().getResource(path)")
+			.beginControlFlow("if (url == null)")
 			.addStatement("throw new $T(String.format(\"Path not found: %s\", path))", RuntimeException.class)
-			// xx
 			.endControlFlow()
-			// x
-			.beginControlFlow("try (var reader = new $T(new $T(in)))", BufferedReader.class, InputStreamReader.class)
-			// xx
 			.addStatement("var programFactory = new $T()", ClassName.get(i.annotation.programFactory))
-			.addStatement("this.program = programFactory.parse(reader)")
-			// xx
-			.endControlFlow()
-			// x
-			.nextControlFlow("catch ($T ex)", IOException.class)
-			// x
-			.addStatement("throw new $T(ex)", RuntimeException.class)
-			.endControlFlow();
+			.addStatement("this.program = programFactory.parse(url)");
 
 		//
 		constructorBuilder
@@ -105,7 +90,7 @@ final class ClassGenerator {
 		// Body
 		String args = m.parameters.stream().map(p -> p.identifier).collect(Collectors.joining(", "));
 		CodeBlock.Builder bodyBuilder = CodeBlock.builder()
-			.addStatement("var arguments = $T.asList($L)", Arrays.class, args)
+			.addStatement("var arguments = $T.of($L)", List.class, args)
 			.addStatement("return this.program.invoke(arguments)");
 
 		//

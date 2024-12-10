@@ -1,32 +1,30 @@
 package de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.astConstruction;
 
-import de.dhbw.rahmlab.dsl4ga.common.parsing.SkippingParseTreeWalker;
 import com.oracle.truffle.api.frame.FrameDescriptor;
 import com.oracle.truffle.api.frame.FrameSlotKind;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParser;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParserBaseListener;
+import de.dhbw.rahmlab.dsl4ga.common.parsing.SkippingParseTreeWalker;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.stmtSuperClasses.NonReturningStatementBaseNode;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.ValidationException;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionCalls.nodes.expr.BuiltinFunctionCall;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionCalls.nodes.expr.BuiltinFunctionCallNodeGen;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionCalls.nodes.expr.GlobalBuiltinReference;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionCalls.nodes.expr.GlobalBuiltinReferenceNodeGen;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionCalls.nodes.exprSuperClasses.AbstractFunctionCall;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.BuiltinFunctionRootNode;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.builtins.GetLastListReturnFactory;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.builtinsSuperClasses.BuiltinFunctionBody;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionCalls.nodes.expr.FunctionCall;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionCalls.nodes.expr.FunctionCallNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.FunctionArgumentReader;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.FunctionArgumentReaderNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.FunctionDefinitionBody;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.FunctionDefinitionRootNode;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.Function;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.nodes.stmt.LocalVariableAssignment;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.nodes.stmt.LocalVariableAssignmentNodeGen;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.FunctionArgumentReaderNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.stmt.CallStmt;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.stmt.RetExprStmt;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.literals.nodes.expr.ScalarLiteral;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.literals.nodes.expr.ScalarLiteralNodeGen;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.Function;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.nodes.expr.LocalVariableReference;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.nodes.expr.LocalVariableReferenceNodeGen;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.nodes.stmt.LocalVariableAssignment;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.nodes.stmt.LocalVariableAssignmentNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.visualization.nodes.stmt.CleanupVisualizer;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.visualization.nodes.stmt.CleanupVisualizerNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.visualization.nodes.stmt.VisualizeMultivector;
@@ -149,7 +147,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 	@Override
 	public void enterTupleAssgnStmt(GeomAlgeParser.TupleAssgnStmtContext ctx) {
-		AbstractFunctionCall callExpr = ExprTransform.generateCallAST(ctx.callCtx, this.geomAlgeLangContext, this.functionsView, this.localVariablesView);
+		FunctionCall callExpr = ExprTransform.generateCallAST(ctx.callCtx, this.geomAlgeLangContext, this.functionsView, this.localVariablesView);
 
 		final int currenScopeVisibleVariablesIndex = getNewScopeVisibleVariablesIndex();
 
@@ -163,7 +161,6 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 		String LOW_LINE = GeomAlgeParser.VOCABULARY.getLiteralName(GeomAlgeParser.LOW_LINE);
 		// remove ''
 		LOW_LINE = LOW_LINE.substring(1, LOW_LINE.length() - 1);
-		final GlobalBuiltinReference globalBuiltinReference = GlobalBuiltinReferenceNodeGen.create("getLastListReturn");
 
 		for (int i = 0; i < size; ++i) {
 			String name = allAssigned.get(i).getText();
@@ -178,9 +175,11 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 			int frameSlot = this.frameDescriptorBuilder.addSlot(FrameSlotKind.Static, null, null);
 			this.localVariables.put(name, frameSlot);
 
-			ScalarLiteral scalarLiteral = ScalarLiteralNodeGen.create(i);
-			BuiltinFunctionCall functionCall = BuiltinFunctionCallNodeGen.create(
-				globalBuiltinReference, new ScalarLiteral[]{scalarLiteral});
+			BuiltinFunctionBody builtinFunctionBody = GetLastListReturnFactory.create(new FunctionArgumentReader[0], i);
+			BuiltinFunctionRootNode builtinFunctionRootNode = new BuiltinFunctionRootNode(this.geomAlgeLangContext.truffleLanguage, builtinFunctionBody, "GetlastListReturn");
+			Function function = new Function(builtinFunctionRootNode, 0);
+			FunctionCall functionCall = FunctionCallNodeGen.create(function, new ExpressionBaseNode[0]);
+
 			LocalVariableAssignment assignmentNode = LocalVariableAssignmentNodeGen.create(functionCall, currenScopeVisibleVariablesIndex, name, frameSlot, true);
 
 			this.stmts.add(assignmentNode);

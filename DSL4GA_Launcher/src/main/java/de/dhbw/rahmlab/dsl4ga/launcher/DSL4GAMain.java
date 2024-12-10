@@ -1,19 +1,22 @@
 package de.dhbw.rahmlab.dsl4ga.launcher;
 
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.api.Arguments;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.api.TruffleProgram;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLang;
+import de.orat.math.gacalc.api.GAExprGraphFactoryService;
+import de.orat.math.sparsematrix.SparseDoubleMatrix;
 import java.io.File;
 import java.io.IOException;
 
 import org.graalvm.polyglot.Source;
 
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.api.Program;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.api.Result;
 //import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 //import java.io.PrintStream;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 //import org.graalvm.polyglot.Context;
 //import org.graalvm.polyglot.PolyglotException;
@@ -67,7 +70,7 @@ public final class DSL4GAMain {
 		if (file == null) {
             // @formatter:off
 			if (!options.containsKey("lsp") || !options.get("lsp").equals("true")){
-				source = Source.newBuilder(Program.LANGUAGE_ID, 
+				source = Source.newBuilder(GeomAlgeLang.LANGUAGE_ID,
 					new InputStreamReader(System.in),
 					"<stdin>").interactive(!launcherOutput).build();
 			} else {
@@ -75,7 +78,7 @@ public final class DSL4GAMain {
 			}
             // @formatter:on
         } else {
-            source = Source.newBuilder(Program.LANGUAGE_ID, 
+			source = Source.newBuilder(GeomAlgeLang.LANGUAGE_ID,
 				new File(file)).interactive(!launcherOutput).build();
         }
 		 
@@ -125,21 +128,16 @@ public final class DSL4GAMain {
 	 * @param options 
 	 */
 	private static void executeSource(Source source, Map<String,String> options) {
-		try (Program program = new Program(source, options)) {
-			//TODO arguments die der main()-Methode mitgegeben werden sollen
-			//
-			Arguments arguments = new Arguments();
+		TruffleProgram program = new TruffleProgram(GAExprGraphFactoryService.getExprGraphFactoryThrowing(), source);
 
-			Result answer = program.invoke(arguments);
-			double[][] answerScalar = answer.decomposeDoubleArray();
+		//TODO arguments die der main()-Methode mitgegeben werden sollen
+		var arguments = new ArrayList<SparseDoubleMatrix>();
 
-			System.out.println("answer: ");
-			for (int i = 0; i < answerScalar.length; ++i) {
-				String current = Arrays.toString(answerScalar[i]);
-				System.out.println(current);
-			}
-			System.out.println();
-		}
+		List<SparseDoubleMatrix> answer = program.invoke(arguments);
+
+		System.out.println("answer: ");
+		answer.forEach(System.out::println);
+		System.out.println();
 	}
 	
 	//FIXME funktioniert nicht, da der ParsingService im constructor von Programm gesetzt wird

@@ -1,7 +1,5 @@
 package de.orat.math.graalvmlsp;
 
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.ParsingService;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.ParsingServiceProvider;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -48,9 +46,6 @@ public class GraalVMLSPStarter {
                 Context context = Context.newBuilder().allowAllAccess(true)
                         .allowExperimentalOptions(true).option("lsp", "true").out(/*System.err*/lspServerOut).build();//) {
                 // https://www.graalvm.org/latest/reference-manual/embed-languages/#dependency-setup
-                
-                //WORKAROUND aus package de.dhbw.rahmlab.dsl4ga.impl.truffle.api.Program
-                ParsingServiceProvider.setParsingService(ParsingService.instance());
 
                 // https://github.com/oracle/graal/blob/master/tools/src/org.graalvm.tools.lsp.test/src/org/graalvm/tools/lsp/test/server/TruffleLSPTest.java
                 // da läßt sich vermutlich ableiten wie der LSP verwendet werden kann ohne einen Socket-Server zu starten

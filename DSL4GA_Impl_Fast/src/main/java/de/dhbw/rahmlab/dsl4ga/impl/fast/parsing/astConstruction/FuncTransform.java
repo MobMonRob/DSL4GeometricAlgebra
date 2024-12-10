@@ -80,7 +80,8 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 		// Viz
 		if (ctx.viz != null) {
-			throw new UnsupportedOperationException("Visualization ist not supported in CasADi implementation.");
+			// To just ignore the viz is better then to force removing the colon symbols.
+			// throw new UnsupportedOperationException("Visualization ist not supported in Fast implementation.");
 		}
 	}
 

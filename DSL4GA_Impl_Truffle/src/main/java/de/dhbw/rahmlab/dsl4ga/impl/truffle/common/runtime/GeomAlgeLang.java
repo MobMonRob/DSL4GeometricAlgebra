@@ -8,9 +8,9 @@ import com.oracle.truffle.api.instrumentation.ProvidedTags;
 import com.oracle.truffle.api.instrumentation.StandardTags;
 import com.oracle.truffle.api.source.Source;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.CharStreamSupplier;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.ParsingServiceProxy;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.ExecutionRootNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.Function;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.ParsingService;
 import java.io.IOException;
 
 @TruffleLanguage.Registration(
@@ -27,6 +27,8 @@ import java.io.IOException;
 	DebuggerTags.AlwaysHalt.class
 })
 public class GeomAlgeLang extends TruffleLanguage<GeomAlgeLangContext> {
+
+	public static final String LANGUAGE_ID = "ga";
 
 	private GeomAlgeLangContext context;
 
@@ -58,7 +60,7 @@ public class GeomAlgeLang extends TruffleLanguage<GeomAlgeLangContext> {
 	protected CallTarget parse(ParsingRequest request) throws IOException {
 		Source source = request.getSource();
 		this.context.setSource(source);
-		Function main = ParsingServiceProxy.parse(CharStreamSupplier.from(source.getReader()), this.context);
+		Function main = ParsingService.instance().parse(CharStreamSupplier.from(source.getReader()), this.context);
 		ExecutionRootNode rootNode = new ExecutionRootNode(this, main);
 		return rootNode.getCallTarget();
 	}

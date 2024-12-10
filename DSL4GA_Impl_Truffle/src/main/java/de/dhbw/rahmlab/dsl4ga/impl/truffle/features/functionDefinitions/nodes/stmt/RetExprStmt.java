@@ -9,7 +9,7 @@ import com.oracle.truffle.api.nodes.Node.Children;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.stmtSuperClasses.StatementBaseNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.truffleBox.CgaListTruffleBox;
-import de.orat.math.cga.api.CGAMultivector;
+import de.orat.math.gacalc.api.MultivectorNumeric;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,9 +42,9 @@ public class RetExprStmt extends StatementBaseNode {
 
 	@ExplodeLoop
 	public CgaListTruffleBox execute(VirtualFrame frame) {
-		List<CGAMultivector> rets = new ArrayList<>(retExprs.length);
+		List<MultivectorNumeric> rets = new ArrayList<>(retExprs.length);
 		for (ExpressionBaseNode retExpr : this.retExprs) {
-			CGAMultivector ret = retExpr.executeGeneric(frame);
+			MultivectorNumeric ret = retExpr.executeGeneric(frame);
 			rets.add(ret);
 		}
 		return new CgaListTruffleBox(rets);

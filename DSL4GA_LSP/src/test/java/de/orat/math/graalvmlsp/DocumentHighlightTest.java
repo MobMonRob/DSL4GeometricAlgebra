@@ -24,7 +24,7 @@
  */
 package de.orat.math.graalvmlsp;
 
-import static de.dhbw.rahmlab.dsl4ga.impl.truffle.api.Program.LANGUAGE_ID;
+import static de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLang.LANGUAGE_ID;
 import java.net.URI;
 import java.util.List;
 import java.util.concurrent.ExecutionException;

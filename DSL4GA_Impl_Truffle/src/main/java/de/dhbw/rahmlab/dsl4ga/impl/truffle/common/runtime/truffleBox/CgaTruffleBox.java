@@ -4,12 +4,12 @@ import com.oracle.truffle.api.CompilerDirectives;
 import com.oracle.truffle.api.interop.InteropLibrary;
 import com.oracle.truffle.api.library.ExportLibrary;
 import com.oracle.truffle.api.library.ExportMessage;
-import de.orat.math.cga.api.CGAMultivector;
+import de.orat.math.gacalc.api.MultivectorNumeric;
 
 @ExportLibrary(InteropLibrary.class)
-public class CgaTruffleBox extends TruffleBox<CGAMultivector> {
+public class CgaTruffleBox extends TruffleBox<MultivectorNumeric> {
 
-	public CgaTruffleBox(CGAMultivector mvec) {
+	public CgaTruffleBox(MultivectorNumeric mvec) {
 		super(mvec);
 	}
 

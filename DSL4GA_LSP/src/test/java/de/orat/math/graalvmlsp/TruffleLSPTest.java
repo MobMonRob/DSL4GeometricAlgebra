@@ -25,9 +25,7 @@
 //package org.graalvm.tools.lsp.test.server;
 package de.orat.math.graalvmlsp;
 
-import static de.dhbw.rahmlab.dsl4ga.impl.truffle.api.Program.LANGUAGE_ID;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.ParsingService;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.ParsingServiceProvider;
+import static de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLang.LANGUAGE_ID;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -128,7 +126,6 @@ public abstract class TruffleLSPTest /*extends TestCase*/ {
         //context.enter();
         //WORKAROUND
         // context.initialize(LANGUAGE_ID);
-        ParsingServiceProvider.setParsingService(ParsingService.instance());
 
         context.enter();
 

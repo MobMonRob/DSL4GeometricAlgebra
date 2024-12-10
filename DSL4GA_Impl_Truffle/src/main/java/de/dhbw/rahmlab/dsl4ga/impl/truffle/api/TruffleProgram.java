@@ -1,86 +1,83 @@
 package de.dhbw.rahmlab.dsl4ga.impl.truffle.api;
 
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.ParsingServiceProvider;
+import de.dhbw.rahmlab.dsl4ga.api.iProgram;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.superClasses.GeomAlgeLangBaseNode;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.truffleBox.CgaListTruffleBox;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.truffleBox.CgaMapTruffleBox;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLang;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.AbstractExternalException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.LanguageRuntimeException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.ValidationException;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.ParsingService;
-import de.orat.math.cga.api.CGAMultivector;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.truffleBox.CgaListTruffleBox;
+import de.orat.math.gacalc.api.ExprGraphFactory;
+import de.orat.math.gacalc.api.MultivectorNumeric;
+import de.orat.math.sparsematrix.SparseDoubleMatrix;
+import java.io.IOException;
+import java.io.Reader;
+import java.net.URL;
 import java.util.List;
-import java.util.Map;
 import org.graalvm.polyglot.Context;
-import org.graalvm.polyglot.Engine;
-import org.graalvm.polyglot.Engine.Builder;
 import org.graalvm.polyglot.PolyglotException;
 import org.graalvm.polyglot.Source;
 import org.graalvm.polyglot.SourceSection;
 import org.graalvm.polyglot.Value;
 
-public class Program implements AutoCloseable {
+public class TruffleProgram implements iProgram {
 
-	public final Context context;
-	public Value parsedProgram;
-	public static final String LANGUAGE_ID = "ga"; //geomalgelang";
-	public final Engine engine;
-	public final Source source;
+	private final ExprGraphFactory exprGraphFactory;
+	private final Source source;
+	private final Value parsedProgram;
 
-	public Program(String source) {
-		this(Source.create(LANGUAGE_ID, source), null);
+	@Deprecated
+	public TruffleProgram(ExprGraphFactory exprGraphFactory, Source source) {
+		this.exprGraphFactory = exprGraphFactory;
+		this.source = source;
+		try {
+			this.parsedProgram = TruffleProgramFactory.createContext().parse(source);
+		} catch (PolyglotException ex) {
+			throw enrichException(ex);
+		}
 	}
 
-	public Program(Source source, Map<String,String> options) {
-		this.source = source;
-		Builder engineBuilder = Engine.newBuilder(LANGUAGE_ID);
-		engine = engineBuilder.build();
-		Context.Builder contextBuilder = Context.newBuilder(LANGUAGE_ID)
-			.allowAllAccess(true);
-		if (source != null){
-			//FIXME wozu?
-			contextBuilder = contextBuilder.in(System.in).out(System.out);
+	protected TruffleProgram(ExprGraphFactory exprGraphFactory, Context context, Reader sourceReader) {
+		this.exprGraphFactory = exprGraphFactory;
+		try {
+			this.source = Source.newBuilder(GeomAlgeLang.LANGUAGE_ID, sourceReader, "TruffleProgram").build();
+		} catch (IOException ex) {
+			throw new RuntimeException(ex);
 		}
-		this.context = contextBuilder.engine(engine).build();
-		//FIXME
-		// warum ist das hier nötig? im lsp Test fehlt dieser Aufruf
-		this.context.initialize(LANGUAGE_ID);
-		//FIXME warum ist das nötig?
-		// im Zusammenhang mit dem LSP und Test-Code korrespondierend zu simple language
-		// schlägt das parsing fehl, da dort der parsingService nicht gesetzt wird
-		ParsingServiceProvider.setParsingService(ParsingService.instance());
+		try {
+			this.parsedProgram = context.parse(source);
+		} catch (PolyglotException ex) {
+			throw enrichException(ex);
+		}
+	}
 
-		if (source != null){
-			try {
-				this.parsedProgram = this.context.parse(source);
-				System.out.println("Program parsed!");
-			} catch (PolyglotException ex) {
-				try (this) {
-					throw enrichException(ex);
-				}
-			}
-		} else {
-			System.out.println("No program to parse!");
+	protected TruffleProgram(ExprGraphFactory exprGraphFactory, Context context, URL url) {
+		this.exprGraphFactory = exprGraphFactory;
+		try {
+			this.source = Source.newBuilder(GeomAlgeLang.LANGUAGE_ID, url).build();
+		} catch (IOException ex) {
+			throw new RuntimeException(ex);
+		}
+		try {
+			this.parsedProgram = context.parse(source);
+		} catch (PolyglotException ex) {
+			throw enrichException(ex);
 		}
 	}
 
 	@Override
-	public void close() {
-		this.context.close(true);
-	}
+	public List<SparseDoubleMatrix> invoke(List<SparseDoubleMatrix> arguments) {
+		List<MultivectorNumeric> mVecArgs = arguments.stream().map(vec -> this.exprGraphFactory.createMultivectorNumeric(vec)).toList();
 
-	public Result invoke(Arguments arguments) {
 		try {
-			Map<String, CGAMultivector> argsMapView = arguments.getArgsMapView();
-			CgaMapTruffleBox args = new CgaMapTruffleBox(argsMapView);
-			Value result = this.parsedProgram.execute(args);
-			CgaListTruffleBox box = result.as(CgaListTruffleBox.class);
-			List<CGAMultivector> answers = box.getInner();
-			return new Result(answers);
+			CgaListTruffleBox truffleArgs = new CgaListTruffleBox(mVecArgs);
+			Value result = this.parsedProgram.execute(truffleArgs);
+			CgaListTruffleBox truffleResults = result.as(CgaListTruffleBox.class);
+			List<MultivectorNumeric> mVecResults = truffleResults.getInner();
+			List<SparseDoubleMatrix> results = mVecResults.stream().map(mvec -> mvec.elements()).toList();
+			return results;
 		} catch (PolyglotException ex) {
-			try (this) {
-				throw enrichException(ex);
-			}
+			throw enrichException(ex);
 		}
 	}
 
