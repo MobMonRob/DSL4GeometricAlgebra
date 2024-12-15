@@ -84,7 +84,7 @@ public class ArrayAccessTest {
 	
 	
 	@Test
-	void accessWithoutIndex(){
+	void invalidAccessWithoutIndex(){
 		String code = """
 			fn main (){
                 a[] := {0}
@@ -102,7 +102,7 @@ public class ArrayAccessTest {
 	
 	
 	@Test
-	void returnWholeArray(){
+	void invalidReturnWholeArray(){
 		String code = """
 			fn main (){
                 a[] := {5, 6, 7}
@@ -119,7 +119,7 @@ public class ArrayAccessTest {
 	
 	
 	@Test
-	void returnWholeArrayWithoutBrackets(){
+	void invalidReturnWholeArrayWithoutBrackets(){
 		String code = """
 			fn main (){
                 a[] := {5, 6, 7}
@@ -136,7 +136,7 @@ public class ArrayAccessTest {
 	
 	
 	@Test
-	void wromgReturnMultiplePartsOfArray(){
+	void invalidReturnMultiplePartsOfArray(){
 		String code = """
 			fn main (){
                 a[] := {5, 6, 7}
@@ -153,7 +153,7 @@ public class ArrayAccessTest {
 	
 	
 	@Test
-	void wromgReturnAdditionOfArray(){
+	void invalidReturnAdditionOfArray(){
 		String code = """
 			fn main (){
                 a[] := {5, 6, 7}
@@ -170,7 +170,7 @@ public class ArrayAccessTest {
 	
 	
 	@Test
-	void outOfRangeReturn(){
+	void invalidOutOfRangeReturn(){
 		String code = """
 			fn main (){
                 a[] := {5, 6, 7}
