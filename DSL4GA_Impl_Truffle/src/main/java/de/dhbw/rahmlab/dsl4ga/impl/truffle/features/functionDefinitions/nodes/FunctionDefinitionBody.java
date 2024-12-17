@@ -31,7 +31,11 @@ public final class FunctionDefinitionBody extends AbstractFunctionBody implement
 	public FunctionDefinitionBody(NonReturningStatementBaseNode[] stmts, RetExprStmt retExprStmt, CleanupVisualizer nulleableCleanupVizualizer) {
 		this.retExprStmt = retExprStmt;
 		this.nulleableCleanupVizualizer = nulleableCleanupVizualizer;
-		this.stmts = BlockNode.create(stmts, this);
+		if (stmts.length != 0) {
+			this.stmts = BlockNode.create(stmts, this);
+		} else {
+			this.stmts = null;
+		}
 	}
 
 	@Override
@@ -40,7 +44,9 @@ public final class FunctionDefinitionBody extends AbstractFunctionBody implement
 	}
 
 	public CgaListTruffleBox directCall(VirtualFrame frame) {
-		stmts.executeVoid(frame, BlockNode.NO_ARGUMENT);
+		if (this.stmts != null) {
+			stmts.executeVoid(frame, BlockNode.NO_ARGUMENT);
+		}
 
 		CgaListTruffleBox rets = this.retExprStmt.execute(frame);
 
