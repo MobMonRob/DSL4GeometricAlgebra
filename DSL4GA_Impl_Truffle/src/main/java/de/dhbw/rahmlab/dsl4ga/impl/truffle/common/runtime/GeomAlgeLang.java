@@ -13,10 +13,14 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.ParsingService;
 import java.io.IOException;
 
+// contextPolicy = ContextPolicy.SHARED
 @TruffleLanguage.Registration(
-	id = "ga",
-	name = "ga",
-	version = "0.0.1"
+	id = GeomAlgeLang.LANGUAGE_ID,
+	name = GeomAlgeLang.LANGUAGE_ID,
+	version = "0.0.1",
+	characterMimeTypes = GeomAlgeLang.MIME_TYPE,
+	defaultMimeType = GeomAlgeLang.MIME_TYPE,
+	fileTypeDetectors = GeomAlgeLangFileDetector.class
 )
 @ProvidedTags({
 	StandardTags.CallTag.class,
@@ -29,6 +33,7 @@ import java.io.IOException;
 public class GeomAlgeLang extends TruffleLanguage<GeomAlgeLangContext> {
 
 	public static final String LANGUAGE_ID = "ga";
+	public static final String MIME_TYPE = "application/x-ga";
 
 	private GeomAlgeLangContext context;
 
