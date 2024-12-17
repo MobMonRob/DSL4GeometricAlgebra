@@ -174,6 +174,7 @@ public class ParsingTest extends TruffleLSPTest {
 
         // Delete
         // von 12 auf 13 geändert
+		// Exception bereits hier.
         checkChange(uri, Range.create(Position.create(0, 13/*24*/), 
                                              Position.create(0, 14/*26*/)), "",
                         "fn main(a) {a}");
@@ -243,13 +244,16 @@ public class ParsingTest extends TruffleLSPTest {
             System.out.println("Test: "+surrogate.getEditorText()+"="+editorText);
             assertEquals(editorText, surrogate.getEditorText());
             assertSame(surrogate.getEditorText(), surrogate.getEditorText());
-            return surrogate;
+			return surrogate;
+		} catch (ExecutionException ex) {
+			throw _Util.umwrapException(ex);
         } catch (Throwable t){
             // Caused by: org.graalvm.tools.lsp.exceptions.DiagnosticsNotification
             //TODO
             t.printStackTrace(System.out);
+			throw t;
         }
-        return null;
+		// return null;
     }
 
     @Test
