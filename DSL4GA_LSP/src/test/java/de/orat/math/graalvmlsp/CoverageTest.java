@@ -24,6 +24,7 @@
  */
 package de.orat.math.graalvmlsp;
 
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLang;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -38,8 +39,8 @@ public class CoverageTest extends TruffleLSPTest {
 
     @Test
     public void runConverageAnalysisTest() throws InterruptedException, ExecutionException {
-        URI uri = createDummyFileUriForGA();
-        Future<?> futureOpen = truffleAdapter.parse(PROG_OBJ_NOT_CALLED, "sl", uri);
+		URI uri = createDummyFileUriForGA();
+		Future<?> futureOpen = truffleAdapter.parse(PROG_OBJ_NOT_CALLED, GeomAlgeLang.LANGUAGE_ID, uri);
         futureOpen.get();
 
         Coverage coverage = truffleAdapter.getCoverage(uri).get();
