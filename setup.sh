@@ -72,12 +72,12 @@ wget -O maven.tar.gz https://dlcdn.apache.org/maven/maven-3/3.9.9/binaries/apach
 mkdir Maven3.9.9
 tar -xvzf maven.tar.gz -C ./Maven3.9.9 --strip-components=1
 rm -f maven.tar.gz
-mvnInstallCmd="mvn --no-transfer-progress install"
 cd ./GraalVM21
 export JAVA_HOME=$(pwd)
 cd ../Maven3.9.9
 export M2_HOME=$(pwd)
 export PATH=$JAVA_HOME/bin:$M2_HOME/bin:$PATH
+cd ..
 fi
 
 
@@ -85,7 +85,8 @@ displayMsg "Finally, we ${BLUE}build the repositories with Maven${NC}."
 
 if $execStep; then
 mvn -v || { printf "\n${RED}Maven can't be executed${NC}. Try running the install script again without skipping the '${BLUE}download and install GraalVM and Maven${NC}' step or install it manually.\n"; exit 1; }
-cd ../SparseMatrix && $mvnInstallCmd || installationEval
+mvnInstallCmd="mvn --no-transfer-progress install"
+cd ./SparseMatrix && $mvnInstallCmd || installationEval
 cd ../GeometricAlgebra && $mvnInstallCmd || installationEval
 mvn install:install-file -Dfile=../vecmath.jar -DgroupId=org.jogamp.java3d -DartifactId=vecmath -Dversion=1.7.1 -Dpackaging=jar -DgeneratePom=true || installationEval
 cd ../Euclid3DViewAPI && $mvnInstallCmd || installationEval
