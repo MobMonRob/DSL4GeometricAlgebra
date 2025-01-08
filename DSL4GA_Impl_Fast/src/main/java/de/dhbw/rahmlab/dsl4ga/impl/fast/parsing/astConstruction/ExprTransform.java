@@ -349,6 +349,21 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 								arg.scalarSqrt();
 							case "negate14" ->
 								arg.negate14();
+						    // new scalar functions
+							case "sign" ->
+								arg.scalarSign();
+							case "sin" ->
+								arg.scalarAsin();
+							case "cos" ->
+								arg.scalarCos();
+							case "tan" ->
+								arg.scalarTan();
+							case "asin" ->
+								arg.scalarAsin();
+							case "acos" ->
+								arg.scalarAcos();
+							case "atan" ->
+								arg.scalarAtan();
 							default ->
 								throw new ValidationException(String.format("Function \"%s\" to call not found.", functionName));
 						};
