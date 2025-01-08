@@ -13,6 +13,11 @@ public class IkTest {
 
 	private static IkProgram PROGRAM;
 
+	// https://www.baeldung.com/java-microbenchmark-harness
+	// https://stackoverflow.com/questions/30485856/how-to-run-jmh-from-inside-junit-tests
+	// https://www.retit.de/continuous-benchmarking-with-jmh-and-junit-2/
+	// https://github.com/peterszatmary/jmh-benchmark-demo
+	
 	public static void main(String args[]) throws InterruptedException {
 		init();
 		new IkTest().dummy();

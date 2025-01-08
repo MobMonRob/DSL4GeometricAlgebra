@@ -1,6 +1,6 @@
 // Inverse Kinematics following A. Marzabal and I. Zaplana: Closed-form inverse kinematics 
 // solututions for a class of serial robots without a spherical wrist using conformal geometric algebra.
-// Example: UR5e robot placed at the origin of the frame
+// Example: UR5e robot placed at the origin of the coordinate system
 
 // round point from 3 euclidean coordinates
 fn rp(x,y,z){
