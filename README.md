@@ -219,10 +219,19 @@ There exist three types of involution operations: Space inversion, reversion and
 | scp()       | scalar product | not yet implemented |
 | dot()       | dot product | not yet implemented |
 | abs()       | absolute value of a scalar only | Math.abs(CGAScalar) |
-| sqrt()      | square root of a scalar only | new CGAScalar(Math.sqrt(CGAScalar)) |
-| atan2(x,y)     | arcus tansgens 2 (Converts the coordinates (x,y) to coordinates (r, theta) and returns the angle theta as the couterclockwise angle in radians between -pi and pi of the point (x,y) to the positive x-axis.)| new CGAScalar(Math.atan2(CGAScalar, CGAScalar)) |
 | negate14()  | negate the signs of the vector- and 4-vector parts of an multivector. Usable to implement gerneral inverse. | MultivectorSymbolic.negate14() |
 
+### Scalar functions
+| symbol      | description | 
+| :---------- | ------------ | 
+| atan2(x,y)  | arcus tansgens 2 (Converts the coordinates (x,y) to coordinates (r, theta) and returns the angle theta as the couterclockwise angle in radians between -pi and pi of the point (x,y) to the positive x-axis.)|  
+| sin(x)      ||
+| cos(x)      ||
+| tan(x)      ||
+| atan(x)     ||
+| asin(x)     ||
+| acos(x)     ||
+| sign(x)     | -1 if x<0 else 1 |
 
 ### Additional functions to create transformations
 | symbol                   | description | implementation |
