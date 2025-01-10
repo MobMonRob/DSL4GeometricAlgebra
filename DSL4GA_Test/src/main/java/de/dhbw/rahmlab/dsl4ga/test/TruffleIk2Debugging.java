@@ -3,7 +3,7 @@ package de.dhbw.rahmlab.dsl4ga.test;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.api.TruffleProgramFactory;
 import java.util.Collections;
 
-public class ConferenceTruffleIkDebugging {
+public class TruffleIk2Debugging {
 
 	public static void main(String[] args) throws Exception {
 		invocationTest();
@@ -12,15 +12,15 @@ public class ConferenceTruffleIkDebugging {
 	/**
 	 * <pre>
 	 * netbeans-ocga Plugin muss installiert sein.
-	 * ik.ocga Breakpoint setzen per IDE.
-	 * Rechtsklick auf die Datei ConferenceTruffleIkDebugging.java "Debug file".
+	 * ik2.ocga Breakpoint setzen per IDE.
+	 * Rechtsklick auf die Datei TruffleIk2Debugging.java "Debug file".
 	 * Breakpoint und durchsteppen sollte funktionieren. Ebenso Visualisierung.
 	 * Es braucht ein paar Sekunden bis sich das Visualisierungsfenster öffnet beim ersten Doppelpunkt.
 	 * </pre>
 	 */
 	private static void invocationTest() throws Exception {
-		String path = "./gafiles/common/ika.ocga";
-		var uri = ConferenceTruffleIkDebugging.class.getResource(path);
+		String path = "./gafiles/common/ik2.ocga";
+		var uri = TruffleIk2Debugging.class.getResource(path);
 		if (uri == null) {
 			throw new RuntimeException(String.format("Path not found: %s", path));
 		}

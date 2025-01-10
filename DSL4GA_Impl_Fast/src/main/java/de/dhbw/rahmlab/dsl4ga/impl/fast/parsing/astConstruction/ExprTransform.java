@@ -353,7 +353,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 							case "sign" ->
 								arg.scalarSign();
 							case "sin" ->
-								arg.scalarAsin();
+								arg.scalarSin();
 							case "cos" ->
 								arg.scalarCos();
 							case "tan" ->

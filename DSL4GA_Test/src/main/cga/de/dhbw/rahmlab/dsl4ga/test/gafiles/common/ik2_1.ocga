@@ -7,9 +7,9 @@
 
 // up-projection of a vector into a cga multivector, results in a round point
 
-fn up(vec){
-	vec + 0.5 vec² εᵢ + ε₀
-}
+	fn up(vec){
+		vec + 0.5 vec² εᵢ + ε₀
+	}
 
 // down projection of a multivector into an euclidean vector
 // euclidean location of a round point
@@ -52,11 +52,6 @@ fn getPlane(vec, d){
 	vec + d εᵢ
 }
 
-fn getPlaneFromPoints(p1, p2, p3){
-	// up(a)^up(b)^up(c)^einf
-	p1∧p2∧p3∧εᵢ
-}
-
 // extract euclidean coordinates
 
 // three euclidean coordinates from a round point
@@ -77,7 +72,7 @@ fn getPoints(pp){
 	//ppnorm := sqrt(squaredNorm(pp)
     //(pp+ppnorm)/(-εᵢ⋅pp), (pp-ppnorm)/(-εᵢ⋅pp)
 	// workaround <>  mir ist unklar, warum das nötig sein könnte
-    (pp-sqrt(<pp>₀²))/(-εᵢ⌋pp), (pp+sqrt(<pp>₀²))/(-εᵢ⌋pp)
+    (Qc-sqrt(<Qc>₀²))/(-εᵢ⌋Qc), (Qc+sqrt(<Qc>₀²))/(-εᵢ⌋Qc)
 }
 
 
@@ -130,9 +125,9 @@ fn getRotationRotor(theta, axis){
 }
 
 fn getV4(alpha, p5, d4){
-	pl_vert_45_vec_1a := sin(alpha+π/2)ε₂+cos(alpha+π/2)ε₁
+	pl_vert_45_vec_1a := cos(alpha+π/2)ε₁+sin(alpha+π/2)ε₂
 	pl_vert_45_vec_1 := pl_vert_45_vec_1a sign(pl_vert_45_vec_1a⋅p5)
-	getPlane(pl_vert_45_vec_1, d4) // ipns plane
+	getPlane(plane_vert_45_vec_1, d4) // ipns plane
 }
 
 fn getP4(alpha, p5, p6, d4, d5){
@@ -146,7 +141,7 @@ fn getP4(alpha, p5, p6, d4, d5){
     // plane with normal vector from p5 to p6 through p5
 
 	//Pl5 := v56 + (p5⋅v56)εᵢ
-	pl5 := getPlane(v56, p5⋅v56)
+	pl5 := pl(v56, p5⋅v56)
     //alternative fomulation: plane between p5 and p5 tranlated into p5 (half distance subtraction)
     //Pl5 := p6-p5-0.5.... TODO
 	
@@ -156,20 +151,17 @@ fn getP4(alpha, p5, p6, d4, d5){
 }
 
 // get round point p2
-fn getP2(p0, p1, p3, s1, a3){
+fn getP2(p0, p1, p3, s1){
 	pl := getPlaneFromPoints(p0, p1, p3) // opns plane
 	s3 := getSphere(p3, -a3) // ipns sphere -self.dh_params[2,0]
 	pp := (s3^s1^pl*)* // undual?
 	getPoints(pp) 
 }
 
-
-
 // arguments as cga multivector types, represented as sparse matrices
 // result: all 8 tuples (solutions) with points p1-p6
-// arguments as cga multivector types, represented as sparse matrices
-// result: all 8 tuples (solutions) with points p1-p6
-fn main(pos, rot){
+fn main(pos, rot) { // pos, rot
+
 	// nominal dh parameters UR5e, the d-parameters correspond to the link lengths
     // and fullfill the assumption to apply the approach
 	a2 := -0.425

@@ -28,6 +28,15 @@ public class BuiltinRegistry {
 		// this.installBuiltin(GetLastListReturnFactory.getInstance()); // Only for internal use
 		this.installBuiltin(NormalizeFactory.getInstance());
 		this.installBuiltin(SqrtFactory.getInstance());
+		// new scalar functions
+		this.installBuiltin(AcosFactory.getInstance());
+		this.installBuiltin(AsinFactory.getInstance());
+		this.installBuiltin(AtanFactory.getInstance());
+		this.installBuiltin(CosFactory.getInstance());
+		this.installBuiltin(SinFactory.getInstance());
+		this.installBuiltin(TanFactory.getInstance());
+		this.installBuiltin(SignFactory.getInstance());
+		
 	}
 
 	private void installBuiltin(NodeFactory<? extends BuiltinFunctionBody> factory) {
