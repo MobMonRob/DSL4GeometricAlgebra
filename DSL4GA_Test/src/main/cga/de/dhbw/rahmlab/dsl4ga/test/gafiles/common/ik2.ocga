@@ -221,6 +221,9 @@ fn main(pos, rot){
     // oder kann ich atan(down(p5)) verwenden, dann muss ich aber atan() implementieren
 	// psi = atan(p5.value[2]/p5.value[1])
 	psi := atan2(z(p5), y(p5))
+	// Line 227: Variable "y" has not been declared before.
+	// Es gibt eine noch zu behebende Mehrdeutigkeit zwischen Funktionsaufrufen und Geometrischen Produkt unter gewissen Umständen.
+	// Workaround mit Klammern: ((y(p5))²+(z(p5))²)
     theta := asin(d4/sqrt(y(p5)²+z(p5)²))
 
 
