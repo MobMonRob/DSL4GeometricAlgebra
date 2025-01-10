@@ -6,6 +6,11 @@ public class ValidationException extends RuntimeException {
 		super(cause);
 	}
 
+	public ValidationException(int line, String message) {
+		this(String.format("Line %s: %s", line, message));
+	}
+
+	@Deprecated
 	public ValidationException(String message) {
 		super(message);
 	}

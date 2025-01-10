@@ -3,6 +3,7 @@ package de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.astConstruction;
 import com.oracle.truffle.api.frame.FrameDescriptor;
 import com.oracle.truffle.api.frame.FrameSlotKind;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParser;
+import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParser.VizAssignedRContext;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParserBaseListener;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.SkippingParseTreeWalker;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
@@ -118,30 +119,36 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 	public void enterAssgnStmt(GeomAlgeParser.AssgnStmtContext ctx) {
 		ExpressionBaseNode expr = ExprTransform.generateExprAST(ctx.exprCtx, this.geomAlgeLangContext, this.functionsView, this.localVariablesView);
 
+		Token assigned = ctx.vizAssigned.assigned;
+
 		// Assignment
-		String name = ctx.assigned.getText();
+		String name = assigned.getText();
 
 		if (this.localVariables.containsKey(name)) {
-			throw new ValidationException(String.format("\"%s\" cannot be assigned again.", name));
+			int line = assigned.getLine();
+			throw new ValidationException(line, String.format("\"%s\" cannot be assigned again.", name));
 		}
 		int frameSlot = this.frameDescriptorBuilder.addSlot(FrameSlotKind.Static, null, null);
 		this.localVariables.put(name, frameSlot);
 
 		LocalVariableAssignment assignmentNode = LocalVariableAssignmentNodeGen.create(expr, getNewScopeVisibleVariablesIndex(), name, frameSlot, false);
-		assignmentNode.setSourceSection(ctx.assigned.getStartIndex(), ctx.assigned.getStopIndex());
+		assignmentNode.setSourceSection(assigned.getStartIndex(), assigned.getStopIndex());
 
 		this.stmts.add(assignmentNode);
 
-		// Viz
-		if (ctx.viz != null) {
+		visualize(assigned, ctx.vizAssigned.viz, name, frameSlot);
+	}
+
+	private void visualize(Token assigned, Token viz, String name, int frameSlot) {
+		if (viz != null) {
 			this.hasViz = true;
 			LocalVariableReference varRefNode = LocalVariableReferenceNodeGen.create(name, frameSlot);
-			varRefNode.setSourceSection(ctx.assigned.getStartIndex(), ctx.assigned.getStopIndex());
+			varRefNode.setSourceSection(assigned.getStartIndex(), assigned.getStopIndex());
 
-			VisualizeMultivector viz = VisualizeMultivectorNodeGen.create(varRefNode, getNewScopeVisibleVariablesIndex());
-			viz.setSourceSection(ctx.viz.getStartIndex(), ctx.viz.getStopIndex());
+			VisualizeMultivector vizNode = VisualizeMultivectorNodeGen.create(varRefNode, getNewScopeVisibleVariablesIndex());
+			vizNode.setSourceSection(viz.getStartIndex(), viz.getStopIndex());
 
-			this.stmts.add(viz);
+			this.stmts.add(vizNode);
 		}
 	}
 
@@ -155,22 +162,25 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 		callStmt.setSourceSection(ctx.getStart().getStartIndex(), ctx.getStop().getStopIndex());
 		this.stmts.add(callStmt);
 
-		List<Token> allAssigned = ctx.assigned;
+		List<VizAssignedRContext> allVizAssigned = ctx.vizAssigned;
 
-		final int size = allAssigned.size();
+		final int size = allVizAssigned.size();
 		String LOW_LINE = GeomAlgeParser.VOCABULARY.getLiteralName(GeomAlgeParser.LOW_LINE);
 		// remove ''
 		LOW_LINE = LOW_LINE.substring(1, LOW_LINE.length() - 1);
 
 		for (int i = 0; i < size; ++i) {
-			String name = allAssigned.get(i).getText();
+			VizAssignedRContext vizAssigned = allVizAssigned.get(i);
+
+			String name = vizAssigned.assigned.getText();
 
 			if (name.equals(LOW_LINE)) {
 				continue;
 			}
 
 			if (this.localVariables.containsKey(name)) {
-				throw new ValidationException(String.format("\"%s\" cannot be assigned again.", name));
+				int line = vizAssigned.assigned.getLine();
+				throw new ValidationException(line, String.format("\"%s\" cannot be assigned again.", name));
 			}
 			int frameSlot = this.frameDescriptorBuilder.addSlot(FrameSlotKind.Static, null, null);
 			this.localVariables.put(name, frameSlot);
@@ -183,6 +193,8 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 			LocalVariableAssignment assignmentNode = LocalVariableAssignmentNodeGen.create(functionCall, currenScopeVisibleVariablesIndex, name, frameSlot, true);
 
 			this.stmts.add(assignmentNode);
+
+			visualize(vizAssigned.assigned, vizAssigned.viz, name, frameSlot);
 		}
 	}
 

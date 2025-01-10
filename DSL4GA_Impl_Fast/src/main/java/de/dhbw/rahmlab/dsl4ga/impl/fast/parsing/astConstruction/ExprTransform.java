@@ -108,7 +108,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 				// new Join(left, right);
 				left.join(right);
 			default ->
-				throw new UnsupportedOperationException();
+				throw new AssertionError();
 		};
 
 		nodeStack.push(result);
@@ -123,7 +123,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 				// new Negate(right);
 				right.negate();
 			default ->
-				throw new UnsupportedOperationException();
+				throw new AssertionError();
 		};
 
 		nodeStack.push(result);
@@ -156,7 +156,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 				// new GradeInversion(left);
 				left.gradeInversion();
 			default ->
-				throw new UnsupportedOperationException();
+				throw new AssertionError();
 		};
 
 		nodeStack.push(result);
@@ -180,7 +180,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 			case GeomAlgeParser.SUBSCRIPT_FIVE ->
 				5;
 			default ->
-				throw new UnsupportedOperationException();
+				throw new AssertionError();
 		};
 
 		// ExpressionBaseNode result = new GradeExtraction(inner, grade);
@@ -238,7 +238,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 				// ConstantNodeGen.create(Constant.Kind.pseudoscalar);
 				constants.getPseudoscalar();
 			default ->
-				throw new UnsupportedOperationException();
+				throw new AssertionError();
 		};
 
 		nodeStack.push(node);
@@ -249,7 +249,8 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		String name = ctx.name.getText();
 
 		if (!this.localVariablesView.containsKey(name)) {
-			throw new ValidationException(String.format("Variable \"%s\" has not been declared before.", name));
+			int line = ctx.name.getLine();
+			throw new ValidationException(line, String.format("Variable \"%s\" has not been declared before.", name));
 		}
 
 		MultivectorSymbolic node = this.localVariablesView.get(name);
@@ -323,7 +324,8 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 			List<MultivectorSymbolic> returns = function.callSymbolic(arguments);
 
 			if (!(ctx.parent instanceof GeomAlgeParser.TupleAssgnStmtContext) && (returns.size() != 1)) {
-				throw new ValidationException(String.format("Only calls in Expr are allowed, which return exactly one result, but got %s from \"%s\".", returns.size(), functionName));
+				int line = ctx.start.getLine();
+				throw new ValidationException(line, String.format("Only calls in Expr are allowed, which return exactly one result, but got %s from \"%s\".", returns.size(), functionName));
 			}
 
 			this.lastCallResults = returns;
@@ -365,7 +367,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 							case "atan" ->
 								arg.scalarAtan();
 							default ->
-								throw new ValidationException(String.format("Function \"%s\" to call not found.", functionName));
+								throw new ValidationException(ctx.start.getLine(), String.format("Function \"%s\" to call not found.", functionName));
 						};
 						this.lastCallResults = List.of(result);
 						this.nodeStack.push(result);
@@ -379,14 +381,14 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 							case "atan2" ->
 								arg0.scalarAtan2(arg1);
 							default ->
-								throw new ValidationException(String.format("Function \"%s\" to call not found.", functionName));
+								throw new ValidationException(ctx.start.getLine(), String.format("Function \"%s\" to call not found.", functionName));
 						};
 						this.lastCallResults = List.of(result);
 						this.nodeStack.push(result);
 
 					}
 					default ->
-						throw new ValidationException(String.format("Function \"%s\" to call not found.", functionName));
+						throw new ValidationException(ctx.start.getLine(), String.format("Function \"%s\" to call not found.", functionName));
 				}
 			} catch (ValidationException ex) {
 				throw ex;

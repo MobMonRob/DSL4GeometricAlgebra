@@ -26,28 +26,25 @@
 			<groupId>de.orat.math.cgacasadi</groupId>
 			<artifactId>CGACasADi</artifactId>
 			<version>1.0-SNAPSHOT</version>
-			<scope>test</scope>
+			<scope>runtime</scope>
 		</dependency>
 		
 		<dependency>
 			<groupId>de.dhbw.rahmlab</groupId>
 			<artifactId>DSL4GA_Annotation</artifactId>
 			<version>1.0-SNAPSHOT</version>
-			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>de.dhbw.rahmlab</groupId>
 			<artifactId>DSL4GA_Impl_Fast</artifactId>
 			<version>1.0-SNAPSHOT</version>
-			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>de.dhbw.rahmlab</groupId>
 			<artifactId>DSL4GA_Impl_Truffle</artifactId>
 			<version>1.0-SNAPSHOT</version>
-			<scope>compile</scope>
 		</dependency>
 
 		<!-- Needed for AntlrTestRig -->
@@ -55,7 +52,6 @@
 			<groupId>org.antlr</groupId>
 			<artifactId>antlr4</artifactId>
 			<version>4.13.1</version>
-			<scope>test</scope>
 		</dependency>
 		<!-- -->
 

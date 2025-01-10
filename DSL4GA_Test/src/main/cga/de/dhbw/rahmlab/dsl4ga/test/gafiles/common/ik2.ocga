@@ -7,7 +7,7 @@
 
 // up-projection of a vector into a cga multivector, results in a round point
 
-fn up(vec){
+fn up(vec) {
 	vec + 0.5 vec² εᵢ + ε₀
 }
 

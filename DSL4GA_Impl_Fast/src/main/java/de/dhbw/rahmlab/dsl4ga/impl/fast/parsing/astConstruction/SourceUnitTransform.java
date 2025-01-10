@@ -26,8 +26,8 @@ public class SourceUnitTransform extends GeomAlgeParserBaseListener {
 			FunctionSymbolic function = FuncTransform.generate(parser, functionCtx, functionsView);
 			String functionName = function.getName();
 			if (functions.containsKey(functionName)) {
-				// ToDo: Display position of the function.
-				throw new ValidationException(String.format("Function with name \"%s\" has been already declared.", functionName));
+				int line = functionCtx.start.getLine();
+				throw new ValidationException(line, String.format("Function with name \"%s\" has been already declared.", functionName));
 			}
 			functions.put(functionName, function);
 		}

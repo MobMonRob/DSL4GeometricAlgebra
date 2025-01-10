@@ -135,7 +135,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 			case GeomAlgeParser.UNION ->
 				new Join(left, right);
 			default ->
-				throw new UnsupportedOperationException();
+				throw new AssertionError();
 		};
 
 		result.setSourceSection(ctx.op.getStartIndex(), ctx.op.getStopIndex());
@@ -151,7 +151,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 			case GeomAlgeParser.HYPHEN_MINUS ->
 				new Negate(right);
 			default ->
-				throw new UnsupportedOperationException();
+				throw new AssertionError();
 		};
 
 		result.setSourceSection(ctx.op.getStartIndex(), ctx.op.getStopIndex());
@@ -179,7 +179,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 			case GeomAlgeParser.CIRCUMFLEX_ACCENT ->
 				new GradeInversion(left);
 			default ->
-				throw new UnsupportedOperationException();
+				throw new AssertionError();
 		};
 
 		result.setSourceSection(ctx.op.getStartIndex(), ctx.op.getStopIndex());
@@ -205,7 +205,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 			case GeomAlgeParser.SUBSCRIPT_FIVE ->
 				5;
 			default ->
-				throw new UnsupportedOperationException();
+				throw new AssertionError();
 		};
 
 		ExpressionBaseNode result = new GradeExtraction(inner, grade);
@@ -249,7 +249,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 			case GeomAlgeParser.CAPITAL_E ->
 				ConstantNodeGen.create(Constant.Kind.pseudoscalar);
 			default ->
-				throw new UnsupportedOperationException();
+				throw new AssertionError();
 		};
 
 		nodeStack.push(node);
@@ -260,7 +260,8 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		String name = ctx.name.getText();
 
 		if (!this.localVariablesView.containsKey(name)) {
-			throw new ValidationException(String.format("Variable \"%s\" has not been declared before.", name));
+			int line = ctx.name.getLine();
+			throw new ValidationException(line, String.format("Variable \"%s\" has not been declared before.", name));
 		}
 
 		int frameSlot = this.localVariablesView.get(name);
@@ -300,7 +301,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 
 		@Override
 		public MultivectorNumeric executeGeneric(VirtualFrame frame) {
-			throw new UnsupportedOperationException();
+			throw new AssertionError();
 		}
 	}
 

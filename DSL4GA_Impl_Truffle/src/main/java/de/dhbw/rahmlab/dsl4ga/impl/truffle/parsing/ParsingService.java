@@ -36,13 +36,20 @@ public final class ParsingService implements iParsingService {
 		GeomAlgeLexer lexer = this.getLexer(program);
 		GeomAlgeParser parser = this.getParser(lexer);
 		configureParserDefault(parser);
+		// configureParserDiagnostic(parser); //DBG
 		try {
 			return invoke(parser, geomAlgeLangContext);
 		} catch (ParseCancellationException ex) {
 			// System.out.println("PredictionMode.SLL failed.");
 
-			lexer.reset();
-			parser.reset();
+			// Leads to incorrect error reporting in some cases.
+			// lexer.reset();
+			// parser.reset();
+			// Better instead:
+			program.get().seek(0);
+			lexer = this.getLexer(program);
+			parser = this.getParser(lexer);
+
 			configureParserDiagnostic(parser);
 			try {
 				return invoke(parser, geomAlgeLangContext);
