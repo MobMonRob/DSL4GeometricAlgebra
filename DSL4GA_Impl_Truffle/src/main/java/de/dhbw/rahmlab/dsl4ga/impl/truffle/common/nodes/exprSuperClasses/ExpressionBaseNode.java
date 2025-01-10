@@ -21,11 +21,6 @@ public abstract class ExpressionBaseNode extends GeomAlgeLangBaseNode implements
 	}
 
 	@Override
-	public final boolean isInstrumentable() {
-		return Objects.nonNull(super.getSourceSection());
-	}
-
-	@Override
 	public boolean hasTag(Class<? extends Tag> tag) {
 		if (tag == StandardTags.ExpressionTag.class) {
 			return true;

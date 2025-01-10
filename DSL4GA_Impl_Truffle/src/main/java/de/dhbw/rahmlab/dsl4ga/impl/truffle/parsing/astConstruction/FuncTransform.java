@@ -10,7 +10,8 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.stmtSuperClasses.NonRetu
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.ValidationException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.BuiltinFunctionRootNode;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.builtins.GetLastListReturnFactory;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.builtins.GetLastListReturn;
+// import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.builtins.GetLastListReturnFactory;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.builtinsSuperClasses.BuiltinFunctionBody;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionCalls.nodes.expr.FunctionCall;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionCalls.nodes.expr.FunctionCallNodeGen;
@@ -80,6 +81,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 			transform.stmts.toArray(NonReturningStatementBaseNode[]::new),
 			retExprStmt,
 			cleanupViz);
+		functionDefinitionBody.setSourceSection(ctx.getStart().getStartIndex(), ctx.getStop().getStopIndex());
 
 		FrameDescriptor frameDescriptor = transform.frameDescriptorBuilder.build();
 
@@ -175,7 +177,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 			int frameSlot = this.frameDescriptorBuilder.addSlot(FrameSlotKind.Static, null, null);
 			this.localVariables.put(name, frameSlot);
 
-			BuiltinFunctionBody builtinFunctionBody = GetLastListReturnFactory.create(new FunctionArgumentReader[0], i);
+			BuiltinFunctionBody builtinFunctionBody = new GetLastListReturn(i);
 			BuiltinFunctionRootNode builtinFunctionRootNode = new BuiltinFunctionRootNode(this.geomAlgeLangContext.truffleLanguage, builtinFunctionBody, "GetlastListReturn");
 			Function function = new Function(builtinFunctionRootNode, 0);
 			FunctionCall functionCall = FunctionCallNodeGen.create(function, new ExpressionBaseNode[0]);

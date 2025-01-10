@@ -1,6 +1,9 @@
 package de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes;
 
+import com.oracle.truffle.api.dsl.Specialization;
 import com.oracle.truffle.api.frame.VirtualFrame;
+import com.oracle.truffle.api.instrumentation.GenerateWrapper;
+import com.oracle.truffle.api.instrumentation.ProbeNode;
 import com.oracle.truffle.api.nodes.BlockNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.stmtSuperClasses.NonReturningStatementBaseNode;
@@ -9,7 +12,11 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.st
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.superClasses.AbstractFunctionBody;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.visualization.nodes.stmt.CleanupVisualizer;
 
-public final class FunctionDefinitionBody extends AbstractFunctionBody implements BlockNode.ElementExecutor<NonReturningStatementBaseNode> {
+public class FunctionDefinitionBody extends AbstractFunctionBody implements BlockNode.ElementExecutor<NonReturningStatementBaseNode> {
+
+	protected FunctionDefinitionBody() {
+
+	}
 
 	@Child
 	protected BlockNode<NonReturningStatementBaseNode> stmts;
@@ -41,6 +48,11 @@ public final class FunctionDefinitionBody extends AbstractFunctionBody implement
 	@Override
 	public void executeVoid(VirtualFrame frame, NonReturningStatementBaseNode node, int index, int argument) {
 		node.executeGeneric(frame);
+	}
+
+	@Override
+	public CgaListTruffleBox executeGeneric(VirtualFrame frame) {
+		return directCall(frame);
 	}
 
 	public CgaListTruffleBox directCall(VirtualFrame frame) {

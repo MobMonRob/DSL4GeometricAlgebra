@@ -3,6 +3,7 @@ package de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes;
 import com.oracle.truffle.api.frame.FrameDescriptor;
 import com.oracle.truffle.api.frame.FrameSlotKind;
 import com.oracle.truffle.api.frame.VirtualFrame;
+import com.oracle.truffle.api.nodes.DirectCallNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLang;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.truffleBox.CgaListTruffleBox;
@@ -15,7 +16,9 @@ import java.util.List;
 
 public class ExecutionRootNode extends AbstractFunctionRootNode {
 
-	private final Function function;
+	private Function function;
+	@Child
+	private DirectCallNode mainCallNode;
 
 	private static FrameDescriptor frameDescriptor() {
 		FrameDescriptor.Builder frameDescriptorBuilder = FrameDescriptor.newBuilder();
@@ -27,6 +30,7 @@ public class ExecutionRootNode extends AbstractFunctionRootNode {
 	public ExecutionRootNode(GeomAlgeLang language, Function function) {
 		super(language, frameDescriptor(), function.getName());
 		this.function = function;
+		this.mainCallNode = DirectCallNode.create(function.getRootNode().getCallTarget());
 	}
 
 	@Override
@@ -40,10 +44,15 @@ public class ExecutionRootNode extends AbstractFunctionRootNode {
 		}
 
 		CgaListTruffleBox argsBoxed = new CgaListTruffleBox(argsList);
+
+		/*
 		ListReader[] readers = ListReader.createArray(argsBoxed);
 		FunctionCall functionCall = FunctionCallNodeGen.create(function, readers);
 
 		functionCall.executeGeneric(frame);
+		 */
+		this.mainCallNode.call(argsBoxed);
+
 		return GeomAlgeLangContext.get(null).lastListReturn;
 	}
 }
