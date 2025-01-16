@@ -343,12 +343,14 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 						MultivectorSymbolic result = switch (functionName) {
 							case "exp" ->
 								arg.exp();
+							case "log" ->
+								arg.log();
 							case "normalize" ->
 								arg.normalize();
 							case "abs" ->
 								arg.scalarAbs();
 							case "sqrt" ->
-								arg.scalarSqrt();
+								arg.sqrt();
 							case "negate14" ->
 								arg.negate14();
 						    // new scalar functions
