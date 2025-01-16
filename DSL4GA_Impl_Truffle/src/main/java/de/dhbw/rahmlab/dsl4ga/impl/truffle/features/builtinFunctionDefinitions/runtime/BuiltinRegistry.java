@@ -22,12 +22,18 @@ public class BuiltinRegistry {
 	}
 
 	private void installBuiltins() {
+		
+		// scalar functions
 		this.installBuiltin(AbsFactory.getInstance());
 		this.installBuiltin(Atan2Factory.getInstance());
-		this.installBuiltin(ExpFactory.getInstance());
 		// this.installBuiltin(GetLastListReturnFactory.getInstance()); // Only for internal use
+		
+		// NSELGA
 		this.installBuiltin(NormalizeFactory.getInstance());
 		this.installBuiltin(SqrtFactory.getInstance());
+		this.installBuiltin(ExpFactory.getInstance());
+		this.installBuiltin(LogFactory.getInstance());
+		
 		// new scalar functions
 		this.installBuiltin(AcosFactory.getInstance());
 		this.installBuiltin(AsinFactory.getInstance());
@@ -36,7 +42,6 @@ public class BuiltinRegistry {
 		this.installBuiltin(SinFactory.getInstance());
 		this.installBuiltin(TanFactory.getInstance());
 		this.installBuiltin(SignFactory.getInstance());
-		
 	}
 
 	private void installBuiltin(NodeFactory<? extends BuiltinFunctionBody> factory) {

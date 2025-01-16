@@ -37,6 +37,7 @@ public class VisualizerService {
 		var sparseDoubleMatrix = mv.elements();
 		var sparseDoubleColumnVector = new SparseDoubleColumnVector(sparseDoubleMatrix);
 		var doubleArray = sparseDoubleColumnVector.toArray();
+		//FIXME vermutlich erwartet der Konstruktor ein doubleArray Argument in einer anderen Representation
 		var cgaMultivector = new CGAMultivector(doubleArray);
 
 		CGAKVector mv2 = CGAKVector.specialize(cgaMultivector, true);

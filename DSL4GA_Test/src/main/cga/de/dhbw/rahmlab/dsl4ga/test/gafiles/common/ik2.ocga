@@ -7,8 +7,10 @@
 
 // up-projection of a vector into a cga multivector, results in a round point
 
+// up-projection of a vector into the conformal space (tested)
+// TODO build-in kann argument daraufhin testen dass wirklich ein euclidean vector übergeben wird
 fn up(vec) {
-	vec + 0.5 vec² εᵢ + ε₀
+	vec + 0.5 vec² εᵢ + ε₀ // TODO test ohne Leerzeichen
 }
 
 // down projection of a multivector into an euclidean vector
@@ -21,7 +23,10 @@ fn down(vec) {
 	// extracts the pure euclidean part of the given multivector
     // E0 symbol verwenden
 	//TODO test
-	E₀⌋(vec∧E₀)
+	//E₀⌋(vec∧E₀)
+
+	// siehe clifford lib docu
+	(vec/(vec⋅εᵢ))∧E₀ E₀⁻¹
 }
 
 
@@ -169,7 +174,7 @@ fn getP2(p0, p1, p3, s1, a3){
 // result: all 8 tuples (solutions) with points p1-p6
 // arguments as cga multivector types, represented as sparse matrices
 // result: all 8 tuples (solutions) with points p1-p6
-fn main(pos, rot){
+fn main(){
 	// nominal dh parameters UR5e, the d-parameters correspond to the link lengths
     // and fullfill the assumption to apply the approach
 	a2 := -0.425
@@ -180,7 +185,7 @@ fn main(pos, rot){
 	d6 := 0.0996
 
 	// robots end-effector pose
-    :p6 := getPoint(0.5, 0.0, 0.0)
+    :p6 := getPoint(1.0, 1.0, 0.0)
     //p6 := pos
 
 	R6 := getRotationRotor(0.0, ε₃) // dummy rotor
@@ -224,7 +229,7 @@ fn main(pos, rot){
 	// Line 227: Variable "y" has not been declared before.
 	// Es gibt eine noch zu behebende Mehrdeutigkeit zwischen Funktionsaufrufen und Geometrischen Produkt unter gewissen Umständen.
 	// Workaround mit Klammern: ((y(p5))²+(z(p5))²)
-    theta := asin(d4/sqrt(y(p5)²+z(p5)²))
+    theta := asin(d4/sqrt((y(p5))²+(z(p5))²))
 
 
 	// Solution 1 for p4

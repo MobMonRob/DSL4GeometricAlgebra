@@ -28,6 +28,8 @@ Qc := (C5k⌋Pl)*
 
 // point Pc with an offset d4 from P5
 //Pc := ExtractFirstPoint(Qc)
+test1 := Qc² // e4, d4 mit großen Werten, als kein even element mehr
+test2 := <Qc²>₀ // reines skalar
 // workaround <>  mir ist unklar, warum das nötig sein könnte
 Pc := (Qc-sqrt(<Qc²>₀))/(-εᵢ⌋Qc)
 
