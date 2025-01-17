@@ -368,6 +368,11 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 								arg.scalarAcos();
 							case "atan" ->
 								arg.scalarAtan();
+						    // in/out functions
+							case "up" ->
+								arg.up();
+							case "down" ->
+								arg.down();
 							default ->
 								throw new ValidationException(ctx.start.getLine(), String.format("Function \"%s\" to call not found.", functionName));
 						};

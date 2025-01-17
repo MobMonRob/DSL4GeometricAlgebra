@@ -23,6 +23,9 @@ public class BuiltinRegistry {
 
 	private void installBuiltins() {
 		
+		// in/out functions
+		this.installBuiltin(UpFactory.getInstance());
+		this.installBuiltin(DownFactory.getInstance());
 		// scalar functions
 		this.installBuiltin(AbsFactory.getInstance());
 		this.installBuiltin(Atan2Factory.getInstance());

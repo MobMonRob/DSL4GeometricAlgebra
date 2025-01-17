@@ -211,15 +211,22 @@ There exist three types of involution operations: Space inversion, reversion and
 
 ## Built-in functions
 ### Base functions
-| symbol      | description | implementation |
-| :---------- | ------------ | -------------- |
-| exp()       | exponential | MultivectorSymbolic.exp() |
-| normalize() | normalize by squared norm | MultivectorSymbolic.normalize() |
-| squaredNorm()      | squared norm of a mulitvector | MultivectorSymbolic.squaredNorm() |
-| scp()       | scalar product | not yet implemented |
-| dot()       | dot product | not yet implemented |
-| abs()       | absolute value of a scalar only | Math.abs(CGAScalar) |
-| negate14()  | negate the signs of the vector- and 4-vector parts of an multivector. Usable to implement gerneral inverse. | MultivectorSymbolic.negate14() |
+| symbol      | description | 
+| :---------- | ------------ | 
+| exp()       | exponential of a bivector | 
+| log()       | logarithm of general rotor (should be normalized) |
+| normalize() | normalize of an even multivector (general rotor, scalars inclusive)| 
+| sqrt()      | squared root of a general rotor |
+| squaredNorm()      | squared norm of a mulitvector | 
+| scp()       | scalar product | 
+| dot()       | dot product | 
+| negate14()  | negate the signs of the vector- and 4-vector parts of an multivector. Usable to implement general-inverse. |
+
+### up/down projection into euclidean space
+| symbol      | description | 
+| :---------- | ------------ | 
+| up()        | up-projection of a euclidean vector into the conformal space | 
+| down()      | down-projection of a multivector into the euclidean space by normalization and rejection from the minkowski plane E0 |
 
 ### Scalar functions
 | symbol      | description | 
@@ -231,6 +238,7 @@ There exist three types of involution operations: Space inversion, reversion and
 | atan(x)     ||
 | asin(x)     ||
 | acos(x)     ||
+| abs()       | absolute value of a scalar only ||
 | sign(x)     | -1 if x<0 else 1 |
 
 ### Additional functions to create transformations

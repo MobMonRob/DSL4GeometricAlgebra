@@ -9,24 +9,33 @@
 
 // up-projection of a vector into the conformal space (tested)
 // TODO build-in kann argument daraufhin testen dass wirklich ein euclidean vector übergeben wird
-fn up(vec) {
+fn up2(vec) {
 	vec + 0.5 vec² εᵢ + ε₀ // TODO test ohne Leerzeichen
 }
 
 // down projection of a multivector into an euclidean vector
 // euclidean location of a round point
-fn down(vec) {
+fn down2(vec) {
     // normalized sphere in ipns respresentation
 	// TODO muss da noch ein weiterer Rechenschritt erfolgen?
 	//-vec/(εᵢ⌋vec)
+	norm := -vec/(εᵢ⌋vec)
 
+	norm1 := vec/(vec⋅εᵢ) // [00, nan, nan, nan, nan, nan, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, 00, 00, 00, 00, 00, nan]
+	norm2 := vec/(εᵢ⋅vec) // ebenso nan
+
+    norm3 := vec/(vec⌊εᵢ)
+    norm4 := vec/(vec⌋εᵢ)
+	test := norm∧E₀ E₀⁻¹
 	// extracts the pure euclidean part of the given multivector
     // E0 symbol verwenden
 	//TODO test
 	//E₀⌋(vec∧E₀)
 
+	E0 := E₀ 
+	E0inf := E₀⁻¹
 	// siehe clifford lib docu
-	(vec/(vec⋅εᵢ))∧E₀ E₀⁻¹
+	(-vec/(εᵢ⌋vec))∧E₀ E₀⁻¹
 }
 
 
@@ -118,7 +127,8 @@ fn transform(p, rot){
 // euclidean vec representing a point, cga rotor as arguments
 // TODO test
 fn transform_vec(vec, rot){
-	down(transform(up(vec), rot))
+	result := transform(up(vec), rot)
+	down(result)
 }
 
 // argument vec of euclidean type
@@ -128,10 +138,15 @@ fn getTranslationRotor(vec){
 	exp(-0.5 vec εᵢ)
 }
 
+// axis normalized, theta in [rad]
 fn getRotationRotor(theta, axis){
 	//e**(-0.5*theta*axis*I_base)
-	//TODO test
-	exp(-0.5 theta axis E₃)
+	//TODO test, warum sind da grade 4-Elemente in der sparsity?
+	test :=  axis E₃ // [00, 00, 00, 00, 00, 00, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 0, 0, 0, 0, 0, 00] sparsity von test ist falsch, grade==4 und vermutlich auch zu viele grade==2 Elemente
+	test1 := E₃ // ok und axis ist auch ok bezüglich sparsity
+	// [00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 1, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00]
+	// damit ist das fälschlicherweise kein bivector mehr!!!
+	exp(-0.5 theta <axis E₃>₂)
 }
 
 fn getV4(alpha, p5, d4){
@@ -184,15 +199,24 @@ fn main(){
 	d5 := 0.0997
 	d6 := 0.0996
 
-	// robots end-effector pose
+	// robots end-effector pose as ipns point
     :p6 := getPoint(1.0, 1.0, 0.0)
     //p6 := pos
 
-	R6 := getRotationRotor(0.0, ε₃) // dummy rotor
+	// robots end-effector orientation as euclidean direction
+    rot := ε₁
+
+	// FIXME
+	R6 := getRotationRotor(π/2, ε₂) // dummy rotor, mit theta==0 ist R6=0 und kein dummy rotor
     //R6 := rot
 
-    // end_factor_Zaxis
-    z6 :=  transform_vec(ε₃, R6)
+    // end_effector z-axis (end_factor_Zaxis)
+    // rotation of an euclidean axis == rotation of the normal vector of a plane through the origin
+    // == rotation of a plane through the origin
+    :z6 :=  transform_vec(ε₃, R6)
+
+    // end of input 
+
 
     // robots origin
     :p0 := ε₀ // equivalent to rp(0.0, 0.0, 0.0)
