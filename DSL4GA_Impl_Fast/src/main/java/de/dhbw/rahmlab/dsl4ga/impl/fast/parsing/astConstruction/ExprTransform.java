@@ -99,8 +99,8 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 				// new Division(left, right);
 				left.division(right);
 			case GeomAlgeParser.DOT_OPERATOR ->
-				// new InnerProduct(left, right);
-				left.innerProduct(right);
+				// new DotProduct(left, right);
+				left.dotProduct(right);
 			case GeomAlgeParser.INTERSECTION ->
 				// new Meet(left, right);
 				left.meet(right);
