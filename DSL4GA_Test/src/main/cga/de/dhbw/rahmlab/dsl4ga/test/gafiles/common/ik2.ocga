@@ -3,6 +3,8 @@
 // Example: UR5e robot placed at the origin of the coordinate system
 
 
+// generic cga specific functions
+
 // up-down projection
 
 // up-projection of a vector into a cga multivector, results in a round point
@@ -17,25 +19,23 @@ fn up2(vec) {
 // euclidean location of a round point
 fn down2(vec) {
     // normalized sphere in ipns respresentation
-	// TODO muss da noch ein weiterer Rechenschritt erfolgen?
 	//-vec/(εᵢ⌋vec)
 	norm := -vec/(εᵢ⌋vec)
-
-	norm1 := vec/(vec⋅εᵢ) // [00, nan, nan, nan, nan, nan, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, 00, 00, 00, 00, 00, nan]
-	norm2 := vec/(εᵢ⋅vec) // ebenso nan
-
-    norm3 := vec/(vec⌊εᵢ)
-    norm4 := vec/(vec⌋εᵢ)
-	test := norm∧E₀ E₀⁻¹
+	// norm1 := vec/(vec⋅εᵢ) // dot product scheint kaputt, wird nan
+	// [00, nan, nan, nan, nan, nan, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, 00, 00, 00, 00, 00, nan]
+	//norm3 := vec/(vec⌊εᵢ)
+    //norm4 := vec/(vec⌋εᵢ)
+	
 	// extracts the pure euclidean part of the given multivector
     // E0 symbol verwenden
-	//TODO test
 	//E₀⌋(vec∧E₀)
 
-	E0 := E₀ 
-	E0inf := E₀⁻¹
-	// siehe clifford lib docu
-	(-vec/(εᵢ⌋vec))∧E₀ E₀⁻¹
+	//E0 := E₀ 
+	//E0inv := E₀⁻¹
+
+	//test5 := (-vec/(εᵢ⌋vec))∧E₀
+	//test6 := test5 E₀⁻¹
+	((-vec/(εᵢ⌋vec))∧E₀) E₀⁻¹
 }
 
 
@@ -51,7 +51,7 @@ fn getPoint(x,y,z){
 
 // creates spheres
 
-// ipns sphere from midpoint and radius
+// ipns sphere from ipns midpoint and radius
 // m round point
 fn getSphere(m,r){
 	// up(center)-(0.5*einf*radius**2)
@@ -66,6 +66,7 @@ fn getPlane(vec, d){
 	vec + d εᵢ
 }
 
+// opns plane from ipns point
 fn getPlaneFromPoints(p1, p2, p3){
 	// up(a)^up(b)^up(c)^einf
 	p1∧p2∧p3∧εᵢ
@@ -73,13 +74,13 @@ fn getPlaneFromPoints(p1, p2, p3){
 
 // extract euclidean coordinates
 
-// three euclidean coordinates from a round point
+// three euclidean coordinates from a round point (normalized?)
 // TODO test identisch zu down?
 fn getVec(rp){
-	(ε₀∧εᵢ)⋅(rp∧(ε₀∧εᵢ))
+	dot((ε₀∧εᵢ),(rp∧(ε₀∧εᵢ)))
 }
 
-// points from an opns point pair
+// get the two euclidean points from an opns point pair
 fn getPoints(pp){
     // def getEuclideanPointsFromBivector(bivec):
 	//        F = bivec/math.sqrt(abs(bivec**2))
@@ -91,7 +92,14 @@ fn getPoints(pp){
 	//ppnorm := sqrt(squaredNorm(pp)
     //(pp+ppnorm)/(-εᵢ⋅pp), (pp-ppnorm)/(-εᵢ⋅pp)
 	// workaround <>  mir ist unklar, warum das nötig sein könnte
-    (pp-sqrt(<pp>₀²))/(-εᵢ⌋pp), (pp+sqrt(<pp>₀²))/(-εᵢ⌋pp)
+	// FIXME da kommen Kugeln heraus statt Punkte, scheint mir falsch zu sein
+    //(pp-sqrt(abs(<pp²>₀)))/dot(-εᵢ,pp), (pp+sqrt(abs(<pp²>₀)))/dot(-εᵢ,pp)
+	F := pp/sqrt(abs(<pp²>₀))
+	P := 0.5 (1+F)
+	P_inv := 0.5 (1-F) 
+	p1 := -P_inv dot(pp, εᵢ) P
+	p2 := P dot(pp, εᵢ) P_inv
+	p1, p2
 }
 
 
@@ -102,19 +110,26 @@ fn getPoints(pp){
 
 // get e1 component from the given multivector vec
 fn x(vec){
-	(down(vec)∧ε₂∧ε₃)E₃
+	result := (down2(vec)∧ε₂∧ε₃)E₃
 	// TODO test 
 	//TODO da muss ich jetzt noch den korrespondierenden e1 vec draus machen 
     // mit E23 multiplizieren oder so ähnlich, vielleicht E123, euclidischer Pseusoscalar
+	<result>₀
 }
 fn y(vec){
-	(down(vec)∧ε₁∧ε₃)E₃
+	result := (down2(vec)∧ε₁∧ε₃)E₃
 	// TODO test 
+	<result>₀
 }
 fn z(vec){
-	(down(vec)∧ε₁∧ε₂)E₃
+	// vec = [00, 1.0996, 1, 2.21156e-17, 0.60456, 1.60456, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 0, 0, 0, -3.08149e-33, -3.08149e-33, 2.08167e-17, 0, 0, 0, 4.62223e-33, 00, 00, 00, 00, 00, 0]
+	test := down2(vec) // [00, 1.0996, 1, 2.21156e-17, 0, 0, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 00, 00, 00, 00, 00, 0]
+	test1 := test∧ε₁∧ε₂
+	result := (down2(vec)∧ε₁∧ε₂)E₃
 	// TODO test 
+	<result>₀
 }
+
 
 // transformations
 
@@ -124,63 +139,101 @@ fn transform(p, rot){
 	rot p rot˜
 }
 
-// euclidean vec representing a point, cga rotor as arguments
+// euclidean vec representing a point, cga rotor as argument
+// returns the transformed vectur as an euclidean point
 // TODO test
 fn transform_vec(vec, rot){
-	result := transform(up(vec), rot)
-	down(result)
+	down2(transform(up(vec), rot))
 }
 
 // argument vec of euclidean type
 fn getTranslationRotor(vec){
 	// e**(-0.5*vec*einf)
 	//TODO test
-	exp(-0.5 vec εᵢ)
+	// vec [00, 0, 0, 0.1625, 0, 0, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00]
+	// -0.5 vec εᵢ // [0, 00, 00, 00, 00, 00, 0, 0, 0, 0, 0, 0, 0, -0.08125, -0.08125, 0, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00]
+	// scalar != 0 erscheint in der sparsity, da die sparsity von ei alle Vektoren auch e1, e2, e3, e4, e0 enthält
+	exp(-0.5 <vec εᵢ>₂)
 }
 
 // axis normalized, theta in [rad]
 fn getRotationRotor(theta, axis){
 	//e**(-0.5*theta*axis*I_base)
-	//TODO test, warum sind da grade 4-Elemente in der sparsity?
-	test :=  axis E₃ // [00, 00, 00, 00, 00, 00, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 0, 0, 0, 0, 0, 00] sparsity von test ist falsch, grade==4 und vermutlich auch zu viele grade==2 Elemente
-	test1 := E₃ // ok und axis ist auch ok bezüglich sparsity
+	//kein bivector, da sind grade 4-Elemente in der sparsity
+	test :=  axis E₃ // [00,00,00,00,00,00, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 0, 0, 0, 0, 0, 00] 
+	// E₃ 
 	// [00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 1, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00]
-	// damit ist das fälschlicherweise kein bivector mehr!!!
+    // und auch axis hat die richtige sparsity
 	exp(-0.5 theta <axis E₃>₂)
 }
 
+
+// IK specific functions
+
 fn getV4(alpha, p5, d4){
-	pl_vert_45_vec_1a := sin(alpha+π/2)ε₂+cos(alpha+π/2)ε₁
-	pl_vert_45_vec_1 := pl_vert_45_vec_1a sign(pl_vert_45_vec_1a⋅p5)
+    // p5 = [00, 1.0996, 1, 2.21156e-17, 0.60456, 1.60456, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 0, 0, 0, -3.08149e-33, -3.08149e-33, 2.08167e-17, 0, 0, 0, 4.62223e-33, 00, 00, 00, 00, 00, 0] grade3-5 sollte strukturell 00 sein
+	test0 := alpha+π/2 // [3.00789, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00]
+	test1 := sin(alpha+π/2) // [0.1333, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00]
+	test2 := sin(alpha+π/2)ε₂ // [00, 0, 0.1333, 0, 0, 0, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00]
+	test1a := cos(alpha+π/2) // [-0.991076, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], 
+	test2a := cos(alpha+π/2)ε₁
+    pl_vert_45_vec_1a := sin(alpha+π/2)ε₂+cos(alpha+π/2)ε₁
+    // [00, -0.991076, 0.1333, 0, 0, 0, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00]
+	//TODO überprüfen ob die sparsity stimmt
+	test3 := pl_vert_45_vec_1a⌋p5
+	// [-0.956487, 00, 00, 00, 00, 00, 0, 0, 0, 0, 0, 0, 0, 3.05399e-33, 3.05399e-33, -2.06309e-17, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 0, 0, 0, 0, 0, 00]
+	test4 := pl_vert_45_vec_1a⌊p5
+    // [-0.956487, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00]
+    test5 := pl_vert_45_vec_1a⋅p5 // [00, 00, 00, 00, 00, 00, 0, 0, 0, 0, 0, 0, 0, 3.05399e-33, 3.05399e-33, -2.06309e-17, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 0, 0, 0, 0, 0, 00] 0-grade excluded
+	test6 := dot(pl_vert_45_vec_1a, p5) // [-0.956487, 00, 00, 00, 00, 00, 0, 0, 0, 0, 0, 0, 0, 3.05399e-33, 3.05399e-33, -2.06309e-17, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 0, 0, 0, 0, 0, 00]
+	pl_vert_45_vec_1 := pl_vert_45_vec_1a sign(<pl_vert_45_vec_1a⌊p5>₀)
 	getPlane(pl_vert_45_vec_1, d4) // ipns plane
 }
 
+// get two possible solutions for P4
 fn getP4(alpha, p5, p6, d4, d5){
 	
 	// or down(p6)-down(p5)
-	v56 := normalize(getVec(p6)-getVec(p5))
+	// normalisierter Vec von P6 nach P5, also z6, letzte joint axis
+	// z5?
+	:v56 := normalize(getVec(p6)-getVec(p5))
 	
 	// ipns sphere with center p5 and radius d5
-	s5 := getSphere(p5, d5) // S5 := p5 - 0.5d5²εᵢ
+	:s5 := getSphere(p5, d5) // S5 := p5 - 0.5d5²εᵢ
 
     // plane with normal vector from p5 to p6 through p5
 
 	//Pl5 := v56 + (p5⋅v56)εᵢ
-	pl5 := getPlane(v56, p5⋅v56)
+
+	// Abstand der Ebene durch p5 mit Normalenvector v56 zum Ursprung
+
+	// p5 [00, 1.0996, 1, 2.21156e-17, 0.60456, 1.60456, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 0, 0, 0, -3.08149e-33, -3.08149e-33, 2.08167e-17, 0, 0, 0, 4.62223e-33, 00, 00, 00, 00, 00, 0]
+	// v56 [00, -1, 0, -2.22045e-16, 0, 0, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 00, 00, 00, 00, 00, 00] 
+	delta := p5⌋v56 // [-1.0996, 00, 00, 00, 00, 00, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00]
+	delta1 := p5⌊v56 // [-1.0996, 00, 00, 00, 00, 00, 0, 0, -6.84228e-49, -6.84228e-49, 0, 0, 0, 3.08149e-33, 3.08149e-33, -2.08167e-17, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 0, 0, 0, 0, 0, 00]
+	delta2 := p5⋅v56
+	detla3 := dot(p5, v56)
+
+	:pl5 := getPlane(v56, delta)
     //alternative fomulation: plane between p5 and p5 tranlated into p5 (half distance subtraction)
     //Pl5 := p6-p5-0.5.... TODO
 	
 	// point pair
     pp := (s5∧pl5∧getV4(alpha, p5, d4))* // TODO oder undual?
-	getPoints(pp)
+	// [5.47245e-49, 00, 00, 00, 00, 00, -2.95985e-17, 0.146577, -7.37024e-17, -4.41039e-17, 0.956487, -2.98311e-16, -7.82477e-17, -0.904437, -1.03774, 2.49662e-16, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00]
+	//FIXME unnötigerweise muss ich erst eine Zuordnung durchführen...
+	p41, p42 := getPoints(pp)
+	p41, p42
 }
 
-// get round point p2
+// get both solutions for round point p2
 fn getP2(p0, p1, p3, s1, a3){
 	pl := getPlaneFromPoints(p0, p1, p3) // opns plane
 	s3 := getSphere(p3, -a3) // ipns sphere -self.dh_params[2,0]
 	pp := (s3^s1^pl*)* // undual?
-	getPoints(pp) 
+	//WORKAROUND 
+	p21, p22 := getPoints(pp) 
+	p21, p22
 }
 
 
@@ -206,19 +259,20 @@ fn main(){
 	// robots end-effector orientation as euclidean direction
     rot := ε₁
 
-	// FIXME
+	// pi/2 um die y-Achse drehen
 	R6 := getRotationRotor(π/2, ε₂) // dummy rotor, mit theta==0 ist R6=0 und kein dummy rotor
     //R6 := rot
 
     // end_effector z-axis (end_factor_Zaxis)
     // rotation of an euclidean axis == rotation of the normal vector of a plane through the origin
     // == rotation of a plane through the origin
-    :z6 :=  transform_vec(ε₃, R6)
+	// normal vector of the plane == x-axis
+    z6 :=  transform_vec(ε₃, R6)
 
     // end of input 
 
 
-    // robots origin
+    // robots origin as ipns round point
     :p0 := ε₀ // equivalent to rp(0.0, 0.0, 0.0)
 
 
@@ -230,7 +284,7 @@ fn main(){
 	//T10 := 1 + 0.5d1ε₃εᵢ //FIXME e3 und einf tauschen?
     //p1 := T10 p0 T10˜
 	T1 := getTranslationRotor(d1 ε₃)
-	:p1 := transform_vec(p0, T1)
+	:p1 := transform(p0, T1)
 
 
 	// p5 
@@ -249,20 +303,22 @@ fn main(){
     // wie bekomme ich die components aus p5 raus um atan2 verwenden zu können
     // oder kann ich atan(down(p5)) verwenden, dann muss ich aber atan() implementieren
 	// psi = atan(p5.value[2]/p5.value[1])
-	psi := atan2(z(p5), y(p5))
-	// Line 227: Variable "y" has not been declared before.
-	// Es gibt eine noch zu behebende Mehrdeutigkeit zwischen Funktionsaufrufen und Geometrischen Produkt unter gewissen Umständen.
+	// p5 [00, 1.0996, 1, 2.21156e-17, 0.60456, 1.60456, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 0, 0, 0, -3.08149e-33, -3.08149e-33, 2.08167e-17, 0, 0, 0, 4.62223e-33, 00, 00, 00, 00, 00, 0]
+    y := z(p5) // includes grade 2,4 und grade 0 ist fast 0
+    x := y(p5) // includes grade 2,4 und grade 0 ist 1, sollte das nicht 1,0996 sein
+    psi := atan2(y, x)
+
+	// Es gibt eine noch zu behebende Mehrdeutigkeit zwischen Funktionsaufrufen und geometrischem Produkt unter gewissen Umständen.
 	// Workaround mit Klammern: ((y(p5))²+(z(p5))²)
     theta := asin(d4/sqrt((y(p5))²+(z(p5))²))
-
-
+    
 	// Solution 1 for p4
 	alpha_1 := psi - theta
 	:p4_1, p4_2 := getP4(alpha_1, p5, p6, d4, d5)
 
     // Solution 2 for p4
 	alpha_2 := psi + theta
-	p4_3, p4_4 := getP4(psi + theta, p5, p6, d4, d5)
+	p4_3, p4_4 := getP4(alpha_2, p5, p6, d4, d5)
 
 	
 	// p3
@@ -270,7 +326,10 @@ fn main(){
     // p3 as translation of p4 along v4 by an amount d4
     T43_1 := getTranslationRotor(getV4(alpha_1, p5, d4)) //1-0.5d4εᵢv4
 	:p3_1 := transform(p4_1, T43_1) //T34 p41 T34˜
+	// p3_1 ist fälschlicherweise eine Kugel statt ein Punkt
+	// [00, 2.09068, 7.04215, 1.02171e-14, 7.41828, 8.41828, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 0, -4.78784e-16, -4.78784e-16, -2.31199e-30, -2.31199e-30, -4.44089e-16, -7.69787e-30, -7.69787e-30, 0, -1.47999e-30, 00, 00, 00, 00, 00, 1.31444e-32]
 	p3_2 := transform(p4_2, T43_1) //T34 p42 T34˜
+	// [00, 2.09068, 7.04215, 1.02171e-14, 7.41828, 8.41828, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 0, -4.78784e-16, -4.78784e-16, -2.31199e-30, -2.31199e-30, -4.44089e-16, -7.69787e-30, -7.69787e-30, 0, -1.47999e-30, 00, 00, 00, 00, 00, 1.31444e-32]
 	T43_2 := getTranslationRotor(getV4(alpha_2, p5, d4))
 	p3_3 := transform(p4_3, T43_2) //T34 p43 T34˜
 	p3_4 := transform(p4_4, T43_2) //T34 p44 T34˜
@@ -280,10 +339,10 @@ fn main(){
 
 	s1 := getSphere(p1,-a2) // ipns sphere -self.dh_params[1,0]
 
-	:p2_1, p2_2 := getP2(p0, p1, p3_1, s1)
-	p2_3, p2_4 := getP2(p0, p1, p3_2, s1)
-	p2_5, p2_6 := getP2(p0, p1, p3_3, s1)
-	p2_7, p2_8 := getP2(p0, p1, p3_4, s1)
+	:p2_1, p2_2 := getP2(p0, p1, p3_1, s1, a3)
+	p2_3, p2_4 := getP2(p0, p1, p3_2, s1, a3) // hier stürzt das Programm ab
+	p2_5, p2_6 := getP2(p0, p1, p3_3, s1, a3)
+	p2_7, p2_8 := getP2(p0, p1, p3_4, s1, a3)
 
 	p1, p2_1, p3_1, p4_1, p5, p6, p1, p2_2, p3_1, p4_1, p5, p6, p1, p2_3, p3_2, p4_2, p5, p6, p1, p2_4, p3_2, p4_2, p5, p6, p1, p2_5, p3_3, p4_3, p5, p6, p1, p2_6, p3_3, p4_3, p5, p6, p1, p2_7, p3_4, p4_4, p5, p6, p1, p2_8, p3_4, p4_4, p5, p6
 }

@@ -219,7 +219,8 @@ There exist three types of involution operations: Space inversion, reversion and
 | sqrt()      | squared root of a general rotor |
 | squaredNorm()      | squared norm of a mulitvector | 
 | scp()       | scalar product | 
-| dot()       | dot product | 
+| dot()       | dot product, 0-grade indcluded - different to inner product | 
+| ip()        | inner product, 0-grade is excluded different to the dot-product | 
 | negate14()  | negate the signs of the vector- and 4-vector parts of an multivector. Usable to implement general-inverse. |
 
 ### up/down projection into euclidean space

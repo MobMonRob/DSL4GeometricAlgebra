@@ -387,6 +387,12 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 						MultivectorSymbolic result = switch (functionName) {
 							case "atan2" ->
 								arg0.scalarAtan2(arg1);
+							case "dot" ->
+								arg0.dotProduct(arg1);
+							case "ip" ->
+								arg0.innerProduct(arg1);
+							case "scp" ->
+								arg0.scalarProduct(arg1);
 							default ->
 								throw new ValidationException(ctx.start.getLine(), String.format("Function \"%s\" to call not found.", functionName));
 						};
