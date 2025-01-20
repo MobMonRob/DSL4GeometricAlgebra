@@ -45,6 +45,12 @@ public class BuiltinRegistry {
 		this.installBuiltin(SinFactory.getInstance());
 		this.installBuiltin(TanFactory.getInstance());
 		this.installBuiltin(SignFactory.getInstance());
+		
+		// new products
+		this.installBuiltin(DotFactory.getInstance());
+		this.installBuiltin(IpFactory.getInstance());
+		this.installBuiltin(ScpFactory.getInstance());
+		
 	}
 
 	private void installBuiltin(NodeFactory<? extends BuiltinFunctionBody> factory) {
