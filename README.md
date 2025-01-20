@@ -130,7 +130,7 @@ fn test(a) {
 }
 
 fn main(a, b) {
-	_, c := test(b)
+	_, c = test(b)
 	a, b, c
 }
 ```
@@ -142,7 +142,7 @@ After leaving a function, the visualizations of this functions will be cleaned u
 In the following example, the variable b will be visualized:
 ```
 fn main(a) {
-	:b := a
+	:b = a
 }
 ```
 

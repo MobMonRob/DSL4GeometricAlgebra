@@ -1,21 +1,21 @@
 fn f2(a, b) {
-	:c := a
-	:d := b
+	:c = a
+	:d = b
 	c, d
 }
 
 
 fn f1(a, b) {
-	g := f2(a, b)
-	:c := a
-	:d := b
+	g = f2(a, b)
+	:c = a
+	:d = b
 	c, d
 }
 
 
 fn main(a, b) {
-	:c := a
-	g := f1(a, b)
-	:d := b
+	:c = a
+	g = f1(a, b)
+	:d = b
 	c, d
 }

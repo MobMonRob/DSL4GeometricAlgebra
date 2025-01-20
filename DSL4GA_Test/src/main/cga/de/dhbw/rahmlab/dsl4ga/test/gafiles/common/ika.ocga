@@ -22,26 +22,26 @@ fn sp(m,r){
 fn main() {
 
 	// end effector position as euclidean vector
-	p := ev(0.9,0.4,0.1)
+	p = ev(0.9,0.4,0.1)
 	// end effector orientation
-	ae := ev(0.0,0.0,1.0)
+	ae = ev(0.0,0.0,1.0)
 
 	// dh parameters UR5e
-	a2 := -0.425
-	a3 := -0.3922
-	d1 := 0.1625
-	d4 := 0.1333
-	d5 := 0.0997
-	d6 := 0.0996
+	a2 = -0.425
+	a3 = -0.3922
+	d1 = 0.1625
+	d4 = 0.1333
+	d5 = 0.0997
+	d6 = 0.0996
 
-	kud := 1.0 // elbow up, -1 for elbow down, eq. 40
-	klr := 1.0 // shoulder right, -1 for shoulder left, eq. 41
-	kfn := 1.0 // wrist is not flipped, -1 for wrist is flipped, eq. 42
+	kud = 1.0 // elbow up, -1 for elbow down, eq. 40
+	klr = 1.0 // shoulder right, -1 for shoulder left, eq. 41
+	kfn = 1.0 // wrist is not flipped, -1 for wrist is flipped, eq. 42
 
 	// ipns round points: position of the end-effector and joint 5, eq. 39
-	:Pe :=  p+0.5p²εᵢ+ε₀ // rp(p)
-	t := p-(d6 ae)
-	:P5 := rp(t) // t+0.5t²εᵢ+ε₀
+	:Pe =  p+0.5p²εᵢ+ε₀ // rp(p)
+	t = p-(d6 ae)
+	:P5 = rp(t) // t+0.5t²εᵢ+ε₀
 
 
 	// finding the verticalplane PIc through the joint 1,2,3,4
@@ -49,106 +49,106 @@ fn main() {
 	// by finding the point Pc with an offset d4 from P5, horizon technique to find the cirld C5k:
 
 	// ipns sphere around P5
-	:Sc := sp(P5, d4) // eq. 43, P5-0.5d4²εᵢ
+	:Sc = sp(P5, d4) // eq. 43, P5-0.5d4²εᵢ
 
 	// ipns sphere around the origin, eq. 43
-	:K0 := ε₀+(Sc⋅ε₀)εᵢ
+	:K0 = ε₀+(Sc⋅ε₀)εᵢ
 
 	// ipns circle - intersection of Sc and K0, eq. 43
-	:C5k := Sc^K0
+	:C5k = Sc^K0
 
 
 	// The point pair Q with two solutaitons for PC:
 
 	// horizontal opns plane through P5, eq. 44
-	Pl := P5∧ε₁^ε₂^εᵢ
+	Pl = P5∧ε₁^ε₂^εᵢ
 	// ipns point pair - intersection of circle C5k and the above plane Pl, eq. 44
-	:Qc := (C5k⌋Pl)*
+	:Qc = (C5k⌋Pl)*
     // opns point pair
-	Qc2 := Qc⁻*
+	Qc2 = Qc⁻*
     //TODO use klr to select a point
-    :Pc := (Qc2+sqrt(Qc2²))/(-εᵢ⌋Qc2) // eq. 45
+    :Pc = (Qc2+sqrt(Qc2²))/(-εᵢ⌋Qc2) // eq. 45
 
 	// opns plane (grade 4) - through joints 1, 2, 3 and 4, eq. 46
-    PIc := ε₀∧ε₃∧Pc∧εᵢ 
-    :PIc2 := PIc*
+    PIc = ε₀∧ε₃∧Pc∧εᵢ 
+    :PIc2 = PIc*
 
 
 	// finding P4
 
 	// ipns plane - parallel to PIc that contains P4 and P5
-	:PIc_parallel := PIc2 + (P5⌊PIc2)εᵢ // eq. 47
+	:PIc_parallel = PIc2 + (P5⌊PIc2)εᵢ // eq. 47
 
 
 	// calculate the line through P4 and P5 from the following object:
 
 	// ipns plane - grade 1, einf, e1,e2,e3 but no e0
     // e3 + einf
-    :PI56_perp := ((P5∧Pe)*∧εᵢ)* // eq. 48 l.1
+    :PI56_perp = ((P5∧Pe)*∧εᵢ)* // eq. 48 l.1
 
     // argument von abs() ist -2.4800399999970758E-5*ei und damit kein skalar
-    //n56_perp  := -((PI56_perp*⋅ε₀)⋅εᵢ)/abs((PI56_perp*⋅ε₀)⋅εᵢ) // eq. 48, l. 2
+    //n56_perp  = -((PI56_perp*⋅ε₀)⋅εᵢ)/abs((PI56_perp*⋅ε₀)⋅εᵢ) // eq. 48, l. 2
     // ca. einf
     //FIXME das scheint mir falsch zu sein, PI56_perp* dann wirds null und normalize schlägt fehl
-    n56_perp  := -normalize(PI56_perp)⌋ε₀⌋εᵢ // eq. 48, l. 2
-    n56_perp2  := -normalize(PI56_perp∧εᵢ∧ε₀) // eq. 48, l. 2 // 0.9701425001453321*eo^e1^ei + 0.24253562503633302*eo^e3^ei
-    n56_perp3  := -normalize(PI56_perp∧ε₀∧εᵢ)
-	//n56_perp3  := -normalize(PI56_perp*∧εᵢ∧ε₀) // eq. 48, l. 2 normalize(null)
+    n56_perp  = -normalize(PI56_perp)⌋ε₀⌋εᵢ // eq. 48, l. 2
+    n56_perp2  = -normalize(PI56_perp∧εᵢ∧ε₀) // eq. 48, l. 2 // 0.9701425001453321*eo^e1^ei + 0.24253562503633302*eo^e3^ei
+    n56_perp3  = -normalize(PI56_perp∧ε₀∧εᵢ)
+	//n56_perp3  = -normalize(PI56_perp*∧εᵢ∧ε₀) // eq. 48, l. 2 normalize(null)
     // damit ca. e0
-    n56_perp4  := -normalize((PI56_perp⌋εᵢ)⌋ε₀) // eq. 48, l. 2
-    n56_perp5  := -normalize(PI56_perp ε₀ εᵢ)
-    n56_perp6  := -normalize(PI56_perp* ε₀ εᵢ)
-    //n56_perp2  := -normalize((PI56_perp⋅ε₀)⋅εᵢ) // equal with left contaction version
+    n56_perp4  = -normalize((PI56_perp⌋εᵢ)⌋ε₀) // eq. 48, l. 2
+    n56_perp5  = -normalize(PI56_perp ε₀ εᵢ)
+    n56_perp6  = -normalize(PI56_perp* ε₀ εᵢ)
+    //n56_perp2  = -normalize((PI56_perp⋅ε₀)⋅εᵢ) // equal with left contaction version
     // java.lang.ArithmeticException: null multivector, normalize(auf null-vec nicht erlaubt)
-    //n56_perp1  := -normalize((PI56_perp⌊ε₀)⌊εᵢ)
+    //n56_perp1  = -normalize((PI56_perp⌊ε₀)⌊εᵢ)
 
 	// ipns plane - grade 1 - containing P4, P5 and which is perp to the norm of PIc
     // FIXME das ist jetzt 0
-    PIc_perp1 := P5∧n56_perp∧εᵢ // eq. 48 l.4
-	:PIc_perp := (P5∧n56_perp∧εᵢ)* // eq. 48 l.4
+    PIc_perp1 = P5∧n56_perp∧εᵢ // eq. 48 l.4
+	:PIc_perp = (P5∧n56_perp∧εᵢ)* // eq. 48 l.4
 
 	// ipns line
     // FIXME is 0
-	L45 := PIc_parallel∧PIc_perp // eq. 48 l4
+	L45 = PIc_parallel∧PIc_perp // eq. 48 l4
 
 
 	// calculation of P4:
 
 	// ipns sphere, around P5 with radius d5
-	S5  := sp(P5, d5) // P5-(0.5d5²εᵢ), eq. 49 l.1
+	S5  = sp(P5, d5) // P5-(0.5d5²εᵢ), eq. 49 l.1
 	// opns point pair as intersection of line L45 with spere S5, eq. 49, l.2
-	Q4  := (L45*⋅S5*)
+	Q4  = (L45*⋅S5*)
 	// selection of a point from the point pair
 	//TODO use kfn to define which of the two points to use
-	P4 := (Q4-sqrt(<Q4>₀²))/(-εᵢ⌋Q4)
+	P4 = (Q4-sqrt(<Q4>₀²))/(-εᵢ⌋Q4)
 
 
 	// finding point P3:
 
 	// ipns sphere, eq. 50, l. 1
-	S4  := sp(P4, d4) // P4 + (0.5d4²εᵢ)
+	S4  = sp(P4, d4) // P4 + (0.5d4²εᵢ)
 	//fixme dual
-	:L34 := (P4^PIc*^εᵢ)* // eq. 50, l. 2
-	Q3  := (S4*⋅L34*)* // eq. 50, l. 3
-	:P3 := (Q3-sqrt(<Q3>₀²))/(-εᵢ⌋Q3) // eq. 50, l. 4
+	:L34 = (P4^PIc*^εᵢ)* // eq. 50, l. 2
+	Q3  = (S4*⋅L34*)* // eq. 50, l. 3
+	:P3 = (Q3-sqrt(<Q3>₀²))/(-εᵢ⌋Q3) // eq. 50, l. 4
 
 
 	// ipns round point with distance d1 in z direction above the origin
-	:P1 := rp2(0, 0, d1) // eq. 51
+	:P1 = rp2(0, 0, d1) // eq. 51
 
 
 	// finding P2:
 
 	// ipns sphere 
-	S1 := sp(P1, a2) // P1-0.5a2²εᵢ eq. 52 l.1
+	S1 = sp(P1, a2) // P1-0.5a2²εᵢ eq. 52 l.1
 	// ipns sphere
-	S3 := sp(P3, a3) // P3+0.5a3²εᵢ eq. 52 l.2
+	S3 = sp(P3, a3) // P3+0.5a3²εᵢ eq. 52 l.2
 	// ipns circle
-	C2 := S1^S3 // eq. 52, l.3
+	C2 = S1^S3 // eq. 52, l.3
 	// point pair
-	Q2 := (C2*⋅PIc*)* // eq. 52, l4
+	Q2 = (C2*⋅PIc*)* // eq. 52, l4
 	// TODO select a point by kud
-	P2 := (Q2-sqrt(<Q2>₀²))/(-εᵢ⌋Q2) 
+	P2 = (Q2-sqrt(<Q2>₀²))/(-εᵢ⌋Q2) 
 
     P5
 }

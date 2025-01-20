@@ -22,26 +22,26 @@ fn sp(m,r){
 fn main() {
 
 	// end effector position as euclidean vector
-	p := ev(0.5,0.0,0.0)
+	p = ev(0.5,0.0,0.0)
 	// end effector orientation
-	ae := ev(0.0,0.0,0.05)
+	ae = ev(0.0,0.0,0.05)
 
 	// dh parameters UR5e
-	a2 := -0.425
-	a3 := -0.3922
-	d1 := 0.1625
-	d4 := 0.1333
-	d5 := 0.0997
-	d6 := 0.0996
+	a2 = -0.425
+	a3 = -0.3922
+	d1 = 0.1625
+	d4 = 0.1333
+	d5 = 0.0997
+	d6 = 0.0996
 
-	kud := 1.0 // elbow up, -1 for elbow down, eq. 40
-	klr := 1.0 // shoulder right, -1 for shoulder left, eq. 41
-	kfn := 1.0 // wrist is not flipped, -1 for wrist is flipped, eq. 42
+	kud = 1.0 // elbow up, -1 for elbow down, eq. 40
+	klr = 1.0 // shoulder right, -1 for shoulder left, eq. 41
+	kfn = 1.0 // wrist is not flipped, -1 for wrist is flipped, eq. 42
 
 	// ipns round points: position of the end-effector and joint 5, eq. 39
-	:X0 :=  p+0.5p²εᵢ+ε₀ // rp(p)
-	t := p-(d6 ae)
-	:X5 := rp(t) // t+0.5t²εᵢ+ε₀
+	:X0 =  p+0.5p²εᵢ+ε₀ // rp(p)
+	t = p-(d6 ae)
+	:X5 = rp(t) // t+0.5t²εᵢ+ε₀
 
 
 	// finding the verticalplane PIc through the joint 1,2,3,4
@@ -49,85 +49,85 @@ fn main() {
 	// by finding the point Pc with an offset d4 from P5, horizon technique to find the cirld C5k:
 
 	// ipns sphere around P5
-	:Sc := sp(P5, d4) // eq. 43, P5-0.5d4²εᵢ
+	:Sc = sp(P5, d4) // eq. 43, P5-0.5d4²εᵢ
 
 	// ipns sphere around the origin, eq. 43
-	:K0 := ε₀-(Sc*⋅ε₀)εᵢ
+	:K0 = ε₀-(Sc*⋅ε₀)εᵢ
 
 	// ipns circle - intersection of Sc and K0, eq. 43
-	:C5k := Sc⋅K0
+	:C5k = Sc⋅K0
 
 
 	// The point pair Q with two solutaitons for PC:
 
 	// ipns point pair - intersection of circle C5k and the above plane Pl, eq. 44
-	Qc := (X5∧ε₁^ε₂^εᵢ)⋅C5k*
+	Qc = (X5∧ε₁^ε₂^εᵢ)⋅C5k*
 
     // ipns point Pc - with an offset d4 from P5
 	//TODO use klr
-    :Xc := (Qc+sqrt(abs(Qc2⋅Qc2)))/(-εᵢ⌋Qc) // eq. 45
+    :Xc = (Qc+sqrt(abs(Qc2⋅Qc2)))/(-εᵢ⌋Qc) // eq. 45
 
-    //dummy1 := print(Xc)
+    //dummy1 = print(Xc)
 
 	// opns plane (grade 4) - through joints 1, 2, 3 and 4, eq. 46
-    Pc := ε₀^ε₃^Xc^εᵢ 
-    dummy := print(PIc)
+    Pc = ε₀^ε₃^Xc^εᵢ 
+    dummy = print(PIc)
 
 	// finding P4
 
 	// ipns plane - parallel to PIc that contains P4 and P5
-	:Pc_parallel := Pc* + (X5⌊Pc*)εᵢ // eq. 47
+	:Pc_parallel = Pc* + (X5⌊Pc*)εᵢ // eq. 47
 
 
 	// calculate the line through P4 and P5 from the following object:
 
 	// plane
-	P56_perp := ((X5^Xe)*^εᵢ)* // eq. 48 l.1
+	P56_perp = ((X5^Xe)*^εᵢ)* // eq. 48 l.1
 
-	n56_perp  := -((PI56_perp⋅ε₀)⋅εᵢ)/abs((PI56_perp⋅ε₀)⋅εᵢ) // eq. 48, l. 2
+	n56_perp  = -((PI56_perp⋅ε₀)⋅εᵢ)/abs((PI56_perp⋅ε₀)⋅εᵢ) // eq. 48, l. 2
 	// plane containing P4, P5 and which is orthogonal to the norm of PIc
-	Pc_perp := (X5^n56_perp^εᵢ) // eq. 48 l4
+	Pc_perp = (X5^n56_perp^εᵢ) // eq. 48 l4
 	// ipns line
-	:L45 := Pc_parallel⋅PIc_perp // eq. 48 l4
+	:L45 = Pc_parallel⋅PIc_perp // eq. 48 l4
 
 
 	// calculation of P4:
 
 	// ipns sphere, around P5 with radius d5
-	S5  := sp(P5, d5) // P5-(0.5d5²εᵢ), eq. 49 l.1
+	S5  = sp(P5, d5) // P5-(0.5d5²εᵢ), eq. 49 l.1
 	// opns point pair as intersection of line L45 with spere S5, eq. 49, l.2
-	Q4  := (L45*⋅S5*)
+	Q4  = (L45*⋅S5*)
 	// selection of a point from the point pair
 	//TODO use kfn to define which of the two points to use
-	X4 := (Q4-sqrt(abs(Q4⋅Q4)))/(-εᵢ⌋Q4)
+	X4 = (Q4-sqrt(abs(Q4⋅Q4)))/(-εᵢ⌋Q4)
 
 
 	// finding point P3:
 
 	// ipns sphere, eq. 50, l. 1
-	S4  := sp(P4, d4) // P4 + (0.5d4²εᵢ)
+	S4  = sp(P4, d4) // P4 + (0.5d4²εᵢ)
 	//fixme dual
-	:L34 := (X4^Pc*^εᵢ)* // eq. 50, l. 2
-	Q3  := (S4*⋅L34*) // eq. 50, l. 3
-	:X3 := (Q3-sqrt(abs(Q3⋅Q3)))/(-εᵢ⌋Q3) // eq. 50, l. 4
+	:L34 = (X4^Pc*^εᵢ)* // eq. 50, l. 2
+	Q3  = (S4*⋅L34*) // eq. 50, l. 3
+	:X3 = (Q3-sqrt(abs(Q3⋅Q3)))/(-εᵢ⌋Q3) // eq. 50, l. 4
 
 
 	// ipns round point with distance d1 in z direction above the origin
-	:X1 := rp2(0, 0, d1) // eq. 51
+	:X1 = rp2(0, 0, d1) // eq. 51
 
 
 	// finding P2:
 
 	// ipns sphere 
-	S1 := sp(P1, a2) // P1-0.5a2²εᵢ eq. 52 l.1
+	S1 = sp(P1, a2) // P1-0.5a2²εᵢ eq. 52 l.1
 	// ipns sphere
-	S3 := sp(P3, a3) // P3+0.5a3²εᵢ eq. 52 l.2
+	S3 = sp(P3, a3) // P3+0.5a3²εᵢ eq. 52 l.2
 	// ipns circle
-	C2 := S1*^S3* // eq. 52, l.3
+	C2 = S1*^S3* // eq. 52, l.3
 	// point pair
-	Q2 := (C2⋅Pc)* // eq. 52, l4
+	Q2 = (C2⋅Pc)* // eq. 52, l4
 	// TODO select a point by kud
-	:X2 := (Q2-sqrt(abs(Q2⋅Q2)))/(-εᵢ⌋Q2) 
+	:X2 = (Q2-sqrt(abs(Q2⋅Q2)))/(-εᵢ⌋Q2) 
 
     X0, X1, X2, X3, X4, X5, Xe
 }

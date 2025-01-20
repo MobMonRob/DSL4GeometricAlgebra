@@ -1,25 +1,25 @@
 // round point from 3 euclidean coordinates
 fn rp(x,y,z){
-	p := xε₁+yε₂+zε₃
+	p = xε₁+yε₂+zε₃
     p + 0.5p²εᵢ+ε₀
 }
 
 fn main() {
-	a2 := -0.425
-	a3 := -0.3922
-	d1 := 0.1625
-	d4 := 0.1333
-	d5 := 0.0997
-	d6 := 0.0996
+	a2 = -0.425
+	a3 = -0.3922
+	d1 = 0.1625
+	d4 = 0.1333
+	d5 = 0.0997
+	d6 = 0.0996
 
-	:p6 := rp(-0.5, 0.0, 0.0)
+	:p6 = rp(-0.5, 0.0, 0.0)
 
     // robots origin
-    :p0 := ε₀ // equivalent to rp(0.0, 0.0, 0.0)
+    :p0 = ε₀ // equivalent to rp(0.0, 0.0, 0.0)
 
 	// p5 is the translation of p6 along the (minus) z-axis
 	// about a distance d6, which is the length of the last link
-	//T56 := 1 - 0.5d6ε₃εᵢ //FIX e3 und einf tauschen?
+	//T56 = 1 - 0.5d6ε₃εᵢ //FIX e3 und einf tauschen?
 	//p5 = T56 p6 T56˜
     p6
 }
