@@ -1,6 +1,21 @@
-fn main(a, b) {
+fn f2(a, b) {
 	:c := a
 	:d := b
-	e := 5
-	a, b
+	c, d
+}
+
+
+fn f1(a, b) {
+	g := f2(a, b)
+	:c := a
+	:d := b
+	c, d
+}
+
+
+fn main(a, b) {
+	:c := a
+	g := f1(a, b)
+	:d := b
+	c, d
 }

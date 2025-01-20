@@ -7,14 +7,11 @@ import de.orat.math.cga.api.CGAViewObject;
 import de.orat.math.cga.api.CGAViewer;
 import de.orat.math.gacalc.api.MultivectorNumeric;
 import de.orat.math.sparsematrix.SparseDoubleColumnVector;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 public class VisualizerService {
 
 	private final CGAViewer viewer;
-	private final List<CGAViewObject> viewObjects = new ArrayList<>();
 
 	private VisualizerService(CGAViewer viewer) {
 		this.viewer = viewer;
@@ -33,7 +30,7 @@ public class VisualizerService {
 		return INSTANCE;
 	}
 
-	public void add(MultivectorNumeric mv, String name) throws InterpreterInternalException {
+	public void add(MultivectorNumeric mv, String name, VisualizerFunctionContext vizContext) throws InterpreterInternalException {
 		var sparseDoubleMatrix = mv.elements();
 		var sparseDoubleColumnVector = new SparseDoubleColumnVector(sparseDoubleMatrix);
 		var doubleArray = sparseDoubleColumnVector.toArray();
@@ -43,17 +40,10 @@ public class VisualizerService {
 		CGAKVector mv2 = CGAKVector.specialize(cgaMultivector, true);
 		if (mv2 instanceof CGAKVector cgakVector) {
 			CGAViewObject cgaViewObject = this.viewer.addCGAObject(cgakVector, name);
-			this.viewObjects.add(cgaViewObject);
+			vizContext.addViewObject(cgaViewObject);
 		} else {
 			throw new InterpreterInternalException(
 				String.format("Variable \"%s\" is no k-vector!", cgaMultivector.toString(name)));
 		}
-	}
-
-	public void removeAll() {
-		for (CGAViewObject viewObject : this.viewObjects) {
-			viewObject.remove();
-		}
-		this.viewObjects.clear();
 	}
 }

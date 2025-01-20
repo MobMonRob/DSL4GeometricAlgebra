@@ -30,6 +30,7 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.visualization.nodes.stmt.Cle
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.visualization.nodes.stmt.CleanupVisualizerNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.visualization.nodes.stmt.VisualizeMultivector;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.visualization.nodes.stmt.VisualizeMultivectorNodeGen;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.visualization.runtime.VisualizerFunctionContext;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -40,7 +41,7 @@ import org.antlr.v4.runtime.Token;
 public class FuncTransform extends GeomAlgeParserBaseListener {
 
 	protected int scopeVisibleVariablesIndex = 0;
-	protected boolean hasViz = false;
+	protected VisualizerFunctionContext vizContext = null;
 	protected final GeomAlgeLangContext geomAlgeLangContext;
 	protected final List<NonReturningStatementBaseNode> stmts = new ArrayList<>();
 	protected final List<ExpressionBaseNode> retExprs = new ArrayList<>();
@@ -73,8 +74,8 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 		}
 
 		CleanupVisualizer cleanupViz = null;
-		if (transform.hasViz) {
-			cleanupViz = CleanupVisualizerNodeGen.create(transform.getNewScopeVisibleVariablesIndex());
+		if (transform.vizContext != null) {
+			cleanupViz = CleanupVisualizerNodeGen.create(transform.getNewScopeVisibleVariablesIndex(), transform.vizContext);
 		}
 
 		FunctionDefinitionBody functionDefinitionBody = new FunctionDefinitionBody(
@@ -141,11 +142,13 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 	private void visualize(Token assigned, Token viz, String name, int frameSlot) {
 		if (viz != null) {
-			this.hasViz = true;
+			if (this.vizContext == null) {
+				this.vizContext = new VisualizerFunctionContext();
+			}
 			LocalVariableReference varRefNode = LocalVariableReferenceNodeGen.create(name, frameSlot);
 			varRefNode.setSourceSection(assigned.getStartIndex(), assigned.getStopIndex());
 
-			VisualizeMultivector vizNode = VisualizeMultivectorNodeGen.create(varRefNode, getNewScopeVisibleVariablesIndex());
+			VisualizeMultivector vizNode = VisualizeMultivectorNodeGen.create(varRefNode, getNewScopeVisibleVariablesIndex(), this.vizContext);
 			vizNode.setSourceSection(viz.getStartIndex(), viz.getStopIndex());
 
 			this.stmts.add(vizNode);

@@ -136,7 +136,9 @@ fn main(a, b) {
 ```
 
 ## Visualization
-Variables can be visualized after assignment with a preceding colon. For correct visualization, make sure that the variable is in IPNS representation. \
+Variables can be visualized after assignment with a preceding colon. \
+For correct visualization, make sure that the variable is in **IPNS** representation. \
+After leaving a function, the visualizations of this functions will be cleaned up. Visualizations from the calling function remain. \
 In the following example, the variable b will be visualized:
 ```
 fn main(a) {
@@ -211,28 +213,28 @@ There exist three types of involution operations: Space inversion, reversion and
 
 ## Built-in functions
 ### Base functions
-| symbol      | description | 
-| :---------- | ------------ | 
-| exp()       | exponential of a bivector | 
+| symbol      | description |
+| :---------- | ------------ |
+| exp()       | exponential of a bivector |
 | log()       | logarithm of general rotor (should be normalized) |
-| normalize() | normalize of an even multivector (general rotor, scalars inclusive)| 
+| normalize() | normalize of an even multivector (general rotor, scalars inclusive)|
 | sqrt()      | squared root of a general rotor |
-| squaredNorm()      | squared norm of a mulitvector | 
-| scp()       | scalar product | 
-| dot()       | dot product, 0-grade indcluded - different to inner product | 
-| ip()        | inner product, 0-grade is excluded different to the dot-product | 
+| squaredNorm()      | squared norm of a mulitvector |
+| scp()       | scalar product |
+| dot()       | dot product, 0-grade indcluded - different to inner product |
+| ip()        | inner product, 0-grade is excluded different to the dot-product |
 | negate14()  | negate the signs of the vector- and 4-vector parts of an multivector. Usable to implement general-inverse. |
 
 ### up/down projection into euclidean space
-| symbol      | description | 
-| :---------- | ------------ | 
-| up()        | up-projection of a euclidean vector into the conformal space | 
+| symbol      | description |
+| :---------- | ------------ |
+| up()        | up-projection of a euclidean vector into the conformal space |
 | down()      | down-projection of a multivector into the euclidean space by normalization and rejection from the minkowski plane E0 |
 
 ### Scalar functions
-| symbol      | description | 
-| :---------- | ------------ | 
-| atan2(x,y)  | arcus tansgens 2 (Converts the coordinates (x,y) to coordinates (r, theta) and returns the angle theta as the couterclockwise angle in radians between -pi and pi of the point (x,y) to the positive x-axis.)|  
+| symbol      | description |
+| :---------- | ------------ |
+| atan2(x,y)  | arcus tansgens 2 (Converts the coordinates (x,y) to coordinates (r, theta) and returns the angle theta as the couterclockwise angle in radians between -pi and pi of the point (x,y) to the positive x-axis.)|
 | sin(x)      ||
 | cos(x)      ||
 | tan(x)      ||
