@@ -18,7 +18,7 @@ public class TestSymbolic {
 		}
 
 		fn main(a, b) {
-			c, d := test(b)
+			c, d = test(b)
 			a, b, c, d
 		}
 		""";
