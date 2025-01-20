@@ -6,7 +6,7 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.StandardTags;
 import com.oracle.truffle.api.instrumentation.Tag;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.stmtSuperClasses.NonReturningStatementBaseNode;
-import static de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.CatchAndRethrow.catchAndRethrow;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.internal.InterpreterInternalException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.nodes.expr.LocalVariableReference;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.visualization.runtime.VisualizerService;
 import de.orat.math.gacalc.api.MultivectorNumeric;
@@ -20,9 +20,14 @@ public abstract class VisualizeMultivector extends NonReturningStatementBaseNode
 	protected void doExecute(VirtualFrame frame, MultivectorNumeric varRefValue) {
 		String name = this.getVarRef().getName();
 
-		catchAndRethrow(this, () -> {
+		// Temporary workaround to still allow debugger stepping in case of visualization failure.
+		try {
 			VisualizerService.instance().add(varRefValue, name);
-		});
+		} catch (InterpreterInternalException iiEx) {
+			int line = this.getSourceSection().getStartLine();
+			String msg = String.format("Line %s, viz failure: %s", line, iiEx.getMessage());
+			System.err.println(msg);
+		}
 	}
 
 	@Override
