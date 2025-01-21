@@ -159,24 +159,24 @@ All 2-ary operators are left-associative.
 #### Base 2-ary operators
 Hint: The Unicode and Latex name for the symbol used for left contraction is "RIGHT FLOOR" and for right contraction is "LEFT FLOOR". Please be cautious to this detail when writing Latex or programming tools which work with the language.
 
-| precedence | symbol   | latex   | unicode | name | implementation | hints |
-| :--------: | :------: | ------- | ------- | ---- | -------------- | ----- |
-| 4          |          |         | \u0020  | geometric product | multivector1.gp(multivector2) | Zero or more space characters are interpreted as the operator. |
-| 3          | &#x2227; | \wedge  | \u2227  | outer product (join, span for no common subspace) | multivector1.op(multivector2), not used for double, for tuple3d it makes sense but actually no implementation is available | joining linearily independend vectors/two disjoint subspaces |
-| 1          | &#x002B; | +       | \u002B  | addition | multivector1.add(multivector2) | |
-| 1          | &#x002D; | -       | \u002D  | subtraction | multivector1.sub(multivector2) | |
-| 3          | &#x230B; | \rfloor | \u230B  | left contraction | multivetor1.ip(multivector2, LEFT_CONTRACTION) |  |
-| 3          | &#x230A; | \lfloor | \u230A  | right contraction | multivector1.ip(multivector1, RIGHT_CONTRACTION); where the grade operator for negative grades is zero. This implies that `something of higher grade cannot be contracted onto something of lower grade`. | |
-| 3          | &#x2228; | \vee    | \u2228  | regressive product (meet if intersected) | multivector1.vee(multivector2) or (multivector1* &#8743; multivector2*)* |  |
-| 2          | &#x002F; | /       | \u002F  | division (inverse geometric product) | multivector1.div(multivector2) |  |
+| precedence | symbol   | latex   | unicode | name | hints |
+| :--------: | :------: | ------- | ------- | ---- | ----- |
+| 4          |          |         | \u0020  | geometric product | Zero or more space characters are interpreted as the operator. |
+| 3          | &#x2227; | \wedge  | \u2227  | outer product (join, span for no common subspace) | joining linearily independend vectors/two disjoint subspaces |
+| 1          | &#x002B; | +       | \u002B  | addition | |
+| 1          | &#x002D; | -       | \u002D  | subtraction | |
+| 3          | &#x230B; | \rfloor | \u230B  | left contraction |   |
+| 3          | &#x230A; | \lfloor | \u230A  | right contraction | | where the grade operator for negative grades is zero. This implies that `something of higher grade cannot be contracted onto something of lower grade`. |
+| 3          | &#x2228; | \vee    | \u2228  | regressive product (meet if intersected) | |
+| 2          | &#x002F; | /       | \u002F  | division (inverse geometric product) |  |
 
 
 #### Additional 2-ary operators
-| precedence | symbol   | latex | unicode | description | implementation | CLUscript |
-| :--------: | :------: | ------| ------- | ----------- | -------------- | :----- |
-| 3          | &#x22C5; | \cdot | \u22C5  | dot product |  |  |
-| 3          | &#x2229; | \cap  | \u2229  | meet (intersection) = largest common subspace| multivector1.meet(multivector2) | \& |
-| 3          | &#x222A; | \cup  | \u222A  | join  (union) of two subspaces is there smallest superspace = smallest space containing them both | multivector1.join(multivector2) or multivector2* &#8901; multivector1 or (multivector2* &#8743; multivector1*)* | \| |
+| precedence | symbol   | latex | unicode | description | 
+| :--------: | :------: | ------| ------- | ----------- | 
+| 3          | &#x22C5; | \cdot | \u22C5  | dot product |  
+| 3          | &#x2229; | \cap  | \u2229  | meet (intersection) = largest common subspace | 
+| 3          | &#x222A; | \cup  | \u222A  | join  (union) of two subspaces is there smallest superspace = smallest space containing them both |
 
 
 ### 1-ary operators
@@ -186,39 +186,39 @@ Except dual/undual the operators cancel itself so if your write X&#732;&#732; no
 
 
 #### Base 1-ary operators
-| precedence | symbol           | latex                         | unicode      | description | implementation | CLUscript |
-| :--------: | :--------------: | ----------------------------- | ------------ | ----------- | -------------- | :------- |
-| 5          | &#x002D;         | &#x002D;                      | \u002D       | negate | (-1 cast to multivector).gp(multivector) | - |
-| 6          | &#x207B;&#x00B9; | \textsuperscript{-1}          | \u207B\u00B9 | general inverse | multivector.generalInverse() | ! |
+| precedence | symbol           | latex                         | unicode      | description |  CLUscript |
+| :--------: | :--------------: | ----------------------------- | ------------ | ----------- |  :------- |
+| 5          | &#x002D;         | &#x002D;                      | \u002D       | negate |  - |
+| 6          | &#x207B;&#x00B9; | \textsuperscript{-1}          | \u207B\u00B9 | general inverse | ! |
 | 6          | &#x002A;         | \textsuperscript{\*}          | \u002A       | dual | multivector.dual() | |
-| 6          | &#x02DC;         | \textsuperscript{$\tilde$}      | \u02DC       | reverse/adjoint: reverse all multiplications (a sign change operation) | multivector.reverse() | &#732; |
-| 6          | &#x2020;         | \textsuperscript{\textdagger} | \u2020       | clifford conjugate (a sign change operation) | multivector.conjugate() | |
+| 6          | &#x02DC;         | \textsuperscript{$\tilde$}      | \u02DC       | reverse/adjoint: reverse all multiplications (a sign change operation) |  &#732; |
+| 6          | &#x2020;         | \textsuperscript{\textdagger} | \u2020       | clifford conjugate (a sign change operation) | |
 
 There exist three types of involution operations: Space inversion, reversion and the combination of both the clifford conjugation.
 
 
 #### Additional 1-ary operators
-| precedence | symbol           | latex                 | unicode      | description | implementation |
-| :--------: | :--------------: | --------------------- | ------------ | ----------- | -------------- |
-| 6          | &#x207B;&#x002A; | \textsuperscript{-\*} | \u207B\u002A | undual | multivector.undual() or -multivector.dual() |
-| 6          | &#x00B2;         | \textsuperscript{2}                     | \u00B2       | square | multivector.gp(multivector), sqr(double) |
-| 6          | &#x005E;         | \textsuperscript{$\wedge$}                      | \u005E       | grade involution/inversion (a sign change operation) | multivector.gradeInversion(multivector) |
+| precedence | symbol           | latex                 | unicode      | description | 
+| :--------: | :--------------: | --------------------- | ------------ | ----------- | 
+| 6          | &#x207B;&#x002A; | \textsuperscript{-\*} | \u207B\u002A | undual | 
+| 6          | &#x00B2;         | \textsuperscript{2}                     | \u00B2       | square | 
+| 6          | &#x005E;         | \textsuperscript{$\wedge$}                      | \u005E       | grade involution/inversion (a sign change operation) | 
 
 
 ### Composite operators
-| symbol                                                                                                             | latex | unicode      | description | implementation |
+| symbol                                                                                                             | latex | unicode      | description | 
 | :----------------------------------------------------------------------------------------------------------------: | ----- | ------------ | ----------- | -------------- |
-| &#x003C;multivector&#x003E;&#x209A; (with &#x209A; ∈ {&#x2080;, &#x2081;, &#x2082;, &#x2083;, &#x2084;, &#x2085;}) |       | &#x003C; = \u003C,  &#x003E; = \u003E, &#x2080; = \u2080, &#x2081; = \u2081, &#x2082; = \u2082, &#x2083; = \u2083, &#x2084; = \u2084, &#x2085; = \u2085| grade extraction, grade p=0-5 as subscript | multivector.extractGrade(int grade)   |
+| &#x003C;multivector&#x003E;&#x209A; (with &#x209A; ∈ {&#x2080;, &#x2081;, &#x2082;, &#x2083;, &#x2084;, &#x2085;}) |       | &#x003C; = \u003C,  &#x003E; = \u003E, &#x2080; = \u2080, &#x2081; = \u2081, &#x2082; = \u2082, &#x2083; = \u2083, &#x2084; = \u2084, &#x2085; = \u2085| grade extraction, grade p=0-5 as subscript | 
 
 
 ## Built-in functions
 ### Base functions
 | symbol      | description |
 | :---------- | ------------ |
-| exp()       | exponential of a bivector |
-| log()       | logarithm of general rotor (should be normalized) |
+| exp()       | exponential of a bivector or a scalar |
+| log()       | logarithm of general rotor/even multivector (should be normalized) |
 | normalize() | normalize of an even multivector (general rotor, scalars inclusive)|
-| sqrt()      | squared root of a general rotor |
+| sqrt()      | squared root of a general rotor/even multivector or a scalar |
 | squaredNorm()      | squared norm of a mulitvector |
 | scp()       | scalar product |
 | dot()       | dot product, 0-grade indcluded - different to inner product |
@@ -244,22 +244,15 @@ There exist three types of involution operations: Space inversion, reversion and
 | abs()       | absolute value of a scalar only ||
 | sign(x)     | -1 if x<0 else 1 |
 
-### Additional functions to create transformations
-| symbol                   | description | implementation |
-| :----------------------- | ----------- | -------------- |
-| translator(tuple3d)      | creates a translation from an 3d-tuple | createTranslation(tuple3d) |
-| rotator(tuple3d, double) | creates a rotation from an 3d-tuple representing the rotation axis and a double representing the angle in radian | createTranslation(tuple3d) |
-
-
 ## Symbols
 ### Base vector symbols
-| symbol           | latex        | Unicode      | description | implementation |
-| :--------------: | ------------ | ------------ | ----------- | -------------- |
-| &#x03B5;&#x2080; | \epsilon_0 | \u03B5\u2080 | base vector representing the origin | createOrigin(1d) |
-| &#x03B5;&#x1D62; | \epsilon_i | \u03B5\u1D62 | base vector representing the infinity | createInf(1d) |
-| &#x03B5;&#x2081; | \epsilon_1 | \u03B5\u2081 | base vector representing x direction | createEx(1d) |
-| &#x03B5;&#x2082; | \epsilon_2 | \u03B5\u2082 | base vector representing y direction | createEy(1d) |
-| &#x03B5;&#x2083; | \epsilon_3 | \u03B5\u2083 | base vector representing z direction | createEz(1d) |
+| symbol           | latex        | Unicode      | description | 
+| :--------------: | ------------ | ------------ | ----------- | 
+| &#x03B5;&#x2080; | \epsilon_0 | \u03B5\u2080 | base vector representing the origin |
+| &#x03B5;&#x1D62; | \epsilon_i | \u03B5\u1D62 | base vector representing the infinity |
+| &#x03B5;&#x2081; | \epsilon_1 | \u03B5\u2081 | base vector representing x direction | 
+| &#x03B5;&#x2082; | \epsilon_2 | \u03B5\u2082 | base vector representing y direction | 
+| &#x03B5;&#x2083; | \epsilon_3 | \u03B5\u2083 | base vector representing z direction | 
 
 
 ### Further symbols
