@@ -30,8 +30,8 @@ Qc = (C5k⌋Pl)*
 //Pc = ExtractFirstPoint(Qc)
 test1 = Qc² // e4, d4 mit großen Werten, als kein even element mehr
 test2 = <Qc²>₀ // reines skalar
-// workaround <>  mir ist unklar, warum das nötig sein könnte
-Pc = (Qc-sqrt(<Qc²>₀))/(-εᵢ⌋Qc)
+// <>₀  mir ist unklar, warum das nötig sein könnte
+Pc = (Qc-sqrt(abs(<Qc²>₀)))/(-εᵢ⌋Qc)
 
 // plane through joints 1, 2, 3 and 4
 PIc = (ε₀^ε₃^Pc^εᵢ) // opns
