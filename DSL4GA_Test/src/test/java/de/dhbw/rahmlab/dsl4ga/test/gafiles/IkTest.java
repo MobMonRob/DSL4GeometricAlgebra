@@ -17,10 +17,13 @@ public class IkTest {
 	// https://stackoverflow.com/questions/30485856/how-to-run-jmh-from-inside-junit-tests
 	// https://www.retit.de/continuous-benchmarking-with-jmh-and-junit-2/
 	// https://github.com/peterszatmary/jmh-benchmark-demo
-	
 	public static void main(String args[]) throws InterruptedException {
 		init();
 		new IkTest().dummy();
+		System.out.println("Cache size: " + CachedSparseCGASymbolicMultivector.getCache().getCacheSize());
+		System.out.println("......CachedFunctionUsage");
+		System.out.println(CachedSparseCGASymbolicMultivector.getCache().cachedFunctionUsageToString());
+		System.out.println("....../CachedFunctionUsage");
 	}
 
 	@BeforeAll
@@ -28,9 +31,6 @@ public class IkTest {
 		System.out.println("Init:");
 		// CGASymbolicFunctionCache.instance().clearCache();
 		PROGRAM = new IkProgram();
-		System.out.println("......CachedFunctionUsage");
-		System.out.println(CachedSparseCGASymbolicMultivector.getCache().cachedFunctionUsageToString());
-		System.out.println("....../CachedFunctionUsage");
 	}
 
 	@Test
