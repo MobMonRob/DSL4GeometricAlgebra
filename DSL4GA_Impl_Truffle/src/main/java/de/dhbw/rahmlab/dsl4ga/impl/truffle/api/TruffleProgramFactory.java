@@ -23,8 +23,8 @@ public class TruffleProgramFactory implements iProgramFactory<TruffleProgram> {
 		return context;
 	}
 
+	private static final ExprGraphFactory exprGraphFactory = GAExprGraphFactoryService.getExprGraphFactoryThrowing();
 	private final AutoCloser<Context> contextCloser = AutoCloser.create(createContext());
-	private final ExprGraphFactory exprGraphFactory = GAExprGraphFactoryService.getExprGraphFactoryThrowing();
 
 	/**
 	 * Debugging needs the URL to the file.
