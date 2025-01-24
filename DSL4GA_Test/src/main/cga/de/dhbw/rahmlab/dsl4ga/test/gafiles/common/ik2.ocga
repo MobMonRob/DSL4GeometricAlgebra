@@ -289,15 +289,15 @@ fn main(){
 	p5vec = down(p5)
     z = z(p5vec) 
     y = y(p5vec) 
-    //psi2 = atan2(z, y)
+    psi2 = atan2(z, y)
 	psi = atan(z/y)
-	// Es gibt eine noch zu behebende Mehrdeutigkeit zwischen Funktionsaufrufen und geometrischem Produkt unter gewissen Umständen.
+	// Mehrdeutigkeit zwischen Funktionsaufrufen und geometrischem Produkt unter gewissen Umständen:
 	// Workaround mit Klammern: ((y(p5))²+(z(p5))²)
 	theta = asin(d4/sqrt(y²+z²))
     
 	// Solution 1 for p4
 	alpha_1 = psi - theta
-	v41 = getV4(alpha_1, p5) // entspricht ipns plane durch Ursprung
+	:v41 = getV4(alpha_1, p5) // entspricht ipns plane durch Ursprung
 	:p4_1, p4_2 = getP4(v41, p5, p6, d4, d5) 
 
     // Solution 2 for p4
