@@ -86,8 +86,10 @@ fn getPoints(pp){
 	p2 = P (pp⋅εᵢ) P_inv
 	p1, p2
 }
-
-
+// same as formulated by Kleppe et.al.
+fn getPoints2(pp){
+	<(pp + sqrt(abs(<pp²>₀)))/(-εᵢ⋅pp)>₁, <(pp - sqrt(abs(<pp²>₀)))/(-εᵢ⋅pp)>₁
+}
 
 
 
@@ -147,9 +149,8 @@ fn getP4(v4, p5, p6, d4, d5){
 	// Wie kann kann ich in CGA einen Richtungsvektor definieren? 
 	// vielleicht wäre das Äquivalent gar kein Richtungsvektor sondern, eine Ebene durch die Mitte der beiden
 	// Punkte mit passendem Richtungsvektor, normiert auf den Abstand der beiden Punkte?
-	p6vec = down(p6)
 	p5vec = down(p5)
-	v56 = normalize(down(p6)-down(p5))
+	v56 = normalize(down(p6)-p5vec)
 	
 	// ipns sphere with center p5 and radius d5
 	:s5 = getSphere(p5, d5) // S5 = p5 - 0.5d5²εᵢ
@@ -157,7 +158,7 @@ fn getP4(v4, p5, p6, d4, d5){
     // plane with normal vector from p5 to p6 through p5
 
 	//Pl5 = v56 + (p5⋅v56)εᵢ
-	// Abstand der Ebene durch p5 mit Normalenvector v56 zum Ursprung
+	// Abstand des Punkts p5 von einer Ebene durch Ursprung mit Normalenvector v56 zum Ursprung
 	delta = p5vec⋅v56
 	:pl5 = getPlane(v56, delta)
 	:pl4 = getPlane(v4, d4) // ipns plane
@@ -227,13 +228,13 @@ fn main(){
 	//p6 = pos
 
 	// test code für Visualisierung
-    //:point = getPoint(0.0, 0.0, 0.0) // ipns==opns point
-	//sphere = getSphere(point, 0.5) // ipns sphere
-	//planex = getPlane(ε₁, 0) // ipns plane
-	//:circle = sphere∧planex
-	//planey = getPlane(ε₂, 0)
-	//pp = circle∧planey // ipns point pair
-	//pp1, pp2 = getPoints(pp⁻*)
+    :point = getPoint(0.0, 0.0, 0.0) // ipns==opns point
+	:sphere = getSphere(point, 0.5) // ipns sphere
+	:planex = getPlane(ε₁, 0) // ipns plane
+	:circle = sphere∧planex
+	planey = getPlane(ε₂, 0)
+	pp = circle∧planey // ipns point pair
+	:pp1, :pp2 = getPoints(pp⁻*)
 	//pp1a = pp1
     //pp2a = pp2
 
@@ -289,8 +290,9 @@ fn main(){
 	p5vec = down(p5)
     z = z(p5vec) 
     y = y(p5vec) 
-    psi2 = atan2(z, y)
+    psi_ = atan2(y, z)
 	psi = atan(z/y)
+	//psi2a = atan2(y,z) // scheint gleich 
 	// Mehrdeutigkeit zwischen Funktionsaufrufen und geometrischem Produkt unter gewissen Umständen:
 	// Workaround mit Klammern: ((y(p5))²+(z(p5))²)
 	theta = asin(d4/sqrt(y²+z²))

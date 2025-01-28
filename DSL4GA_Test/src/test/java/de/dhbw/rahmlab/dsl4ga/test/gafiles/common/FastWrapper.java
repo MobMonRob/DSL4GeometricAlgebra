@@ -13,9 +13,9 @@ import java.util.List;
 // @GAFILES(value = FastProgramFactory.class, path = "../../")
 @GAFILES(value = TruffleProgramFactory.class, path = "../../")
 public interface FastWrapper {
+	List<SparseDoubleMatrix> ik2(SparseDoubleMatrix p, SparseDoubleMatrix ae);
 
 	List<SparseDoubleMatrix> test1(SparseDoubleMatrix a, SparseDoubleMatrix b);
-
 	List<SparseDoubleMatrix> ik(SparseDoubleMatrix p, SparseDoubleMatrix ae);
-	List<SparseDoubleMatrix> ik2(SparseDoubleMatrix p, SparseDoubleMatrix ae);
+	
 }

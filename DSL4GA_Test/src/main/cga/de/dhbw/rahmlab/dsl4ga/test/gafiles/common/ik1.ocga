@@ -1,0 +1,124 @@
+
+// creates points
+
+// round point from 3 euclidean coordinates
+fn getPoint(x,y,z){
+	//p = xε₁+yε₂+zε₃
+    //p + 0.5p²εᵢ+ε₀
+	up(xε₁+yε₂+zε₃)
+}
+
+// get points from opns point pair
+fn getPoints(pp){
+    F = pp/sqrt(abs(<pp²>₀))
+	P = 0.5 (1+F)
+	P_inv = 0.5 (1-F) 
+	p1 = -P_inv (pp⋅εᵢ) P
+	p2 = P (pp⋅εᵢ) P_inv
+	p1, p2
+}
+fn getPoints2(pp){
+	//WORKAROUND grade selection because wrong non structral zeros appear
+	<(pp + sqrt(abs(<pp²>₀)))/(-εᵢ⋅pp)>₁, <(pp - sqrt(abs(<pp²>₀)))/(-εᵢ⋅pp)>₁
+}
+
+fn main() {
+
+p = ε₁ + ε₂
+ae = ε₂
+
+// dh parameters UR5e
+a2 = -0.425
+a3 = -0.3922
+d1 = 0.1625
+d4 = 0.1333
+d5 = 0.0997
+d6 = 0.0996
+
+// position of the end-effector and joint 5
+:Pe = p+0.5p²εᵢ+ε₀
+v = p-(d6 ae)
+:p5 = v+0.5v²εᵢ+ε₀
+
+
+// Finding the vertical plane PIc through the joints 1,2,3,4
+
+// 1. Finding the Point Pc with an offset d4 from p5:
+
+// ipns sphere around p5
+Sc = p5-0.5d4²εᵢ
+
+// ipns sphere around the origin
+K0 = ε₀+(Sc⋅ε₀)εᵢ
+
+// ipns circle by intersection of Sc and K0
+C5k = Sc^K0
+
+
+// horizontal plane through p5
+Pl = p5∧ε₁^ε₂^εᵢ // opns-plane TODO warum ist das so?
+:Pli = Pl* 
+// intersection of C5k with the horizontal plane through p5
+Qc = C5k⋅Pl // opns point-pair [00, 00, 00, 00, 00, 00, 1.79295, 00, 0.356987, 1.25739, 00, -0.396476, -1.39648, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 0, 00, 00, 00]
+:Qci = Qc* 
+
+//:Pc1a, Pc2a = getPoints(Qc)
+// [00, 5.47275, 4.0223, 00, 2.01105, 7.08338, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 1.66533e-15, 6.88338e-15, 00, 00, -1.26358e-15, 00, 00, 5.50171e-16, 00, 00, 00, 00, 00, 00, 00] bereits hier falche grade-3 elemente
+:Pc1, Pc2 = getPoints2(Qc)
+// pc1a [00, 0.901431, 0.990138, 00, 0.396476, 1.39648, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, -2.77556e-17, -1.11022e-16, 00, 00, 0, 00, 00, 0, 00, 00, 00, 00, 00, 00, 00]
+// pc2a [00, 1.07894, 0.79299, 00, 0.396476, 1.39648, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, -2.77556e-17, -1.11022e-16, 00, 00, 0, 00, 00, 0, 00, 00, 00, 00, 00, 00, 00]
+
+// vertical plane through joints 1, 2, 3 and 4
+
+// plane through origin, PC1 amd z-Achse liegt drin
+PIc = ε₀∧ε₃∧Pc1∧εᵢ // opns plane (eq. 46) identisch mit clu-script
+:PIci = PIc* 
+
+
+// finding P4
+
+// plane parallel to PIc that contains P4 and p5
+:PIc_parallel = PIc* + (p5⋅PIc*)εᵢ // (eq. 47)
+
+PI56_orthogonal = ((p5^Pe)*∧εᵢ) // (eq. 48:1)
+// [00, 0, 0.0996, 00, 0.0946399, 0.0946399, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00]
+:PI56_orthogonali = PI56_orthogonal*
+ 
+// [00, 00, 00, 00, 00, 00, 00, -0.0996, 00, 00, 0, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00]
+n56_test = (PI56_orthogonal⋅ε₀)⋅εᵢ
+// [00, 00, 00, 00, -0.0946399, -0.0946399, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00]
+n56_test1 = (PI56_orthogonali⋅ε₀)⋅εᵢ
+// [00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00]
+//n56_test2 = ip(ip(PI56_orthogonali,ε₀),εᵢ)
+// [00, 00, 00, 00, 00, 00, 00, 1, 00, 00, 0, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00]
+n56_orthogonal  = -normalize((PI56_orthogonal⋅ε₀)⋅εᵢ) // (eq. 48:2)
+
+// plane containing p4 and p5 and which is perpendicular to the normal of PIc
+PIc_orthogonal = (p5^n56_orthogonal^εᵢ) // eq. 48:3
+// Illegal object of unknown grade found:1.0*e2 + 0.9004*e4 + 0.9004*e5 + 1.0*e124 + 1.0*e125 + 1.0*e245
+:PIc_orthogonali = PIc_orthogonal*
+
+//TODO
+// add view object failed: "L45" has unknown type or is not yet supported!
+// Line 90, viz failure: Visualization of "L45" failed!
+:L45 = PIc_parallel^PIc_orthogonali
+:S5  = p5-(0.5d5²εᵢ)
+:Q4  = (L45*⋅S5*)
+P4 = (Q4-sqrt(Q4²))/(-εᵢ⌋Q4)
+
+// finding point P3
+S4  = P4 + (0.5d4²εᵢ)
+L34 = (P4^PIc*^εᵢ)*
+Q3  = (S4*⋅L34*)*
+P3 = (Q3-sqrt(Q3²))/(-εᵢ⌋Q3) 
+
+// finding P1 and P2
+P1 = getPoint(0, 0, d1)
+S1 = P1-0.5a2²εᵢ
+S3 = P3+0.5a3²εᵢ
+C2 = S1^S3
+Q2 = (C2*⋅PIc*)*
+P2 = (Q2-sqrt(Q2²))/(-εᵢ⌋Q2) 
+
+Pe, p5
+}
