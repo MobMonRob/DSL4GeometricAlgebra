@@ -178,7 +178,7 @@ Hint: The Unicode and Latex name for the symbol used for left contraction is "RI
 | 3          | &#x2229; | \cap  | \u2229  | meet (intersection) = largest common subspace | 
 | 3          | &#x222A; | \cup  | \u222A  | join  (union) of two subspaces is there smallest superspace = smallest space containing them both |
 
-$$A\dotB=\langle A B\rangle_{|k-l|,k\neq 0, l\neq 0}$$
+$A\dot B=\langle A B\rangle_{|k-l|,k\neq 0, l\neq 0}$
 
 ### 1-ary operators
 All 1-ary operators have higher precedence than 2-ary ones. \
