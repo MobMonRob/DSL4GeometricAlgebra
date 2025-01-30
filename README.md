@@ -170,15 +170,17 @@ Hint: The Unicode and Latex name for the symbol used for left contraction is "RI
 | 3          | &#x2228; | \vee    | \u2228  | regressive product (meet if intersected) | |
 | 2          | &#x002F; | /       | \u002F  | division (inverse geometric product) |  |
 
+$ A\rfloor B = \langle A B\rangle_{|l-k|}$
+$ A\wedge B =  \langle A B\rangle_{|k+l|}$
 
 #### Additional 2-ary operators
 | precedence | symbol   | latex | unicode | description | 
 | :--------: | :------: | ------| ------- | ----------- | 
-| 3          | &#x22C5; | \cdot | \u22C5  | dot product |  
+| 3          | &#x22C5; | \cdot | \u22C5  | dot product (inner product without scalar parts) |  
 | 3          | &#x2229; | \cap  | \u2229  | meet (intersection) = largest common subspace | 
 | 3          | &#x222A; | \cup  | \u222A  | join  (union) of two subspaces is there smallest superspace = smallest space containing them both |
 
-$A\dot B=\langle A B\rangle_{|k-l|,k\neq 0, l\neq 0}$
+$A\cdot B=\langle A B\rangle_{|k-l|,k\neq 0, l\neq 0}$
 
 ### 1-ary operators
 All 1-ary operators have higher precedence than 2-ary ones. \
@@ -205,6 +207,7 @@ There exist three types of involution operations: Space inversion, reversion and
 | 6          | &#x00B2;         | \textsuperscript{2}                     | \u00B2       | square | 
 | 6          | &#x005E;         | \textsuperscript{$\wedge$}                      | \u005E       | grade involution/inversion (a sign change operation) | 
 
+$ M^{\wedge} = \sum\limits_k{(-1)^k\langle M\rangle_{k}}$
 
 ### Composite operators
 | symbol | latex | unicode      | description | 
