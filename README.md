@@ -171,6 +171,7 @@ Hint: The Unicode and Latex name for the symbol used for left contraction is "RI
 | 2          | &#x002F; | /       | \u002F  | division (inverse geometric product) |  |
 
 $ A\rfloor B = \langle A B\rangle_{|l-k|}$
+
 $ A\wedge B =  \langle A B\rangle_{|k+l|}$
 
 #### Additional 2-ary operators
@@ -207,7 +208,7 @@ There exist three types of involution operations: Space inversion, reversion and
 | 6          | &#x00B2;         | \textsuperscript{2}                     | \u00B2       | square | 
 | 6          | &#x005E;         | \textsuperscript{$\wedge$}                      | \u005E       | grade involution/inversion (a sign change operation) | 
 
-$ M^{\wedge} = \sum\limits_k{(-1)^k\langle M\rangle_{k}}$
+$ \hat{M} = \sum\limits_k{(-1)^k\langle M\rangle_{k}}$
 
 ### Composite operators
 | symbol | latex | unicode      | description | 
