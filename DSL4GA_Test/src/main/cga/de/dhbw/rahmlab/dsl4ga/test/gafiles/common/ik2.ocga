@@ -77,7 +77,8 @@ fn getPlaneFromPoints(p1, p2, p3){
 	p1∧p2∧p3∧εᵢ
 }
 
-// get the points from an opns point pair
+// get the points from an opns point pair, works fine
+//TODO test for structural zeros, corresponding to getPoints2()
 fn getPoints(pp){
     F = pp/sqrt(abs(<pp²>₀))
 	P = 0.5 (1+F)
@@ -86,9 +87,9 @@ fn getPoints(pp){
 	p2 = P (pp⋅εᵢ) P_inv
 	p1, p2
 }
-// same as formulated by Kleppe et.al.
+// get the points from an opns point pair [Kleppe2016], works fine
 fn getPoints2(pp){
-	<(pp + sqrt(abs(<pp²>₀)))/(-εᵢ⋅pp)>₁, <(pp - sqrt(abs(<pp²>₀)))/(-εᵢ⋅pp)>₁
+	<(pp - sqrt(abs(<pp²>₀)))/(-εᵢ⋅pp)>₁, <(pp + sqrt(abs(<pp²>₀)))/(-εᵢ⋅pp)>₁
 }
 
 
@@ -177,7 +178,7 @@ fn getP4(v4, p5, p6, d4, d5){
 fn getP2(p0, p1, p3, s1, a3){
 	pl = getPlaneFromPoints(p0, p1, p3) // opns plane
 	s3 = getSphere(p3, -a3) // ipns sphere -self.dh_params[2,0]
-	pp = (s3^s1^pl*)* // undual?
+	pp = (s3∧s1∧pl*)* // undual?
 	//WORKAROUND 
 	p21, p22 = getPoints(pp) 
 	p21, p22
@@ -231,10 +232,11 @@ fn main(){
     :point = getPoint(0.0, 0.0, 0.0) // ipns==opns point
 	:sphere = getSphere(point, 0.5) // ipns sphere
 	:planex = getPlane(ε₁, 0) // ipns plane
-	:circle = sphere∧planex
-	planey = getPlane(ε₂, 0)
+	:circle = sphere∧planex // ipns circle
+	planey = getPlane(ε₂, 0) // ipns plane
 	pp = circle∧planey // ipns point pair
 	:pp1, :pp2 = getPoints(pp⁻*)
+	:pp1a, :pp2a = getPoints2(pp⁻*)
 	//pp1a = pp1
     //pp2a = pp2
 

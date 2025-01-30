@@ -1,3 +1,4 @@
+// Inverse Kinematics for a robot of type UR5, following Kleppe2016.
 
 // creates points
 
@@ -9,6 +10,7 @@ fn getPoint(x,y,z){
 }
 
 // get points from opns point pair
+//TODO test for structural zeros, corresponding to getPoints2()
 fn getPoints(pp){
     F = pp/sqrt(abs(<pp²>₀))
 	P = 0.5 (1+F)
@@ -17,10 +19,10 @@ fn getPoints(pp){
 	p2 = P (pp⋅εᵢ) P_inv
 	p1, p2
 }
-// from opns point pair?
+// from opns point pair, works fine
 fn getPoints2(pp){
 	//WORKAROUND grade selection because wrong non structral zeros appear
-	<(pp + sqrt(abs(<pp²>₀)))/(-εᵢ⋅pp)>₁, <(pp - sqrt(abs(<pp²>₀)))/(-εᵢ⋅pp)>₁
+	<(pp - sqrt(abs(<pp²>₀)))/(-εᵢ⋅pp)>₁, <(pp + sqrt(abs(<pp²>₀)))/(-εᵢ⋅pp)>₁
 }
 
 fn main() {
@@ -124,15 +126,16 @@ Q3  = S4⋅L34 // opns point pair, eq. 50.3
 // finding P1 and P2
 
 :p1 = getPoint(0, 0, d1) // eq. 51
-:S1 = p1-0.5a2²εᵢ // ipns sphere, eq. 52.1
+S1 = p1-0.5a2²εᵢ // ipns sphere, eq. 52.1
 // TODO zwei Lösungen für p3 berücksichtiten
-:S3 = p32-0.5a3²εᵢ // ipns sphere, eq. 52.2
+S3 = p32-0.5a3²εᵢ // ipns sphere, eq. 52.2
 //TODO statt circle wird ein oriented Point visualisiert == imaginärer Kreis?
 // ausserdem schneiden sich die beiden Kugeln nicht
 // [00, 00, 00, 00, 00, 00, 0, -0.1625, 0.577109, -0.422891, -0.146315, 0.519629, -0.380771, 0.0754815, 0.237982, -1.04161, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00] grade-2
 :C2 = S1∧S3 // ipns circle, eq. 52.3
 // TODO zwei Lösungen für PIc berücksichtigen
-:Q2 = C2⋅PIc* // opns point pair
+Q2 = C2⋅PIc // opns point pair bzw. ipns oriented point
+Q2i = Q2*
 //P2 = (Q2-sqrt(Q2²))/(-εᵢ⌋Q2) 
 :p21, :p22 = getPoints2(Q2) // eq. 52.4
 

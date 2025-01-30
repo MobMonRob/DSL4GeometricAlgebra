@@ -174,7 +174,7 @@ Hint: The Unicode and Latex name for the symbol used for left contraction is "RI
 #### Additional 2-ary operators
 | precedence | symbol   | latex | unicode | description | 
 | :--------: | :------: | ------| ------- | ----------- | 
-| 3          | &#x22C5; | \cdot | \u22C5  | dot product |  
+| 3          | &#x22C5; | \cdot | \u22C5  | dot product: $langle A B\rangle_{|k-l|,k\neq 0, l\neq 0}$ |  
 | 3          | &#x2229; | \cap  | \u2229  | meet (intersection) = largest common subspace | 
 | 3          | &#x222A; | \cup  | \u222A  | join  (union) of two subspaces is there smallest superspace = smallest space containing them both |
 
