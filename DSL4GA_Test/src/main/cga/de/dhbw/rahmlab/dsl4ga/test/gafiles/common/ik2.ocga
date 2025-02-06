@@ -71,7 +71,7 @@ fn getPlane(vec, d){
 	vec + d εᵢ
 }
 
-// opns plane from ipns point
+// opns plane from ipns points
 fn getPlaneFromPoints(p1, p2, p3){
 	// up(a)^up(b)^up(c)^einf
 	p1∧p2∧p3∧εᵢ
@@ -135,6 +135,13 @@ fn getRotationRotor(theta, axis){
 	<result>₀ + <result>₂
 }
 
+// angles in [rad]
+//fn getRotationRotorFromCardanangles(alpha, beta, gamma){
+//	getRotationRotor(alpha, ε₁)
+//	getRotationRotor(alpha, ε₂)
+//	getRotationRotor(alpha, ε₃)
+//}
+
 
 // IK specific functions
 
@@ -161,24 +168,28 @@ fn getP4(v4, p5, p6, d4, d5){
 	//Pl5 = v56 + (p5⋅v56)εᵢ
 	// Abstand des Punkts p5 von einer Ebene durch Ursprung mit Normalenvector v56 zum Ursprung
 	delta = p5vec⋅v56
-	:pl5 = getPlane(v56, delta)
+	:pl5 = getPlane(v56, delta) // ipns plane
 	:pl4 = getPlane(v4, d4) // ipns plane
 
     //:test2 = v4
 
 	// point pair FIXME da bekomme ich jetzt ein imaginäres Punktpaar
-    :pp = (s5∧pl5∧pl4) // TODO oder undual? brauche opns point pair für getPoints()
-	// [5.47245e-49, 00, 00, 00, 00, 00, -2.95985e-17, 0.146577, -7.37024e-17, -4.41039e-17, 0.956487, -2.98311e-16, -7.82477e-17, -0.904437, -1.03774, 2.49662e-16, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00]
+    pp = (s5∧pl5∧pl4) // opns point pair 
+	:ppi = pp*
 	//FIXME unnötigerweise muss ich erst eine Zuordnung durchführen...
 	p41, p42 = getPoints(pp)
 	p41, p42
 }
 
 // get both solutions for round point p2
-fn getP2(p0, p1, p3, s1, a3){
+fn getP2(p0, p1, p3, s1_, a3_){
 	pl = getPlaneFromPoints(p0, p1, p3) // opns plane
-	s3 = getSphere(p3, -a3) // ipns sphere -self.dh_params[2,0]
-	pp = (s3∧s1∧pl*)* // undual?
+	:pli = pl* // Line 187, viz failure: Visualization of "pli" failed!
+	// Line 188, viz failure: Visualization of "s3" failed!
+	:s3 = getSphere(p3, a3_) // ipns sphere -self.dh_params[2,0]
+	:pp = (s3∧s1_∧pl*)* // add view object failed: "pp" has unknown type or is not yet supported!
+	ppi = pp // add view object failed: "ppi" has unknown type or is not yet supported!
+
 	//WORKAROUND 
 	p21, p22 = getPoints(pp) 
 	p21, p22
@@ -188,10 +199,8 @@ fn getP2(p0, p1, p3, s1, a3){
 
 // arguments as cga multivector types, represented as sparse matrices
 // result: all 8 tuples (solutions) with points p1-p6
-// arguments as cga multivector types, represented as sparse matrices
-// result: all 8 tuples (solutions) with points p1-p6
-fn main(){
-	// nominal dh parameters UR5e, the d-parameters correspond to the link lengths
+fn main(p, ae){
+	// nominal dh parameters UR5e, the d-parameters corresponding to the link lengths
     // and fullfill the assumption to apply the approach
 	a2 = -0.425
 	a3 = -0.3922
@@ -199,6 +208,9 @@ fn main(){
 	d4 = 0.1333
 	d5 = 0.0997
 	d6 = 0.0996
+
+	// robots origin as ipns round point
+    :p0 = ε₀ // equivalent to rp(0.0, 0.0, 0.0)
 
 	// test x(), y(), z()
 	//testp = getPoint(1.0, 2.0, 3.0) 
@@ -225,45 +237,40 @@ fn main(){
 	//sign1 = sign(-0.2)
 
 	// robots end-effector pose as ipns point
-    :p6 = getPoint(1.0, 1.0, 0.0) 
-	//p6 = pos
+    //:p6 = getPoint(1.0, 1.0, 0.0) 
+	:p6 = up(p) 
+
+	
+	// position of joint 5
+
+	// p5 is the translation of p6 along the (minus) z-axis
+	// about a distance d6, which is the length of the last link
+	//T56 = 1 - 0.5d6ε₃εᵢ //FIX e3 und einf tauschen?
+	//p5 = T56 p6 T56˜
+    T65 = getTranslationRotor(d6 ae)
+    :p5 = transform(p6, T65) 
+
 
 	// test code für Visualisierung
-    :point = getPoint(0.0, 0.0, 0.0) // ipns==opns point
-	:sphere = getSphere(point, 0.5) // ipns sphere
-	:planex = getPlane(ε₁, 0) // ipns plane
-	:circle = sphere∧planex // ipns circle
-	planey = getPlane(ε₂, 0) // ipns plane
-	pp = circle∧planey // ipns point pair
-	:pp1, :pp2 = getPoints(pp⁻*)
-	:pp1a, :pp2a = getPoints2(pp⁻*)
-	//pp1a = pp1
-    //pp2a = pp2
+    //:point = getPoint(0.0, 0.0, 0.0) // ipns==opns point
+	//:sphere = getSphere(point, 0.5) // ipns sphere
+	//:planex = getPlane(ε₁, 0) // ipns plane
+	//:circle = sphere∧planex // ipns circle
+	//planey = getPlane(ε₂, 0) // ipns plane
+	//pp = circle∧planey // ipns point pair
+	//:pp1, :pp2 = getPoints(pp⁻*)
+	//:pp1a, :pp2a = getPoints2(pp⁻*)
 
 	// robots end-effector orientation as euclidean direction
-    rot = ε₁
+    //rot = ε₁
 
 	// pi/2 um die y-Achse drehen
 	// [0.707107, 00, 00, 00, 00, 00, 0, 0.707107, 0, 0, 0, 0, 0, 0, 0, 0, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 0, 0, 0, 0, 0, 00]
-	R6 = getRotationRotor(π/2, ε₂) // dummy rotor, mit theta==0 ist R6=0 und kein dummy rotor
+	//R6 = getRotationRotor(π/2, ε₂) // dummy rotor, mit theta==0 ist R6=0 und kein dummy rotor
     //R6 = rot
 
-    // end_effector z-axis (end_factor_Zaxis)
-    // rotation of an euclidean axis == rotation of the normal vector of a plane through the origin
-    // == rotation of a plane through the origin
-	// normal vector of the plane == x-axis
-    //z6 =  transform_vec(ε₃, R6) // [00, 1, 0, 2.22045e-16, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 0, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00] sehr kleiner e2-Wert ist falsch, woher kommt der?
-	// WORKAROUND
-	z6 = ε₂
 
-    // end of input 
-
-
-    // robots origin as ipns round point
-    :p0 = ε₀ // equivalent to rp(0.0, 0.0, 0.0)
-
-
-	// p1
+	// finding p1 (1x)
 
 	// p1 lies between links 1 and 2
     // defined by translation of p0 along the z-axis of the reference distance d1
@@ -271,37 +278,24 @@ fn main(){
 	//T10 = 1 + 0.5d1ε₃εᵢ //FIXME e3 und einf tauschen?
     //p1 = T10 p0 T10˜
 
-	T1 = getTranslationRotor(d1 ε₃) // [1, 00, 00, 00, 00, 00, 0, 0, 0, 0, 0, 0, 0, -0.08125, -0.08125, 0, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 0, 0, 0, 0, 0, 00] sind die grade-4 Anteile die 0 sind richtig?
+	T1 = getTranslationRotor(d1 ε₃) 
 	:p1 = transform(p0, T1)
 
 
-	// p5 
+	// finding p4 (4x)
 
-	// p5 is the translation of p6 along the (minus) z-axis
-	// about a distance d6, which is the length of the last link
-	//T56 = 1 - 0.5d6ε₃εᵢ //FIX e3 und einf tauschen?
-	//p5 = T56 p6 T56˜
-    T65 = getTranslationRotor(d6 z6) // [1, 00, 00, 00, 00, 00, 0, 0, 0, 0, 0, -0.0498, -0.0498, 0, 0, 0, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 0, 0, 0, 0, 0, 00] // grade-4 sparsity Fehler
-	// p6 [00, 1, 1, 0, 0.5, 1.5, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00] korrekt
-    :p5 = transform(p6, T65) 
-
-
-	// p4 with 4 possible solutions
-
-	// TODO das scheint z(p5)/y(p5) zu sein
 	p5vec = down(p5)
     z = z(p5vec) 
     y = y(p5vec) 
     psi_ = atan2(y, z)
 	psi = atan(z/y)
-	//psi2a = atan2(y,z) // scheint gleich 
 	// Mehrdeutigkeit zwischen Funktionsaufrufen und geometrischem Produkt unter gewissen Umständen:
 	// Workaround mit Klammern: ((y(p5))²+(z(p5))²)
 	theta = asin(d4/sqrt(y²+z²))
     
 	// Solution 1 for p4
 	alpha_1 = psi - theta
-	:v41 = getV4(alpha_1, p5) // entspricht ipns plane durch Ursprung
+	v41 = getV4(alpha_1, p5) // entspricht ipns plane durch Ursprung
 	:p4_1, p4_2 = getP4(v41, p5, p6, d4, d5) 
 
     // Solution 2 for p4
@@ -310,26 +304,27 @@ fn main(){
 	p4_3, p4_4 = getP4(v42, p5, p6, d4, d5)
 
 	
-	// p3
+	// finding p3 (4x)
 
     // p3 as translation of p4 along v4 by an amount d4
-    T43_1 = getTranslationRotor(v41) //1-0.5d4εᵢv4
-	:p3_1 = transform(p4_1, T43_1) //T34 p41 T34˜
-	// p3_1 ist fälschlicherweise eine Kugel statt ein Punkt
-	// [00, 2.09068, 7.04215, 1.02171e-14, 7.41828, 8.41828, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 0, -4.78784e-16, -4.78784e-16, -2.31199e-30, -2.31199e-30, -4.44089e-16, -7.69787e-30, -7.69787e-30, 0, -1.47999e-30, 00, 00, 00, 00, 00, 1.31444e-32]
-	p3_2 = transform(p4_2, T43_1) //T34 p42 T34˜
-	// [00, 2.09068, 7.04215, 1.02171e-14, 7.41828, 8.41828, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 0, -4.78784e-16, -4.78784e-16, -2.31199e-30, -2.31199e-30, -4.44089e-16, -7.69787e-30, -7.69787e-30, 0, -1.47999e-30, 00, 00, 00, 00, 00, 1.31444e-32]
+	// bereits alle p4 sind falsch
+    T43_1 = getTranslationRotor(v41) 
+	:p3_1 = transform(p4_1, T43_1) 
+	:p3_2 = transform(p4_2, T43_1) //T34 p42 T34˜
+
 	T43_2 = getTranslationRotor(v42)
-	p3_3 = transform(p4_3, T43_2) //T34 p43 T34˜
-	p3_4 = transform(p4_4, T43_2) //T34 p44 T34˜
+	:p3_3 = transform(p4_3, T43_2) //T34 p43 T34˜
+	:p3_4 = transform(p4_4, T43_2) //T34 p44 T34˜
 
 
-	// p2
+	// finding point p2 (8x)
 
-	s1 = getSphere(p1,-a2) // ipns sphere -self.dh_params[1,0]
+	:s1 = getSphere(p1, a2) // ipns sphere -self.dh_params[1,0]
 
-	:p2_1, p2_2 = getP2(p0, p1, p3_1, s1, a3)
-	p2_3, p2_4 = getP2(p0, p1, p3_2, s1, a3) // hier stürzt das Programm ab
+    //  "p2_1" has unknown type or is not yet supported!
+	// alle p3 sind falsch
+	:p2_1, p2_2 = getP2(p0, p1, p3_1, s1, a3) 
+	p2_3, p2_4 = getP2(p0, p1, p3_2, s1, a3) 
 	p2_5, p2_6 = getP2(p0, p1, p3_3, s1, a3)
 	p2_7, p2_8 = getP2(p0, p1, p3_4, s1, a3)
 

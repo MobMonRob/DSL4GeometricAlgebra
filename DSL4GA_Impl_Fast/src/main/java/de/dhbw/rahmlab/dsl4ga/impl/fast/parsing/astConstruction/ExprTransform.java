@@ -393,6 +393,8 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 								arg0.innerProduct(arg1);
 							case "scp" ->
 								arg0.scalarProduct(arg1);
+							case "map" ->
+								arg0.mapProduct(arg1);
 							default ->
 								throw new ValidationException(ctx.start.getLine(), String.format("Function \"%s\" to call not found.", functionName));
 						};

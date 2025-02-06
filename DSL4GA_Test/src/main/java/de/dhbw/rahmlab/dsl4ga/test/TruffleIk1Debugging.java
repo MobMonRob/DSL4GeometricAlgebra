@@ -1,7 +1,11 @@
 package de.dhbw.rahmlab.dsl4ga.test;
 
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.api.TruffleProgramFactory;
+import de.orat.math.sparsematrix.SparseDoubleMatrix;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import util.cga.SparseCGAColumnVector;
 
 public class TruffleIk1Debugging {
 
@@ -27,7 +31,13 @@ public class TruffleIk1Debugging {
 
 		var fac = new TruffleProgramFactory();
 		var prog = fac.parse(uri);
-		var res = prog.invoke(Collections.emptyList());
+		
+		List<SparseDoubleMatrix> args = new ArrayList<>();
+		SparseCGAColumnVector p = SparseCGAColumnVector.createEuclid(new double[]{0.5, 0.5, 0d});
+		args.add(p);
+		SparseCGAColumnVector ae = SparseCGAColumnVector.createEuclid(new double[]{0d, 1d, 0d});
+		args.add(ae);
+		var res = prog.invoke(/*Collections.emptyList()*/ args);
 
 		System.out.println("answer: ");
 		res.forEach(System.out::println);

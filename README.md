@@ -162,12 +162,12 @@ Hint: The Unicode and Latex name for the symbol used for left contraction is "RI
 | precedence | symbol   | latex   | unicode | name | hints |
 | :--------: | :------: | ------- | ------- | ---- | ----- |
 | 4          |          |         | \u0020  | geometric product | Zero or more space characters are interpreted as the operator. |
-| 3          | &#x2227; | \wedge  | \u2227  | outer product (join, span for no common subspace) | joining linearily independend vectors/two disjoint subspaces |
+| 3          | &#x2227; | \wedge  | \u2227  | "wedge" or outer product (join, span for no common subspace) | joining linearily independend vectors/two disjoint subspaces |
 | 1          | &#x002B; | +       | \u002B  | addition | |
 | 1          | &#x002D; | -       | \u002D  | subtraction | |
 | 3          | &#x230B; | \rfloor | \u230B  | left contraction |   |
 | 3          | &#x230A; | \lfloor | \u230A  | right contraction | | where the grade operator for negative grades is zero. This implies that `something of higher grade cannot be contracted onto something of lower grade`. |
-| 3          | &#x2228; | \vee    | \u2228  | regressive product (meet if intersected) | |
+| 3          | &#x2228; | \vee    | \u2228  | "vee" or regressive product (meet if intersected) | |
 | 2          | &#x002F; | /       | \u002F  | division (inverse geometric product) |  |
 
 $ A\rfloor B = \langle A B\rangle_{|l-k|}$
@@ -192,10 +192,10 @@ Except dual/undual the operators cancel itself so if your write X&#732;&#732; no
 #### Base 1-ary operators
 | precedence | symbol           | latex                         | unicode      | description |  CLUscript |
 | :--------: | :--------------: | ----------------------------- | ------------ | ----------- |  :------- |
-| 5          | &#x002D;         | &#x002D;                      | \u002D       | negate |  - |
-| 6          | &#x207B;&#x00B9; | \textsuperscript{-1}          | \u207B\u00B9 | general inverse | ! |
-| 6          | &#x002A;         | \textsuperscript{\*}          | \u002A       | dual | multivector.dual() | |
-| 6          | &#x02DC;         | \textsuperscript{$\tilde$}      | \u02DC       | reverse/adjoint: reverse all multiplications (a sign change operation) |  &#732; |
+| 5          | &#x002D;         | &#x002D;                      | \u002D       | negate      |  - |
+| 6          | &#x207B;&#x00B9; | \textsuperscript{-1}          | \u207B\u00B9 | general inverse |  |
+| 6          | &#x002A;         | \textsuperscript{\*}          | \u002A       | Hodge dual      | ! | 
+| 6          | &#x02DC;         | \textsuperscript{$\tilde$}      | \u02DC       | reverse/adjoint: reverse all multiplications (e.g. inverse for rotor) |  &#732; |
 | 6          | &#x2020;         | \textsuperscript{\textdagger} | \u2020       | clifford conjugate (a sign change operation) | |
 
 There exist three types of involution operations: Space inversion, reversion and the combination of both the clifford conjugation.
@@ -220,6 +220,7 @@ $ \hat{M} = \sum\limits_k{(-1)^k\langle M\rangle_{k}}$
 ### Base functions
 | symbol      | description |
 | :---------- | ------------ |
+| map()       | linear map (element-wise multiplication) |
 | exp()       | exponential of a bivector or a scalar |
 | log()       | logarithm of general rotor/even multivector (should be normalized) |
 | normalize() | normalize of an even multivector (general rotor, scalars inclusive)|
