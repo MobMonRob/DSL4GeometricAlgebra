@@ -146,6 +146,14 @@ fn main(a) {
 }
 ```
 
+The following table shows which elements are visualized and in which colors. The color depends on the grade of the object.
+
+| geometric object             | grade | color |
+| :--------------------------- | ------| ----- |
+| plane, round-point, sphere   |   1   | red   |
+| circle, oriented-point, line |   2   | green |
+| point pair, flat-point       |   3   | blue  |
+
 ## Operators
 Hint: Operator precedence determines how operators are parsed concerning each other. A higher precedence number
 results in a higher binding strength. Thus operators with higher precedence become the operands of operators with lower precedence.
