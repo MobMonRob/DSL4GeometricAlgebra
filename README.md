@@ -215,9 +215,9 @@ There exist three types of involution operations: Space inversion, reversion and
 | :--------: | :--------------: | --------------------- | ------------ | ----------- | 
 | 6          | &#x207B;&#x002A; | \textsuperscript{-\*} | \u207B\u002A | undual | 
 | 6          | &#x00B2;         | \textsuperscript{2}                     | \u00B2       | square | 
-| 6          | &#x005E;         | \textsuperscript{$\wedge$}                      | \u005E       | grade involution/inversion (a sign change operation) | 
+| 6          | &#x005E;         | \textsuperscript{$\wedge$}                      | \u005E       | grade involution/inversion (a sign change operation) $\hat{M} = \sum\limits_k{(-1)^k\langle M\rangle_{k}}$| 
 
-$ \hat{M} = \sum\limits_k{(-1)^k\langle M\rangle_{k}}$
+$\hat{M} = \sum\limits_k{(-1)^k\langle M\rangle_{k}}$
 
 ### Composite operators
 | symbol | latex | unicode      | description | 
