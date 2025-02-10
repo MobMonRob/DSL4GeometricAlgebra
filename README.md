@@ -153,6 +153,7 @@ The following table shows which elements are visualized and in which colors. The
 | plane, round-point, sphere   |   1   | red   |
 | circle, oriented-point, line |   2   | green |
 | point pair, flat-point       |   3   | blue  |
+| point                        |   4   | yellow|
 
 ## Operators
 Hint: Operator precedence determines how operators are parsed concerning each other. A higher precedence number
@@ -178,9 +179,9 @@ Hint: The Unicode and Latex name for the symbol used for left contraction is "RI
 | 3          | &#x2228; | \vee    | \u2228  | "vee" or regressive product (meet if intersected) | |
 | 2          | &#x002F; | /       | \u002F  | division (inverse geometric product) |  |
 
-$ A\rfloor B = \langle A B\rangle_{|l-k|}$
+$A\rfloor B = \langle A B\rangle_{|l-k|}$
 
-$ A\wedge B =  \langle A B\rangle_{|k+l|}$
+$A\wedge B =  \langle A B\rangle_{|k+l|}$
 
 #### Additional 2-ary operators
 | precedence | symbol   | latex | unicode | description | 

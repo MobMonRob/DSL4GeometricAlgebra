@@ -31,53 +31,71 @@ fn getPoints2(pp){
 
 // ik specific functions
 
-fn getP4(PIc, p5, d5, p6){
+fn getP4(pc, p5, d5, p6){
+	
+	PIc = ε₀∧ε₃∧pc∧εᵢ // opns plane (eqn. 46), ok
+	:PIci = PIc* 
 	
 	// finding a line through p4 and p5
 
 	// plane parallel to PIc that contains p5
 	// this than also contains p4
-	PIc_parallel = PIc* + (p5⋅PIc*)εᵢ // (eq. 47)
+	:PIc_parallel = PIc* + (p5⋅PIc*)εᵢ // (eqn. 47) ok
 
-	// TODO was soll das sein? Ebene opns mittig zwische p5 und p6 mit Verbindung zwischen beiden Punkten als Normalenvektor?
-	PI56_orthogonal = ((p5∧p6)*∧εᵢ) // (eq. 48.1)
-	PI56_orthogonali = PI56_orthogonal*
+	// Ebene opns mittig zwische p5 und p6 mit Verbindung zwischen beiden Punkten als Normalenvektor
+	PI56_orthogonal = ((p5∧p6)*∧εᵢ) // (eqn. 48.1)
+	:PI56_orthogonali = PI56_orthogonal*
 
 	// normal bi-vector of the plane PI56_orthogonal
-	n56_orthogonal  = -normalize(PI56_orthogonal⋅ε₀⋅εᵢ) // eq. 21 zur Bestimmung einer ""Rotationsebene" parallel zu PI56_orthogonal. Was soll das bedeuten? ein bivector! der die Ebene aufspannt, Ebene parallel zu PI56_orthogonal aber durch den Ursprung?
-	//n56_orthogonal1  = -normalize((PI56_orthogonali∧εᵢ)⋅ε₀) // (eq. 19 alternativ zu 48.1-2), Richtungsvektor der Ebene bestimmen
+	n56_orthogonal  = -normalize(PI56_orthogonal⋅ε₀⋅εᵢ) // (eqn. 21) zur Bestimmung einer ""Rotationsebene" parallel zu PI56_orthogonal. Was soll das bedeuten? ein bivector! der die Ebene aufspannt, Ebene parallel zu PI56_orthogonal aber durch den Ursprung?
+	//n56_orthogonal1  = -normalize((PI56_orthogonali∧εᵢ)⋅ε₀) // (eqn. 19 alternativ to 48.1-2), normal vector plane 
 	// plane containing p5 (to find p4 laying also in the plane) and which is perpendicular to the normal of PIc
-	PIc_orthogonal = p5∧n56_orthogonal∧εᵢ // eq. 48.3
-	PIc_orthogonali = PIc_orthogonal* 
-	L45 = PIc_parallel∧PIc_orthogonali    // ipns line eq. 48:4
-	S5  = p5-0.5d5²εᵢ					  // ipns sphere eq. 49.1
-	Q4  = (L45*⋅S5)						  // opns point pair, eq. 49.2 point pair
-	Q4i = Q4*
+	PIc_orthogonal = p5∧n56_orthogonal∧εᵢ // (eqn. 48.3)
+	:PIc_orthogonali = PIc_orthogonal* 
+	:L45 = PIc_parallel∧PIc_orthogonali   // ipns line (eqn. 48.4) through p5
+	:S5  = p5-0.5d5²εᵢ					  // ipns sphere (eqn. 49.1)
+	Q4  = (L45*⋅S5)						  // opns point pair, (eqn. 49.2) 
+	:Q4i = Q4*
 	p41, p42 = getPoints2(Q4) // flipped and not flipped wrist
-	//P4 = (Q4-sqrt(Q4²))/(-εᵢ⌋Q4) // eq. 49.3
+	//P4 = (Q4-sqrt(Q4²))/(-εᵢ⌋Q4) // (eqn. 49.3)
 	p41, p42
 }
 
-fn getP2(p1, p3, PIc, s1, a3){
-	s3 = p3-0.5a3²εᵢ // ipns sphere, eq. 52.2
-	c2 = s1∧s3		 // ipns circle, eq. 52.3
-	q2 = c2⋅PIc		 // opns point pair (=ipns oriented point)
-	q2i = q2*
-	p2_1, :p2_2 = getPoints2(q2) // eq. 52.4
+fn getP2(p1, p3, pc, s1, a3){
+
+	PIc = ε₀∧ε₃∧pc∧εᵢ // opns plane (eqn. 46), ok
+	:PIci = PIc* 
+	:s3 = p3-0.5a3²εᵢ // ipns sphere, (eqn. 52.2)
+	:c2 = s1∧s3		  // ipns circle, (eqn. 52.3)
+	q2 = c2⋅PIc		  // opns point pair (==ipns oriented point)
+	:q2i = q2*
+	p2_1, p2_2 = getPoints2(q2) // (eqn. 52.4)
 	p2_1, p2_2
 }
 
 // je nach p4 muss die passende Ebene PIc übergeben werden
-fn getP3(p4, d4, p5, PIc){
-	S4  = p4 - (0.5d4²εᵢ)       // ipns sphere, eq. 50:1
-	L34 = p5∧PIc*∧εᵢ			 // opns line, eq. 50.2
-	L34i = L34*
-	Q3  = S4⋅L34					 // opns point pair, eq. 50.3
-	Q3i = Q3*
-	p3_1, p3_2 = getPoints2(Q3)  // eq. 50.4
+fn getP3(p4, d4, p5, pc){
+	PIc = ε₀∧ε₃∧pc∧εᵢ			 // opns plane (eqn. 46), ok
+	:PIci = PIc* 
+	:S4  = p4 - (0.5d4²εᵢ)       // ipns sphere, (eqn. 50.1
+	L34 = p5∧PIc*∧εᵢ			 // opns line, (eqn. 50.2)
+	:L34i = L34*
+	Q3  = S4⋅L34					 // opns point pair, (eqn. 50.3)
+	:Q3i = Q3*
+	p3_1, p3_2 = getPoints2(Q3)  // (eqn. 50.4)
 	p3_1, p3_2
 }
 
+fn angle(a,b,N, offset){
+	an = a/norm(a)
+	bn = b/norm(b)
+	Ni = (bn∧an)/norm(b∧a)
+	atan2((an∧bn)Ni, an⋅bn)+offset
+}
+
+fn angles(p0, p1 ,p2, p3, p4, p5, p6){
+	
+}
 
 //p = 0.5ε₁ + 0.5ε₂
 //ae = ε₂
@@ -106,7 +124,7 @@ fn main(p,ae) {
 	:p5 = v+0.5v²εᵢ+ε₀
 
 	// position of joint 5
-	:p1 = getPoint(0, 0, d1) // eq. 51
+	:p1 = getPoint(0, 0, d1) // (eqn. 51)
 
 
 	// Finding the vertical plane PIc through the joints 1,2,3,4
@@ -128,42 +146,39 @@ fn main(p,ae) {
 	// intersection of C5k with the horizontal plane through p5
 	Qc = C5k⋅Pl
 	Qci = Qc* 
-	Pc1, Pc2 = getPoints2(Qc)
+	pc1, pc2 = getPoints2(Qc)
 
 
 	// finding p4 (4x)
 
 	// plane through origin, PC1 and z-Achse liegt drin (ok)
 	// vertical plane through joints 1, 2, 3 and 4
-	PIc1 = ε₀∧ε₃∧Pc1∧εᵢ // opns plane (eq. 46), ok
-	:PIci1 = PIc1* 
-	:p4_1, :p4_2 = getP4(PIc1, p5, d5, p6)
-
-	PIc2 = ε₀∧ε₃∧Pc2∧εᵢ // opns plane (eq. 46), ok
-	:PIci2 = PIc2* 
+	:p4_1, p4_2 = getP4(pc1, p5, d5, p6)
 	//FIXME sind identisch zu p4_1 und p4_2 woran liegt das? 
 	// Das könnte passieren, wenn PIc1 parallel zu PIc2 ist, ist aber nicht der Fall!
-	p4_3, p4_4 = getP4(PIc2, p5, d5, p6)
+	p4_3, p4_4 = getP4(pc2, p5, d5, p6)
 
 
 	// finding point p3 (4x)
 
 	//FIXME das sind doch 8 statt 4 Varianten?
-	//TODO schauen welche gleich sind PIc1 und PIc2 sind fälschlicherweise beide 0
-	:p3_1, p3_2 = getP3(p4_1, d4, p5, PIc1)
+	// schauen, welche Punkte gleich sind
+	:p3_1, p3_2 = getP3(p4_1, d4, p5, pc1)
 	//p3_3, p3_4 = getP3(p4_2, d4, p5, PIc1)
-	p3_3, p3_4 = getP3(p4_1, d4, p5, PIc2)
+	p3_3, p3_4 = getP3(p4_1, d4, p5, pc2)
 	//p3_7, p3_8 = getP3(p4_2, d4, p5, PIc2)
 
 
 	// finding point p2 (8x)
 
-	s1 = p1-0.5a2²εᵢ // ipns sphere, eq. 52.1
+	s1 = p1-0.5a2²εᵢ // ipns sphere, (eqn. 52.1)
 
-	:p2_1, p2_2 = getP2(p1, p3_1, PIc1, s1, a3)
-	p2_3, p2_4 = getP2(p1, p3_2, PIc1, s1, a3)
-	p2_5, p2_6 = getP2(p1, p3_1, PIc2, s1, a3)
-	p2_7, p2_8 = getP2(p1, p3_2, PIc2, s1, a3)
+	:p2_1, p2_2 = getP2(p1, p3_1, pc1, s1, a3)
+	p2_3, p2_4 = getP2(p1, p3_2, pc1, s1, a3)
+	p2_5, p2_6 = getP2(p1, p3_1, pc2, s1, a3)
+	p2_7, p2_8 = getP2(p1, p3_2, pc2, s1, a3)
+
+	//theta1 = angle(a,b,N, offset)
 
 	p1, p2_1, p3_1, p4_1, p5, p6, p1, p2_2, p3_1, p4_1, p5, p6, p1, p2_3, p3_2, p4_2, p5, p6, p1, p2_4, p3_2, p4_2, p5, p6, p1, p2_5, p3_3, p4_3, p5, p6, p1, p2_6, p3_3, p4_3, p5, p6, p1, p2_7, p3_4, p4_4, p5, p6, p1, p2_8, p3_4, p4_4, p5, p6
 }
