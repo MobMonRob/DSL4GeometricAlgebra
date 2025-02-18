@@ -40,7 +40,11 @@ public class VisualizerService {
 		CGAKVector mv2 = CGAKVector.specialize(cgaMultivector, true);
 		if (mv2 instanceof CGAKVector cgakVector) {
 			CGAViewObject cgaViewObject = this.viewer.addCGAObject(cgakVector, name);
-			vizContext.addViewObject(cgaViewObject);
+			if (cgaViewObject != null){
+				vizContext.addViewObject(cgaViewObject);
+			} else {
+				throw new InterpreterInternalException("Visualization of \""+name+"\" failed!");
+			}
 		} else {
 			throw new InterpreterInternalException(
 				String.format("Variable \"%s\" is no k-vector!", cgaMultivector.toString(name)));

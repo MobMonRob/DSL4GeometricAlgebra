@@ -18,7 +18,7 @@ public class SourceUnitTransform extends GeomAlgeParserBaseListener {
 		this.geomAlgeLangContext = geomAlgeLangContext;
 	}
 
-	public static Function generate(GeomAlgeParser.SourceUnitContext ctx, GeomAlgeLangContext geomAlgeLangContext) {
+	public static Function generate(GeomAlgeParser parser, GeomAlgeParser.SourceUnitContext ctx, GeomAlgeLangContext geomAlgeLangContext) {
 		Map<String, Function> functions = new HashMap<>();
 		Map<String, Function> functionsView = Collections.unmodifiableMap(functions);
 
@@ -27,7 +27,7 @@ public class SourceUnitTransform extends GeomAlgeParserBaseListener {
 		SkippingParseTreeWalker.walk(transform, ctx, GeomAlgeParser.FunctionBodyContext.class);
 		 */
 		for (FunctionContext functionCtx : ctx.functions) {
-			Function function = FuncTransform.generate(functionCtx, geomAlgeLangContext, functionsView);
+			Function function = FuncTransform.generate(parser, functionCtx, geomAlgeLangContext, functionsView);
 			String functionName = function.getName();
 			if (functions.containsKey(functionName)) {
 				int line = functionCtx.start.getLine();

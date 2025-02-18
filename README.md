@@ -146,6 +146,15 @@ fn main(a) {
 }
 ```
 
+The following table shows which elements are visualized and in which colors. The color depends on the grade of the object.
+
+| geometric object             | grade | color |
+| :--------------------------- | ------| ----- |
+| plane, round-point, sphere   |   1   | red   |
+| circle, oriented-point, line |   2   | green |
+| point pair, flat-point       |   3   | blue  |
+| point                        |   4   | yellow|
+
 ## Operators
 Hint: Operator precedence determines how operators are parsed concerning each other. A higher precedence number
 results in a higher binding strength. Thus operators with higher precedence become the operands of operators with lower precedence.
@@ -162,22 +171,20 @@ Hint: The Unicode and Latex name for the symbol used for left contraction is "RI
 | precedence | symbol   | latex   | unicode | name | hints |
 | :--------: | :------: | ------- | ------- | ---- | ----- |
 | 4          |          |         | \u0020  | geometric product | Zero or more space characters are interpreted as the operator. |
-| 3          | &#x2227; | \wedge  | \u2227  | outer product (join, span for no common subspace) | joining linearily independend vectors/two disjoint subspaces |
+| 3          | &#x2227; | \wedge  | \u2227  | "wedge" or outer product (join, span for no common subspace) | joining linearily independend vectors/two disjoint subspaces: $A\wedge B =  \langle A B\rangle_{|k+l|}$ |
 | 1          | &#x002B; | +       | \u002B  | addition | |
 | 1          | &#x002D; | -       | \u002D  | subtraction | |
-| 3          | &#x230B; | \rfloor | \u230B  | left contraction |   |
+| 3          | &#x230B; | \rfloor | \u230B  | left contraction | $A\rfloor B = \langle A B\rangle_{|l-k|}$ |
 | 3          | &#x230A; | \lfloor | \u230A  | right contraction | | where the grade operator for negative grades is zero. This implies that `something of higher grade cannot be contracted onto something of lower grade`. |
-| 3          | &#x2228; | \vee    | \u2228  | regressive product (meet if intersected) | |
+| 3          | &#x2228; | \vee    | \u2228  | "vee" or regressive product (meet if intersected) | |
 | 2          | &#x002F; | /       | \u002F  | division (inverse geometric product) |  |
-
 
 #### Additional 2-ary operators
 | precedence | symbol   | latex | unicode | description | 
 | :--------: | :------: | ------| ------- | ----------- | 
-| 3          | &#x22C5; | \cdot | \u22C5  | dot product |  
+| 3          | &#x22C5; | \cdot | \u22C5  | dot product (inner product without scalar parts) $A\cdot B=\langle A B\rangle_{|k-l|,k\neq 0, l\neq 0}$|  
 | 3          | &#x2229; | \cap  | \u2229  | meet (intersection) = largest common subspace | 
 | 3          | &#x222A; | \cup  | \u222A  | join  (union) of two subspaces is there smallest superspace = smallest space containing them both |
-
 
 ### 1-ary operators
 All 1-ary operators have higher precedence than 2-ary ones. \
@@ -188,22 +195,20 @@ Except dual/undual the operators cancel itself so if your write X&#732;&#732; no
 #### Base 1-ary operators
 | precedence | symbol           | latex                         | unicode      | description |  CLUscript |
 | :--------: | :--------------: | ----------------------------- | ------------ | ----------- |  :------- |
-| 5          | &#x002D;         | &#x002D;                      | \u002D       | negate |  - |
-| 6          | &#x207B;&#x00B9; | \textsuperscript{-1}          | \u207B\u00B9 | general inverse | ! |
-| 6          | &#x002A;         | \textsuperscript{\*}          | \u002A       | dual | multivector.dual() | |
-| 6          | &#x02DC;         | \textsuperscript{$\tilde$}      | \u02DC       | reverse/adjoint: reverse all multiplications (a sign change operation) |  &#732; |
+| 5          | &#x002D;         | &#x002D;                      | \u002D       | negate      |  - |
+| 6          | &#x207B;&#x00B9; | \textsuperscript{-1}          | \u207B\u00B9 | general inverse |  |
+| 6          | &#x002A;         | \textsuperscript{\*}          | \u002A       | Hodge dual      | ! | 
+| 6          | &#x02DC;         | \textsuperscript{$\tilde$}      | \u02DC       | reverse/adjoint: reverse all multiplications (e.g. inverse for rotor) |  &#732; |
 | 6          | &#x2020;         | \textsuperscript{\textdagger} | \u2020       | clifford conjugate (a sign change operation) | |
 
 There exist three types of involution operations: Space inversion, reversion and the combination of both the clifford conjugation.
-
 
 #### Additional 1-ary operators
 | precedence | symbol           | latex                 | unicode      | description | 
 | :--------: | :--------------: | --------------------- | ------------ | ----------- | 
 | 6          | &#x207B;&#x002A; | \textsuperscript{-\*} | \u207B\u002A | undual | 
 | 6          | &#x00B2;         | \textsuperscript{2}                     | \u00B2       | square | 
-| 6          | &#x005E;         | \textsuperscript{$\wedge$}                      | \u005E       | grade involution/inversion (a sign change operation) | 
-
+| 6          | &#x005E;         | \textsuperscript{$\wedge$}                      | \u005E       | grade involution/inversion (a sign change operation) $\hat{M} = \sum\limits_k{(-1)^k\langle M\rangle_{k}}$| 
 
 ### Composite operators
 | symbol | latex | unicode      | description | 
@@ -215,6 +220,7 @@ There exist three types of involution operations: Space inversion, reversion and
 ### Base functions
 | symbol      | description |
 | :---------- | ------------ |
+| map()       | linear map (element-wise multiplication) |
 | exp()       | exponential of a bivector or a scalar |
 | log()       | logarithm of general rotor/even multivector (should be normalized) |
 | normalize() | normalize of an even multivector (general rotor, scalars inclusive)|
@@ -258,16 +264,16 @@ There exist three types of involution operations: Space inversion, reversion and
 ### Further symbols
 | symbol           | latex      | Unicode      | description | implementation |
 | :--------------: | -----------| ------------ | ----------- | -------------- |
-| &#x03B5;&#x208A; | \epsilon_+ | \u03B5\u208A |  | &#x03B5;&#x2080; + 0.5&#x03B5;&#x1D62;  |
-| &#x03B5;&#x208B; | \epsilon_- | \u03B5\u208B |  | 0.5&#x03B5;&#x1D62; - &#x03B5;&#x2080; |
+| &#x03B5;&#x208A; | \epsilon_+ | \u03B5\u208A |  |  0.5&#x03B5;&#x1D62; - &#x03B5;&#x2080; |
+| &#x03B5;&#x208B; | \epsilon_- | \u03B5\u208B |  | 0.5&#x03B5;&#x1D62; + &#x03B5;&#x2080; |
 | &#x03C0;         | \pi        | \u03C0       | Ludolphs- or circle constant | Math.PI |
 | &#x221E;         | \infty     | \u221E       | corresponding to infinity vector in Dorst, Fontijne & Mann 2007 | 2&#x03B5;&#8320;  |
 | &#x006F;         | o          | \u006F       | corresponding to origin vector in Dorst, Fontijne & Mann 2007 | 0.5&#x03B5;&#7522;  |
 | &#x006E;         | n          | \u006E       | corresponding to infinity vector in Doran & Lasenby | &#x03B5;&#7522;  |
 | &#x00F1;         | \tilde{n}  | \u00F1       | corresponding to origin vector in Doran & Lasenby | -2&#x03B5;&#8320; |
-| &#x0045;&#x2080; | E_0        | \u0045\u2080 | Minkovsky bi-vector (is its own inverse) | &#x03B5;&#8320; &#x2227; &#x03B5;&#7522;|
+| &#x0045;&#x2080; | E_0        | \u0045\u2080 | Minkovsky bi-vector (is its own inverse) | &#x03B5;&#7522; &#x2227; &#x03B5;&#8320;|
 | &#x0045;&#x2083; | E_3        | \u0045\u2083 | Euclidean pseudoscalar | &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083;     |
-| &#x0045;         | E          | \u0045       | Pseudoscalar | &#x03B5;&#x2080; &#x2227; &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083; &#x2227; &#x03B5;&#x1D62; |
+| &#x0045;         | E          | \u0045       | Pseudoscalar | &#x03B5;&#x1D62; &#x2227; &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083; &#x2227; &#x03B5;&#x2080;|
 
 
 ### Useful equations between above symbols

@@ -62,9 +62,9 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 		return this.scopeVisibleVariablesIndex++;
 	}
 
-	public static Function generate(GeomAlgeParser.FunctionContext ctx, GeomAlgeLangContext geomAlgeLangContext, Map<String, Function> functionsView) {
+	public static Function generate(GeomAlgeParser parser, GeomAlgeParser.FunctionContext ctx, GeomAlgeLangContext geomAlgeLangContext, Map<String, Function> functionsView) {
 		FuncTransform transform = new FuncTransform(geomAlgeLangContext, functionsView);
-		SkippingParseTreeWalker.walk(transform, ctx, GeomAlgeParser.ExprContext.class);
+		SkippingParseTreeWalker.walk(parser, transform, ctx, GeomAlgeParser.ExprContext.class);
 
 		RetExprStmt retExprStmt = new RetExprStmt(transform.retExprs.toArray(ExpressionBaseNode[]::new), transform.getNewScopeVisibleVariablesIndex());
 		if (!transform.retExprs.isEmpty()) {

@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import util.cga.SparseCGAColumnVector;
 
-public class TruffleIk2Debugging {
+public class TruffleIk1Debugging {
 
 	public static void main(String[] args) throws Exception {
 		invocationTest();
@@ -23,8 +23,8 @@ public class TruffleIk2Debugging {
 	 * </pre>
 	 */
 	private static void invocationTest() throws Exception {
-		String path = "./gafiles/common/ik2.ocga";
-		var uri = TruffleIk2Debugging.class.getResource(path);
+		String path = "./gafiles/common/ik1.ocga";
+		var uri = TruffleIk1Debugging.class.getResource(path);
 		if (uri == null) {
 			throw new RuntimeException(String.format("Path not found: %s", path));
 		}
