@@ -59,7 +59,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 	public void exitFormalParameter_(GeomAlgeParser.FormalParameter_Context ctx) {
 		String name = ctx.name.getText();
 
-		var param = exprGraphFactory.createMultivectorPurelySymbolic(name);
+		var param = exprGraphFactory.createMultivectorPurelySymbolicDense(name);
 
 		this.formalParameterList.add(param);
 		this.localVariables.put(name, param);
