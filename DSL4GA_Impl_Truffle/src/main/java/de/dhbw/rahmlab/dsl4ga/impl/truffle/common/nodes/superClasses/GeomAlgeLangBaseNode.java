@@ -17,10 +17,24 @@ public abstract class GeomAlgeLangBaseNode extends Node {
 	private int sourceLength;
 
 	// invoked by the parser to set the source
+	// parse() und damit diese Methode wird unter Umständen mehrfach aufgerufen
 	public void setSourceSection(int fromIndex, int toIndexInclusive) throws IllegalArgumentException {
-		assert sourceCharIndex == NO_SOURCE : "source should only be set once";
+		//assert sourceCharIndex == NO_SOURCE : "source should only be set once";
+		// testweise
+		// ich lande hier zwei mal mit gleichem fromIndex
+		// GeomAlgeLangBaseNode sourceCharIndex=-1
+		//GeomAlgeLangBaseNode fromIndex=8
+		//GeomAlgeLangBaseNode sourceCharIndex=-1
+		//GeomAlgeLangBaseNode fromIndex=8
+		//(new Exception()).printStackTrace(System.out);
+		//System.out.println("GeomAlgeLangBaseNode sourceCharIndex="+String.valueOf(sourceCharIndex));
+		//System.out.println("GeomAlgeLangBaseNode fromIndex="+String.valueOf(fromIndex)+
+		//	" toIndexInclude="+String.valueOf(toIndexInclusive));
+		// commented out because multiple invocation of parse() is possible 
+		//assert sourceCharIndex != NO_SOURCE : "source should only be set once";
 		if (fromIndex > toIndexInclusive) {
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("from Index "+
+				String.valueOf(fromIndex)+" > "+String.valueOf(toIndexInclusive));
 		}
 		this.sourceCharIndex = fromIndex;
 		this.sourceLength = toIndexInclusive - fromIndex + 1;

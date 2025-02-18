@@ -5,7 +5,11 @@ import java.lang.ref.Reference;
 
 public final class LifeTimeExtender {
 
-	private final Cleaner cleaner = Cleaner.create();
+	private LifeTimeExtender() {
+
+	}
+
+	private static final Cleaner cleaner = Cleaner.create();
 
 	private static Runnable reachabilityCleanup(final Object o) {
 		return () -> {
@@ -13,7 +17,7 @@ public final class LifeTimeExtender {
 		};
 	}
 
-	public void extend(final Object toBeExtendedLifeTime, final Object extendedToLifeTime) {
-		this.cleaner.register(extendedToLifeTime, LifeTimeExtender.reachabilityCleanup(toBeExtendedLifeTime));
+	public static void extend(final Object toBeExtendedLifeTime, final Object extendedToLifeTime) {
+		cleaner.register(extendedToLifeTime, LifeTimeExtender.reachabilityCleanup(toBeExtendedLifeTime));
 	}
 }

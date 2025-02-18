@@ -1,0 +1,249 @@
+// Inverse Kinematics following A. Marzabal and I. Zaplana: Closed-form inverse kinematics 
+// solututions for a class of serial robots without a spherical wrist using conformal geometric algebra.
+// Example: UR5e robot placed at the origin of the coordinate system
+
+
+// up-down projection
+
+// up-projection of a vector into a cga multivector, results in a round point
+
+	fn up(vec){
+		vec + 0.5 vec² εᵢ + ε₀
+	}
+
+// down projection of a multivector into an euclidean vector
+// euclidean location of a round point
+fn down(vec) {
+    // normalized sphere in ipns respresentation
+	// TODO muss da noch ein weiterer Rechenschritt erfolgen?
+	//-vec/(εᵢ⌋vec)
+
+	// extracts the pure euclidean part of the given multivector
+    // E0 symbol verwenden
+	//TODO test
+	E₀⌋(vec∧E₀)
+}
+
+
+// creates points
+
+// round point from 3 euclidean coordinates
+fn getPoint(x,y,z){
+	//p = xε₁+yε₂+zε₃
+    //p + 0.5p²εᵢ+ε₀
+	up(xε₁+yε₂+zε₃)
+}
+
+
+// creates spheres
+
+// ipns sphere from midpoint and radius
+// m round point
+fn getSphere(m,r){
+	// up(center)-(0.5*einf*radius**2)
+	m - 0.5r²εᵢ
+}
+
+
+// create planes
+
+// returns an ipns plane from euclidean normal vec und scalar dist to the origin
+fn getPlane(vec, d){
+	vec + d εᵢ
+}
+
+// extract euclidean coordinates
+
+// three euclidean coordinates from a round point
+// TODO test identisch zu down?
+fn getVec(rp){
+	(ε₀∧εᵢ)⋅(rp∧(ε₀∧εᵢ))
+}
+
+// points from an opns point pair
+fn getPoints(pp){
+    // def getEuclideanPointsFromBivector(bivec):
+	//        F = bivec/math.sqrt(abs(bivec**2))
+	//        P = 0.5*(1+F)
+    //        P_inv = 0.5*(1-F)
+    //        p1 = down(-P_inv*(bivec | einf)*P)
+    //        p2 = down(P*(bivec | einf)*P_inv)
+    //        return(p1,p2)
+	//ppnorm = sqrt(squaredNorm(pp)
+    //(pp+ppnorm)/(-εᵢ⋅pp), (pp-ppnorm)/(-εᵢ⋅pp)
+	// workaround <>  mir ist unklar, warum das nötig sein könnte
+    (Qc-sqrt(<Qc>₀²))/(-εᵢ⌋Qc), (Qc+sqrt(<Qc>₀²))/(-εᵢ⌋Qc)
+}
+
+
+// TODO test
+//fn sign(scalar){
+//	scalar/abs(scalar)
+//}
+
+// get e1 component from the given multivector vec
+fn x(vec){
+	(down(vec)∧ε₂∧ε₃)E₃
+	// TODO test 
+	//TODO da muss ich jetzt noch den korrespondierenden e1 vec draus machen 
+    // mit E23 multiplizieren oder so ähnlich, vielleicht E123, euclidischer Pseusoscalar
+}
+fn y(vec){
+	(down(vec)∧ε₁∧ε₃)E₃
+	// TODO test 
+}
+fn z(vec){
+	(down(vec)∧ε₁∧ε₂)E₃
+	// TODO test 
+}
+
+// transformations
+
+// round point and rotor as arguments, round point as result values
+fn transform(p, rot){
+	//TODO test
+	rot p rot˜
+}
+
+// euclidean vec representing a point, cga rotor as arguments
+// TODO test
+fn transform_vec(vec, rot){
+	down(transform(up(vec), rot))
+}
+
+// argument vec of euclidean type
+fn getTranslationRotor(vec){
+	// e**(-0.5*vec*einf)
+	//TODO test
+	exp(-0.5 vec εᵢ)
+}
+
+fn getRotationRotor(theta, axis){
+	//e**(-0.5*theta*axis*I_base)
+	//TODO test
+	exp(-0.5 theta axis E₃)
+}
+
+fn getV4(alpha, p5, d4){
+	pl_vert_45_vec_1a = cos(alpha+π/2)ε₁+sin(alpha+π/2)ε₂
+	pl_vert_45_vec_1 = pl_vert_45_vec_1a sign(pl_vert_45_vec_1a⋅p5)
+	getPlane(plane_vert_45_vec_1, d4) // ipns plane
+}
+
+fn getP4(alpha, p5, p6, d4, d5){
+	
+	// or down(p6)-down(p5)
+	v56 = normalize(getVec(p6)-getVec(p5))
+	
+	// ipns sphere with center p5 and radius d5
+	s5 = getSphere(p5, d5) // S5 = p5 - 0.5d5²εᵢ
+
+    // plane with normal vector from p5 to p6 through p5
+
+	//Pl5 = v56 + (p5⋅v56)εᵢ
+	pl5 = pl(v56, p5⋅v56)
+    //alternative fomulation: plane between p5 and p5 tranlated into p5 (half distance subtraction)
+    //Pl5 = p6-p5-0.5.... TODO
+	
+	// point pair
+    pp = (s5∧pl5∧getV4(alpha, p5, d4))* // TODO oder undual?
+	getPoints(pp)
+}
+
+// get round point p2
+fn getP2(p0, p1, p3, s1){
+	pl = getPlaneFromPoints(p0, p1, p3) // opns plane
+	s3 = getSphere(p3, -a3) // ipns sphere -self.dh_params[2,0]
+	pp = (s3^s1^pl*)* // undual?
+	getPoints(pp) 
+}
+
+// arguments as cga multivector types, represented as sparse matrices
+// result: all 8 tuples (solutions) with points p1-p6
+fn main(pos, rot) { // pos, rot
+
+	// nominal dh parameters UR5e, the d-parameters correspond to the link lengths
+    // and fullfill the assumption to apply the approach
+	a2 = -0.425
+	a3 = -0.3922
+	d1 = 0.1625
+	d4 = 0.1333
+	d5 = 0.0997
+	d6 = 0.0996
+
+	// robots end-effector pose
+    :p6 = getPoint(0.5, 0.0, 0.0)
+    //p6 = pos
+
+	R6 = getRotationRotor(0.0, ε₃) // dummy rotor
+    //R6 = rot
+
+    // end_factor_Zaxis
+    z6 =  transform_vec(ε₃, R6)
+
+    // robots origin
+    :p0 = ε₀ // equivalent to rp(0.0, 0.0, 0.0)
+
+
+	// p1
+
+	// p1 lies between links 1 and 2
+    // defined by translation of p0 along the z-axis of the reference distance d1
+    // which is the first link
+	//T10 = 1 + 0.5d1ε₃εᵢ //FIXME e3 und einf tauschen?
+    //p1 = T10 p0 T10˜
+	T1 = getTranslationRotor(d1 ε₃)
+	:p1 = transform_vec(p0, T1)
+
+
+	// p5 
+
+	// p5 is the translation of p6 along the (minus) z-axis
+	// about a distance d6, which is the length of the last link
+	//T56 = 1 - 0.5d6ε₃εᵢ //FIX e3 und einf tauschen?
+	//p5 = T56 p6 T56˜
+    T65 = getTranslationRotor(d6 z6)
+    :p5 = transform(p6, T65)
+
+
+	// p4 with 4 possible solutions
+
+	// TODO das scheint z(p5)/y(p5) zu sein
+    // wie bekomme ich die components aus p5 raus um atan2 verwenden zu können
+    // oder kann ich atan(down(p5)) verwenden, dann muss ich aber atan() implementieren
+	// psi = atan(p5.value[2]/p5.value[1])
+	psi = atan2(z(p5), y(p5))
+    theta = asin(d4/sqrt(y(p5)²+z(p5)²))
+
+
+	// Solution 1 for p4
+	alpha_1 = psi - theta
+	:p4_1, p4_2 = getP4(alpha_1, p5, p6, d4, d5)
+
+    // Solution 2 for p4
+	alpha_2 = psi + theta
+	p4_3, p4_4 = getP4(psi + theta, p5, p6, d4, d5)
+
+	
+	// p3
+
+    // p3 as translation of p4 along v4 by an amount d4
+    T43_1 = getTranslationRotor(getV4(alpha_1, p5, d4)) //1-0.5d4εᵢv4
+	:p3_1 = transform(p4_1, T43_1) //T34 p41 T34˜
+	p3_2 = transform(p4_2, T43_1) //T34 p42 T34˜
+	T43_2 = getTranslationRotor(getV4(alpha_2, p5, d4))
+	p3_3 = transform(p4_3, T43_2) //T34 p43 T34˜
+	p3_4 = transform(p4_4, T43_2) //T34 p44 T34˜
+
+
+	// p2
+
+	s1 = getSphere(p1,-a2) // ipns sphere -self.dh_params[1,0]
+
+	:p2_1, p2_2 = getP2(p0, p1, p3_1, s1)
+	p2_3, p2_4 = getP2(p0, p1, p3_2, s1)
+	p2_5, p2_6 = getP2(p0, p1, p3_3, s1)
+	p2_7, p2_8 = getP2(p0, p1, p3_4, s1)
+
+	p1, p2_1, p3_1, p4_1, p5, p6, p1, p2_2, p3_1, p4_1, p5, p6, p1, p2_3, p3_2, p4_2, p5, p6, p1, p2_4, p3_2, p4_2, p5, p6, p1, p2_5, p3_3, p4_3, p5, p6, p1, p2_6, p3_3, p4_3, p5, p6, p1, p2_7, p3_4, p4_4, p5, p6, p1, p2_8, p3_4, p4_4, p5, p6
+}

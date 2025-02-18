@@ -6,9 +6,14 @@ package de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external;
 public class ValidationException extends AbstractExternalException {
 
 	public ValidationException(Throwable cause) {
-		super(null, cause, null);
+		super(cause.getMessage(), cause, null);
 	}
 
+	public ValidationException(int line, String message) {
+		this(String.format("Line %s: %s", line, message));
+	}
+
+	@Deprecated
 	public ValidationException(String message) {
 		// If the cause is omitted, then the stackTrace of Java functions will be empty.
 		// Later only the stackTrace of the cga functions will be of interest.

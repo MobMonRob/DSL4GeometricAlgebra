@@ -1,13 +1,13 @@
 // test
 fn test(z) {
-	a := 3.14
-	b := z+a
+	a = 3.14
+	b = z+a
 	b
 }
 
 fn main() {
-	a := 5
-	b := test(a)
-	c := 29
+	a = 5
+	b = test(a)
+	c = 29
 	a, b, c
 }

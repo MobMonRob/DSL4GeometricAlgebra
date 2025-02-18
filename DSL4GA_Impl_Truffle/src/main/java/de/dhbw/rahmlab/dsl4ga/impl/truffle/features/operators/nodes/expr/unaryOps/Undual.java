@@ -2,7 +2,7 @@ package de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryO
 
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.exprSuperClasses.UnaryOp;
-import de.orat.math.cga.api.CGAMultivector;
+import de.orat.math.gacalc.api.MultivectorNumeric;
 
 public final class Undual extends UnaryOp {
 
@@ -11,7 +11,7 @@ public final class Undual extends UnaryOp {
 	}
 
 	@Override
-	protected CGAMultivector execute(CGAMultivector input) {
+	protected MultivectorNumeric execute(MultivectorNumeric input) {
 		return input.undual();
 	}
 }

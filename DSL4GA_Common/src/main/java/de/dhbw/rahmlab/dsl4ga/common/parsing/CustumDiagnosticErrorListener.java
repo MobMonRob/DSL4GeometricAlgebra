@@ -26,15 +26,22 @@ public class CustumDiagnosticErrorListener extends DiagnosticErrorListener {
 		BitSet ambigAlts,
 		ATNConfigSet configs) {
 
-		String format = "reportAmbiguity decision=%s: conflictingAlts=%s, input='%s', altsString='%s', context (deepest part left)='%s'";
-		String decision = super.getDecisionDescription(recognizer, dfa);
-		BitSet conflictingAlts = super.getConflictingAlts(ambigAlts, configs);
 		String input = recognizer.getTokenStream().getText(Interval.of(startIndex, stopIndex));
 		String inputWithEscapedNewline = input.replace("\n", "\\n");
-		// unsure, if this is correct
-		String altsString = conflictingAlts.stream().mapToObj(i -> "" + i + ": " + getRuleDisplayName(recognizer, i)).reduce("", (i, j) -> i + ", " + j);
+
+		// Innermost part of the context:
+		String decision = getRuleDisplayName(recognizer, getDecisionRule(recognizer, dfa.decision));
+		// String decision = super.getDecisionDescription(recognizer, dfa);
+
+		// Kann es sein, dass das die Indizes der in der Grammatik mit | getrennten Subregeln sind?
+		// -> Ja!
+		// Dann muss ich nur da in die Grammatik rein schauen.
+		BitSet conflictingAlts = super.getConflictingAlts(ambigAlts, configs);
+
 		String context = recognizer.getContext().toString(recognizer);
-		String message = String.format(format, decision, conflictingAlts, inputWithEscapedNewline, altsString, context);
+
+		String format = "reportAmbiguity: input='%s'; decision='%s', conflictingAlts=%s; context (deepest part left)='%s'";
+		String message = String.format(format, inputWithEscapedNewline, decision, conflictingAlts, context);
 
 		printStream.println(message);
 	}

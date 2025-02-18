@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+    <action>
+        <actionName>run.single.main</actionName>
+        <packagings>
+            <packaging>*</packaging>
+        </packagings>
+        <goals>
+            <goal>process-classes</goal>
+            <!-- https://www.mojohaus.org/exec-maven-plugin/exec-mojo.html-->
+            <goal>org.codehaus.mojo:exec-maven-plugin:3.1.0:exec</goal>
+        </goals>
+        <properties>
+            <!-- To disable this warning use the engine.WarnInterpreterOnly=false
+                 option or the '-Dpolyglot.engine.WarnInterpreterOnly=false system property -->
+
+            <!-- WARNING: The polyglot engine uses a fallback runtime that 
+                 does not support runtime compilation to native code.
+                 Execution without runtime compilation will negatively impact 
+                 the guest application performance.
+                 The following cause was found: JVMCI is not enabled for this 
+                 JVM. Enable JVMCI using -XX:+EnableJVMCI.-->
+            <!-- -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCI -->
+
+            <!-- The following cause was found: Libgraal compilation is not 
+                 available on this JVM. Alternatively, the org.graalvm.compiler:compiler 
+                 module can be put on the upgrade-module-path.
+                 For more information see: 
+                 https://www.graalvm.org/latest/reference-manual/embed-languages/#runtime-optimization-support.-->
+
+            <exec.vmArgs>-Dfile.encoding=UTF-8 -Dstdout.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Dgraalvm.locatorDisabled=true --add-exports org.graalvm.truffle/com.oracle.truffle.api.nodes=ALL-UNNAMED --add-exports org.graalvm.truffle/com.oracle.truffle.api.exception=ALL-UNNAMED --add-exports org.graalvm.truffle/com.oracle.truffle.api=ALL-UNNAMED --add-exports org.graalvm.truffle/com.oracle.truffle.api.interop=ALL-UNNAMED</exec.vmArgs>
+            <exec.args>${exec.vmArgs} -classpath %classpath ${exec.mainClass} ${exec.appArgs}</exec.args>
+            <exec.executable>/home/oliver/graalvm-jdk-23.0.1+11.1/bin/java</exec.executable>
+            <!--exec.executable>/home/oliver/graalvm-community-openjdk-21.0.2+13.1/bin/java</exec.executable-->
+            <!--exec.executable>/home/oliver/jdk-22.0.2/bin/java</exec.executable-->
+            <exec.mainClass>${packageClassName}</exec.mainClass>
+            <exec.classpathScope>${classPathScope}</exec.classpathScope>
+        </properties>
+    </action>
+</actions>

@@ -13,8 +13,8 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<maven.compiler.source>17</maven.compiler.source>
-		<maven.compiler.target>17</maven.compiler.target>
+		<maven.compiler.source>21</maven.compiler.source>
+		<maven.compiler.target>21</maven.compiler.target>
 		<annotation-processing.version>1.0-SNAPSHOT</annotation-processing.version>
 		<generatedSourcesDirectory>${project.build.directory}/generated-sources/DSL4GA_Annotation</generatedSourcesDirectory>
 		<generatedTestSourcesDirectory>${project.build.directory}/generated-test-sources/DSL4GA_Annotation</generatedTestSourcesDirectory>
@@ -26,28 +26,25 @@
 			<groupId>de.orat.math.cgacasadi</groupId>
 			<artifactId>CGACasADi</artifactId>
 			<version>1.0-SNAPSHOT</version>
-			<scope>test</scope>
+			<scope>runtime</scope>
 		</dependency>
 		
 		<dependency>
 			<groupId>de.dhbw.rahmlab</groupId>
 			<artifactId>DSL4GA_Annotation</artifactId>
 			<version>1.0-SNAPSHOT</version>
-			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>de.dhbw.rahmlab</groupId>
 			<artifactId>DSL4GA_Impl_Fast</artifactId>
 			<version>1.0-SNAPSHOT</version>
-			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>de.dhbw.rahmlab</groupId>
 			<artifactId>DSL4GA_Impl_Truffle</artifactId>
 			<version>1.0-SNAPSHOT</version>
-			<scope>compile</scope>
 		</dependency>
 
 		<!-- Needed for AntlrTestRig -->
@@ -55,7 +52,6 @@
 			<groupId>org.antlr</groupId>
 			<artifactId>antlr4</artifactId>
 			<version>4.13.1</version>
-			<scope>test</scope>
 		</dependency>
 		<!-- -->
 
@@ -137,6 +133,7 @@
 						<exclude>**/test/parsing/**</exclude>
 					</excludes>
 					<encoding>${project.build.sourceEncoding}</encoding>
+					<!-- Erläuterungen: https://www.tutego.de/blog/javainsel/category/java-9/ -->
 					<argLine>-Dfile.encoding=UTF-8 -Dstdout.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Dgraalvm.locatorDisabled=true --add-exports org.graalvm.truffle/com.oracle.truffle.api.nodes=ALL-UNNAMED --add-exports org.graalvm.truffle/com.oracle.truffle.api.exception=ALL-UNNAMED --add-exports org.graalvm.truffle/com.oracle.truffle.api=ALL-UNNAMED --add-exports org.graalvm.truffle/com.oracle.truffle.api.interop=ALL-UNNAMED</argLine>
 					<skipTests>${skipTests}</skipTests>
 					<trimStackTrace>false</trimStackTrace>

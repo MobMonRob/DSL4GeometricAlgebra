@@ -2,14 +2,14 @@ package de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.s
 
 import com.oracle.truffle.api.frame.VirtualFrame;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.stmtSuperClasses.NonReturningStatementBaseNode;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionCalls.nodes.exprSuperClasses.AbstractFunctionCall;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionCalls.nodes.expr.FunctionCall;
 
 public final class CallStmt extends NonReturningStatementBaseNode {
 
-	protected final AbstractFunctionCall callExpr;
+	protected final FunctionCall callExpr;
 	protected final int scopeVisibleVariablesIndex;
 
-	public CallStmt(AbstractFunctionCall callExpr, int scopeVisibleVariablesIndex) {
+	public CallStmt(FunctionCall callExpr, int scopeVisibleVariablesIndex) {
 		this.callExpr = callExpr;
 		this.scopeVisibleVariablesIndex = scopeVisibleVariablesIndex;
 	}

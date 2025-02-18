@@ -4,7 +4,7 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.NodeCost;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import static de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.CatchAndRethrow.catchAndRethrow;
-import de.orat.math.cga.api.CGAMultivector;
+import de.orat.math.gacalc.api.MultivectorNumeric;
 
 public abstract class BinaryOp extends ExpressionBaseNode {
 
@@ -19,16 +19,16 @@ public abstract class BinaryOp extends ExpressionBaseNode {
 	}
 
 	@Override
-	public CGAMultivector executeGeneric(VirtualFrame frame) {
-		CGAMultivector argumentLeftValue = this.argumentLeft.executeGeneric(frame);
-		CGAMultivector argumentRightValue = this.argumentRight.executeGeneric(frame);
+	public MultivectorNumeric executeGeneric(VirtualFrame frame) {
+		MultivectorNumeric argumentLeftValue = this.argumentLeft.executeGeneric(frame);
+		MultivectorNumeric argumentRightValue = this.argumentRight.executeGeneric(frame);
 
 		return catchAndRethrow(this, () -> {
 			return this.execute(argumentLeftValue, argumentRightValue);
 		});
 	}
 
-	protected abstract CGAMultivector execute(CGAMultivector left, CGAMultivector right);
+	protected abstract MultivectorNumeric execute(MultivectorNumeric left, MultivectorNumeric right);
 
 	@Override
 	public NodeCost getCost() {

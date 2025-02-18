@@ -6,11 +6,10 @@ import de.dhbw.rahmlab.dsl4ga.common.parsing.CustumDiagnosticErrorListener;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeLexer;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParser;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.SyntaxErrorListener;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.astConstruction.SourceUnitTransform;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.ValidationException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.Function;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.iParsingService;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.astConstruction.SourceUnitTransform;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.atn.PredictionMode;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
@@ -37,13 +36,20 @@ public final class ParsingService implements iParsingService {
 		GeomAlgeLexer lexer = this.getLexer(program);
 		GeomAlgeParser parser = this.getParser(lexer);
 		configureParserDefault(parser);
+		// configureParserDiagnostic(parser); //DBG
 		try {
 			return invoke(parser, geomAlgeLangContext);
 		} catch (ParseCancellationException ex) {
-			System.out.println("PredictionMode.SLL failed.");
+			// System.out.println("PredictionMode.SLL failed.");
 
-			lexer.reset();
-			parser.reset();
+			// Leads to incorrect error reporting in some cases.
+			// lexer.reset();
+			// parser.reset();
+			// Better instead:
+			program.get().seek(0);
+			lexer = this.getLexer(program);
+			parser = this.getParser(lexer);
+
 			configureParserDiagnostic(parser);
 			try {
 				return invoke(parser, geomAlgeLangContext);

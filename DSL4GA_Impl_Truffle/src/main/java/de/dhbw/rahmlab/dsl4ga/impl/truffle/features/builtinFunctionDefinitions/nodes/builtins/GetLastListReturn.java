@@ -1,15 +1,21 @@
 package de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.builtins;
 
+import com.oracle.truffle.api.dsl.NodeField;
 import com.oracle.truffle.api.dsl.Specialization;
+import com.oracle.truffle.api.frame.VirtualFrame;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.builtinsSuperClasses.BuiltinFunctionBody;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.runtime.ScalarExtractor;
-import de.orat.math.cga.api.CGAMultivector;
+import de.orat.math.gacalc.api.MultivectorNumeric;
 
+/**
+ * Only for internal use.
+ */
+@NodeField(name = "index", type = int.class)
 public abstract class GetLastListReturn extends BuiltinFunctionBody {
 
+	protected abstract int getIndex();
+
 	@Specialization
-	protected CGAMultivector execute(CGAMultivector input) {
-		int index = (int) ScalarExtractor.extractScalar(input, this);
-		return super.currentLanguageContext().lastListReturn.getInner().get(index);
+	protected MultivectorNumeric doExecute(VirtualFrame frame) {
+		return super.currentLanguageContext().lastListReturn.getInner().get(this.getIndex());
 	}
 }
