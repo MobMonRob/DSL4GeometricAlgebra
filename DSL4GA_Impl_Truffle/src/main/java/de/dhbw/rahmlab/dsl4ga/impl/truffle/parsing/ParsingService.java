@@ -26,7 +26,7 @@ public final class ParsingService implements iParsingService {
 
 	protected Function invoke(GeomAlgeParser parser, GeomAlgeLangContext geomAlgeLangContext) {
 		GeomAlgeParser.SourceUnitContext sourceUnit = parser.sourceUnit();
-		Function main = SourceUnitTransform.generate(sourceUnit, geomAlgeLangContext);
+		Function main = SourceUnitTransform.generate(parser, sourceUnit, geomAlgeLangContext);
 
 		return main;
 	}

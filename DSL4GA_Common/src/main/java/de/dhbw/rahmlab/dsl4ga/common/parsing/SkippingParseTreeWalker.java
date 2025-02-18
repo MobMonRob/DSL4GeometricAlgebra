@@ -1,16 +1,11 @@
 package de.dhbw.rahmlab.dsl4ga.common.parsing;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Set;
 import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.RuleContext;
-import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
-import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 import org.antlr.v4.runtime.tree.RuleNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
@@ -18,18 +13,26 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 public class SkippingParseTreeWalker {
 
 	protected final ParseTreeListener listener;
-	protected final Class<? extends RuleNode> skipBeforeEnteringRuleNodeClass;
-	protected final List<RuleNode> stoppedBefore = new ArrayList<>();
+	protected final Set<Class<? extends RuleNode>> skipBeforeEnteringRuleNodeClass;
 	protected final Parser parser;
 
-	protected SkippingParseTreeWalker(Parser parser, ParseTreeListener listener, Class<? extends RuleNode> stopBefore) {
+	protected SkippingParseTreeWalker(Parser parser, ParseTreeListener listener, Set<Class<? extends RuleNode>> stopBefore) {
 		this.listener = listener;
 		this.skipBeforeEnteringRuleNodeClass = stopBefore;
 		this.parser = parser;
 	}
 
-	public static List<RuleNode> walk(ParseTreeListener listener, ParseTree first, Class<? extends RuleNode> skipBeforeEnteringRuleNodeClass) {
-		return walk(null, listener, first, skipBeforeEnteringRuleNodeClass);
+	/**
+	 * Performs a walk on the given parse tree starting at the root and going down recursively with
+	 * depth-first search. On each node, {@link ParseTreeWalker#enterRule} is called before recursively
+	 * walking down into child nodes, then {@link ParseTreeWalker#exitRule} is called after the recursive call
+	 * to wind up.
+	 *
+	 * @param listener The listener used by the walker to process grammar rules
+	 * @param first The parse tree to be walked on
+	 */
+	public static void walk(GeomAlgeParser parser, ParseTreeListener listener, ParseTree first) {
+		walk(parser, listener, first, Set.of());
 	}
 
 	/**
@@ -41,71 +44,24 @@ public class SkippingParseTreeWalker {
 	 * @param listener The listener used by the walker to process grammar rules
 	 * @param first The parse tree to be walked on
 	 * @param skipBeforeEnteringRuleNodeClass class of root node of a skipped subtree
-	 * @return the list of RuleNode's the walk stopped before
 	 */
-	public static List<RuleNode> walk(GeomAlgeParser parser, ParseTreeListener listener, ParseTree first, Class<? extends RuleNode> skipBeforeEnteringRuleNodeClass) {
-		SkippingParseTreeWalker walker = new SkippingParseTreeWalker(parser, listener, skipBeforeEnteringRuleNodeClass);
-		walker.walkRecursive(first);
-		return Collections.unmodifiableList(walker.stoppedBefore);
+	public static void walk(GeomAlgeParser parser, ParseTreeListener listener, ParseTree first, Class<? extends RuleNode> skipBeforeEnteringRuleNodeClass) {
+		walk(parser, listener, first, Set.of(skipBeforeEnteringRuleNodeClass));
 	}
 
-	public static class DummyNode implements RuleNode {
-
-		@Override
-		public RuleContext getRuleContext() {
-			throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-		}
-
-		@Override
-		public ParseTree getParent() {
-			throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-		}
-
-		@Override
-		public ParseTree getChild(int i) {
-			throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-		}
-
-		@Override
-		public void setParent(RuleContext rc) {
-			throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-		}
-
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> ptv) {
-			throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-		}
-
-		@Override
-		public String getText() {
-			throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-		}
-
-		@Override
-		public String toStringTree(Parser parser) {
-			throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-		}
-
-		@Override
-		public Interval getSourceInterval() {
-			throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-		}
-
-		@Override
-		public Object getPayload() {
-			throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-		}
-
-		@Override
-		public int getChildCount() {
-			throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-		}
-
-		@Override
-		public String toStringTree() {
-			throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-		}
-
+	/**
+	 * Performs a walk on the given parse tree starting at the root and going down recursively with
+	 * depth-first search. On each node, {@link ParseTreeWalker#enterRule} is called before recursively
+	 * walking down into child nodes, then {@link ParseTreeWalker#exitRule} is called after the recursive call
+	 * to wind up. It skips the subtrees below their root node of the class given in the parameter.
+	 *
+	 * @param listener The listener used by the walker to process grammar rules
+	 * @param first The parse tree to be walked on
+	 * @param skipBeforeEnteringRuleNodeClass class of root node of a skipped subtree
+	 */
+	public static void walk(GeomAlgeParser parser, ParseTreeListener listener, ParseTree first, Set<Class<? extends RuleNode>> skipBeforeEnteringRuleNodeClass) {
+		SkippingParseTreeWalker walker = new SkippingParseTreeWalker(parser, listener, skipBeforeEnteringRuleNodeClass);
+		walker.walkRecursive(first);
 	}
 
 	protected void walkRecursive(ParseTree current) {
@@ -120,8 +76,7 @@ public class SkippingParseTreeWalker {
 
 		RuleNode r = (RuleNode) current;
 
-		if (this.skipBeforeEnteringRuleNodeClass.isInstance(r)) {
-			this.stoppedBefore.add(r);
+		if (this.skipBeforeEnteringRuleNodeClass.contains(r.getClass())) {
 			return;
 		}
 
