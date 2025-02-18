@@ -21,8 +21,8 @@ public class ArrayAccessTest {
 	void simpleAccess(){
 		String code = """
             fn main (){
-                a[] := {1}
-                x := a[0]
+                a[] = {1}
+                x = a[0]
                 x
 			}      
 		""";
@@ -37,7 +37,7 @@ public class ArrayAccessTest {
 	void returnMultiplePartsOfArray(){
 		String code = """    
             fn main (){
-                a[] := {5, 6, 7}
+                a[] = {5, 6, 7}
                a[0], a[1], a[2] 
 			}      
 		""";
@@ -54,7 +54,7 @@ public class ArrayAccessTest {
 	void returnAdditionOfArray(){
 		String code = """    
             fn main (){
-                a[] := {5, 6, 7}
+                a[] = {5, 6, 7}
                a[0] + a[1] 
 			}      
 		""";
@@ -69,8 +69,8 @@ public class ArrayAccessTest {
 	void mixedReturn(){
 		String code = """    
             fn main (){
-                a[] := {1, 3}
-                b := 2
+                a[] = {1, 3}
+                b = 2
                 a[0], b, a[1]
 			}      
 		""";
@@ -87,8 +87,8 @@ public class ArrayAccessTest {
 	void invalidAccessWithoutIndex(){
 		String code = """
 			fn main (){
-                a[] := {0}
-				x := a[]
+                a[] = {0}
+				x = a[]
 				x
 			}      
 		""";
@@ -105,7 +105,7 @@ public class ArrayAccessTest {
 	void invalidReturnWholeArray(){
 		String code = """
 			fn main (){
-                a[] := {5, 6, 7}
+                a[] = {5, 6, 7}
 				a[]
 			}      
 		""";
@@ -122,7 +122,7 @@ public class ArrayAccessTest {
 	void invalidReturnWholeArrayWithoutBrackets(){
 		String code = """
 			fn main (){
-                a[] := {5, 6, 7}
+                a[] = {5, 6, 7}
 				a
 			}      
 		""";
@@ -139,7 +139,7 @@ public class ArrayAccessTest {
 	void invalidReturnMultiplePartsOfArray(){
 		String code = """
 			fn main (){
-                a[] := {5, 6, 7}
+                a[] = {5, 6, 7}
 				a[1,2]
 			}      
 		""";
@@ -156,7 +156,7 @@ public class ArrayAccessTest {
 	void invalidReturnAdditionOfArray(){
 		String code = """
 			fn main (){
-                a[] := {5, 6, 7}
+                a[] = {5, 6, 7}
 				a[1+2]
 			}      
 		""";
@@ -173,7 +173,7 @@ public class ArrayAccessTest {
 	void invalidOutOfRangeReturn(){
 		String code = """
 			fn main (){
-                a[] := {5, 6, 7}
+                a[] = {5, 6, 7}
 				a[3]
 			}      
 		""";

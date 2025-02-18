@@ -14,19 +14,19 @@ public class TestSymbolic {
 	private static void invocationTest() throws Exception {
 		String source = """  
         fn test (){
-			x [] := {1,2,3,4} 
+			x [] = {1,2,3,4} 
 			x[1], x[2] +3, 5 // x[1+2] // <-- geht (noch) nicht
             // x // <-- geht (noch) nicht
 		}    
                   
 		fn main() {
-			b := 8
-            x [] := {4, b+2}
+			b = 8
+            x [] = {4, b+2}
             // z [] := {1,2,2,3}
-            x[0], z, x[1] := test() 
-			a [] := {6,67, b, εᵢ, 0.5²εᵢ+5ε₀+εᵢ}
-            a [3] := a[2]
-            x[1] := x[1] + 2
+            x[0], z, x[1] = test() 
+			a [] = {6,67, b, εᵢ, 0.5²εᵢ+5ε₀+εᵢ}
+            a [3] = a[2]
+            x[1] = x[1] + 2
 			x[0], x[1] 
 		}
 		""";

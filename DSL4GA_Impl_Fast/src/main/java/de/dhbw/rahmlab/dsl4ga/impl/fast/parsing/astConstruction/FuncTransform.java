@@ -70,16 +70,37 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 		// Assignment
 		String name = ctx.vizAssigned.assigned.getText();
-
-		if (this.localVariables.containsKey(name) || this.localArrays.containsKey(name)) {
-			int line = ctx.vizAssigned.assigned.getLine();
-			throw new ValidationException(line, String.format("\"%s\" cannot be assigned again.", name));
+		if (ctx.vizAssigned.index == null){
+			// NOT AN ARRAY
+			if (this.localVariables.containsKey(name) || this.localArrays.containsKey(name)) {
+				int line = ctx.vizAssigned.assigned.getLine();
+				throw new ValidationException(line, String.format("\"%s\" cannot be assigned again.", name));
+			}	
+			this.localVariables.put(name, expr);
+		} else {
+			// ARRAY
+			int index = 0;
+			String indexText = ctx.vizAssigned.index.getText();
+			try {
+				index = Integer.parseInt(indexText);
+			}
+			catch (NumberFormatException e) {
+				throw new AssertionError(String.format("Value \"%s\" cannot be resolved as integer.", indexText));
+			}
+			if (!this.localArrays.containsKey(name)){
+				throw new ValidationException(String.format("Array \"%s\" has not been declared before.", name));
+			}
+			MultivectorSymbolic [] array = this.localArrays.get(name);
+			array [index] = expr;
+			this.localArrays.remove(name);
+			this.localArrays.put(name, array);
+			ExprTransform.updateArrays(localArrays);
 		}
 
-		this.localVariables.put(name, expr);
 
 		// To just ignore the viz is better then to force removing the colon symbols.
 	}
+
 
 	@Override
 	public void enterTupleAssgnStmt(GeomAlgeParser.TupleAssgnStmtContext ctx) {
@@ -92,19 +113,6 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 			throw new ValidationException(line, String.format("Count of assignees (%s) does not match count of results (%s).", size, results.size()));
 		}
 
-		int numOfArrays = 0;
-		int numOfIndices = ctx.indices.size();
-		for (int i = 0; i<size; ++i){
-			String name = ctx.assigned.get(i).getText();
-			if (this.localArrays.containsKey(name))
-				numOfArrays++;
-		}
-		if (numOfArrays != numOfIndices) {
-			throw new ValidationException (String.format("Count of array variables (%s) does not match count of array indices (%s).", numOfArrays, numOfIndices));
-		}
-
-		int arrayIndex = 0;
-
 		for (int i = 0; i < size; ++i) {
 			String name = ctx.vizAssigned.get(i).assigned.getText();
 
@@ -114,12 +122,18 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 			}
 
 			if (this.localVariables.containsKey(name)) {
-				throw new ValidationException(String.format("\"%s\" cannot be assigned again.", name));
+				int line = ctx.vizAssigned.get(i).assigned.getLine();
+				throw new ValidationException(line, String.format("\"%s\" cannot be assigned again.", name));
 			} else if (this.localArrays.containsKey(name)){
 				MultivectorSymbolic[] array = localArrays.get(name);
-				String indexStr;
-				indexStr = ctx.indices.get(arrayIndex).getText();
-				int index = Integer.parseInt(indexStr);
+				String indexText = ctx.vizAssigned.get(i).index.getText();
+				int index;
+				try {
+					index = Integer.parseInt(indexText);
+				}
+				catch (NumberFormatException e) {
+					throw new AssertionError(String.format("Value \"%s\" cannot be resolved as integer.", indexText));
+				}
 				if (arrayMap.containsKey(name) && arrayMap.get(name) == index){
 					throw new ValidationException (String.format("You are trying to assign \"%s[%d]\" twice in the same call.", name, index));
 				}
@@ -128,8 +142,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 				this.localArrays.remove(name);
 				this.localArrays.put(name, array);
 				ExprTransform.updateArrays(localArrays);
-				arrayIndex++;
-			} else if (!this.localVariables.containsKey(name)){
+			} else {
 				this.localVariables.put(name, results.get(i));
 			}
 		}
@@ -146,27 +159,6 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 			throw new ValidationException(String.format("\"%s\" cannot be assigned again.", name));
 		}
 
-		this.localArrays.put(name, array);
-		ExprTransform.updateArrays(localArrays);
-	}
-
-	@Override
-	public void enterArrayAssgnStmt (GeomAlgeParser.ArrayAssgnStmtContext ctx){
-		String name = ctx.assigned.getText();
-		int index = 0;
-		try {
-			index = Integer.parseInt(ctx.index.getText());
-		}
-		catch (NumberFormatException e) {
-			throw new AssertionError(String.format("Value \"%s\" cannot be resolved as integer.", ctx.index.getText()));
-		}
-		if (!this.localArrays.containsKey(name)){
-			throw new ValidationException(String.format("Array \"%s\" has not been declared before.", name));
-		}
-		MultivectorSymbolic [] array = this.localArrays.get(name);
-		MultivectorSymbolic expr = ExprTransform.generateArrayAssgnAST(this.parser, ctx.accessCtx, this.functionsView, this.localVariablesView);
-		array [index] = expr;
-		this.localArrays.remove(name);
 		this.localArrays.put(name, array);
 		ExprTransform.updateArrays(localArrays);
 	}

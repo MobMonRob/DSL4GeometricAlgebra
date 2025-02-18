@@ -9,7 +9,7 @@ installErrors=0
 displayMsg()
 {
  printf "\n$1\n"
- read -t 2 -p "(CTRL+C to cancel, S to skip this step, continuing in 3s) " skip
+ read -t 5 -p "(CTRL+C to cancel, S to skip this step, continuing in 5s) " skip
  printf "\n\n"
  if [[ $skip == [sS] ]]; then
   execStep=false
@@ -43,7 +43,6 @@ sudo apt install build-essential -y
 sudo apt install mingw-w64 mingw-w64-tools -y
 sudo apt install cmake -y
 sudo apt install swig -y
-sudo apt install openjdk-17-jdk openjdk-17-demo openjdk-17-doc openjdk-17-jre-headless openjdk-17-source -y
 fi
 
 displayMsg "Now, we use ${BLUE}git to clone necessary repositories${NC}."

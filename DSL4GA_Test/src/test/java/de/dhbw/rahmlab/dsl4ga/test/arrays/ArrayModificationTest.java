@@ -19,8 +19,8 @@ public class ArrayModificationTest {
 	void simpleModification(){
 		String code = """
             fn main (){
-                a[] := {1}
-                a[0] := 2
+                a[] = {1}
+                a[0] = 2
                 a[0]
 			}      
 		""";
@@ -34,9 +34,9 @@ public class ArrayModificationTest {
 	void modificationByAccess(){
 		String code = """
             fn main (){
-                a[] := {1}
-                b[] := {0}
-                b [ 0 ] := a[0] 
+                a[] = {1}
+                b[] = {0}
+                b [ 0 ] = a[0] 
                 b[0]
 			}      
 		""";
@@ -54,8 +54,8 @@ public class ArrayModificationTest {
 			}
                 
             fn main (){
-                a[] := {1}
-                a[0] := func()
+                a[] = {1}
+                a[0] = func()
                 a[0]
 			}      
 		""";
@@ -73,8 +73,8 @@ public class ArrayModificationTest {
 			}
                 
             fn main (){
-                a[] := {5, 6, 7}
-                a[0], x, a[1], _, a[2] := func()
+                a[] = {5, 6, 7}
+                a[0], x, a[1], _, a[2] = func()
                 a[0], a[1], a[2]
 			}      
 		""";
@@ -91,7 +91,7 @@ public class ArrayModificationTest {
 	void wrongModificationBeforeInit(){
 		String code = """
 			fn main (){
-				a[0] := 2
+				a[0] = 2
 				a[0]
 			}      
 		""";
@@ -107,8 +107,8 @@ public class ArrayModificationTest {
 	void outOfRangeModificationIndex(){
 		String code = """
 			fn main (){
-                a[] := {0}
-				a[1] := 2
+                a[] = {0}
+				a[1] = 2
 				a[0]
 			}      
 		""";
@@ -124,8 +124,8 @@ public class ArrayModificationTest {
 	void emptyModificationIndex(){
 		String code = """
 			fn main (){
-                a[] := {0}
-				a[ ] := 2
+                a[] = {0}
+				a[ ] = 2
 				a[0]
 			}      
 		""";
@@ -141,8 +141,8 @@ public class ArrayModificationTest {
 	void missingModificationIndex(){
 		String code = """
 			fn main (){
-                a[] := {0}
-				a := 2
+                a[] = {0}
+				a = 2
 				a[0]
 			}      
 		""";
@@ -158,8 +158,8 @@ public class ArrayModificationTest {
 	void invalidModificationIndex(){
 		String code = """
 			fn main (){
-                a[] := {0}
-				a[n] := 2
+                a[] = {0}
+				a[n] = 2
 				a[0]
 			}      
 		""";
@@ -179,8 +179,8 @@ public class ArrayModificationTest {
 			}
                 
             fn main (){
-                a[] := {5, 6, 7}
-                a[0], x, a[1], _, a := func()
+                a[] = {5, 6, 7}
+                a[0], x, a[1], _, a = func()
                 a[0], a[1], a[2]
 			}      
 		""";
@@ -200,8 +200,8 @@ public class ArrayModificationTest {
 			}
                 
             fn main (){
-                a[] := {5, 6, 7}
-                a[0], x, a[1], _, a[] := func()
+                a[] = {5, 6, 7}
+                a[0], x, a[1], _, a[] = func()
                 a[0], a[1], a[2]
 			}      
 		""";
@@ -221,8 +221,8 @@ public class ArrayModificationTest {
 			}
                 
             fn main (){
-                a[] := {5, 6, 7}
-                a[0], x, a[1], _, a[3] := func()
+                a[] = {5, 6, 7}
+                a[0], x, a[1], _, a[3] = func()
                 a[0], a[1], a[2]
 			}      
 		""";
@@ -242,8 +242,8 @@ public class ArrayModificationTest {
 			}
                 
             fn main (){
-                a[] := {5, 6, 7}
-                a[0], x, a[1], _, a[n] := func()
+                a[] = {5, 6, 7}
+                a[0], x, a[1], _, a[n] = func()
                 a[0], a[1], a[2]
 			}      
 		""";
@@ -263,8 +263,8 @@ public class ArrayModificationTest {
 			}
                 
             fn main (){
-                a[] := {5, 6, 7}
-                a[0], x, a[0], _, a[0] := func()
+                a[] = {5, 6, 7}
+                a[0], x, a[0], _, a[0] = func()
                 a[0]
 			}      
 		""";

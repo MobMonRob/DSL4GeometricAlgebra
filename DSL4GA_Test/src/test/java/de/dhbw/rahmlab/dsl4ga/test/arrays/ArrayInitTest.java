@@ -18,8 +18,8 @@ public class ArrayInitTest {
 	void correctInit (){
 		String code = """
             fn main (){
-				a[] := {1}
-					 b    []    :=    {2}
+				a[] = {1}
+					 b    []    =    {2}
                 a[0], b[0]
 			}
 		""";
@@ -35,7 +35,7 @@ public class ArrayInitTest {
 	void wrongAccessBeforeInit (){
 		String code = """
 		fn main (){
-			a [0] := {1}
+			a [0] = {1}
             a
 		}
 		""";

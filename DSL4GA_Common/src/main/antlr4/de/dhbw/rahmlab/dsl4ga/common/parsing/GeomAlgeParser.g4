@@ -59,12 +59,11 @@ stmt
 	:	SPACE* vizAssigned=vizAssignedR SPACE* ASSIGNMENT SPACE* exprCtx=expr SPACE*		#AssgnStmt
 	|	SPACE* vizAssigned+=vizAssignedR SPACE* (COMMA SPACE* vizAssigned+=vizAssignedR SPACE*)* ASSIGNMENT SPACE* callCtx=callExpr SPACE*		#TupleAssgnStmt
 	|	SPACE* assigned=IDENTIFIER SPACE* L_EDGE_BRACKET R_EDGE_BRACKET SPACE* ASSIGNMENT SPACE* L_CURLY_BRACKET SPACE* arrayCtx=arrayExpr SPACE* R_CURLY_BRACKET SPACE* # ArrayInitStmt
-	|   SPACE* assigned=IDENTIFIER SPACE* L_EDGE_BRACKET SPACE* index=INTEGER_LITERAL SPACE* R_EDGE_BRACKET SPACE* ASSIGNMENT SPACE* accessCtx=expr SPACE* # ArrayAssgnStmt
 	;
-
 
 vizAssignedR
 	: viz=COLON? assigned=(IDENTIFIER|LOW_LINE)
+	| viz=COLON? assigned=IDENTIFIER SPACE* L_EDGE_BRACKET SPACE* index=INTEGER_LITERAL SPACE* R_EDGE_BRACKET
 	;
 
 // The list-form (1) needs iteration in the transformer while the tree-form (2) don't.
