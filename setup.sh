@@ -66,11 +66,11 @@ displayMsg "Now, we ${BLUE}download and install GraalVM and Maven${NC}."
 if $execStep; then
 wget -O graalvm21.tar.gz https://github.com/graalvm/graalvm-ce-builds/releases/download/jdk-21.0.2/graalvm-community-jdk-21.0.2_linux-x64_bin.tar.gz
 mkdir GraalVM21
-tar -xvzf graalvm21.tar.gz -C ./GraalVM21 --strip-components=1
+tar -xzf graalvm21.tar.gz -C ./GraalVM21 --strip-components=1
 rm -f graalvm21.tar.gz
 wget -O maven.tar.gz https://dlcdn.apache.org/maven/maven-3/3.9.9/binaries/apache-maven-3.9.9-bin.tar.gz
 mkdir Maven3.9.9
-tar -xvzf maven.tar.gz -C ./Maven3.9.9 --strip-components=1
+tar -xzf maven.tar.gz -C ./Maven3.9.9 --strip-components=1
 rm -f maven.tar.gz
 cd ./GraalVM21
 export JAVA_HOME=$(pwd)
@@ -89,6 +89,7 @@ mvnInstallCmd="mvn --no-transfer-progress install"
 cd ./SparseMatrix && $mvnInstallCmd || installationEval
 cd ../GeometricAlgebra && $mvnInstallCmd || installationEval
 mvn install:install-file -Dfile=../vecmath.jar -DgroupId=org.jogamp.java3d -DartifactId=vecmath -Dversion=1.7.1 -Dpackaging=jar -DgeneratePom=true || installationEval
+cd ../EuclidView3d && $mvnInstallCmd || installationEval
 cd ../Euclid3DViewAPI && $mvnInstallCmd || installationEval
 cd ../ConformalGeometricAlgebra && $mvnInstallCmd || installationEval
 cd ../JNativeLibLoader/NativeLibLoader && $mvnInstallCmd || installationEval
