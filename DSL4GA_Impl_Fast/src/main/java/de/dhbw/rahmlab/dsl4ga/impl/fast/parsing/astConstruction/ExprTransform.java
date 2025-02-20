@@ -68,7 +68,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 	public static MultivectorSymbolic[] generateArrayAST(GeomAlgeParser parser, GeomAlgeParser.ArrayExprContext arrayExprCtx, Map<String, FunctionSymbolic> functionsView, Map<String, MultivectorSymbolic> localVariablesView) {
 		ExprTransform exprTransform = new ExprTransform(functionsView, localVariablesView);
 
-		SkippingParseTreeWalker.walk(parser, exprTransform, arrayExprCtx, SkippingParseTreeWalker.DummyNode.class);
+		SkippingParseTreeWalker.walk(parser, exprTransform, arrayExprCtx);
 
 		int i = exprTransform.nodeStack.size()-1;
 		MultivectorSymbolic[] arrayVars = new MultivectorSymbolic[exprTransform.nodeStack.size()];
@@ -82,7 +82,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		public static MultivectorSymbolic generateArrayAssgnAST(GeomAlgeParser parser, GeomAlgeParser.ExprContext exprCtx, Map<String, FunctionSymbolic> functionsView, Map<String, MultivectorSymbolic> localVariablesView) {
 		ExprTransform exprTransform = new ExprTransform(functionsView, localVariablesView);
 
-		SkippingParseTreeWalker.walk(parser, exprTransform, exprCtx, SkippingParseTreeWalker.DummyNode.class);
+		SkippingParseTreeWalker.walk(parser, exprTransform, exprCtx);
 
 		MultivectorSymbolic rootNode = exprTransform.nodeStack.getFirst();
 		return rootNode;

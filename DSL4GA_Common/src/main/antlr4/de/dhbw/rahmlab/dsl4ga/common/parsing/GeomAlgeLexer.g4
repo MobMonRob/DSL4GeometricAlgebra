@@ -325,6 +325,10 @@ COMMA
 	: ','
 	;
 
+SEMICOLON
+	: ';'
+	;
+
 LOW_LINE
 	: '_'
 	;
