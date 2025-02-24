@@ -56,7 +56,7 @@ public abstract class GeomAlgeLangBaseNode extends Node implements Instrumentabl
 	// Needed for Debugger.
 	@Override
 	public boolean isInstrumentable() {
-		boolean is = Objects.nonNull(super.getSourceSection());
+		boolean is = Objects.nonNull(this.getSourceSection());
 		return is;
 	}
 }

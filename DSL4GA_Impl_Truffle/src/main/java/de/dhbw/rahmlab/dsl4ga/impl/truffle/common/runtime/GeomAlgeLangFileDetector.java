@@ -9,7 +9,7 @@ public class GeomAlgeLangFileDetector implements TruffleFile.FileTypeDetector {
 	@Override
 	public String findMimeType(TruffleFile file) throws IOException {
 		String name = file.getName();
-		if (name != null && name.endsWith(".ga")) {
+		if (name != null && name.endsWith(GeomAlgeLang.FILE_ENDING)) {
 			return GeomAlgeLang.MIME_TYPE;
 		}
 		return null;

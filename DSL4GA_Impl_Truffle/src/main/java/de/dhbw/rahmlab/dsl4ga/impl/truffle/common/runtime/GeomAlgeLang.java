@@ -33,6 +33,7 @@ import java.io.IOException;
 public class GeomAlgeLang extends TruffleLanguage<GeomAlgeLangContext> {
 
 	public static final String LANGUAGE_ID = "ga";
+	public static final String FILE_ENDING = ".ga";
 	public static final String MIME_TYPE = "application/x-ga";
 
 	private GeomAlgeLangContext context;
