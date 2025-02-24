@@ -1,0 +1,143 @@
+// Inverse Kinematics for a robot of type UR5, following Kleppe2016.
+
+// creates points
+
+// round point from 3 euclidean coordinates
+fn getPoint(x,y,z){
+	//p = xε₁+yε₂+zε₃
+    //p + 0.5p²εᵢ+ε₀
+	up(xε₁+yε₂+zε₃)
+}
+
+// get points from opns point pair
+//TODO test for structural zeros, corresponding to getPoints2()
+fn getPoints(pp){
+    F = pp/sqrt(abs(<pp²>₀))
+	P = 0.5 (1+F)
+	P_inv = 0.5 (1-F) 
+	p1 = -P_inv (pp⋅εᵢ) P
+	p2 = P (pp⋅εᵢ) P_inv
+	p1, p2
+}
+// from opns point pair, works fine
+fn getPoints2(pp){
+	//WORKAROUND grade selection because wrong non structral zeros appear
+	<(pp - sqrt(abs(<pp²>₀)))/(-εᵢ⋅pp)>₁, <(pp + sqrt(abs(<pp²>₀)))/(-εᵢ⋅pp)>₁
+}
+
+fn main() {
+
+p = 0.5ε₁ + 0.5ε₂
+ae = ε₂
+
+// dh parameters UR5e
+a2 = -0.425
+a3 = -0.3922
+d1 = 0.1625
+d4 = 0.1333
+d5 = 0.0997
+d6 = 0.0996
+
+// position of the end-effector and joint 5
+:p6 = p+0.5p²εᵢ+ε₀
+v = p-(d6 ae)
+:p5 = v+0.5v²εᵢ+ε₀
+
+
+// Finding the vertical plane PIc through the joints 1,2,3,4
+
+// 1. Finding the Point Pc with an offset d4 from p5:
+
+// ipns sphere around p5
+Sc = p5-0.5d4²εᵢ
+
+// ipns sphere around the origin
+K0 = ε₀+(Sc⋅ε₀)εᵢ
+
+// ipns circle by intersection of Sc and K0
+C5k = Sc^K0
+
+
+// horizontal plane through p5
+Pl = p5∧ε₁^ε₂^εᵢ // opns-plane TODO warum ist das so?
+Pli = Pl* 
+// intersection of C5k with the horizontal plane through p5
+Qc = C5k⋅Pl // opns point-pair [00, 00, 00, 00, 00, 00, 1.79295, 00, 0.356987, 1.25739, 00, -0.396476, -1.39648, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 0, 00, 00, 00]
+:Qci = Qc* 
+
+//:Pc1a, Pc2a = getPoints(Qc)
+// [00, 5.47275, 4.0223, 00, 2.01105, 7.08338, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 1.66533e-15, 6.88338e-15, 00, 00, -1.26358e-15, 00, 00, 5.50171e-16, 00, 00, 00, 00, 00, 00, 00] bereits hier falche grade-3 elemente
+:Pc1, Pc2 = getPoints2(Qc)
+// pc1a [00, 0.901431, 0.990138, 00, 0.396476, 1.39648, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, -2.77556e-17, -1.11022e-16, 00, 00, 0, 00, 00, 0, 00, 00, 00, 00, 00, 00, 00]
+// pc2a [00, 1.07894, 0.79299, 00, 0.396476, 1.39648, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, -2.77556e-17, -1.11022e-16, 00, 00, 0, 00, 00, 0, 00, 00, 00, 00, 00, 00, 00]
+
+// vertical plane through joints 1, 2, 3 and 4
+
+//TODO ab hier beide Varianten ermöglichen, daher besser alles folgende in getP4() function auslagern
+// um alle 4 Möglichkeiten zu erhalten
+
+// plane through origin, PC1 amd z-Achse liegt drin (ok)
+PIc = ε₀∧ε₃∧Pc1∧εᵢ // opns plane (eq. 46), ok
+:PIci = PIc* 
+
+
+
+// finding P4
+
+
+// 1. finding a line through p4 and p5
+
+// plane parallel to PIc that contains p5
+// this than also contains p4
+:PIc_parallel = PIc* + (p5⋅PIc*)εᵢ // (eq. 47)
+
+// TODO was soll das sein? Ebene opns mittig zwische p5 und p6 mit Verbindung zwischen beiden Punkten als Normalenvektor?
+PI56_orthogonal = ((p5^p6)*∧εᵢ) // (eq. 48.1)
+// PI56_orthogonali = [00, 0, 0.0996, 00, 0.0946399, 0.0946399, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00]
+:PI56_orthogonali = PI56_orthogonal*
+ 
+// normal bi-vector of the plane PI56_orthogonal
+n56_orthogonal  = -normalize(PI56_orthogonal⋅ε₀⋅εᵢ) // eq. 21 zur Bestimmung einer ""Rotationsebene" parallel zu PI56_orthogonal. Was soll das bedeuten? ein bivector! der die Ebene aufspannt, Ebene parallel zu PI56_orthogonal aber durch den Ursprung?
+//n56_orthogonal1  = -normalize((PI56_orthogonali∧εᵢ)⋅ε₀) // (eq. 19 alternativ zu 48.1-2), Richtungsvektor der Ebene bestimmen
+// plane containing p5 (to find p4 laying also in the plane) and which is perpendicular to the normal of PIc
+PIc_orthogonal = p5∧n56_orthogonal∧εᵢ // eq. 48.3
+:PIc_orthogonali = PIc_orthogonal* 
+:L45 = PIc_parallel∧PIc_orthogonali // ipns line eq. 48:4
+S5  = p5-(0.5d5²εᵢ) // ipns sphere eq. 49.1
+Q4  = (L45*⋅S5) // opns point pair, eq. 49.2 point pair
+:Q4i = Q4*
+:p41, :p42 = getPoints2(Qc) // flipped and not flipped wrist
+//P4 = (Q4-sqrt(Q4²))/(-εᵢ⌋Q4) // eq. 49.3
+//TODO eigentlich gibts hier bereits für P4 vier Lösungen! siehe oben, da es für PIc bereits 2 Lösungen gibt
+
+
+// finding point P3
+
+:S4  = p41 - (0.5d4²εᵢ) // ipns sphere, eq. 50:1
+L34 = p5∧PIc*∧εᵢ // opns line, eq. 50.2
+:L34i = L34*
+Q3  = S4⋅L34 // opns point pair, eq. 50.3
+:Q3i = Q3*
+//P3 = (Q3-sqrt(Q3²))/(-εᵢ⌋Q3) 
+// mit add p31 gibts einen jogamp Fehler
+:p31, :p32 = getPoints2(Q3) // eq. 50.4
+
+
+// finding P1 and P2
+
+:p1 = getPoint(0, 0, d1) // eq. 51
+S1 = p1-0.5a2²εᵢ // ipns sphere, eq. 52.1
+// TODO zwei Lösungen für p3 berücksichtiten
+S3 = p32-0.5a3²εᵢ // ipns sphere, eq. 52.2
+//TODO statt circle wird ein oriented Point visualisiert == imaginärer Kreis?
+// ausserdem schneiden sich die beiden Kugeln nicht
+// [00, 00, 00, 00, 00, 00, 0, -0.1625, 0.577109, -0.422891, -0.146315, 0.519629, -0.380771, 0.0754815, 0.237982, -1.04161, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00] grade-2
+:C2 = S1∧S3 // ipns circle, eq. 52.3
+// TODO zwei Lösungen für PIc berücksichtigen
+Q2 = C2⋅PIc // opns point pair bzw. ipns oriented point
+Q2i = Q2*
+//P2 = (Q2-sqrt(Q2²))/(-εᵢ⌋Q2) 
+:p21, :p22 = getPoints2(Q2) // eq. 52.4
+
+p6, p5
+}

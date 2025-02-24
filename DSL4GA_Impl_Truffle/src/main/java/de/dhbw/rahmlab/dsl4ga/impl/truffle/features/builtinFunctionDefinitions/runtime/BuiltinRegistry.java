@@ -22,12 +22,35 @@ public class BuiltinRegistry {
 	}
 
 	private void installBuiltins() {
+		
+		// in/out functions
+		this.installBuiltin(UpFactory.getInstance());
+		this.installBuiltin(DownFactory.getInstance());
+		// scalar functions
 		this.installBuiltin(AbsFactory.getInstance());
 		this.installBuiltin(Atan2Factory.getInstance());
-		this.installBuiltin(ExpFactory.getInstance());
 		// this.installBuiltin(GetLastListReturnFactory.getInstance()); // Only for internal use
+		
+		// NSELGA
 		this.installBuiltin(NormalizeFactory.getInstance());
 		this.installBuiltin(SqrtFactory.getInstance());
+		this.installBuiltin(ExpFactory.getInstance());
+		this.installBuiltin(LogFactory.getInstance());
+		
+		// new scalar functions
+		this.installBuiltin(AcosFactory.getInstance());
+		this.installBuiltin(AsinFactory.getInstance());
+		this.installBuiltin(AtanFactory.getInstance());
+		this.installBuiltin(CosFactory.getInstance());
+		this.installBuiltin(SinFactory.getInstance());
+		this.installBuiltin(TanFactory.getInstance());
+		this.installBuiltin(SignFactory.getInstance());
+		
+		// new products
+		this.installBuiltin(DotFactory.getInstance());
+		this.installBuiltin(IpFactory.getInstance());
+		this.installBuiltin(ScpFactory.getInstance());
+		this.installBuiltin(MapFactory.getInstance());
 	}
 
 	private void installBuiltin(NodeFactory<? extends BuiltinFunctionBody> factory) {

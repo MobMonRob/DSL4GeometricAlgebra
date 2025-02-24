@@ -14,7 +14,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.antlr.v4.runtime.Token;
 
 public class FuncTransform extends GeomAlgeParserBaseListener {
 
@@ -42,7 +41,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 		ExprGraphFactory exprGraphFactory = GAExprGraphFactoryService.getExprGraphFactoryThrowing();
 		FunctionSymbolic function = exprGraphFactory.createFunctionSymbolic(transform.functionName, transform.formalParameterList, transform.retExprs);
-		System.out.println("function: " + function);
+		// System.out.println("function: " + function);
 
 		return function;
 	}
@@ -59,7 +58,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 	public void exitFormalParameter_(GeomAlgeParser.FormalParameter_Context ctx) {
 		String name = ctx.name.getText();
 
-		var param = exprGraphFactory.createMultivectorPurelySymbolic(name);
+		var param = exprGraphFactory.createMultivectorPurelySymbolicDense(name);
 
 		this.formalParameterList.add(param);
 		this.localVariables.put(name, param);
@@ -70,33 +69,31 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 		MultivectorSymbolic expr = ExprTransform.generateExprAST(this.parser, ctx.exprCtx, this.functionsView, this.localVariablesView);
 
 		// Assignment
-		String name = ctx.assigned.getText();
+		String name = ctx.vizAssigned.assigned.getText();
 
 		if (this.localVariables.containsKey(name)) {
-			throw new ValidationException(String.format("\"%s\" cannot be assigned again.", name));
+			int line = ctx.vizAssigned.assigned.getLine();
+			throw new ValidationException(line, String.format("\"%s\" cannot be assigned again.", name));
 		}
 
 		this.localVariables.put(name, expr);
 
-		// Viz
-		if (ctx.viz != null) {
-			// To just ignore the viz is better then to force removing the colon symbols.
-			// throw new UnsupportedOperationException("Visualization ist not supported in Fast implementation.");
-		}
+		// To just ignore the viz is better then to force removing the colon symbols.
 	}
 
 	@Override
 	public void enterTupleAssgnStmt(GeomAlgeParser.TupleAssgnStmtContext ctx) {
 		List<MultivectorSymbolic> results = ExprTransform.generateCallAST(this.parser, ctx.callCtx, this.functionsView, this.localVariablesView);
 
-		final int size = ctx.assigned.size();
+		final int size = ctx.vizAssigned.size();
 
 		if (size != results.size()) {
-			throw new ValidationException(String.format("Count of assignees (%s) does not match count of results (%s).", size, results.size()));
+			int line = ctx.start.getLine();
+			throw new ValidationException(line, String.format("Count of assignees (%s) does not match count of results (%s).", size, results.size()));
 		}
 
 		for (int i = 0; i < size; ++i) {
-			String name = ctx.assigned.get(i).getText();
+			String name = ctx.vizAssigned.get(i).assigned.getText();
 
 			if (name.equals(GeomAlgeParser.LOW_LINE)) {
 				// Ignore result
@@ -104,17 +101,20 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 			}
 
 			if (this.localVariables.containsKey(name)) {
-				throw new ValidationException(String.format("\"%s\" cannot be assigned again.", name));
+				int line = ctx.vizAssigned.get(i).assigned.getLine();
+				throw new ValidationException(line, String.format("\"%s\" cannot be assigned again.", name));
 			}
 
 			this.localVariables.put(name, results.get(i));
+
+			// To just ignore the viz is better then to force removing the colon symbols.
 		}
 	}
 
 	@Override
 	public void enterRetExprStmtExpr(GeomAlgeParser.RetExprStmtExprContext ctx) {
 		MultivectorSymbolic retExpr = ExprTransform.generateExprAST(this.parser, ctx.exprContext, this.functionsView, this.localVariablesView);
-		System.out.println("retExpr: " + retExpr);
+		// System.out.println("retExpr: " + retExpr);
 		this.retExprs.add(retExpr);
 	}
 }

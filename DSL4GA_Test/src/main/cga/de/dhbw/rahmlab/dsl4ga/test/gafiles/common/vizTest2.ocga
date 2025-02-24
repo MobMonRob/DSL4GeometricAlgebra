@@ -1,22 +1,22 @@
 fn test2(g, h) {
-	:i := h
-	:j := g
-	a := 25
+	:i = h
+	:j = g
+	a = 25
 	g, 10
 }
 
 fn test1(c, d) {
-	p22 := test2(c, d)
-	a := 22
-	:e := c
-	:f := d
-	b := 36
+	p22 = test2(c, d)
+	a = 22
+	:e = c
+	:f = d
+	b = 36
 	c, 5
 }
 
 fn main(a, b) {
-	d := test1(a, b)
-	e := getLastListReturn(1)
-	p1 := a
+	d = test1(a, b)
+	e = getLastListReturn(1)
+	p1 = a
 	a, b, d, e, p1
 }

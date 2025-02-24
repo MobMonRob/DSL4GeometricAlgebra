@@ -1,99 +1,332 @@
 // Inverse Kinematics following A. Marzabal and I. Zaplana: Closed-form inverse kinematics 
 // solututions for a class of serial robots without a spherical wrist using conformal geometric algebra.
-// Example: UR5e robot placed at the origin of the frame
+// Example: UR5e robot placed at the origin of the coordinate system
+
+
+// generic cga specific functions
+
+// up-down projection
+
+// up-projection of a vector into a cga multivector, results in a round point
+fn up2(vec) {
+	vec + 0.5 vec² εᵢ + ε₀ 
+}
+// down projection of a multivector into an euclidean vector
+// euclidean location of a round point
+fn down2(vec) {
+	// normalize vec
+	nvec = -vec/(vec⋅εᵢ) // Vgl. Clifford lib: anderes Vorzeichen
+	// bivector input: (e1+e2+0.5e4+1.5e5)/((e1+e2+0.5e4+1.5e5)|(e4+e5))
+    // bivector output: (e1​+e2​+0.5e4​+1.5e5​)/((e1​+e2​+0.5e4​+1.5e5​)⋅(e4​+e5​))=−e1​−e2​−0.5e4​−1.5e5 // stimmt überein
+	// bestätigt dass "/" richtig implementiert ist, dann muss wohl das Vorzeichen in der Clifford-lib Doku falsch sein
+	 
+	// extracts the pure euclidean part of the given multivector
+	// ((-vec/(vec⋅εᵢ))∧E₀) E₀⁻¹ // funktioniert auch
+	// ((-vec/(vec⋅εᵢ))∧E₀)/E₀
+    (nvec∧E₀)/E₀
+}
+
+// get e1 component from the given multivector vec as a scalar
+fn x(vec){
+	-(vec∧ε₂∧ε₃)E₃
+}
+// get e2 component from the given multivector vec as a scalar
+fn y(vec){
+	(vec∧ε₁∧ε₃)E₃
+}
+// get e3 component from the given multivector vec as a scalar
+fn z(vec){
+	-(vec∧ε₁∧ε₂)E₃
+}
+
+fn sign2(scalar){
+	scalar/abs(scalar)
+}
+
+
+// creates points
 
 // round point from 3 euclidean coordinates
-fn rp(x,y,z){
-	p := xε₁+yε₂+zε₃
-    p + 0.5p²εᵢ+ε₀
+fn getPoint(x,y,z){
+	//p = xε₁+yε₂+zε₃
+    //p + 0.5p²εᵢ+ε₀
+	up(xε₁+yε₂+zε₃)
 }
-// sphere from midpoint and radius
-fn sp(m,r){
+
+
+// creates spheres
+
+// ipns sphere from ipns midpoint and radius
+// m round point
+fn getSphere(m,r){
+	// up(center)-(0.5*einf*radius**2)
 	m - 0.5r²εᵢ
 }
-// three euclidean coordinates from a rount point
-fn ep(rp){
-	(ε₀∧εᵢ)⋅(rp∧(ε₀∧εᵢ))
-}
-// euclidean points from a point pair
-fn epp(pp){
-	ppnorm := sqrt(squaredNorm(pp)
-    (pp+ppnorm)/(-εᵢ⋅pp), (pp-ppnorm)/(-εᵢ⋅pp)
+
+
+// create planes
+
+// returns an ipns plane from euclidean normal vec und scalar dist to the origin
+fn getPlane(vec, d){
+	vec + d εᵢ
 }
 
-fn main() {
+// opns plane from ipns points
+fn getPlaneFromPoints(p1, p2, p3){
+	// up(a)^up(b)^up(c)^einf
+	p1∧p2∧p3∧εᵢ
+}
 
-	// nominal dh parameters UR5e, the d-parameters correspond to the link lengths
+// get the points from an opns point pair, works fine
+//TODO test for structural zeros, corresponding to getPoints2()
+fn getPoints(pp){
+    F = pp/sqrt(abs(<pp²>₀))
+	P = 0.5 (1+F)
+	P_inv = 0.5 (1-F) 
+	p1 = -P_inv (pp⋅εᵢ) P
+	p2 = P (pp⋅εᵢ) P_inv
+	p1, p2
+}
+// get the points from an opns point pair [Kleppe2016], works fine
+fn getPoints2(pp){
+	<(pp - sqrt(abs(<pp²>₀)))/(-εᵢ⋅pp)>₁, <(pp + sqrt(abs(<pp²>₀)))/(-εᵢ⋅pp)>₁
+}
+
+
+
+
+// transformations
+
+// round point and rotor as arguments, round point as result values
+fn transform(p, rot){
+	//TODO test
+	// p [00, 00, 00, 00, -0.5, 0.5, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00] sparsityok == (0,0,0)
+	// rot [1, 00, 00, 00, 00, 00, 0, 0, 0, 0, 0, 0, 0, -0.08125, -0.08125, 0, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00] grade0,2 ok
+	test = rot˜ // [1, 00, 00, 00, 00, 00, 0, 0, 0, 0, 0, 0, 0, 0.08125, 0.08125, 0, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00] sparsity ok
+	result = rot p rot˜
+	//WORKAROUND für geometric product sparsity bug
+	<result>₁ // [00, 0, 0, 0.1625, -0.486797, 0.513203, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 00, 00, 00, 00, 00, 0] sparsity problem
+}
+
+// euclidean vec representing a point, cga rotor as argument
+// returns the transformed vectur as an euclidean point
+// TODO test
+fn transform_vec(vec, rot){
+	// ist up/down hier nötig oder kann ich euclidian vec nicht auch direkt transformieren, da dies ja auch ein k-blade d.h. eine Ebene ist?
+	down(transform(up(vec), rot))
+}
+
+// argument vec of euclidean type
+// if vec==0 returns scalar 1
+// returns scalar, grade-2
+fn getTranslationRotor(vec){
+	// e**(-0.5*vec*einf)
+	result = exp(-0.5 vec εᵢ) // grade 0,2,4 FIXME
+	// [1, 00, 00, 00, 00, 00, 0, 0, 0, 0, 0, 0, 0, -0.08125, -0.08125, 0, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 0, 00, 00, 00]
+	<result>₀ + <result>₂
+}
+
+// normalized euclidian axis, theta in [rad]
+// returns scalar, grade-2
+fn getRotationRotor(theta, axis){
+	//e**(-0.5*theta*axis*I_base)
+	result = exp(-0.5 theta axis E₃) // grade 0,2,4 FIXME
+	// [0.707107, 00, 00, 00, 00, 00, 0, 0.707107, 0, 0, 0, 0, 0, 0, 0, 0, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 0, 0, 0, 0, 0, 00]
+	<result>₀ + <result>₂
+}
+
+// angles in [rad]
+//fn getRotationRotorFromCardanangles(alpha, beta, gamma){
+//	getRotationRotor(alpha, ε₁)
+//	getRotationRotor(alpha, ε₂)
+//	getRotationRotor(alpha, ε₃)
+//}
+
+
+// IK specific functions
+
+fn getV4(alpha, p5){
+	pl_vert_45_vec_1a = sin(alpha+π/2)ε₂+cos(alpha+π/2)ε₁ 
+    pl_vert_45_vec_1a sign(pl_vert_45_vec_1a⋅p5)
+}
+
+// get two possible solutions for P4
+// v4 ist normierter Richtungsvektor==plane durch Ursprung
+fn getP4(v4, p5, p6, d4, d5){
+	
+	// Wie kann kann ich in CGA einen Richtungsvektor definieren? 
+	// vielleicht wäre das Äquivalent gar kein Richtungsvektor sondern, eine Ebene durch die Mitte der beiden
+	// Punkte mit passendem Richtungsvektor, normiert auf den Abstand der beiden Punkte?
+	p5vec = down(p5)
+	v56 = normalize(down(p6)-p5vec)
+	
+	// ipns sphere with center p5 and radius d5
+	:s5 = getSphere(p5, d5) // S5 = p5 - 0.5d5²εᵢ
+
+    // plane with normal vector from p5 to p6 through p5
+
+	//Pl5 = v56 + (p5⋅v56)εᵢ
+	// Abstand des Punkts p5 von einer Ebene durch Ursprung mit Normalenvector v56 zum Ursprung
+	delta = p5vec⋅v56
+	:pl5 = getPlane(v56, delta) // ipns plane
+	:pl4 = getPlane(v4, d4) // ipns plane
+
+    //:test2 = v4
+
+	// point pair FIXME da bekomme ich jetzt ein imaginäres Punktpaar
+    pp = (s5∧pl5∧pl4) // opns point pair 
+	:ppi = pp*
+	//FIXME unnötigerweise muss ich erst eine Zuordnung durchführen...
+	p41, p42 = getPoints(pp)
+	p41, p42
+}
+
+// get both solutions for round point p2
+fn getP2(p0, p1, p3, s1_, a3_){
+	pl = getPlaneFromPoints(p0, p1, p3) // opns plane
+	:pli = pl* // Line 187, viz failure: Visualization of "pli" failed!
+	// Line 188, viz failure: Visualization of "s3" failed!
+	:s3 = getSphere(p3, a3_) // ipns sphere -self.dh_params[2,0]
+	:pp = (s3∧s1_∧pl*)* // add view object failed: "pp" has unknown type or is not yet supported!
+	ppi = pp // add view object failed: "ppi" has unknown type or is not yet supported!
+
+	//WORKAROUND 
+	p21, p22 = getPoints(pp) 
+	p21, p22
+}
+
+
+
+// arguments as cga multivector types, represented as sparse matrices
+// result: all 8 tuples (solutions) with points p1-p6
+fn main(p, ae){
+	// nominal dh parameters UR5e, the d-parameters corresponding to the link lengths
     // and fullfill the assumption to apply the approach
-	a2 := -0.425
-	a3 := -0.3922
-	d1 := 0.1625
-	d4 := 0.1333
-	d5 := 0.0997
-	d6 := 0.0996
+	a2 = -0.425
+	a3 = -0.3922
+	d1 = 0.1625
+	d4 = 0.1333
+	d5 = 0.0997
+	d6 = 0.0996
 
-	// robots end-effector pose
-    p6 := rp(-0.5, 0.0, 0.0)
-    R6 := //TODO
+	// robots origin as ipns round point
+    :p0 = ε₀ // equivalent to rp(0.0, 0.0, 0.0)
 
-    // robots origin
-    p0 := ε₀ // equivalent to rp(0.0, 0.0, 0.0)
+	// test x(), y(), z()
+	//testp = getPoint(1.0, 2.0, 3.0) 
+	//x1 = x(testp)
+	//y1 = y(testp)
+	//z1 = z(testp)
+
+	// test sign()
+	//signa = 4.0
+	//signa1 = sign(signa)
+	//signa2 = sign2(signa)
+
+	// test normalize()
+	//testn = ε₁+ε₂+ε₃
+	//testnormalized = normalize(testn) // [00, 0.57735, 0.57735, 0.57735, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00]
+
+	// test code für alle trigometrischen Funktionen
+	//sin1 = sin(0.2)
+    //cos1= cos(0.2)
+	//asin1 = asin(0.2)
+	//acos1 = acos(0.2)
+	//tan1 = tan(0.2)
+	//atan1 = atan(0.2)
+	//sign1 = sign(-0.2)
+
+	// robots end-effector pose as ipns point
+    //:p6 = getPoint(1.0, 1.0, 0.0) 
+	:p6 = up(p) 
+
+	
+	// position of joint 5
 
 	// p5 is the translation of p6 along the (minus) z-axis
 	// about a distance d6, which is the length of the last link
-	T56 := 1 - 0.5d6ε₃εᵢ //FIX e3 und einf tauschen?
-	p5 = T56 p6 T56˜
+	//T56 = 1 - 0.5d6ε₃εᵢ //FIX e3 und einf tauschen?
+	//p5 = T56 p6 T56˜
+    T65 = getTranslationRotor(d6 ae)
+    :p5 = transform(p6, T65) 
+
+
+	// test code für Visualisierung
+    //:point = getPoint(0.0, 0.0, 0.0) // ipns==opns point
+	//:sphere = getSphere(point, 0.5) // ipns sphere
+	//:planex = getPlane(ε₁, 0) // ipns plane
+	//:circle = sphere∧planex // ipns circle
+	//planey = getPlane(ε₂, 0) // ipns plane
+	//pp = circle∧planey // ipns point pair
+	//:pp1, :pp2 = getPoints(pp⁻*)
+	//:pp1a, :pp2a = getPoints2(pp⁻*)
+
+	// robots end-effector orientation as euclidean direction
+    //rot = ε₁
+
+	// pi/2 um die y-Achse drehen
+	// [0.707107, 00, 00, 00, 00, 00, 0, 0.707107, 0, 0, 0, 0, 0, 0, 0, 0, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 0, 0, 0, 0, 0, 00]
+	//R6 = getRotationRotor(π/2, ε₂) // dummy rotor, mit theta==0 ist R6=0 und kein dummy rotor
+    //R6 = rot
+
+
+	// finding p1 (1x)
 
 	// p1 lies between links 1 and 2
     // defined by translation of p0 along the z-axis of the reference distance d1
     // which is the first link
-	T10 := 1 + 0.5d1ε₃εᵢ //FIXME e3 und einf tauschen?
-    p1 := T10 p0 T10˜
+	//T10 = 1 + 0.5d1ε₃εᵢ //FIXME e3 und einf tauschen?
+    //p1 = T10 p0 T10˜
 
-	// p4 with 4 possible solutions
+	T1 = getTranslationRotor(d1 ε₃) 
+	:p1 = transform(p0, T1)
 
-    // sphere with center p5 and radius d5
-	S5 := sp(p5, d5) // S5 := p5 - 0.5d5²εᵢ
-    // plane with normal vector from p5 to p6 through p5
-	v56 := ep(p6)-ep(p5) 
-    PI5 := v56 + (p5⋅v56)εᵢ
-    //alternative fomulation: plane between p5 and p5 tranlated into p5 (half distance subtraction)
-    //PI5 := p6-p5-0.5.... TODO
 
-    // TODO define dm as norm of the middle point of the projection of the segment Op5 to
-    // the xy-plane
-    Sm := m-0.5dm²εᵢ
-	S0 := sp(ε₀, d4) //S0 :=ε₀-0.5d4²εᵢ
-    PIxy := ε₃
-	// intersection of the above three geometric objects
-    // = outer representation of the pair of points v1, v2 representing the normal vectors
-    // of the two possible vertical planes that contains p5 and have 
-    // a distance vector d4 to the origin
-    Btan := (Sm∧S0∧PIxy)* // outer representation of a point pair, representing normal vectors of
-    // two possible planes that contains pt5 and have a distance d4 to the origin
-    v1, v2 = epp(Btan) // decompose the euclidean points coordinates from a point pair 
-    // inner representation of these two planes:
-    PI41 := v1+d4εᵢ
-	PI42 := v2+d4εᵢ
+	// finding p4 (4x)
 
-    B4 := PI5∧S5∧PI41 // bivector representing two points
-    //TODO extract 4 possibilities of p4 from B4
+	p5vec = down(p5)
+    z = z(p5vec) 
+    y = y(p5vec) 
+    psi_ = atan2(y, z)
+	psi = atan(z/y)
+	// Mehrdeutigkeit zwischen Funktionsaufrufen und geometrischem Produkt unter gewissen Umständen:
+	// Workaround mit Klammern: ((y(p5))²+(z(p5))²)
+	theta = asin(d4/sqrt(y²+z²))
     
+	// Solution 1 for p4
+	alpha_1 = psi - theta
+	v41 = getV4(alpha_1, p5) // entspricht ipns plane durch Ursprung
+	:p4_1, p4_2 = getP4(v41, p5, p6, d4, d5) 
+
+    // Solution 2 for p4
+	alpha_2 = psi + theta
+    v42 = getV4(alpha_2, p5)
+	p4_3, p4_4 = getP4(v42, p5, p6, d4, d5)
+
+	
+	// finding p3 (4x)
+
     // p3 as translation of p4 along v4 by an amount d4
-    T34 := 1-0.5d4εᵢv4
-	p31 := T34 p41 T34˜
-	p32 := T34 p42 T34˜
-	p33 := T34 p43 T34˜
-	p34 := T34 p44 T34˜
+	// bereits alle p4 sind falsch
+    T43_1 = getTranslationRotor(v41) 
+	:p3_1 = transform(p4_1, T43_1) 
+	:p3_2 = transform(p4_2, T43_1) //T34 p42 T34˜
 
-    // TODO define all variants based on the 4 variants of p3
-    S1 := p1 - 0.5a2²εᵢ
-    S3 := p3 - 0.5a3²εᵢ
-    PI := (p0∧p2∧p3∧εᵢ)*
-    
-    // TODO outer representation of the two possible values for p2 for each of the 4 points p3
-    B2 := S1∧S3∧PI 
+	T43_2 = getTranslationRotor(v42)
+	:p3_3 = transform(p4_3, T43_2) //T34 p43 T34˜
+	:p3_4 = transform(p4_4, T43_2) //T34 p44 T34˜
 
-    // define the geometric objects to determine the joint angles
-    PIxy = 
+
+	// finding point p2 (8x)
+
+	:s1 = getSphere(p1, a2) // ipns sphere -self.dh_params[1,0]
+
+    //  "p2_1" has unknown type or is not yet supported!
+	// alle p3 sind falsch
+	:p2_1, p2_2 = getP2(p0, p1, p3_1, s1, a3) 
+	p2_3, p2_4 = getP2(p0, p1, p3_2, s1, a3) 
+	p2_5, p2_6 = getP2(p0, p1, p3_3, s1, a3)
+	p2_7, p2_8 = getP2(p0, p1, p3_4, s1, a3)
+
+	p1, p2_1, p3_1, p4_1, p5, p6, p1, p2_2, p3_1, p4_1, p5, p6, p1, p2_3, p3_2, p4_2, p5, p6, p1, p2_4, p3_2, p4_2, p5, p6, p1, p2_5, p3_3, p4_3, p5, p6, p1, p2_6, p3_3, p4_3, p5, p6, p1, p2_7, p3_4, p4_4, p5, p6, p1, p2_8, p3_4, p4_4, p5, p6
 }

@@ -4,10 +4,10 @@ import com.oracle.truffle.api.dsl.Specialization;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.builtinsSuperClasses.BuiltinFunctionBody;
 import de.orat.math.gacalc.api.MultivectorNumeric;
 
-public abstract class Sqrt extends BuiltinFunctionBody {
+public abstract class Ip extends BuiltinFunctionBody {
 
 	@Specialization
-	protected MultivectorNumeric doExecute(MultivectorNumeric input) {
-		return input.sqrt();
+	protected MultivectorNumeric doExecute(MultivectorNumeric x, MultivectorNumeric y) {
+		return x.innerProduct(y);
 	}
 }

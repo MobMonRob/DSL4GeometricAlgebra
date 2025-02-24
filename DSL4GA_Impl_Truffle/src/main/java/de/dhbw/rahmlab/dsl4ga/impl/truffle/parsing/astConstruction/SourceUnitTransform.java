@@ -18,7 +18,7 @@ public class SourceUnitTransform extends GeomAlgeParserBaseListener {
 		this.geomAlgeLangContext = geomAlgeLangContext;
 	}
 
-	public static Function generate(GeomAlgeParser.SourceUnitContext ctx, GeomAlgeLangContext geomAlgeLangContext) {
+	public static Function generate(GeomAlgeParser parser, GeomAlgeParser.SourceUnitContext ctx, GeomAlgeLangContext geomAlgeLangContext) {
 		Map<String, Function> functions = new HashMap<>();
 		Map<String, Function> functionsView = Collections.unmodifiableMap(functions);
 
@@ -27,13 +27,13 @@ public class SourceUnitTransform extends GeomAlgeParserBaseListener {
 		SkippingParseTreeWalker.walk(transform, ctx, GeomAlgeParser.FunctionBodyContext.class);
 		 */
 		for (FunctionContext functionCtx : ctx.functions) {
-			Function function = FuncTransform.generate(functionCtx, geomAlgeLangContext, functionsView);
-			String name = function.getName();
-			if (functions.containsKey(name)) {
-				// ToDo: Display position of the function.
-				throw new ValidationException(String.format("Function with name \"%s\" has been already declared.", name));
+			Function function = FuncTransform.generate(parser, functionCtx, geomAlgeLangContext, functionsView);
+			String functionName = function.getName();
+			if (functions.containsKey(functionName)) {
+				int line = functionCtx.start.getLine();
+				throw new ValidationException(line, String.format("Function with name \"%s\" has been already declared.", functionName));
 			}
-			functions.put(name, function);
+			functions.put(functionName, function);
 		}
 
 		Function main = functions.get("main");

@@ -56,8 +56,12 @@ functionBody
 ///////////////////////////////////////////////////////////////////////////
 
 stmt
-	:	SPACE* viz=COLON? assigned=IDENTIFIER SPACE* ASSIGNMENT SPACE* exprCtx=expr SPACE*		#AssgnStmt
-	|	SPACE* assigned+=(IDENTIFIER|LOW_LINE) SPACE* (COMMA SPACE* assigned+=(IDENTIFIER|LOW_LINE) SPACE*)* ASSIGNMENT SPACE* callCtx=callExpr SPACE*		#TupleAssgnStmt
+	:	SPACE* vizAssigned=vizAssignedR SPACE* ASSIGNMENT SPACE* exprCtx=expr SPACE*		#AssgnStmt
+	|	SPACE* vizAssigned+=vizAssignedR SPACE* (COMMA SPACE* vizAssigned+=vizAssignedR SPACE*)* ASSIGNMENT SPACE* callCtx=callExpr SPACE*		#TupleAssgnStmt
+	;
+
+vizAssignedR
+	: viz=COLON? assigned=(IDENTIFIER|LOW_LINE)
 	;
 
 // The list-form (1) needs iteration in the transformer while the tree-form (2) don't.

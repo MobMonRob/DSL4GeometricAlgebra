@@ -11,6 +11,6 @@ type ipns_rpoint {ε₀=1, ε₁,ε₂,ε₃,εᵢ=0.5(ε₁²+ε₂²+ε₃²)}
 type ipns_plane {ε₁,ε₂,ε₃,εᵢ}
 type ipns_line {ε₁₂, ε₁₃, ε₂₃, ε₁ᵢ, ε₂ᵢ, ε₃ᵢ}
 
-ipns_plane pl := nxε₁+nyε₂+nzε₃+dεᵢ // plane with normalvector (nx,ny,nz) and distance d to the origin
-ipns_line l:= ...
-ipns_fpoint fp := pl^l
+ipns_plane pl = nxε₁+nyε₂+nzε₃+dεᵢ // plane with normalvector (nx,ny,nz) and distance d to the origin
+ipns_line l= ...
+ipns_fpoint fp = pl^l

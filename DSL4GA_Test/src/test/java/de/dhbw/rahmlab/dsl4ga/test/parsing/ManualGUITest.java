@@ -6,16 +6,9 @@ public class ManualGUITest {
 
 	public static void main(String[] args) {
 		String source = """
-		fn test(a) {
-			a, 5
-		}
-
 		fn main(a, b) {
-			d := test(b)
-			e := getLastListReturn(1)
-			//:p1 := a
-			//:p2 := b
-			a, b, d, e
+			a = a+f(p1)²
+			// theta = asin(d4/sqrt(y(p5)²+z(p5)²))
 		}
 		""";
 
