@@ -38,11 +38,6 @@ public class ExecutionRootNode extends AbstractFunctionRootNode {
 	public Object execute(VirtualFrame frame) {
 		List<MultivectorNumeric> argsList;
 		Object[] oArgs = frame.getArguments();
-		try {
-			function.ensureArity(oArgs.length);
-		} catch (ArityException ex) {
-			throw new LanguageRuntimeException("main called with wrong argument count.", ex, null);
-		}
 		if (oArgs.length != 0) {
 			argsList = ((CgaListTruffleBox) oArgs[0]).getInner();
 		} else {
@@ -50,6 +45,11 @@ public class ExecutionRootNode extends AbstractFunctionRootNode {
 		}
 
 		CgaListTruffleBox argsBoxed = new CgaListTruffleBox(argsList);
+		try {
+			function.ensureArity(argsBoxed.getInner().size());
+		} catch (ArityException ex) {
+			throw new LanguageRuntimeException("main called with wrong argument count.", ex, null);
+		}
 
 		this.mainCallNode.call(argsBoxed);
 
