@@ -58,7 +58,7 @@ functionBody
 stmt
 	:	SPACE* vizAssigned=vizAssignedR SPACE* ASSIGNMENT SPACE* exprCtx=expr SPACE*		#AssgnStmt
 	|	SPACE* vizAssigned+=vizAssignedR SPACE* (COMMA SPACE* vizAssigned+=vizAssignedR SPACE*)* ASSIGNMENT SPACE* callCtx=callExpr SPACE*		#TupleAssgnStmt
-	|	SPACE* assigned=IDENTIFIER SPACE* L_EDGE_BRACKET R_EDGE_BRACKET SPACE* ASSIGNMENT SPACE* L_CURLY_BRACKET SPACE* arrayCtx=arrayExpr SPACE* R_CURLY_BRACKET SPACE* # ArrayInitStmt
+	|	SPACE* assigned=IDENTIFIER SPACE* L_EDGE_BRACKET R_EDGE_BRACKET SPACE* ASSIGNMENT SPACE* L_CURLY_BRACKET SPACE* arrayCtx=arrayExpr? SPACE* R_CURLY_BRACKET SPACE* # ArrayInitStmt
 	|	SPACE* FOR_INDICATOR SPACE* L_PARENTHESIS SPACE* IDENTIFIER SPACE* SEMICOLON SPACE* beginning=loopParam SPACE* SEMICOLON SPACE* ending=loopParam SPACE* SEMICOLON SPACE* step=loopParam SPACE* R_PARENTHESIS (SPACE | WHITE_LINE)* L_CURLY_BRACKET (SPACE | WHITE_LINE)* loopBody (SPACE | WHITE_LINE)* R_CURLY_BRACKET #LoopStmt
 	;
 
@@ -81,10 +81,14 @@ retExpr
 ///////////////////////////////////////////////////////////////////////////
 
 arrayExpr
-	:   expr							#ArrayExprStmtExpr
-	|   expr COMMA arrayExpr			#ArrayExprStmtExpr
+	:   nonEmptyArrayExpr
+//	| 
 	;
 
+nonEmptyArrayExpr
+    : expr								#ArrayExprStmtExpr
+    | expr COMMA nonEmptyArrayExpr		#ArrayExprStmtExpr
+	;
 
 ///////////////////////////////////////////////////////////////////////////
 // Expr

@@ -9,6 +9,7 @@ import de.orat.math.gacalc.api.ExprGraphFactory;
 import de.orat.math.gacalc.api.FunctionSymbolic;
 import de.orat.math.gacalc.api.GAExprGraphFactoryService;
 import de.orat.math.gacalc.api.MultivectorSymbolic;
+import de.orat.math.gacalc.api.MultivectorSymbolicArray;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
@@ -36,7 +37,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 	protected final Deque<MultivectorSymbolic> nodeStack = new ArrayDeque<>();
 	protected final Map<String, FunctionSymbolic> functionsView;
 	protected final Map<String, MultivectorSymbolic> localVariablesView;
-	protected static Map<String, MultivectorSymbolic[]> localArrays = new HashMap<>();
+	protected static Map<String, MultivectorSymbolicArray> localArrays = new HashMap<>();
 	protected List<MultivectorSymbolic> lastCallResults = null;
 
 	protected ExprTransform(Map<String, FunctionSymbolic> functionsView, Map<String, MultivectorSymbolic> localVariablesView) {
@@ -53,7 +54,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		return rootNode;
 	}
 
-	public static void updateArrays(Map<String, MultivectorSymbolic[]> arrayMap){
+	public static void updateArrays(Map<String, MultivectorSymbolicArray> arrayMap){
 		localArrays = arrayMap;
 	}
 
@@ -65,17 +66,19 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		return exprTransform.lastCallResults;
 	}
 
-	public static MultivectorSymbolic[] generateArrayAST(GeomAlgeParser parser, GeomAlgeParser.ArrayExprContext arrayExprCtx, Map<String, FunctionSymbolic> functionsView, Map<String, MultivectorSymbolic> localVariablesView) {
+	public static MultivectorSymbolicArray generateArrayAST(GeomAlgeParser parser, GeomAlgeParser.ArrayExprContext arrayExprCtx, Map<String, FunctionSymbolic> functionsView, Map<String, MultivectorSymbolic> localVariablesView) {
 		ExprTransform exprTransform = new ExprTransform(functionsView, localVariablesView);
 
 		SkippingParseTreeWalker.walk(parser, exprTransform, arrayExprCtx);
 
 		int i = exprTransform.nodeStack.size()-1;
-		MultivectorSymbolic[] arrayVars = new MultivectorSymbolic[exprTransform.nodeStack.size()];
+		MultivectorSymbolic[] arrayVarsList = new MultivectorSymbolic[exprTransform.nodeStack.size()];
 		while (exprTransform.nodeStack.size() != 0){
-			arrayVars[i] = exprTransform.nodeStack.pop();
+			arrayVarsList[i] = exprTransform.nodeStack.pop();
 			i --;
 		}
+		MultivectorSymbolicArray arrayVars = new MultivectorSymbolicArray();
+		for(MultivectorSymbolic v : arrayVarsList) arrayVars.add(v);
 		return arrayVars;
 	}
 
@@ -340,8 +343,8 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		if (!this.localArrays.containsKey(arrayName)){
 			throw new ValidationException(String.format("Array \"%s\" has not been declared before.", arrayName));
 		}
-		MultivectorSymbolic [] array = this.localArrays.get(arrayName);
-		var node = array[index];
+		MultivectorSymbolicArray array = this.localArrays.get(arrayName);
+		var node = array.get(index);
 		nodeStack.push(node);
 	}
 

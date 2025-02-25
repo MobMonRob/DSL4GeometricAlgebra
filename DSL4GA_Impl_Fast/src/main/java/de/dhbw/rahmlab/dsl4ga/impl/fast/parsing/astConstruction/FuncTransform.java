@@ -9,6 +9,7 @@ import de.orat.math.gacalc.api.FunctionSymbolic;
 import de.orat.math.gacalc.api.GAExprGraphFactoryService;
 import de.orat.math.gacalc.api.MultivectorPurelySymbolic;
 import de.orat.math.gacalc.api.MultivectorSymbolic;
+import de.orat.math.gacalc.api.MultivectorSymbolicArray;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -26,7 +27,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 	protected final Map<String, FunctionSymbolic> functionsView;
 
 	protected final Map<String, MultivectorSymbolic> localVariables = new HashMap<>();
-	protected final Map<String, MultivectorSymbolic[]> localArrays = new HashMap<>();
+	protected final Map<String, MultivectorSymbolicArray> localArrays = new HashMap<>();
 	protected final Map<String, MultivectorSymbolic> localVariablesView = Collections.unmodifiableMap(localVariables);
 	protected final GeomAlgeParser parser;
 
@@ -90,8 +91,13 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 			if (!this.localArrays.containsKey(name)){
 				throw new ValidationException(String.format("Array \"%s\" has not been declared before.", name));
 			}
-			MultivectorSymbolic [] array = this.localArrays.get(name);
-			array [index] = expr;
+			MultivectorSymbolicArray array = this.localArrays.get(name);
+			
+			if(array.size() == index){	// To account for arrays being created empty, we have to allow for the assignment to expand the array's size by 1.
+				array.add(expr);
+			} else{					// For all other cases, we assume it's possible to change the item directly. If not, the native ArrayList will throw an Exception.
+				array.set(index, expr);
+			}
 			this.localArrays.remove(name);
 			this.localArrays.put(name, array);
 			ExprTransform.updateArrays(localArrays);
@@ -125,7 +131,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 				int line = ctx.vizAssigned.get(i).assigned.getLine();
 				throw new ValidationException(line, String.format("\"%s\" cannot be assigned again.", name));
 			} else if (this.localArrays.containsKey(name)){
-				MultivectorSymbolic[] array = localArrays.get(name);
+				MultivectorSymbolicArray array = localArrays.get(name);
 				String indexText = ctx.vizAssigned.get(i).index.getText();
 				int index;
 				try {
@@ -138,7 +144,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 					throw new ValidationException (String.format("You are trying to assign \"%s[%d]\" twice in the same call.", name, index));
 				}
 				arrayMap.put(name, index);
-				array[index] = results.get(i);
+				array.set(index, results.get(i));
 				this.localArrays.remove(name);
 				this.localArrays.put(name, array);
 				ExprTransform.updateArrays(localArrays);
@@ -150,7 +156,9 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 	@Override
 	public void enterArrayInitStmt (GeomAlgeParser.ArrayInitStmtContext ctx) {
-		MultivectorSymbolic [] array = ExprTransform.generateArrayAST(this.parser, ctx.arrayCtx, this.functionsView, this.localVariablesView);
+		MultivectorSymbolicArray array = new MultivectorSymbolicArray();
+		if (ctx.arrayCtx != null)
+			 array = ExprTransform.generateArrayAST(this.parser, ctx.arrayCtx, this.functionsView, this.localVariablesView);
 
 		// Assignment
 		String name = ctx.assigned.getText();
