@@ -39,7 +39,7 @@ public class Function implements TruffleObject {
 		return this.functionRootNode;
 	}
 
-	protected void ensureArity(int presumedArity) throws ArityException {
+	public void ensureArity(int presumedArity) throws ArityException {
 		if (this.arity != presumedArity) {
 			throw ArityException.create(this.arity, this.arity, presumedArity);
 		}

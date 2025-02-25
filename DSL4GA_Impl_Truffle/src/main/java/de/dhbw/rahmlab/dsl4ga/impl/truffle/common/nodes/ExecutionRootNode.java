@@ -3,11 +3,12 @@ package de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes;
 import com.oracle.truffle.api.frame.FrameDescriptor;
 import com.oracle.truffle.api.frame.FrameSlotKind;
 import com.oracle.truffle.api.frame.VirtualFrame;
+import com.oracle.truffle.api.interop.ArityException;
 import com.oracle.truffle.api.nodes.DirectCallNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLang;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.LanguageRuntimeException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.truffleBox.CgaListTruffleBox;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionCalls.nodes.expr.*;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.superClasses.AbstractFunctionRootNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.Function;
 import de.orat.math.gacalc.api.MultivectorNumeric;
@@ -37,6 +38,11 @@ public class ExecutionRootNode extends AbstractFunctionRootNode {
 	public Object execute(VirtualFrame frame) {
 		List<MultivectorNumeric> argsList;
 		Object[] oArgs = frame.getArguments();
+		try {
+			function.ensureArity(oArgs.length);
+		} catch (ArityException ex) {
+			throw new LanguageRuntimeException("main called with wrong argument count.", ex, null);
+		}
 		if (oArgs.length != 0) {
 			argsList = ((CgaListTruffleBox) oArgs[0]).getInner();
 		} else {
@@ -45,12 +51,6 @@ public class ExecutionRootNode extends AbstractFunctionRootNode {
 
 		CgaListTruffleBox argsBoxed = new CgaListTruffleBox(argsList);
 
-		/*
-		ListReader[] readers = ListReader.createArray(argsBoxed);
-		FunctionCall functionCall = FunctionCallNodeGen.create(function, readers);
-
-		functionCall.executeGeneric(frame);
-		 */
 		this.mainCallNode.call(argsBoxed);
 
 		return GeomAlgeLangContext.get(null).lastListReturn;
