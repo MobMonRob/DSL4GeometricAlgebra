@@ -140,7 +140,7 @@ Variables can be visualized after assignment with one or two preceding colons.
 - `:a` will assume **IPNS** representation.
 - `::a` will assume **OPNS** representation.
 
-After leaving a function, the visualizations done in it will be cleaned up. Visualizations from the calling function remain. \
+After leaving a function, the visualizations done in it will be cleaned up. Visualizations from the calling function remain.
 
 Example visualization syntax within context:
 ```
