@@ -99,11 +99,11 @@ There are two implementations of the [API](DSL4GA_API):
 
 Their syntax will be the same in the longrun. However, during development of the language, some syntactical constructs will temporarily not supported by one or the other.
 
-The following features are supported ("x" is yes, "-" is no):
+The following features are supported ("Y" is yes, "N" is not yet, "-" is will not):
 | F | T | Feature |
 | - | - | ------- |
-| - | x | Visualization |
-| - | x | Debugger |
+| - | Y | Visualization |
+| - | Y | Debugger |
 
 
 ## Expressions
