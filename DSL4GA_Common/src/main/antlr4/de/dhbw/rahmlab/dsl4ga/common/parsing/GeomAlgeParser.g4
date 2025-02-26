@@ -61,7 +61,7 @@ stmt
 	;
 
 vizAssignedR
-	: viz=COLON? assigned=(IDENTIFIER|LOW_LINE)
+	: viz+=COLON? viz+=COLON? assigned=(IDENTIFIER|LOW_LINE)
 	;
 
 // The list-form (1) needs iteration in the transformer while the tree-form (2) don't.

@@ -15,11 +15,14 @@ import de.orat.math.gacalc.api.MultivectorNumeric;
 
 @NodeChild(value = "varRef", type = LocalVariableReference.class)
 @NodeField(name = "vizContext", type = VisualizerFunctionContext.class)
+@NodeField(name = "isIPNS", type = Boolean.class)
 public abstract class VisualizeMultivector extends NonReturningStatementBaseNode {
 
 	protected abstract LocalVariableReference getVarRef();
 
 	protected abstract VisualizerFunctionContext getVizContext();
+
+	protected abstract Boolean getIsIPNS();
 
 	@Specialization
 	protected void doExecute(VirtualFrame frame, MultivectorNumeric varRefValue) {
@@ -27,7 +30,7 @@ public abstract class VisualizeMultivector extends NonReturningStatementBaseNode
 
 		// Temporary workaround to still allow debugger stepping in case of visualization failure.
 		try {
-			VisualizerService.instance().add(varRefValue, name, getVizContext());
+			VisualizerService.instance().add(varRefValue, name, getVizContext(), getIsIPNS());
 		} catch (InterpreterInternalException iiEx) {
 			int line = this.getSourceSection().getStartLine();
 			String msg = String.format("Line %s, viz failure: %s", line, iiEx.getMessage());

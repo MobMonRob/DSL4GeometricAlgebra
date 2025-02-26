@@ -142,19 +142,21 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 		visualize(assigned, ctx.vizAssigned.viz, name, frameSlot);
 	}
 
-	private void visualize(Token assigned, Token viz, String name, int frameSlot) {
-		if (viz != null) {
-			if (this.vizContext == null) {
-				this.vizContext = new VisualizerFunctionContext();
-			}
-			LocalVariableReference varRefNode = LocalVariableReferenceNodeGen.create(name, frameSlot);
-			varRefNode.setSourceSection(assigned.getStartIndex(), assigned.getStopIndex());
-
-			VisualizeMultivector vizNode = VisualizeMultivectorNodeGen.create(varRefNode, getNewScopeVisibleVariablesIndex(), this.vizContext);
-			vizNode.setSourceSection(viz.getStartIndex(), viz.getStopIndex());
-
-			this.stmts.add(vizNode);
+	private void visualize(Token assigned, List<Token> viz, String name, int frameSlot) {
+		if (viz.isEmpty()) {
+			return;
 		}
+		if (this.vizContext == null) {
+			this.vizContext = new VisualizerFunctionContext();
+		}
+		LocalVariableReference varRefNode = LocalVariableReferenceNodeGen.create(name, frameSlot);
+		varRefNode.setSourceSection(assigned.getStartIndex(), assigned.getStopIndex());
+		boolean isIPNS = viz.size() == 1;
+
+		VisualizeMultivector vizNode = VisualizeMultivectorNodeGen.create(varRefNode, getNewScopeVisibleVariablesIndex(), this.vizContext, isIPNS);
+		vizNode.setSourceSection(viz.getFirst().getStartIndex(), viz.getLast().getStopIndex());
+
+		this.stmts.add(vizNode);
 	}
 
 	@Override
