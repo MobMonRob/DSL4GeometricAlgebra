@@ -1,3 +1,5 @@
+#algebra cga
+
 fn test2(g, h) {
 	:i = h
 	:j = g

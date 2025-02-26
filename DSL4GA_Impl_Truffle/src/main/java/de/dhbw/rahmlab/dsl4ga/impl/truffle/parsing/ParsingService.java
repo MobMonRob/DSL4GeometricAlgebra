@@ -10,11 +10,16 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.ValidationException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.Function;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.astConstruction.SourceUnitTransform;
+import de.orat.math.gacalc.api.ExprGraphFactory;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.atn.PredictionMode;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 
-public final class ParsingService implements iParsingService {
+public final class ParsingService {
+
+	public static record FactoryAndMain(ExprGraphFactory fac, Function main) {
+
+	}
 
 	private ParsingService() {
 
@@ -24,15 +29,13 @@ public final class ParsingService implements iParsingService {
 		return new ParsingService();
 	}
 
-	protected Function invoke(GeomAlgeParser parser, GeomAlgeLangContext geomAlgeLangContext) {
+	protected FactoryAndMain invoke(GeomAlgeParser parser, GeomAlgeLangContext geomAlgeLangContext) {
 		GeomAlgeParser.SourceUnitContext sourceUnit = parser.sourceUnit();
-		Function main = SourceUnitTransform.generate(parser, sourceUnit, geomAlgeLangContext);
-
-		return main;
+		FactoryAndMain factoryAndMain = SourceUnitTransform.generate(parser, sourceUnit, geomAlgeLangContext);
+		return factoryAndMain;
 	}
 
-	@Override
-	public Function parse(CharStreamSupplier program, GeomAlgeLangContext geomAlgeLangContext) {
+	public FactoryAndMain parse(CharStreamSupplier program, GeomAlgeLangContext geomAlgeLangContext) {
 		GeomAlgeLexer lexer = this.getLexer(program);
 		GeomAlgeParser parser = this.getParser(lexer);
 		configureParserDefault(parser);
@@ -59,7 +62,6 @@ public final class ParsingService implements iParsingService {
 		}
 	}
 
-	@Override
 	public GeomAlgeLexer getLexer(CharStreamSupplier program) {
 		GeomAlgeLexer lexer = new GeomAlgeLexer(program.get());
 		lexer.removeErrorListeners();
@@ -97,7 +99,6 @@ public final class ParsingService implements iParsingService {
 		parser.getInterpreter().setPredictionMode(PredictionMode.LL_EXACT_AMBIG_DETECTION);
 	}
 
-	@Override
 	public GeomAlgeParser getAntlrTestRigParser(GeomAlgeLexer lexer) {
 		CommonTokenStream commonTokenStream = new CommonTokenStream(lexer);
 		GeomAlgeParser parser = new GeomAlgeParser(commonTokenStream);

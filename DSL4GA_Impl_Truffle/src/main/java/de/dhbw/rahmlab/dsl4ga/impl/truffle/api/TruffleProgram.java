@@ -7,7 +7,7 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.Ab
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.LanguageRuntimeException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.ValidationException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.truffleBox.CgaListTruffleBox;
-import de.orat.math.gacalc.api.ExprGraphFactory;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.truffleBox.TruffleBox;
 import de.orat.math.gacalc.api.MultivectorNumeric;
 import de.orat.math.sparsematrix.SparseDoubleMatrix;
 import java.io.IOException;
@@ -22,23 +22,10 @@ import org.graalvm.polyglot.Value;
 
 public class TruffleProgram implements iProgram {
 
-	private final ExprGraphFactory exprGraphFactory;
 	private final Source source;
 	private final Value parsedProgram;
 
-	@Deprecated
-	public TruffleProgram(ExprGraphFactory exprGraphFactory, Source source) {
-		this.exprGraphFactory = exprGraphFactory;
-		this.source = source;
-		try {
-			this.parsedProgram = TruffleProgramFactory.createContext().parse(source);
-		} catch (PolyglotException ex) {
-			throw enrichException(ex);
-		}
-	}
-
-	protected TruffleProgram(ExprGraphFactory exprGraphFactory, Context context, Reader sourceReader) {
-		this.exprGraphFactory = exprGraphFactory;
+	protected TruffleProgram(Context context, Reader sourceReader) {
 		try {
 			this.source = Source.newBuilder(GeomAlgeLang.LANGUAGE_ID, sourceReader, "TruffleProgram").build();
 		} catch (IOException ex) {
@@ -51,8 +38,7 @@ public class TruffleProgram implements iProgram {
 		}
 	}
 
-	protected TruffleProgram(ExprGraphFactory exprGraphFactory, Context context, URL url) {
-		this.exprGraphFactory = exprGraphFactory;
+	protected TruffleProgram(Context context, URL url) {
 		try {
 			this.source = Source.newBuilder(GeomAlgeLang.LANGUAGE_ID, url).build();
 		} catch (IOException ex) {
@@ -67,10 +53,8 @@ public class TruffleProgram implements iProgram {
 
 	@Override
 	public List<SparseDoubleMatrix> invoke(List<SparseDoubleMatrix> arguments) {
-		List<MultivectorNumeric> mVecArgs = arguments.stream().map(vec -> this.exprGraphFactory.createMultivectorNumeric(vec)).toList();
-
 		try {
-			CgaListTruffleBox truffleArgs = new CgaListTruffleBox(mVecArgs);
+			TruffleBox<List<SparseDoubleMatrix>> truffleArgs = new TruffleBox<>(arguments);
 			Value result = this.parsedProgram.execute(truffleArgs);
 			CgaListTruffleBox truffleResults = result.as(CgaListTruffleBox.class);
 			List<MultivectorNumeric> mVecResults = truffleResults.getInner();

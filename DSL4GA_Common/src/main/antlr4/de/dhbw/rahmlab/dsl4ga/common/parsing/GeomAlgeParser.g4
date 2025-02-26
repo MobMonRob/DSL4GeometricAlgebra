@@ -15,8 +15,13 @@ options { tokenVocab=GeomAlgeLexer; }
 ///////////////////////////////////////////////////////////////////////////
 
 sourceUnit
-	:	(WHITE_LINE* functions+=function WHITE_LINE*)+
+	:	WHITE_LINE* algebra WHITE_LINE*
+		(WHITE_LINE* functions+=function WHITE_LINE*)+
 		EOF // https://stackoverflow.com/a/61402548
+	;
+
+algebra
+	:	SPACE* ALGEBRA_INDICATOR SPACE+ algebraID=IDENTIFIER (SPACE+ implID=IDENTIFIER)? SPACE*
 	;
 
 ///////////////////////////////////////////////////////////////////////////

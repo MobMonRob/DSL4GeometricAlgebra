@@ -1,3 +1,5 @@
+#algebra cga
+
 // IK for 6-axis robot with (quasi) spherical joint configuration corresponding to
 // Kleppe2016: Inverse Kinematics for  Industrial Robots using Conformal geometric algebra
 // following original clucalc script from the above paper

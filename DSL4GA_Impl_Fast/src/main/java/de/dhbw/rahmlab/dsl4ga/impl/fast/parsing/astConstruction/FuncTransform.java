@@ -6,7 +6,6 @@ import de.dhbw.rahmlab.dsl4ga.common.parsing.SkippingParseTreeWalker;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationException;
 import de.orat.math.gacalc.api.ExprGraphFactory;
 import de.orat.math.gacalc.api.FunctionSymbolic;
-import de.orat.math.gacalc.api.GAExprGraphFactoryService;
 import de.orat.math.gacalc.api.MultivectorPurelySymbolic;
 import de.orat.math.gacalc.api.MultivectorSymbolic;
 import java.util.ArrayList;
@@ -17,7 +16,7 @@ import java.util.Map;
 
 public class FuncTransform extends GeomAlgeParserBaseListener {
 
-	protected final ExprGraphFactory exprGraphFactory = GAExprGraphFactoryService.getExprGraphFactoryThrowing();
+	protected final ExprGraphFactory exprGraphFactory;
 	// Momentan ist jedes Stmt eine Zuweisung, die am Ende eine Variable ergibt.
 	// Wenn anderes unterstützt werden soll, muss man sich überlegen, wie man das macht.
 	protected final List<MultivectorSymbolic> retExprs = new ArrayList<>();
@@ -30,16 +29,16 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 	protected final GeomAlgeParser parser;
 
-	protected FuncTransform(GeomAlgeParser parser, Map<String, FunctionSymbolic> functionsView) {
+	protected FuncTransform(ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, Map<String, FunctionSymbolic> functionsView) {
+		this.exprGraphFactory = exprGraphFactory;
 		this.functionsView = functionsView;
 		this.parser = parser;
 	}
 
-	public static FunctionSymbolic generate(GeomAlgeParser parser, GeomAlgeParser.FunctionContext ctx, Map<String, FunctionSymbolic> functionsView) {
-		FuncTransform transform = new FuncTransform(parser, functionsView);
+	public static FunctionSymbolic generate(ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.FunctionContext ctx, Map<String, FunctionSymbolic> functionsView) {
+		FuncTransform transform = new FuncTransform(exprGraphFactory, parser, functionsView);
 		SkippingParseTreeWalker.walk(parser, transform, ctx, GeomAlgeParser.ExprContext.class);
 
-		ExprGraphFactory exprGraphFactory = GAExprGraphFactoryService.getExprGraphFactoryThrowing();
 		FunctionSymbolic function = exprGraphFactory.createFunctionSymbolic(transform.functionName, transform.formalParameterList, transform.retExprs);
 		// System.out.println("function: " + function);
 
@@ -66,7 +65,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 	@Override
 	public void enterAssgnStmt(GeomAlgeParser.AssgnStmtContext ctx) {
-		MultivectorSymbolic expr = ExprTransform.generateExprAST(this.parser, ctx.exprCtx, this.functionsView, this.localVariablesView);
+		MultivectorSymbolic expr = ExprTransform.generateExprAST(this.exprGraphFactory, this.parser, ctx.exprCtx, this.functionsView, this.localVariablesView);
 
 		// Assignment
 		String name = ctx.vizAssigned.assigned.getText();
@@ -83,7 +82,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 	@Override
 	public void enterTupleAssgnStmt(GeomAlgeParser.TupleAssgnStmtContext ctx) {
-		List<MultivectorSymbolic> results = ExprTransform.generateCallAST(this.parser, ctx.callCtx, this.functionsView, this.localVariablesView);
+		List<MultivectorSymbolic> results = ExprTransform.generateCallAST(this.exprGraphFactory, this.parser, ctx.callCtx, this.functionsView, this.localVariablesView);
 
 		final int size = ctx.vizAssigned.size();
 
@@ -113,7 +112,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 	@Override
 	public void enterRetExprStmtExpr(GeomAlgeParser.RetExprStmtExprContext ctx) {
-		MultivectorSymbolic retExpr = ExprTransform.generateExprAST(this.parser, ctx.exprContext, this.functionsView, this.localVariablesView);
+		MultivectorSymbolic retExpr = ExprTransform.generateExprAST(this.exprGraphFactory, this.parser, ctx.exprContext, this.functionsView, this.localVariablesView);
 		// System.out.println("retExpr: " + retExpr);
 		this.retExprs.add(retExpr);
 	}

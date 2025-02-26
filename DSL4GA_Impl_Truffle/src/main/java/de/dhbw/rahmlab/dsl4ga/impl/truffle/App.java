@@ -29,14 +29,14 @@ public class App {
 		for (int i = 0;; ++i) {
 			CGARoundPointIPNS pm = new CGARoundPointIPNS(new Point3d(i, 0.3, -0.7));
 			CGAViewObject addedObject = viewer.addCGAObject(pm, "pm");
-			if (addedObject != null){
+			if (addedObject != null) {
 				System.out.println("Added " + i);
 				// Thread.sleep(1000);
 				addedObject.remove();
 				System.out.println("Removed " + i);
 				// Thread.sleep(1000);
 			} else {
-				System.out.println("Failed "+i);
+				System.out.println("Failed " + i);
 			}
 		}
 	}

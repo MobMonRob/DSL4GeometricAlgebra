@@ -106,6 +106,14 @@ The following features are supported ("Y" is yes, "N" is not yet, "-" is will no
 | - | Y | Debugger |
 
 
+## Syntax
+The first line needs to declare the algebra used. Optionally, the implementation can be specified, too. \
+With algebra being "cga" and implementation being "theImpl", the first line would be:
+```
+#algebra cga theImpl
+```
+
+
 ## Expressions
 - Numeric literals like "0.5" and scalar constants like "π" are in OPNS representation.
 
