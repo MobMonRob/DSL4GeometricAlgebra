@@ -30,6 +30,20 @@ public class ArrayInitTest {
 		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
 	}
 	
+	@Test
+	void correctEmptyInit (){
+		String code = """
+            fn main (){
+                a[] = {}
+                a[0] = 1
+                a[0]
+			}
+		""";
+		
+		expectedStrings.add(specifics.createMultivectorString(1));
+		runner.parseAndRun(code);	
+		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+	}
 	
 	@Test
 	void wrongAccessBeforeInit (){

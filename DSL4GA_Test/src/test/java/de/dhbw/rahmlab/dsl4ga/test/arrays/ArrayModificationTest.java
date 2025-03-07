@@ -85,6 +85,22 @@ public class ArrayModificationTest {
 		runner.parseAndRun(code);
 		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
 	}
+	
+	
+	@Test
+	void modificationWithLenFunction(){
+		String code = """
+            fn main (){
+                a[] = {5, 6, 7}
+                a[len(a)-2] = 3
+                a[1]
+			}      
+		""";
+		
+		expectedStrings.add(specifics.createMultivectorString(3));
+		runner.parseAndRun(code);
+		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+	}
 
 	
 	@Test
@@ -104,11 +120,28 @@ public class ArrayModificationTest {
 	}
 	
 	@Test
+	void outOfRangeModificationIndexWithEmptyArray(){
+		String code = """
+			fn main (){
+                a[] = {}
+				a[1] = 2
+				a[1]
+			}      
+		""";
+		try {
+			runner.parseAndRun(code);
+			Assertions.assertTrue(false);
+		} catch (ValidationException e){
+			Assertions.assertTrue(true);
+		}
+	}
+	
+	@Test
 	void outOfRangeModificationIndex(){
 		String code = """
 			fn main (){
                 a[] = {0}
-				a[1] = 2
+				a[2] = 2
 				a[0]
 			}      
 		""";
@@ -268,6 +301,44 @@ public class ArrayModificationTest {
                 a[0]
 			}      
 		""";
+		try {
+			runner.parseAndRun(code);
+			Assertions.assertTrue(false);
+		} catch (ValidationException e){
+			Assertions.assertTrue(true);
+		}
+	}
+	
+	
+	@Test
+	void wrongModificationWithoutLenFunction(){
+		String code = """
+            fn main (){
+                a[] = {5, 6, 7}
+                a[a-2] = 3
+                a[1]
+			}      
+		""";
+		
+		try {
+			runner.parseAndRun(code);
+			Assertions.assertTrue(false);
+		} catch (ValidationException e){
+			Assertions.assertTrue(true);
+		}
+	}
+	
+	
+	@Test
+	void wrongModificationWithLenFunctionOutOfBounds(){
+		String code = """
+            fn main (){
+                a[] = {5, 6, 7}
+                a[len(a)+1] = 3
+                a[1]
+			}      
+		""";
+		
 		try {
 			runner.parseAndRun(code);
 			Assertions.assertTrue(false);

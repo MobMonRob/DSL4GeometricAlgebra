@@ -4,6 +4,7 @@ import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParser;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParserBaseListener;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.SkippingParseTreeWalker;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationException;
+import de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils.IndexCalculation;
 import de.orat.math.gacalc.api.ExprGraphFactory;
 import de.orat.math.gacalc.api.FunctionSymbolic;
 import de.orat.math.gacalc.api.GAExprGraphFactoryService;
@@ -15,6 +16,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class FuncTransform extends GeomAlgeParserBaseListener {
 
@@ -38,7 +40,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 	public static FunctionSymbolic generate(GeomAlgeParser parser, GeomAlgeParser.FunctionContext ctx, Map<String, FunctionSymbolic> functionsView) {
 		FuncTransform transform = new FuncTransform(parser, functionsView);
-		SkippingParseTreeWalker.walk(parser, transform, ctx, GeomAlgeParser.ExprContext.class);
+		SkippingParseTreeWalker.walk(parser, transform, ctx, Set.of(GeomAlgeParser.ExprContext.class, GeomAlgeParser.LoopBodyContext.class));
 
 		ExprGraphFactory exprGraphFactory = GAExprGraphFactoryService.getExprGraphFactoryThrowing();
 		FunctionSymbolic function = exprGraphFactory.createFunctionSymbolic(transform.functionName, transform.formalParameterList, transform.retExprs);
@@ -80,17 +82,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 			this.localVariables.put(name, expr);
 		} else {
 			// ARRAY
-			int index = 0;
-			String indexText = ctx.vizAssigned.index.getText();
-			try {
-				index = Integer.parseInt(indexText);
-			}
-			catch (NumberFormatException e) {
-				throw new AssertionError(String.format("Value \"%s\" cannot be resolved as integer.", indexText));
-			}
-			if (!this.localArrays.containsKey(name)){
-				throw new ValidationException(String.format("Array \"%s\" has not been declared before.", name));
-			}
+			int index = IndexCalculation.calculateIndex(ctx.vizAssigned.index, this.localArrays);
 			MultivectorSymbolicArray array = this.localArrays.get(name);
 			
 			if(array.size() == index){	// To account for arrays being created empty, we have to allow for the assignment to expand the array's size by 1.
@@ -127,21 +119,14 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 				continue;
 			}
 
+			int line = ctx.vizAssigned.get(i).assigned.getLine();
 			if (this.localVariables.containsKey(name)) {
-				int line = ctx.vizAssigned.get(i).assigned.getLine();
 				throw new ValidationException(line, String.format("\"%s\" cannot be assigned again.", name));
 			} else if (this.localArrays.containsKey(name)){
 				MultivectorSymbolicArray array = localArrays.get(name);
-				String indexText = ctx.vizAssigned.get(i).index.getText();
-				int index;
-				try {
-					index = Integer.parseInt(indexText);
-				}
-				catch (NumberFormatException e) {
-					throw new AssertionError(String.format("Value \"%s\" cannot be resolved as integer.", indexText));
-				}
+				int index = IndexCalculation.calculateIndex(ctx.vizAssigned.get(i).index, localArrays);
 				if (arrayMap.containsKey(name) && arrayMap.get(name) == index){
-					throw new ValidationException (String.format("You are trying to assign \"%s[%d]\" twice in the same call.", name, index));
+					throw new ValidationException (line, String.format("You are trying to assign \"%s[%d]\" twice in the same call.", name, index));
 				}
 				arrayMap.put(name, index);
 				array.set(index, results.get(i));
@@ -169,6 +154,11 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 		this.localArrays.put(name, array);
 		ExprTransform.updateArrays(localArrays);
+	}
+	
+	@Override
+	public void enterLoopStmt(GeomAlgeParser.LoopStmtContext ctx){
+		LoopTransform.generate(this.parser, ctx, this.localVariables, this.localArrays);
 	}
 
 	@Override

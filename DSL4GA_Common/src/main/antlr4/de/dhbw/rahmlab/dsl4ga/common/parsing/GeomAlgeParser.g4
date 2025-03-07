@@ -59,12 +59,12 @@ stmt
 	:	SPACE* vizAssigned=vizAssignedR SPACE* ASSIGNMENT SPACE* exprCtx=expr SPACE*		#AssgnStmt
 	|	SPACE* vizAssigned+=vizAssignedR SPACE* (COMMA SPACE* vizAssigned+=vizAssignedR SPACE*)* ASSIGNMENT SPACE* callCtx=callExpr SPACE*		#TupleAssgnStmt
 	|	SPACE* assigned=IDENTIFIER SPACE* L_EDGE_BRACKET R_EDGE_BRACKET SPACE* ASSIGNMENT SPACE* L_CURLY_BRACKET SPACE* arrayCtx=arrayExpr? SPACE* R_CURLY_BRACKET SPACE* # ArrayInitStmt
-	|	SPACE* FOR_INDICATOR SPACE* L_PARENTHESIS SPACE* IDENTIFIER SPACE* SEMICOLON SPACE* beginning=loopParam SPACE* SEMICOLON SPACE* ending=loopParam SPACE* SEMICOLON SPACE* step=loopParam SPACE* R_PARENTHESIS (SPACE | WHITE_LINE)* L_CURLY_BRACKET (SPACE | WHITE_LINE)* loopBody (SPACE | WHITE_LINE)* R_CURLY_BRACKET #LoopStmt
+	|	SPACE* FOR_INDICATOR SPACE* L_PARENTHESIS SPACE* loopVar=IDENTIFIER SPACE* SEMICOLON SPACE* beginning=loopParam SPACE* SEMICOLON SPACE* ending=loopParam SPACE* SEMICOLON SPACE* step=loopParam SPACE* R_PARENTHESIS (SPACE | WHITE_LINE)* L_CURLY_BRACKET (SPACE | WHITE_LINE)* loopBody (SPACE | WHITE_LINE)* R_CURLY_BRACKET #LoopStmt
 	;
 
 vizAssignedR
 	: viz=COLON? assigned=(IDENTIFIER|LOW_LINE)
-	| viz=COLON? assigned=IDENTIFIER SPACE* L_EDGE_BRACKET SPACE* index=INTEGER_LITERAL SPACE* R_EDGE_BRACKET
+	| viz=COLON? assigned=IDENTIFIER SPACE* L_EDGE_BRACKET SPACE* index=indexCalc SPACE* R_EDGE_BRACKET
 	;
 
 // The list-form (1) needs iteration in the transformer while the tree-form (2) don't.
@@ -102,15 +102,31 @@ expr
 	|	binOpExpr
 	;
 
+
+///////////////////////////////////////////////////////////////////////////
+// IndexCalculation
+///////////////////////////////////////////////////////////////////////////
+
+indexCalc
+	: integer=INTEGER_LITERAL	
+	| id=IDENTIFIER			
+    | id=IDENTIFIER (op=PLUS_SIGN|op=HYPHEN_MINUS) integer=INTEGER_LITERAL 
+	| len=LENGTH_INDICATOR SPACE* L_PARENTHESIS SPACE* id=IDENTIFIER SPACE* R_PARENTHESIS SPACE* ((op=PLUS_SIGN|op=HYPHEN_MINUS) SPACE* integer=INTEGER_LITERAL)? 
+    ;
+
 ///////////////////////////////////////////////////////////////////////////
 // Loop
 ///////////////////////////////////////////////////////////////////////////
 loopParam 
-    :	IDENTIFIER 
-    |	INTEGER_LITERAL
+    :	id=IDENTIFIER			
+    |	INTEGER_LITERAL		
     ;
 
-loopBody : stmt;
+loopBody : (insideLoopStmt WHITE_LINE+)+;
+
+insideLoopStmt
+	: assigned=IDENTIFIER SPACE* L_EDGE_BRACKET SPACE* index=indexCalc SPACE* R_EDGE_BRACKET SPACE* ASSIGNMENT SPACE* arrayAccessExpr
+	;
 
 ///////////////////////////////////////////////////////////////////////////
 // UnOp | singleSideRecursive
@@ -249,7 +265,7 @@ parenExpr
 	;
 
 arrayAccessExpr
-	: array=IDENTIFIER SPACE* L_EDGE_BRACKET SPACE* index=INTEGER_LITERAL SPACE* R_EDGE_BRACKET # ArrayAccessExpression
+	: array=IDENTIFIER SPACE* L_EDGE_BRACKET SPACE* index=indexCalc SPACE* R_EDGE_BRACKET # ArrayAccessExpression
 	;
 
 gradeExtractionExpr

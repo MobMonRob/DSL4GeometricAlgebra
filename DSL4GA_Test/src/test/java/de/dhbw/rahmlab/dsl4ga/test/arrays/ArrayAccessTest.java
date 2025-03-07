@@ -84,6 +84,37 @@ public class ArrayAccessTest {
 	
 	
 	@Test
+	void accessWithOtherArrayLengthAndOp(){
+		String code = """
+			fn main (){
+                a[] = {0,1,2}
+                b[] = {1,2,3}
+				x = a[len(b)-1]
+				x
+			}      
+		""";
+		expectedStrings.add(specifics.createMultivectorString(2));
+		runner.parseAndRun(code);
+		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+	}
+	
+	
+	@Test
+	void accessWithOtherArrayLength(){
+		String code = """
+			fn main (){
+                a[] = {0,1,2,3}
+                b[] = {1,2,3}
+				x = a[len(b)]
+				x
+			}      
+		""";
+		expectedStrings.add(specifics.createMultivectorString(3));
+		runner.parseAndRun(code);
+		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+	}
+	
+	@Test
 	void invalidAccessWithoutIndex(){
 		String code = """
 			fn main (){
@@ -186,10 +217,5 @@ public class ArrayAccessTest {
 	}
 	
 	
-	
-	
-	
-	
-	
-	
+
 }

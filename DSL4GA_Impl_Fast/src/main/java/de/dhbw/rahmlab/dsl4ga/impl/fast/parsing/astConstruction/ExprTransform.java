@@ -4,6 +4,7 @@ import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParser;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParserBaseListener;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.SkippingParseTreeWalker;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationException;
+import de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils.IndexCalculation;
 import de.orat.math.gacalc.api.ConstantsFactorySymbolic;
 import de.orat.math.gacalc.api.ExprGraphFactory;
 import de.orat.math.gacalc.api.FunctionSymbolic;
@@ -19,7 +20,6 @@ import java.util.Map;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import org.antlr.v4.runtime.tree.RuleNode;
 
 /**
  * This class converts an expression subtree of an ANTLR parsetree into an expression AST in truffle.
@@ -333,16 +333,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 	@Override
 	public void exitArrayAccessExpression (GeomAlgeParser.ArrayAccessExpressionContext ctx){
 		String arrayName = ctx.array.getText();
-		int index = 0;
-		try {
-			index = Integer.parseInt(ctx.index.getText());
-		}
-		catch (NumberFormatException e) {
-			throw new AssertionError(String.format("Value \"%s\" cannot be resolved as integer.", ctx.index.getText()));
-		}
-		if (!this.localArrays.containsKey(arrayName)){
-			throw new ValidationException(String.format("Array \"%s\" has not been declared before.", arrayName));
-		}
+		int index = IndexCalculation.calculateIndex(ctx.index, this.localArrays);
 		MultivectorSymbolicArray array = this.localArrays.get(arrayName);
 		var node = array.get(index);
 		nodeStack.push(node);
