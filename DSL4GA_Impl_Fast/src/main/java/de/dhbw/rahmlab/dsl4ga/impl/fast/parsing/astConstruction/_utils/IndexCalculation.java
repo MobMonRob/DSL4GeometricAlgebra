@@ -5,7 +5,8 @@ import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationException;
 import de.orat.math.gacalc.api.MultivectorSymbolicArray;
 import java.util.Map;
 
-public class IndexCalculation {		
+public class IndexCalculation {	
+	@Deprecated
 	public static int calculateIndex(GeomAlgeParser.IndexCalcContext ctx, Map<String, MultivectorSymbolicArray> arrays, Map<String, Integer> loopIndex){
 		if (loopIndex.containsKey(ctx.id.getText())) {
 			int integerValue = 0;
@@ -17,7 +18,7 @@ public class IndexCalculation {
 		} else {
 			return calculateIndex(ctx, arrays);
 		}
-	}
+	} 
 	
 	public static int calculateIndex (GeomAlgeParser.IndexCalcContext ctx, Map<String, MultivectorSymbolicArray> arrays){
 		if ((ctx.len == null)&&(ctx.id!=null)){

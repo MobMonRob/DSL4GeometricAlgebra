@@ -19,10 +19,10 @@ public class TestSymbolic {
             d[] = {1,2,3}
             a[] = {1,2,3,4,5}
                   a[len(d)-1] = 7
-            for (i;8;a;a){
-                  a[i] =  a[5]              
+            for (i; 0; 8; 1){
+                a[i] = 2.1 - 1 + b
 			}                
-            b, c, a[2], a[3], a[4]
+            b
 		}
 		""";
 

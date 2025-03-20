@@ -4,6 +4,7 @@ import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParser;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParserBaseListener;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.SkippingParseTreeWalker;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationException;
+import static de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils.DecimalFormatter.initDecimalFormat;
 import de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils.IndexCalculation;
 import de.orat.math.gacalc.api.ConstantsFactorySymbolic;
 import de.orat.math.gacalc.api.ExprGraphFactory;
@@ -293,16 +294,6 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 
 	// https://stackoverflow.com/questions/4323599/best-way-to-parsedouble-with-comma-as-decimal-separator/4323627#4323627
 	private static final DecimalFormat decimalFormat = initDecimalFormat();
-
-	private static DecimalFormat initDecimalFormat() {
-		DecimalFormatSymbols symbols = new DecimalFormatSymbols();
-		symbols.setDecimalSeparator('.');
-		symbols.setGroupingSeparator(' ');
-
-		DecimalFormat format = new DecimalFormat();
-		format.setDecimalFormatSymbols(symbols);
-		return format;
-	}
 
 	@Override
 	public void exitLiteralDecimal(GeomAlgeParser.LiteralDecimalContext ctx) {

@@ -59,7 +59,7 @@ stmt
 	:	SPACE* vizAssigned=vizAssignedR SPACE* ASSIGNMENT SPACE* exprCtx=expr SPACE*		#AssgnStmt
 	|	SPACE* vizAssigned+=vizAssignedR SPACE* (COMMA SPACE* vizAssigned+=vizAssignedR SPACE*)* ASSIGNMENT SPACE* callCtx=callExpr SPACE*		#TupleAssgnStmt
 	|	SPACE* assigned=IDENTIFIER SPACE* L_EDGE_BRACKET R_EDGE_BRACKET SPACE* ASSIGNMENT SPACE* L_CURLY_BRACKET SPACE* arrayCtx=arrayExpr? SPACE* R_CURLY_BRACKET SPACE* # ArrayInitStmt
-	|	SPACE* FOR_INDICATOR SPACE* L_PARENTHESIS SPACE* loopVar=IDENTIFIER SPACE* SEMICOLON SPACE* beginning=loopParam SPACE* SEMICOLON SPACE* ending=loopParam SPACE* SEMICOLON SPACE* step=loopParam SPACE* R_PARENTHESIS (SPACE | WHITE_LINE)* L_CURLY_BRACKET (SPACE | WHITE_LINE)* loopBody (SPACE | WHITE_LINE)* R_CURLY_BRACKET #LoopStmt
+	|	SPACE* FOR_INDICATOR SPACE* L_PARENTHESIS SPACE* loopVar=IDENTIFIER SPACE* SEMICOLON SPACE* beginning=indexCalc SPACE* SEMICOLON SPACE* ending=indexCalc SPACE* SEMICOLON SPACE* step=indexCalc SPACE* R_PARENTHESIS (SPACE | WHITE_LINE)* L_CURLY_BRACKET (SPACE | WHITE_LINE)* loopBody (SPACE | WHITE_LINE)* R_CURLY_BRACKET #LoopStmt
 	;
 
 vizAssignedR
@@ -117,16 +117,24 @@ indexCalc
 ///////////////////////////////////////////////////////////////////////////
 // Loop
 ///////////////////////////////////////////////////////////////////////////
-loopParam 
-    :	id=IDENTIFIER			
-    |	INTEGER_LITERAL		
-    ;
 
 loopBody : (insideLoopStmt WHITE_LINE+)+;
 
 insideLoopStmt
-	: assigned=IDENTIFIER SPACE* L_EDGE_BRACKET SPACE* index=indexCalc SPACE* R_EDGE_BRACKET SPACE* ASSIGNMENT SPACE* arrayAccessExpr
+	: assigned=IDENTIFIER SPACE* L_EDGE_BRACKET SPACE* index=indexCalc SPACE* R_EDGE_BRACKET SPACE* ASSIGNMENT SPACE* assignments=loopAssignment
 	;
+
+loopAssignment
+	: arrayExprCtx=arrayAccessExpr 
+	| literalExprCtx=loopLiteralExpr
+	| (arrayExprCtx=arrayAccessExpr | literalExprCtx=loopLiteralExpr ) SPACE * (plusOp=PLUS_SIGN | minusOp=HYPHEN_MINUS) SPACE* loopAssignment
+	;
+
+loopLiteralExpr
+	: int=INTEGER_LITERAL	
+    | dec=DECIMAL_LITERAL	
+    | id=IDENTIFIER			
+    ;
 
 ///////////////////////////////////////////////////////////////////////////
 // UnOp | singleSideRecursive
@@ -134,7 +142,7 @@ insideLoopStmt
 
 unOpExpr
 	:	unOpRExpr //Precedence 6
-	|	unOpLExpr //Precedence 5
+	|	unOpLExpr //Precedence 5System.out.println(ctx.ops);
 	;
 
 // rightSideRecursive (sic)

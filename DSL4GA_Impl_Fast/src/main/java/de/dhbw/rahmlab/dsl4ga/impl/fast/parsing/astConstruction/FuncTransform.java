@@ -158,7 +158,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 	
 	@Override
 	public void enterLoopStmt(GeomAlgeParser.LoopStmtContext ctx){
-		LoopTransform.generate(this.parser, ctx, this.localVariables, this.localArrays);
+		LoopTransform.generate(this.parser, ctx, this.localVariables, this.localArrays, this.functionsView, this.localVariablesView);
 	}
 
 	@Override
