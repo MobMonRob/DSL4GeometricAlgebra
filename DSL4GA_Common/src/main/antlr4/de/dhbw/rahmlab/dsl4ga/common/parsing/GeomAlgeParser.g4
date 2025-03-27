@@ -59,7 +59,7 @@ stmt
 	:	SPACE* vizAssigned=vizAssignedR SPACE* ASSIGNMENT SPACE* exprCtx=expr SPACE*		#AssgnStmt
 	|	SPACE* vizAssigned+=vizAssignedR SPACE* (COMMA SPACE* vizAssigned+=vizAssignedR SPACE*)* ASSIGNMENT SPACE* callCtx=callExpr SPACE*		#TupleAssgnStmt
 	|	SPACE* assigned=IDENTIFIER SPACE* L_EDGE_BRACKET R_EDGE_BRACKET SPACE* ASSIGNMENT SPACE* L_CURLY_BRACKET SPACE* arrayCtx=arrayExpr? SPACE* R_CURLY_BRACKET SPACE* # ArrayInitStmt
-	|	SPACE* FOR_INDICATOR SPACE* L_PARENTHESIS SPACE* loopVar=IDENTIFIER SPACE* SEMICOLON SPACE* beginning=indexCalc SPACE* SEMICOLON SPACE* ending=indexCalc SPACE* SEMICOLON SPACE* step=indexCalc SPACE* R_PARENTHESIS (SPACE | WHITE_LINE)* L_CURLY_BRACKET (SPACE | WHITE_LINE)* loopBody (SPACE | WHITE_LINE)* R_CURLY_BRACKET #LoopStmt
+	|	SPACE* FOR_INDICATOR SPACE* L_PARENTHESIS SPACE* loopVar=IDENTIFIER SPACE* SEMICOLON SPACE* beginning=indexCalc SPACE* SEMICOLON SPACE* ending=indexCalc SPACE* SEMICOLON SPACE* step=indexCalc SPACE* R_PARENTHESIS (SPACE | WHITE_LINE)* L_CURLY_BRACKET (SPACE | WHITE_LINE)* loopBody R_CURLY_BRACKET SPACE* #LoopStmt
 	;
 
 vizAssignedR
@@ -121,7 +121,7 @@ indexCalc
 loopBody : (insideLoopStmt WHITE_LINE+)+;
 
 insideLoopStmt
-	: assigned=IDENTIFIER SPACE* L_EDGE_BRACKET SPACE* index=indexCalc SPACE* R_EDGE_BRACKET SPACE* ASSIGNMENT SPACE* assignments=loopAssignment
+	: SPACE* assigned=IDENTIFIER SPACE* L_EDGE_BRACKET SPACE* index=indexCalc SPACE* R_EDGE_BRACKET SPACE* ASSIGNMENT SPACE* assignments=loopAssignment SPACE*
 	;
 
 loopAssignment
@@ -273,7 +273,7 @@ parenExpr
 	;
 
 arrayAccessExpr
-	: array=IDENTIFIER SPACE* L_EDGE_BRACKET SPACE* index=indexCalc SPACE* R_EDGE_BRACKET # ArrayAccessExpression
+	: array=IDENTIFIER SPACE* L_EDGE_BRACKET SPACE* index=indexCalc SPACE* R_EDGE_BRACKET
 	;
 
 gradeExtractionExpr

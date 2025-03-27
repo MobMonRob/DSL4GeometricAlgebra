@@ -14,14 +14,18 @@ public class TestSymbolic {
 	private static void invocationTest() throws Exception {
 		String source = """              
 		fn main() {
-			b = 8
-                  c = 8
-            d[] = {1,2,3}
-            a[] = {1,2,3,4,5}
-                  a[len(d)-1] = 7
-            for (i; 0; 8; 1){
-                a[i] = 2.1 - 1 + b
-			}                
+            b = 0 
+            a [] = {1,3,4,5,5}
+			aSim = 5
+			aArr[] = {7,11}
+			arAcc[] = {} 
+			arAcc[0] = 3
+			rArr[] = {} 
+			x[] = {1, 2, 3, 4}
+			y[] = {}
+			for (i; 0; len(x)-1; 1) {
+			y[i] = x[i] + 2
+			}
             b
 		}
 		""";

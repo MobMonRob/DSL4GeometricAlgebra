@@ -322,7 +322,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 	}
 
 	@Override
-	public void exitArrayAccessExpression (GeomAlgeParser.ArrayAccessExpressionContext ctx){
+	public void exitArrayAccessExpr (GeomAlgeParser.ArrayAccessExprContext ctx){
 		String arrayName = ctx.array.getText();
 		int index = IndexCalculation.calculateIndex(ctx.index, this.localArrays);
 		MultivectorSymbolicArray array = this.localArrays.get(arrayName);
