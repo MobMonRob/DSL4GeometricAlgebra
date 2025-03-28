@@ -17,6 +17,7 @@ import de.orat.math.gacalc.api.MultivectorSymbolicArray;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -52,12 +53,13 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 	protected Map<String, MultivectorSymbolic> functionVariablesView;
 	protected Map<String, MultivectorPurelySymbolic> paramsAccumMap = new HashMap<String, MultivectorPurelySymbolic>();
 	protected List<MultivectorSymbolicArray> accumulatedArrays;
+	protected List<Integer> accumOffsets = new ArrayList<>(); 
+	protected List<MultivectorSymbolicArray> loopedArrays = new ArrayList<>(); 
     protected ExprGraphFactory fac = GAExprGraphFactoryService.getExprGraphFactoryThrowing();
 	protected Operator previousOperator;
 	protected MultivectorSymbolic exprMultiVector;
 	protected Boolean isAccumulation;
 	protected int iterations;
- 
 	
 	
 	protected LoopTransform(GeomAlgeParser parser, GeomAlgeParser.LoopStmtContext loopCtx, 
@@ -80,6 +82,7 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 		this.paramsSimple = new ArrayList<MultivectorPurelySymbolic>();
 		}
 	
+	
 	public static void generate(GeomAlgeParser parser, GeomAlgeParser.LoopStmtContext loopCtx, 
 								Map<String, MultivectorSymbolic> variables, Map<String, MultivectorSymbolicArray> arrays, 
 								Map<String, FunctionSymbolic> functionsView,  Map<String, MultivectorSymbolic> functionVariablesView){
@@ -92,33 +95,6 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 		SkippingParseTreeWalker.walk(parser, loopTransform, loopCtx);
 	}
 	
-	@Override
-	public void exitLoopBody(LoopBodyContext ctx){			
-		System.out.println("paramsAccum: " + this.paramsAccum);
-		System.out.println("paramsSimple: " + this.paramsSimple);
-		System.out.println("paramsArray: " + this.paramsArray);
-		System.out.println("returnsAccum: " + this.returnsAccum);
-		System.out.println("returnsArray: " + this.returnsArray);
-		System.out.println("argsAccumInitial: " + this.argsAccumInitial);
-		System.out.println("argsSimple: " + this.argsSimple);
-		System.out.println("argsArray: " + this.argsArray);
-		System.out.println("iterations: " + this.iterations);
-		if (this.accumulatedArrays.isEmpty()) {
-			//map
-			System.out.println("Using map...");
-			var res = fac.getLoopService().map(paramsSimple, paramsArray, returnsArray, argsSimple, argsArray, iterations);
-			System.out.println(res);
-		} else {
-			System.out.println("using mapaccum...");
-			var res = fac.getLoopService().mapaccum(paramsAccum, paramsSimple, paramsArray, returnsAccum, returnsArray, argsAccumInitial, argsSimple, argsArray, iterations);
-			System.out.println("Accum: " + res.returnsAccum());
-			System.out.println("Array: " + res.returnsArray());
-			for (int i = 0; i< res.returnsAccum().size(); i++){
-				
-			}
-		}
-		
-	}
 	
 	@Override
 	public void enterInsideLoopStmt(InsideLoopStmtContext line) {
@@ -135,30 +111,21 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 			this.isAccumulation = true;
 			this.accumulatedArrays.add(assignedArray);
 			MultivectorSymbolic arAcc = assignedArray.get(this.beginning);
-			var sym_arAcc = fac.createMultivectorPurelySymbolicFrom(String.format("sym_%s[%s]", assigned.getText(), line.index.getText()), arAcc);
 			this.argsAccumInitial.add(arAcc);
+			this.accumOffsets.add(1); //Currently, we assume only [i+1] is possible!
 		} else { // Not an accumulation
 			if (assignedIndexCalcCtx.id!=null){
-				// Iterator
+				this.loopedArrays.add(assignedArray);
 			} else {
 				throw new UnsupportedOperationException("Not supported yet."); // Probably not handled by API right now(?)
 			}
 		}
 	}
 	
-	
-	@Override
-	public void exitInsideLoopStmt(InsideLoopStmtContext line){
-		List<MultivectorSymbolic> returnsList = (this.isAccumulation) ? this.returnsAccum : this.returnsArray;
-		returnsList.add(this.exprMultiVector);
 		
-		this.exprMultiVector = null;
-		
-	}
-	
 	@Override
 	public void enterLoopAssignment (LoopAssignmentContext ctx){
-		MultivectorSymbolic mv;
+		MultivectorSymbolic currentMultiVector;
 		String prettyName="";
 		if (ctx.arrayExprCtx != null){ // Array
 			ArrayAccessExprContext arrayCtx = ctx.arrayAccessExpr();
@@ -169,47 +136,100 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 					throw new ValidationException(line, String.format("You may only use \"%s\" in combination with len() here.", id));
 				} else if (arrayCtx.index.op != null) {throw new UnsupportedOperationException("Not supported yet.");} // Has to be implemented
 				MultivectorSymbolicArray assignedArray = functionArrays.get(arrayCtx.array.getText());
-				mv = assignedArray.get(this.beginning);
+				currentMultiVector = assignedArray.get(this.beginning);
 				prettyName = String.format("%s[%s]", arrayCtx.array.getText(), this.localIterator);
-				if (!this.isAccumulation || !this.argsAccumInitial.contains(mv)){
+				if (!this.isAccumulation || !this.argsAccumInitial.contains(currentMultiVector)){
 					try {
-						MultivectorSymbolicArray trimmedArray = new MultivectorSymbolicArray(assignedArray.subList(this.beginning, this.ending));
-						MultivectorPurelySymbolic symmv = this.fac.createMultivectorPurelySymbolicFrom(String.format("sym_%s", prettyName), mv);
-						this.argsArray.add(trimmedArray);
-						this.paramsArray.add(symmv);
-						mv = symmv;
+						MultivectorSymbolicArray aArr = new MultivectorSymbolicArray(assignedArray.subList(this.beginning, this.ending));
+						MultivectorPurelySymbolic sym_aArr = this.fac.createMultivectorPurelySymbolicFrom(String.format("sym_%s", prettyName), currentMultiVector);
+						this.argsArray.add(aArr);
+						this.paramsArray.add(sym_aArr);
+						currentMultiVector = sym_aArr;
 					} catch (IndexOutOfBoundsException e){
 						if (!this.accumulatedArrays.contains(assignedArray)){
 						throw new ValidationException(line, String.format("The loop has more iterations than \"%s\" has elements.", arrayCtx.array.getText()));
 						} else {
-							mv = this.paramsAccumMap.get(prettyName);
+							currentMultiVector = this.paramsAccumMap.get(prettyName);
 						}
 					}
 				} else {
-					MultivectorPurelySymbolic sym_arAcc = this.fac.createMultivectorPurelySymbolicFrom(String.format("sym_%s", prettyName), mv);
+					MultivectorPurelySymbolic sym_arAcc = this.fac.createMultivectorPurelySymbolicFrom(String.format("sym_%s", prettyName), currentMultiVector);
 					this.paramsAccum.add(sym_arAcc);
 					this.paramsAccumMap.put(prettyName, sym_arAcc);
-					mv = sym_arAcc;
+					currentMultiVector = sym_arAcc;
 				}
 			} else{
 				String arrayName = arrayCtx.array.getText();
 				int index = IndexCalculation.calculateIndex(arrayCtx.index, functionArrays);
-				mv = functionArrays.get(arrayName).get(index);
+				MultivectorSymbolic aSim = functionArrays.get(arrayName).get(index);
 				prettyName=String.format("%s[%s]", arrayName, arrayCtx.index.getText());
-				this.argsSimple.add(mv);
-				this.paramsSimple.add(this.fac.createMultivectorPurelySymbolicFrom(String.format("sym_%s", prettyName), mv));
+				MultivectorPurelySymbolic sym_aSim = this.fac.createMultivectorPurelySymbolicFrom(String.format("sym_%s", prettyName), aSim);
+				this.argsSimple.add(aSim);
+				this.paramsSimple.add(sym_aSim);
+				currentMultiVector = sym_aSim;
 			}
 		} else {
-			mv = parseLiteral(ctx.literalExprCtx);
-			prettyName = mv.getName();
+			currentMultiVector = parseLiteral(ctx.literalExprCtx);
+			prettyName = currentMultiVector.getName();
 		}
 		if (this.exprMultiVector == null){
-			this.exprMultiVector=mv;
+			this.exprMultiVector=currentMultiVector;
 		} else {
-			if (this.previousOperator == Operator.Plus) this.exprMultiVector = this.exprMultiVector.addition(mv);
-			else if (this.previousOperator == Operator.Minus) this.exprMultiVector = this.exprMultiVector.subtraction(mv);
+			if (this.previousOperator == Operator.Plus) this.exprMultiVector = this.exprMultiVector.addition(currentMultiVector);
+			else if (this.previousOperator == Operator.Minus) this.exprMultiVector = this.exprMultiVector.subtraction(currentMultiVector);
 		}
 		this.previousOperator = (ctx.plusOp != null) ? Operator.Plus : Operator.Minus;
+	}
+	
+	
+	@Override
+	public void exitInsideLoopStmt(InsideLoopStmtContext line){
+		List<MultivectorSymbolic> returnsList = (this.isAccumulation) ? this.returnsAccum : this.returnsArray;
+		returnsList.add(this.exprMultiVector);
+		this.exprMultiVector = null;
+		
+	}
+	
+	
+	@Override
+	public void exitLoopBody(LoopBodyContext ctx){			
+		System.out.println("paramsAccum: " + this.paramsAccum);
+		System.out.println("paramsSimple: " + this.paramsSimple);
+		System.out.println("paramsArray: " + this.paramsArray);
+		System.out.println("returnsAccum: " + this.returnsAccum);
+		System.out.println("returnsArray: " + this.returnsArray);
+		System.out.println("argsAccumInitial: " + this.argsAccumInitial);
+		System.out.println("argsSimple: " + this.argsSimple);
+		System.out.println("argsArray: " + this.argsArray);
+		System.out.println("iterations: " + this.iterations);
+		if (this.accumulatedArrays.isEmpty()) {
+			//map
+			System.out.println("Using map...");
+			var res = fac.getLoopService().map(paramsSimple, paramsArray, returnsArray, argsSimple, argsArray, iterations);
+			applyLoopResults(res, Collections.nCopies(res.size(), 0), this.loopedArrays);
+		} else {
+			System.out.println("using mapaccum...");
+			var res = fac.getLoopService().mapaccum(paramsAccum, paramsSimple, paramsArray, returnsAccum, returnsArray, argsAccumInitial, argsSimple, argsArray, iterations);
+			System.out.println("Accum: " + res.returnsAccum());
+			System.out.println("Array: " + res.returnsArray());
+			System.out.println("Looped: " + this.loopedArrays);
+			applyLoopResults(res.returnsArray(), Collections.nCopies(res.returnsArray().size(), 0), this.loopedArrays);
+			applyLoopResults(res.returnsAccum(), this.accumOffsets, this.accumulatedArrays);
+		}
+		
+	}
+
+	
+	private void applyLoopResults(List<MultivectorSymbolicArray> res, List<Integer> beginnings, List<MultivectorSymbolicArray> arrays) {
+		for (int i = 0; i<res.size(); i++){
+			int e = this.beginning + beginnings.get(i);
+			MultivectorSymbolicArray assignedArray = arrays.get(i);
+			for (MultivectorSymbolic mv : res.get(i)){
+				if (e >= assignedArray.size()) assignedArray.add(mv);
+				else assignedArray.set(e, mv);
+				e++;
+			}
+		}
 	}
 	
 	
@@ -223,6 +243,7 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 		}
 		return IndexCalculation.calculateIndex(param, this.functionArrays);
 	}	
+	
 	
 	private void addIndex(){
 		Token index = this.loopStmtCtx.loopVar;
@@ -239,6 +260,7 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 		// for (i; 0; i; 1).
 	}
 
+	
 	private MultivectorSymbolic parseLiteral(LoopLiteralExprContext ctx) {
 		if (ctx.id != null){
 			MultivectorSymbolic aSim =  this.functionVariables.get(ctx.id.getText());

@@ -28,7 +28,7 @@ public class TestSymbolic {
                   arAcc[i+1] = arAcc[i] + aArr[i]
                   rArr[i] = arAcc[i] + aSim + 2
 			}
-            b
+            arAcc[0], arAcc[1], arAcc[2], rArr[0], rArr[1]
 		}
 		""";
 
