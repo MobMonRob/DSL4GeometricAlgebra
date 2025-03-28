@@ -18,13 +18,15 @@ public class TestSymbolic {
             a [] = {1,3,4,5,5}
 			aSim = 5
 			aArr[] = {7,11}
-			arAcc[] = {} 
+			arAcc[] = {}  
 			arAcc[0] = 3
+            //arAcc[1] = 10
 			rArr[] = {} 
 			x[] = {1, 2, 3, 4}
 			y[] = {}
-			for (i; 0; len(x)-1; 1) {
-			y[i] = x[i] + 2
+			for (i; 0; 2; 1) {
+                  arAcc[i+1] = arAcc[i] + aArr[i]
+                  rArr[i] = arAcc[i] + aSim + 2
 			}
             b
 		}

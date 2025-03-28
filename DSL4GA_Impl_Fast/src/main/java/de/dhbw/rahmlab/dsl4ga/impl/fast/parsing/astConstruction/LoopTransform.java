@@ -17,6 +17,7 @@ import de.orat.math.gacalc.api.MultivectorSymbolicArray;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +50,7 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 	protected List<MultivectorSymbolicArray> argsArray; 
 	protected Map<String, FunctionSymbolic> functionsView;
 	protected Map<String, MultivectorSymbolic> functionVariablesView;
+	protected Map<String, MultivectorPurelySymbolic> paramsAccumMap = new HashMap<String, MultivectorPurelySymbolic>();
 	protected List<MultivectorSymbolicArray> accumulatedArrays;
     protected ExprGraphFactory fac = GAExprGraphFactoryService.getExprGraphFactoryThrowing();
 	protected Operator previousOperator;
@@ -133,9 +135,7 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 			this.isAccumulation = true;
 			this.accumulatedArrays.add(assignedArray);
 			MultivectorSymbolic arAcc = assignedArray.get(this.beginning);
-			String arAccName = arAcc.getName();
-			var sym_arAcc = fac.createMultivectorPurelySymbolicFrom(String.format("sym_%s", assigned.getText()), arAcc);
-			this.paramsAccum.add(sym_arAcc);
+			var sym_arAcc = fac.createMultivectorPurelySymbolicFrom(String.format("sym_%s[%s]", assigned.getText(), line.index.getText()), arAcc);
 			this.argsAccumInitial.add(arAcc);
 		} else { // Not an accumulation
 			if (assignedIndexCalcCtx.id!=null){
@@ -159,6 +159,7 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 	@Override
 	public void enterLoopAssignment (LoopAssignmentContext ctx){
 		MultivectorSymbolic mv;
+		String prettyName="";
 		if (ctx.arrayExprCtx != null){ // Array
 			ArrayAccessExprContext arrayCtx = ctx.arrayAccessExpr();
 			if (arrayCtx.index.id != null && arrayCtx.index.len == null){ // Iterator
@@ -169,31 +170,40 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 				} else if (arrayCtx.index.op != null) {throw new UnsupportedOperationException("Not supported yet.");} // Has to be implemented
 				MultivectorSymbolicArray assignedArray = functionArrays.get(arrayCtx.array.getText());
 				mv = assignedArray.get(this.beginning);
+				prettyName = String.format("%s[%s]", arrayCtx.array.getText(), this.localIterator);
 				if (!this.isAccumulation || !this.argsAccumInitial.contains(mv)){
 					try {
 						MultivectorSymbolicArray trimmedArray = new MultivectorSymbolicArray(assignedArray.subList(this.beginning, this.ending));
-						MultivectorSymbolic firstMV = trimmedArray.get(0);
+						MultivectorPurelySymbolic symmv = this.fac.createMultivectorPurelySymbolicFrom(String.format("sym_%s", prettyName), mv);
 						this.argsArray.add(trimmedArray);
-						this.paramsArray.add( this.fac.createMultivectorPurelySymbolicFrom(String.format("sym_%s", firstMV.getName()), firstMV));
+						this.paramsArray.add(symmv);
+						mv = symmv;
 					} catch (IndexOutOfBoundsException e){
 						if (!this.accumulatedArrays.contains(assignedArray)){
 						throw new ValidationException(line, String.format("The loop has more iterations than \"%s\" has elements.", arrayCtx.array.getText()));
+						} else {
+							mv = this.paramsAccumMap.get(prettyName);
 						}
 					}
+				} else {
+					MultivectorPurelySymbolic sym_arAcc = this.fac.createMultivectorPurelySymbolicFrom(String.format("sym_%s", prettyName), mv);
+					this.paramsAccum.add(sym_arAcc);
+					this.paramsAccumMap.put(prettyName, sym_arAcc);
+					mv = sym_arAcc;
 				}
 			} else{
 				String arrayName = arrayCtx.array.getText();
 				int index = IndexCalculation.calculateIndex(arrayCtx.index, functionArrays);
 				mv = functionArrays.get(arrayName).get(index);
+				prettyName=String.format("%s[%s]", arrayName, arrayCtx.index.getText());
 				this.argsSimple.add(mv);
-				this.paramsSimple.add(this.fac.createMultivectorPurelySymbolicFrom(String.format("sym_%s", mv.getName()), mv));
+				this.paramsSimple.add(this.fac.createMultivectorPurelySymbolicFrom(String.format("sym_%s", prettyName), mv));
 			}
 		} else {
 			mv = parseLiteral(ctx.literalExprCtx);
+			prettyName = mv.getName();
 		}
 		if (this.exprMultiVector == null){
-			System.out.println(mv);
-			//this.exprMultiVector = this.fac.createMultivectorPurelySymbolicFrom(mv.getName(), mv);
 			this.exprMultiVector=mv;
 		} else {
 			if (this.previousOperator == Operator.Plus) this.exprMultiVector = this.exprMultiVector.addition(mv);
@@ -238,8 +248,9 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 			return sym_aSim;
 		}
 		if (ctx.int_ != null){
-			int value = Integer.parseInt(ctx.int_.getText());
-			return this.fac.createScalarLiteral(ctx.int_.getText(), value);
+			String intText = ctx.int_.getText();
+			int value = Integer.parseInt(intText);
+			return this.fac.createScalarLiteral(intText, value);
 		}
 		DecimalFormat df = DecimalFormatter.initDecimalFormat();
 		String name = ctx.dec.getText();
