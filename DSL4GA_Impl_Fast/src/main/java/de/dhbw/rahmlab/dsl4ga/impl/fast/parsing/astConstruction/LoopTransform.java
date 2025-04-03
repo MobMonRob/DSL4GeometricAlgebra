@@ -8,6 +8,10 @@ import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationException;
 import de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils.DecimalFormatter;
 import static de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils.DecimalFormatter.initDecimalFormat;
 import de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils.IndexCalculation;
+import de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils.IndexCalculationType;
+import static de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils.IndexCalculationType.accum;
+import static de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils.IndexCalculationType.iteratorOperation;
+import de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils.LoopNode;
 import de.orat.math.gacalc.api.ExprGraphFactory;
 import de.orat.math.gacalc.api.FunctionSymbolic;
 import de.orat.math.gacalc.api.GAExprGraphFactoryService;
@@ -19,11 +23,14 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
 enum Operator {
@@ -53,7 +60,10 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 	protected Map<String, MultivectorSymbolic> functionVariablesView;
 	protected Map<String, MultivectorPurelySymbolic> paramsAccumMap = new HashMap<String, MultivectorPurelySymbolic>();
 	protected List<MultivectorSymbolicArray> accumulatedArrays;
+	protected List<String> leftsideArrayNames = new ArrayList<>();
 	protected List<Integer> accumOffsets = new ArrayList<>(); 
+	protected List<HashMap> loopLevels = new ArrayList<>();
+	protected Set<String> assignmentNames = new HashSet<String>();
 	protected List<MultivectorSymbolicArray> loopedArrays = new ArrayList<>(); 
     protected ExprGraphFactory fac = GAExprGraphFactoryService.getExprGraphFactoryThrowing();
 	protected Operator previousOperator;
@@ -96,8 +106,94 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 	}
 	
 	
+	
 	@Override
-	public void enterInsideLoopStmt(InsideLoopStmtContext line) {
+	public void enterLoopAssignment(LoopAssignmentContext ctx){
+		String name;
+		if (ctx.arrayExprCtx != null){
+			IndexCalculationType type = IndexCalculation.getIndexCalcType(ctx.arrayExprCtx.index, localIterator);
+			Boolean isAccum = (type==accum);
+			String variableName = ctx.arrayExprCtx.array.getText();
+			name = (isAccum) ? String.format("%s+", variableName) : variableName;
+		} else {
+			name = ctx.literalExprCtx.getText();
+		}
+		assignmentNames.add(name);
+	}
+	
+	
+	
+	@Override
+	public void exitInsideLoopStmt(InsideLoopStmtContext line){
+		String variableName = line.assigned.getText();
+		IndexCalculationType type = IndexCalculation.getIndexCalcType(line.index, localIterator);
+		if (type == iteratorOperation) throw new RuntimeException();
+		Boolean isAccum = (type==accum);
+		String name = (isAccum) ? String.format("%s+", variableName) : variableName;
+		assignmentNames.add(name);
+		LoopNode node = LoopNode.generateParentNode(line, isAccum);
+		int highestLevel = 0;
+		int currentLevel = 0;
+		for (HashMap level : loopLevels){
+			for (String n : assignmentNames){
+				if (level.containsKey(n)){
+					highestLevel = currentLevel+1;
+				}
+			}
+			currentLevel ++;
+		}
+		addNode(highestLevel, name, node);
+		assignmentNames = new HashSet<String>();
+	}
+	
+	
+	/*@Override
+	public void exitInsideLoopStmt(InsideLoopStmtContext line){
+		List<MultivectorSymbolic> returnsList = (this.isAccumulation) ? this.returnsAccum : this.returnsArray;
+		returnsList.add(this.exprMultiVector);
+		this.exprMultiVector = null;
+		
+	}*/
+	
+	
+	@Override
+	public void exitLoopBody(LoopBodyContext ctx){		
+		for (HashMap level : loopLevels.reversed()){
+			System.out.println(level.keySet());
+			System.out.println("----------");
+		}
+			
+		/*
+		System.out.println("paramsAccum: " + this.paramsAccum);
+		System.out.println("paramsSimple: " + this.paramsSimple);
+		System.out.println("paramsArray: " + this.paramsArray);
+		System.out.println("returnsAccum: " + this.returnsAccum);
+		System.out.println("returnsArray: " + this.returnsArray);
+		System.out.println("argsAccumInitial: " + this.argsAccumInitial);
+		System.out.println("argsSimple: " + this.argsSimple);
+		System.out.println("argsArray: " + this.argsArray);
+		System.out.println("iterations: " + this.iterations);
+		if (this.accumulatedArrays.isEmpty()) {
+			//map
+			System.out.println("Using map...");
+			var res = fac.getLoopService().map(paramsSimple, paramsArray, returnsArray, argsSimple, argsArray, iterations);
+			System.out.println("Array: " + res);
+			applyLoopResults(res, Collections.nCopies(res.size(), 0), this.loopedArrays);
+		} else {
+			System.out.println("using mapaccum...");
+			var res = fac.getLoopService().mapaccum(paramsAccum, paramsSimple, paramsArray, returnsAccum, returnsArray, argsAccumInitial, argsSimple, argsArray, iterations);
+			System.out.println("Accum: " + res.returnsAccum());
+			System.out.println("Array: " + res.returnsArray());
+			applyLoopResults(res.returnsArray(), Collections.nCopies(res.returnsArray().size(), 0), this.loopedArrays);
+			applyLoopResults(res.returnsAccum(), this.accumOffsets, this.accumulatedArrays);
+		}
+		*/
+	}
+
+	
+	
+	
+	private void determineAssignee(InsideLoopStmtContext line) {
 		// Check if array exists
 		Token assigned = line.assigned;
 		IndexCalcContext assignedIndexCalcCtx = line.index;
@@ -123,15 +219,14 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 	}
 	
 		
-	@Override
-	public void enterLoopAssignment (LoopAssignmentContext ctx){
+	private void determineAssignment (LoopAssignmentContext ctx){
 		MultivectorSymbolic currentMultiVector;
 		String prettyName="";
 		if (ctx.arrayExprCtx != null){ // Array
 			ArrayAccessExprContext arrayCtx = ctx.arrayAccessExpr();
 			if (arrayCtx.index.id != null && arrayCtx.index.len == null){ // Iterator
 				String id = arrayCtx.index.id.getText();
-					int line = arrayCtx.index.id.getLine();
+				int line = arrayCtx.index.id.getLine();
 				if (!id.equals(this.localIterator)){
 					throw new ValidationException(line, String.format("You may only use \"%s\" in combination with len() here.", id));
 				} else if (arrayCtx.index.op != null) {throw new UnsupportedOperationException("Not supported yet.");} // Has to be implemented
@@ -146,10 +241,14 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 						this.paramsArray.add(sym_aArr);
 						currentMultiVector = sym_aArr;
 					} catch (IndexOutOfBoundsException e){
-						if (!this.accumulatedArrays.contains(assignedArray)){
-						throw new ValidationException(line, String.format("The loop has more iterations than \"%s\" has elements.", arrayCtx.array.getText()));
+						if (!this.accumulatedArrays.contains(assignedArray) && !this.leftsideArrayNames.contains(arrayCtx.array.getText())){
+							throw new ValidationException(line, String.format("The loop has more iterations than \"%s\" has elements.", arrayCtx.array.getText()));
 						} else {
-							currentMultiVector = this.paramsAccumMap.get(prettyName);
+							if (this.accumulatedArrays.contains(assignedArray)){
+								currentMultiVector = this.paramsAccumMap.get(prettyName);
+							} else {
+								currentMultiVector = functionArrays.get(arrayCtx.array.getText()).get(this.beginning);
+							}
 						}
 					}
 				} else {
@@ -181,44 +280,6 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 		this.previousOperator = (ctx.plusOp != null) ? Operator.Plus : Operator.Minus;
 	}
 	
-	
-	@Override
-	public void exitInsideLoopStmt(InsideLoopStmtContext line){
-		List<MultivectorSymbolic> returnsList = (this.isAccumulation) ? this.returnsAccum : this.returnsArray;
-		returnsList.add(this.exprMultiVector);
-		this.exprMultiVector = null;
-		
-	}
-	
-	
-	@Override
-	public void exitLoopBody(LoopBodyContext ctx){			
-		System.out.println("paramsAccum: " + this.paramsAccum);
-		System.out.println("paramsSimple: " + this.paramsSimple);
-		System.out.println("paramsArray: " + this.paramsArray);
-		System.out.println("returnsAccum: " + this.returnsAccum);
-		System.out.println("returnsArray: " + this.returnsArray);
-		System.out.println("argsAccumInitial: " + this.argsAccumInitial);
-		System.out.println("argsSimple: " + this.argsSimple);
-		System.out.println("argsArray: " + this.argsArray);
-		System.out.println("iterations: " + this.iterations);
-		if (this.accumulatedArrays.isEmpty()) {
-			//map
-			System.out.println("Using map...");
-			var res = fac.getLoopService().map(paramsSimple, paramsArray, returnsArray, argsSimple, argsArray, iterations);
-			applyLoopResults(res, Collections.nCopies(res.size(), 0), this.loopedArrays);
-		} else {
-			System.out.println("using mapaccum...");
-			var res = fac.getLoopService().mapaccum(paramsAccum, paramsSimple, paramsArray, returnsAccum, returnsArray, argsAccumInitial, argsSimple, argsArray, iterations);
-			System.out.println("Accum: " + res.returnsAccum());
-			System.out.println("Array: " + res.returnsArray());
-			System.out.println("Looped: " + this.loopedArrays);
-			applyLoopResults(res.returnsArray(), Collections.nCopies(res.returnsArray().size(), 0), this.loopedArrays);
-			applyLoopResults(res.returnsAccum(), this.accumOffsets, this.accumulatedArrays);
-		}
-		
-	}
-
 	
 	private void applyLoopResults(List<MultivectorSymbolicArray> res, List<Integer> beginnings, List<MultivectorSymbolicArray> arrays) {
 		for (int i = 0; i<res.size(); i++){
@@ -282,5 +343,12 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 		} catch (ParseException ex) {
 			throw new ValidationException(ctx.dec.getLine(), String.format("\"%s\" could not be parsed as decimal.", name));
 		}
+	}
+
+	private void addNode(int i, String name, LoopNode node) {
+		if (loopLevels.size() <= i){
+			loopLevels.add(new HashMap<String, LoopNode>());
+		}
+		loopLevels.get(i).put(name, node);
 	}
 }

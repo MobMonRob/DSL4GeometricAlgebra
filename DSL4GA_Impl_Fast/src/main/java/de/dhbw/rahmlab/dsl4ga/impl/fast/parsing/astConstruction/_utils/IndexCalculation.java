@@ -1,13 +1,15 @@
 package de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils;
 
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParser;
+import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParser.IndexCalcContext;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationException;
+import static de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils.IndexCalculationType.*;
 import de.orat.math.gacalc.api.MultivectorSymbolicArray;
 import java.util.Map;
 
 public class IndexCalculation {	
 	@Deprecated
-	public static int calculateIndex(GeomAlgeParser.IndexCalcContext ctx, Map<String, MultivectorSymbolicArray> arrays, Map<String, Integer> loopIndex){
+	public static int calculateIndex(IndexCalcContext ctx, Map<String, MultivectorSymbolicArray> arrays, Map<String, Integer> loopIndex){
 		if (loopIndex.containsKey(ctx.id.getText())) {
 			int integerValue = 0;
 			if (ctx.integer != null){
@@ -20,7 +22,7 @@ public class IndexCalculation {
 		}
 	} 
 	
-	public static int calculateIndex (GeomAlgeParser.IndexCalcContext ctx, Map<String, MultivectorSymbolicArray> arrays){
+	public static int calculateIndex (IndexCalcContext ctx, Map<String, MultivectorSymbolicArray> arrays){
 		if ((ctx.len == null)&&(ctx.id!=null)){
 			int line = ctx.id.getLine();
 			throw new ValidationException(line, String.format("You may only use \"%s\" in combination with len() here.", ctx.id.getText()));
@@ -40,7 +42,17 @@ public class IndexCalculation {
 		return calculateOp(ctx, array.size(), integerValue);
 	}
 	
-	private static int calculateOp (GeomAlgeParser.IndexCalcContext ctx, int leftSide, int rightSide){
+	public static IndexCalculationType getIndexCalcType(IndexCalcContext ctx, String iterator){
+		if (!ctx.id.getText().equals(iterator) || ctx.integer == null) return notIterator;
+		if (ctx.len != null){
+			int line = ctx.len.getLine();
+			throw new ValidationException(line, String.format("You can't use len(%s) because %s is the iterator.", iterator, iterator));
+		}
+		if (calculateOp(ctx, 0, Integer.parseInt(ctx.integer.getText())) != 1) return iteratorOperation;
+		return accum;
+	}
+	
+	private static int calculateOp (IndexCalcContext ctx, int leftSide, int rightSide){
 		if (ctx.op == null){
 			return leftSide;
 		}else if (ctx.op.getType() == GeomAlgeParser.HYPHEN_MINUS){

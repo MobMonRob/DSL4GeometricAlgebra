@@ -15,20 +15,24 @@ public class TestSymbolic {
 		String source = """              
 		fn main() {
             b = 0 
-            a [] = {1,3,4,5,5}
+            a [] = {200, 300, 400}
 			aSim = 5
 			aArr[] = {7,11}
 			arAcc[] = {}  
 			arAcc[0] = 3
             //arAcc[1] = 10
 			rArr[] = {} 
-			x[] = {1, 2, 3, 4}
-			y[] = {}
+			x[] = {2, 3, 4}
+			y[] = {20, 30, 40}
 			for (i; 0; 2; 1) {
-                  arAcc[i+1] = arAcc[i] + aArr[i]
-                  rArr[i] = arAcc[i] + aSim + 2
+                a[i] = b[i]						
+                x[i] = a[i] 
+                y[i] = b[i] + a[i+1] + y[i]
+                a[i+1] = a[i] + y[i]
+                y[i+1] = a[i+1]
+                y[i] = a[i]
 			}
-            arAcc[0], arAcc[1], arAcc[2], rArr[0], rArr[1]
+            a[0]
 		}
 		""";
 
