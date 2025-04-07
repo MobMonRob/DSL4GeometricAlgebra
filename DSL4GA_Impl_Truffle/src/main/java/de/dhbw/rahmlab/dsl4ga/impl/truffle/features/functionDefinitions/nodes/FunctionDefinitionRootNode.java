@@ -5,7 +5,7 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLang;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.superClasses.AbstractFunctionRootNode;
 
-public final class FunctionDefinitionRootNode extends AbstractFunctionRootNode {
+public class FunctionDefinitionRootNode extends AbstractFunctionRootNode {
 
 	@SuppressWarnings("FieldMayBeFinal")
 	@Child

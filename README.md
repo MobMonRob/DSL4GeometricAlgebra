@@ -99,11 +99,19 @@ There are two implementations of the [API](DSL4GA_API):
 
 Their syntax will be the same in the longrun. However, during development of the language, some syntactical constructs will temporarily not supported by one or the other.
 
-The following features are supported ("x" is yes, "-" is no):
+The following features are supported ("Y" is yes, "N" is not yet, "-" is will not):
 | F | T | Feature |
 | - | - | ------- |
-| - | x | Visualization |
-| - | x | Debugger |
+| - | Y | Visualization |
+| - | Y | Debugger |
+
+
+## Syntax
+The first line needs to declare the algebra used. Optionally, the implementation can be specified, too. \
+With algebra being "cga" and implementation being "theImpl", the first line would be:
+```
+#algebra cga theImpl
+```
 
 
 ## Expressions
@@ -136,13 +144,17 @@ fn main(a, b) {
 ```
 
 ## Visualization
-Variables can be visualized after assignment with a preceding colon. \
-For correct visualization, make sure that the variable is in **IPNS** representation. \
-After leaving a function, the visualizations of this functions will be cleaned up. Visualizations from the calling function remain. \
-In the following example, the variable b will be visualized:
+Variables can be visualized after assignment with one or two preceding colons.
+- `:a` will assume **IPNS** representation.
+- `::a` will assume **OPNS** representation.
+
+After leaving a function, the visualizations done in it will be cleaned up. Visualizations from the calling function remain.
+
+Example visualization syntax within context:
 ```
-fn main(a) {
-	:b = a
+fn main(a, b) {
+	:c = a
+	::d = b
 }
 ```
 
@@ -180,10 +192,10 @@ Hint: The Unicode and Latex name for the symbol used for left contraction is "RI
 | 2          | &#x002F; | /       | \u002F  | division (inverse geometric product) |  |
 
 #### Additional 2-ary operators
-| precedence | symbol   | latex | unicode | description | 
-| :--------: | :------: | ------| ------- | ----------- | 
-| 3          | &#x22C5; | \cdot | \u22C5  | dot product (inner product without scalar parts) $A\cdot B=\langle A B\rangle_{|k-l|,k\neq 0, l\neq 0}$|  
-| 3          | &#x2229; | \cap  | \u2229  | meet (intersection) = largest common subspace | 
+| precedence | symbol   | latex | unicode | description |
+| :--------: | :------: | ------| ------- | ----------- |
+| 3          | &#x22C5; | \cdot | \u22C5  | dot product (inner product without scalar parts) $A\cdot B=\langle A B\rangle_{|k-l|,k\neq 0, l\neq 0}$|
+| 3          | &#x2229; | \cap  | \u2229  | meet (intersection) = largest common subspace |
 | 3          | &#x222A; | \cup  | \u222A  | join  (union) of two subspaces is there smallest superspace = smallest space containing them both |
 
 ### 1-ary operators
@@ -197,23 +209,23 @@ Except dual/undual the operators cancel itself so if your write X&#732;&#732; no
 | :--------: | :--------------: | ----------------------------- | ------------ | ----------- |  :------- |
 | 5          | &#x002D;         | &#x002D;                      | \u002D       | negate      |  - |
 | 6          | &#x207B;&#x00B9; | \textsuperscript{-1}          | \u207B\u00B9 | general inverse |  |
-| 6          | &#x002A;         | \textsuperscript{\*}          | \u002A       | Hodge dual      | ! | 
+| 6          | &#x002A;         | \textsuperscript{\*}          | \u002A       | Hodge dual      | ! |
 | 6          | &#x02DC;         | \textsuperscript{$\tilde$}      | \u02DC       | reverse/adjoint: reverse all multiplications (e.g. inverse for rotor) |  &#732; |
 | 6          | &#x2020;         | \textsuperscript{\textdagger} | \u2020       | clifford conjugate (a sign change operation) | |
 
 There exist three types of involution operations: Space inversion, reversion and the combination of both the clifford conjugation.
 
 #### Additional 1-ary operators
-| precedence | symbol           | latex                 | unicode      | description | 
-| :--------: | :--------------: | --------------------- | ------------ | ----------- | 
-| 6          | &#x207B;&#x002A; | \textsuperscript{-\*} | \u207B\u002A | undual | 
-| 6          | &#x00B2;         | \textsuperscript{2}                     | \u00B2       | square | 
-| 6          | &#x005E;         | \textsuperscript{$\wedge$}                      | \u005E       | grade involution/inversion (a sign change operation) $\hat{M} = \sum\limits_k{(-1)^k\langle M\rangle_{k}}$| 
+| precedence | symbol           | latex                 | unicode      | description |
+| :--------: | :--------------: | --------------------- | ------------ | ----------- |
+| 6          | &#x207B;&#x002A; | \textsuperscript{-\*} | \u207B\u002A | undual |
+| 6          | &#x00B2;         | \textsuperscript{2}                     | \u00B2       | square |
+| 6          | &#x005E;         | \textsuperscript{$\wedge$}                      | \u005E       | grade involution/inversion (a sign change operation) $\hat{M} = \sum\limits_k{(-1)^k\langle M\rangle_{k}}$|
 
 ### Composite operators
-| symbol | latex | unicode      | description | 
-| :----------------------------------------------------------------------------------------------------------------: | ----- | ------------ | ----------- | 
-| &#x003C;multivector&#x003E;&#x209A; (with &#x209A; ∈ {&#x2080;, &#x2081;, &#x2082;, &#x2083;, &#x2084;, &#x2085;}) |       | &#x003C; = \u003C,  &#x003E; = \u003E, &#x2080; = \u2080, &#x2081; = \u2081, &#x2082; = \u2082, &#x2083; = \u2083, &#x2084; = \u2084, &#x2085; = \u2085| grade extraction, grade p=0-5 as subscript | 
+| symbol | latex | unicode      | description |
+| :----------------------------------------------------------------------------------------------------------------: | ----- | ------------ | ----------- |
+| &#x003C;multivector&#x003E;&#x209A; (with &#x209A; ∈ {&#x2080;, &#x2081;, &#x2082;, &#x2083;, &#x2084;, &#x2085;}) |       | &#x003C; = \u003C,  &#x003E; = \u003E, &#x2080; = \u2080, &#x2081; = \u2081, &#x2082; = \u2082, &#x2083; = \u2083, &#x2084; = \u2084, &#x2085; = \u2085| grade extraction, grade p=0-5 as subscript |
 
 
 ## Built-in functions
@@ -252,13 +264,13 @@ There exist three types of involution operations: Space inversion, reversion and
 
 ## Symbols
 ### Base vector symbols
-| symbol           | latex        | Unicode      | description | 
-| :--------------: | ------------ | ------------ | ----------- | 
+| symbol           | latex        | Unicode      | description |
+| :--------------: | ------------ | ------------ | ----------- |
 | &#x03B5;&#x2080; | \epsilon_0 | \u03B5\u2080 | base vector representing the origin |
 | &#x03B5;&#x1D62; | \epsilon_i | \u03B5\u1D62 | base vector representing the infinity |
-| &#x03B5;&#x2081; | \epsilon_1 | \u03B5\u2081 | base vector representing x direction | 
-| &#x03B5;&#x2082; | \epsilon_2 | \u03B5\u2082 | base vector representing y direction | 
-| &#x03B5;&#x2083; | \epsilon_3 | \u03B5\u2083 | base vector representing z direction | 
+| &#x03B5;&#x2081; | \epsilon_1 | \u03B5\u2081 | base vector representing x direction |
+| &#x03B5;&#x2082; | \epsilon_2 | \u03B5\u2082 | base vector representing y direction |
+| &#x03B5;&#x2083; | \epsilon_3 | \u03B5\u2083 | base vector representing z direction |
 
 
 ### Further symbols

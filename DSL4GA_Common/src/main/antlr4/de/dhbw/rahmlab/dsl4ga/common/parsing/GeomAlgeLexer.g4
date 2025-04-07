@@ -5,7 +5,7 @@ lexer grammar GeomAlgeLexer;
 ///////////////////////////////////////////////////////////////////////////
 /*
 
-- The name of the corresponding function above the symbol name is the same as in ICGAMultivector_Processor.
+- The name of the corresponding function above the symbol name is the same as in the README.
 - The name of a symbol is usually the same as in unicode. Exceptions are for example the contraction operator symbols.
 - The sequence of symbol definitions is the same as in the README.md.
 
@@ -89,7 +89,7 @@ SOLIDUS
 // Symbols for: Additional 2-ary operators
 ///////////////////////////////////////////////////////////////////////////
 
-// inner_product
+// dot_product
 // \u22C5
 DOT_OPERATOR
 	: '⋅'
@@ -363,6 +363,10 @@ L_EDGE_BRACKET
 
 R_EDGE_BRACKET
 	: ']'
+    ;
+
+ALGEBRA_INDICATOR
+	: '#algebra'
 	;
 
 ///////////////////////////////////////////////////////////////////////////

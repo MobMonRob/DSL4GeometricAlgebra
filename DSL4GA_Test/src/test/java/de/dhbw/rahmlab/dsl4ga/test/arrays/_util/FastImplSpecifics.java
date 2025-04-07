@@ -7,7 +7,7 @@ import de.orat.math.gacalc.api.GAExprGraphFactoryService;
 import de.orat.math.sparsematrix.SparseDoubleMatrix;
 
 public class FastImplSpecifics implements ImplementationSpecifics {
-	private final ExprGraphFactory exprGraphFactory = GAExprGraphFactoryService.getExprGraphFactoryThrowing();
+	private final ExprGraphFactory exprGraphFactory = GAExprGraphFactoryService.getExprGraphFactoryThrowing("cga");
 
 	@Override
 	public iProgramFactory buildFactory() {

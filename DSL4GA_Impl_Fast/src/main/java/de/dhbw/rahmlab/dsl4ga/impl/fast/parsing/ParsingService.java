@@ -8,6 +8,7 @@ import de.dhbw.rahmlab.dsl4ga.common.parsing.CustumDiagnosticErrorListener;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeLexer;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParser;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.SyntaxErrorListener;
+import de.orat.math.gacalc.api.ExprGraphFactory;
 import de.orat.math.gacalc.api.FunctionSymbolic;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.atn.PredictionMode;
@@ -15,18 +16,21 @@ import org.antlr.v4.runtime.misc.ParseCancellationException;
 
 public final class ParsingService {
 
+	public static record FactoryAndMain(ExprGraphFactory fac, FunctionSymbolic main) {
+
+	}
+
 	private ParsingService() {
 
 	}
 
-	protected static FunctionSymbolic invoke(GeomAlgeParser parser) {
+	protected static FactoryAndMain invoke(GeomAlgeParser parser) {
 		GeomAlgeParser.SourceUnitContext sourceUnit = parser.sourceUnit();
-		FunctionSymbolic main = SourceUnitTransform.generate(parser, sourceUnit);
-
-		return main;
+		FactoryAndMain factoryAndMain = SourceUnitTransform.generate(parser, sourceUnit);
+		return factoryAndMain;
 	}
 
-	public static FunctionSymbolic parse(CharStreamSupplier program) {
+	public static FactoryAndMain parse(CharStreamSupplier program) {
 		GeomAlgeLexer lexer = ParsingService.getLexer(program);
 		GeomAlgeParser parser = ParsingService.getParser(lexer);
 		configureParserDefault(parser);

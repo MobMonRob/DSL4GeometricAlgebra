@@ -19,7 +19,7 @@ public class ProgramRunner {
 	}
 		
 	public void parseAndRun(String code){
-		iProgram prog = factory.parse(code);
+		iProgram prog = factory.parse(String.format("#algebra cga\n%s", code));
 		List<? extends Object> answers = prog.invoke(noArguments);
 		answers.forEach(answer -> {
 			answerStrings.add(specifics.createMultivectorString(answer));

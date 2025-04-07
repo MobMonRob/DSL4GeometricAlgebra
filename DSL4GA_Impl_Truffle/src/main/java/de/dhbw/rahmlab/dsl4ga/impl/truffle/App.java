@@ -2,6 +2,7 @@ package de.dhbw.rahmlab.dsl4ga.impl.truffle;
 
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.api.TruffleProgramFactory;
 import de.orat.math.cga.api.CGARoundPointIPNS;
+import de.orat.math.cga.api.CGARoundPointOPNS;
 import de.orat.math.cga.api.CGAViewObject;
 import de.orat.math.cga.api.CGAViewer;
 import de.orat.math.sparsematrix.DenseDoubleColumnVector;
@@ -28,14 +29,14 @@ public class App {
 		for (int i = 0;; ++i) {
 			CGARoundPointIPNS pm = new CGARoundPointIPNS(new Point3d(i, 0.3, -0.7));
 			CGAViewObject addedObject = viewer.addCGAObject(pm, "pm");
-			if (addedObject != null){
+			if (addedObject != null) {
 				System.out.println("Added " + i);
 				// Thread.sleep(1000);
 				addedObject.remove();
 				System.out.println("Removed " + i);
 				// Thread.sleep(1000);
 			} else {
-				System.out.println("Failed "+i);
+				System.out.println("Failed " + i);
 			}
 		}
 	}
@@ -58,7 +59,7 @@ public class App {
 		}
 
 		var a = new CGARoundPointIPNS(new Point3d(1, 0.3, -0.7)).extractCoordinates();
-		var b = new CGARoundPointIPNS(new Point3d(0.5, 0.5, 0.5)).extractCoordinates();
+		var b = new CGARoundPointOPNS(new Point3d(0.5, 0.5, 0.5)).extractCoordinates();
 		var aMatrix = new SparseDoubleMatrix(new DenseDoubleColumnVector(a).toMatrix());
 		var bMatrix = new SparseDoubleMatrix(new DenseDoubleColumnVector(b).toMatrix());
 		var args = List.of(aMatrix, bMatrix);

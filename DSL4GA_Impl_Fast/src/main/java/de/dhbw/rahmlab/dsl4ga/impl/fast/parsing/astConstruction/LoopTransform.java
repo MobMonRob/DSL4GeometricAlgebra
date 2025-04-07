@@ -65,16 +65,16 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 	protected List<HashMap> loopLevels = new ArrayList<>();
 	protected Set<String> assignmentNames = new HashSet<String>();
 	protected List<MultivectorSymbolicArray> loopedArrays = new ArrayList<>(); 
-    protected ExprGraphFactory fac = GAExprGraphFactoryService.getExprGraphFactoryThrowing();
+	protected ExprGraphFactory fac;
 	protected Operator previousOperator;
 	protected MultivectorSymbolic exprMultiVector;
 	protected Boolean isAccumulation;
 	protected int iterations;
 	
 	
-	protected LoopTransform(GeomAlgeParser parser, GeomAlgeParser.LoopStmtContext loopCtx, 
-							Map<String, MultivectorSymbolic> variables, Map<String, MultivectorSymbolicArray> arrays,
-							Map<String, FunctionSymbolic> functionsView,  Map<String, MultivectorSymbolic> functionVariablesView) {
+	protected LoopTransform(ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.LoopStmtContext loopCtx,							Map<String, MultivectorSymbolic> variables, Map<String, MultivectorSymbolicArray> arrays,
+		Map<String, FunctionSymbolic> functionsView, Map<String, MultivectorSymbolic> functionVariablesView) {
+		this.fac = exprGraphFactory;
 		this.parser = parser;
 		this.loopStmtCtx = loopCtx;
 		this.functionVariables = variables;
@@ -93,10 +93,9 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 		}
 	
 	
-	public static void generate(GeomAlgeParser parser, GeomAlgeParser.LoopStmtContext loopCtx, 
-								Map<String, MultivectorSymbolic> variables, Map<String, MultivectorSymbolicArray> arrays, 
+	public static void generate(ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.LoopStmtContext loopCtx,								Map<String, MultivectorSymbolic> variables, Map<String, MultivectorSymbolicArray> arrays,
 								Map<String, FunctionSymbolic> functionsView,  Map<String, MultivectorSymbolic> functionVariablesView){
-		LoopTransform loopTransform = new LoopTransform(parser, loopCtx, variables, arrays, functionsView, functionVariablesView);
+		LoopTransform loopTransform = new LoopTransform(exprGraphFactory, parser, loopCtx, variables, arrays, functionsView, functionVariablesView);
 		loopTransform.addIndex();
 		loopTransform.beginning = loopTransform.parseLoopParam(loopCtx.beginning);
 		loopTransform.step = loopTransform.parseLoopParam(loopCtx.step);

@@ -1,3 +1,5 @@
+#algebra cga
+
 fn main(P1, P2, P3, PIc) {
 
 // finding the joint angles

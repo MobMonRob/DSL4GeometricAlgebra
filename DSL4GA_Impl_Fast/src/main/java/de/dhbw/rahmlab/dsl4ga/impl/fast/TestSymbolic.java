@@ -12,7 +12,8 @@ public class TestSymbolic {
 	}
 
 	private static void invocationTest() throws Exception {
-		String source = """              
+		String source = """
+        #algebra cga
 		fn main() {
             b = 0 
             a [] = {200, 300, 400}
