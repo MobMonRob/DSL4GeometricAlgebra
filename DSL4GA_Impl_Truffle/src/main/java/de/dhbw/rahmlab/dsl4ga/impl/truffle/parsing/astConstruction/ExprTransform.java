@@ -297,6 +297,18 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		}
 	}
 
+	@Override
+	public void exitLiteralInteger(GeomAlgeParser.LiteralIntegerContext ctx) {
+		try {
+			String integerLiteral = ctx.value.getText();
+			int value = Integer.parseInt(integerLiteral);
+			ScalarLiteral node = ScalarLiteralNodeGen.create((double) value);
+			nodeStack.push(node);
+		} catch (NumberFormatException ex) {
+			throw new AssertionError(ex);
+		}
+	}
+
 	private static class EnterCallMarker extends ExpressionBaseNode {
 
 		@Override

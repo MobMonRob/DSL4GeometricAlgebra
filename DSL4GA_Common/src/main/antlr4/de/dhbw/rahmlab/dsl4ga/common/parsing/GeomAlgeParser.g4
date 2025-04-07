@@ -147,7 +147,7 @@ loopLiteralExpr
 
 unOpExpr
 	:	unOpRExpr //Precedence 6
-	|	unOpLExpr //Precedence 5System.out.println(ctx.ops);
+	|	unOpLExpr //Precedence 5
 	;
 
 // rightSideRecursive (sic)
