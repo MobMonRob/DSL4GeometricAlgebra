@@ -132,7 +132,7 @@ insideLoopStmt
 loopAssignment
 	: arrayExprCtx=arrayAccessExpr 
 	| literalExprCtx=loopLiteralExpr
-	| (arrayExprCtx=arrayAccessExpr | literalExprCtx=loopLiteralExpr ) SPACE * (plusOp=PLUS_SIGN | minusOp=HYPHEN_MINUS) SPACE* loopAssignment
+	| (arrayExprCtx=arrayAccessExpr | literalExprCtx=loopLiteralExpr ) SPACE * (plusOp=PLUS_SIGN | minusOp=HYPHEN_MINUS) SPACE* nextExpr=loopAssignment
 	;
 
 loopLiteralExpr

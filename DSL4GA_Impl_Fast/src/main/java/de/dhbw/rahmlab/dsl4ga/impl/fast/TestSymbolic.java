@@ -15,25 +15,28 @@ public class TestSymbolic {
 		String source = """
         #algebra cga
 		fn main() {
-            b = 0 
-            a [] = {200, 300, 400}
+            //b = 0 
+            //a [] = {200, 300, 400}
 			aSim = 5
 			aArr[] = {7,11}
 			arAcc[] = {}  
 			arAcc[0] = 3
             //arAcc[1] = 10
 			rArr[] = {} 
-			x[] = {2, 3, 4}
-			y[] = {20, 30, 40}
-			for (i; 0; 2; 1) {
-                a[i] = b[i]						
-                x[i] = a[i] 
-                y[i] = b[i] + a[i+1] + y[i]
-                a[i+1] = a[i] + y[i]
-                y[i+1] = a[i+1]
-                y[i] = a[i]
+			//x[] = {1, 2, 3, 4}
+			//y[] = {1}
+                  
+            x [] = {1,2,3,4,5,7}
+            a [] = {1,6,2,6,3}
+            b [] = {9,4,8,2,4}
+            y [] = {1}
+                  
+			for (i; 0; 4; 1) {        
+                b[i] = a[i] +2
+                //x[i] = b[i] - 2
+                y[i+1] = y[i] + b[i]
 			}
-            a[0]
+            y[0], y[1], y[2], y[3], x[0], x[1], x[2]
 		}
 		""";
 
