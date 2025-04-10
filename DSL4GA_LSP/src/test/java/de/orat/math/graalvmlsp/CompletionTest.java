@@ -72,9 +72,7 @@ public class CompletionTest extends TruffleLSPTest {
                 }
                 """;
      
-        // FIXME empty blocks are not allowed
-        // damit fliege ich hier raus
-        Future<?> future = truffleAdapter.parse(text, LANGUAGE_ID, uri);
+		Future<?> future = truffleAdapter.parse(text, LANGUAGE_ID, uri);
         future.get();
 
         int numberOfGlobalsItems = -1;

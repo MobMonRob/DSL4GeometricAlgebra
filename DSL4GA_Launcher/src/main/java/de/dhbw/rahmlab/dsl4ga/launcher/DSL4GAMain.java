@@ -1,6 +1,7 @@
 package de.dhbw.rahmlab.dsl4ga.launcher;
 
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.api.TruffleProgram;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.api.TruffleProgramFactory;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLang;
 import de.orat.math.gacalc.api.GAExprGraphFactoryService;
 import de.orat.math.sparsematrix.SparseDoubleMatrix;
@@ -127,8 +128,9 @@ public final class DSL4GAMain {
 	 * @param source == null if LSP should be started
 	 * @param options 
 	 */
-	private static void executeSource(Source source, Map<String,String> options) {
-		TruffleProgram program = new TruffleProgram(GAExprGraphFactoryService.getExprGraphFactoryThrowing(), source);
+	private static void executeSource(Source source, Map<String, String> options) {
+		var fac = new TruffleProgramFactory();
+		var program = fac.parse(source.getURL());
 
 		//TODO arguments die der main()-Methode mitgegeben werden sollen
 		var arguments = new ArrayList<SparseDoubleMatrix>();

@@ -1,6 +1,9 @@
 package de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes;
 
+import com.oracle.truffle.api.dsl.Specialization;
 import com.oracle.truffle.api.frame.VirtualFrame;
+import com.oracle.truffle.api.instrumentation.GenerateWrapper;
+import com.oracle.truffle.api.instrumentation.ProbeNode;
 import com.oracle.truffle.api.nodes.BlockNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.stmtSuperClasses.NonReturningStatementBaseNode;
@@ -9,7 +12,11 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.st
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.superClasses.AbstractFunctionBody;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.visualization.nodes.stmt.CleanupVisualizer;
 
-public final class FunctionDefinitionBody extends AbstractFunctionBody implements BlockNode.ElementExecutor<NonReturningStatementBaseNode> {
+public class FunctionDefinitionBody extends AbstractFunctionBody implements BlockNode.ElementExecutor<NonReturningStatementBaseNode> {
+
+	protected FunctionDefinitionBody() {
+
+	}
 
 	@Child
 	protected BlockNode<NonReturningStatementBaseNode> stmts;
@@ -31,7 +38,11 @@ public final class FunctionDefinitionBody extends AbstractFunctionBody implement
 	public FunctionDefinitionBody(NonReturningStatementBaseNode[] stmts, RetExprStmt retExprStmt, CleanupVisualizer nulleableCleanupVizualizer) {
 		this.retExprStmt = retExprStmt;
 		this.nulleableCleanupVizualizer = nulleableCleanupVizualizer;
-		this.stmts = BlockNode.create(stmts, this);
+		if (stmts.length != 0) {
+			this.stmts = BlockNode.create(stmts, this);
+		} else {
+			this.stmts = null;
+		}
 	}
 
 	@Override
@@ -39,8 +50,15 @@ public final class FunctionDefinitionBody extends AbstractFunctionBody implement
 		node.executeGeneric(frame);
 	}
 
+	@Override
+	public CgaListTruffleBox executeGeneric(VirtualFrame frame) {
+		return directCall(frame);
+	}
+
 	public CgaListTruffleBox directCall(VirtualFrame frame) {
-		stmts.executeVoid(frame, BlockNode.NO_ARGUMENT);
+		if (this.stmts != null) {
+			stmts.executeVoid(frame, BlockNode.NO_ARGUMENT);
+		}
 
 		CgaListTruffleBox rets = this.retExprStmt.execute(frame);
 

@@ -16,6 +16,13 @@ public abstract class CleanupVisualizer extends NonReturningStatementBaseNode {
 
 	@Specialization
 	protected void doExecute(VirtualFrame frame) {
+		/*
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException ex) {
+			Thread.currentThread().interrupt();
+		}
+		 */
 		catchAndRethrow(this, () -> {
 			getVizContext().removeAll();
 		});

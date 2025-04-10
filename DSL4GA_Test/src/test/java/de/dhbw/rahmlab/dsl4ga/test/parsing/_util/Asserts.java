@@ -59,8 +59,8 @@ public class Asserts {
 
 	public static ExpressionBaseNode parseExpr(String program, GeomAlgeLangContext geomAlgeLangContext) {
 		String functionProgram = String.format("fn main(a, b, aa, c, A) {\n\t%s\n}\n", program);
-		Function main = ParsingService.instance().parse(CharStreamSupplier.from(functionProgram), geomAlgeLangContext);
-		ExpressionBaseNode retExpr = ((FunctionDefinitionRootNode) main.getRootNode()).getBody().getFirstRetExpr();
+		ParsingService.FactoryAndMain factoryAndMain = ParsingService.instance().parse(CharStreamSupplier.from(functionProgram), geomAlgeLangContext);
+		ExpressionBaseNode retExpr = ((FunctionDefinitionRootNode) factoryAndMain.main().getRootNode()).getBody().getFirstRetExpr();
 		return retExpr;
 	}
 

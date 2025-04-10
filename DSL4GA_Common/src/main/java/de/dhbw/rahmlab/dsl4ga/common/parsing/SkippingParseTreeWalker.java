@@ -1,5 +1,7 @@
 package de.dhbw.rahmlab.dsl4ga.common.parsing;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Set;
 import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -13,7 +15,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 public class SkippingParseTreeWalker {
 
 	protected final ParseTreeListener listener;
-	protected final Set<Class<? extends RuleNode>> skipBeforeEnteringRuleNodeClass;
+	protected final Set<? extends Class<? extends ParseTree>> skipBeforeEnteringRuleNodeClass;
 	protected final Parser parser;
 
 	protected SkippingParseTreeWalker(Parser parser, ParseTreeListener listener, Set<Class<? extends RuleNode>> stopBefore) {
@@ -23,10 +25,10 @@ public class SkippingParseTreeWalker {
 	}
 
 	/**
-	 * Performs a walk on the given parse tree starting at the root and going down recursively with
-	 * depth-first search. On each node, {@link ParseTreeWalker#enterRule} is called before recursively
-	 * walking down into child nodes, then {@link ParseTreeWalker#exitRule} is called after the recursive call
-	 * to wind up.
+	 * Performs a walk on the given parse tree starting at the root and going down with depth-first search. On
+	 * each node, {@link SkippingParseTreeWalker#enterRule} is called before walking down into child nodes,
+	 * afterwards {@link SkippingParseTreeWalker#exitRule} is called. It skips the subtrees with the root node
+	 * being an instance of a class given in the parameter.
 	 *
 	 * @param listener The listener used by the walker to process grammar rules
 	 * @param first The parse tree to be walked on
@@ -36,10 +38,10 @@ public class SkippingParseTreeWalker {
 	}
 
 	/**
-	 * Performs a walk on the given parse tree starting at the root and going down recursively with
-	 * depth-first search. On each node, {@link ParseTreeWalker#enterRule} is called before recursively
-	 * walking down into child nodes, then {@link ParseTreeWalker#exitRule} is called after the recursive call
-	 * to wind up. It skips the subtrees below their root node of the class given in the parameter.
+	 * Performs a walk on the given parse tree starting at the root and going down with depth-first search. On
+	 * each node, {@link SkippingParseTreeWalker#enterRule} is called before walking down into child nodes,
+	 * afterwards {@link SkippingParseTreeWalker#exitRule} is called. It skips the subtrees with the root node
+	 * being an instance of a class given in the parameter.
 	 *
 	 * @param listener The listener used by the walker to process grammar rules
 	 * @param first The parse tree to be walked on
@@ -50,10 +52,10 @@ public class SkippingParseTreeWalker {
 	}
 
 	/**
-	 * Performs a walk on the given parse tree starting at the root and going down recursively with
-	 * depth-first search. On each node, {@link ParseTreeWalker#enterRule} is called before recursively
-	 * walking down into child nodes, then {@link ParseTreeWalker#exitRule} is called after the recursive call
-	 * to wind up. It skips the subtrees below their root node of the class given in the parameter.
+	 * Performs a walk on the given parse tree starting at the root and going down with depth-first search. On
+	 * each node, {@link SkippingParseTreeWalker#enterRule} is called before walking down into child nodes,
+	 * afterwards {@link SkippingParseTreeWalker#exitRule} is called. It skips the subtrees with the root node
+	 * being an instance of a class given in the parameter.
 	 *
 	 * @param listener The listener used by the walker to process grammar rules
 	 * @param first The parse tree to be walked on
@@ -61,16 +63,71 @@ public class SkippingParseTreeWalker {
 	 */
 	public static void walk(GeomAlgeParser parser, ParseTreeListener listener, ParseTree first, Set<Class<? extends RuleNode>> skipBeforeEnteringRuleNodeClass) {
 		SkippingParseTreeWalker walker = new SkippingParseTreeWalker(parser, listener, skipBeforeEnteringRuleNodeClass);
-		walker.walkRecursive(first);
+		walker.walkIterative(first);
+	}
+
+	// Better for StackTraces and Profiling than walkRecursive.
+	protected void walkIterative(ParseTree root) {
+		Deque<ParseTree> stack = new ArrayDeque<>();
+		Deque<Boolean> exitStack = new ArrayDeque<>();
+		stack.push(root);
+		exitStack.push(Boolean.FALSE);
+		while (!stack.isEmpty()) {
+			ParseTree current = stack.pop();
+			Boolean exit = exitStack.pop();
+
+			// skipBeforeEnter
+			final boolean visit = checkVisit(current);
+			if (!visit) {
+				continue;
+			}
+
+			RuleNode r = (RuleNode) current;
+
+			if (exit) {
+				exitRule(r);
+				continue;
+			}
+
+			enterRule(r);
+			// Next time: exitRule()
+			stack.push(current);
+			exitStack.push(Boolean.TRUE);
+
+			final int n = current.getChildCount();
+			// Push child 0 last so that it is processed first.
+			for (int i = n - 1; i >= 0; --i) {
+				ParseTree child = current.getChild(i);
+				stack.push(child);
+				exitStack.push(Boolean.FALSE);
+			}
+		}
+	}
+
+	protected boolean checkVisit(ParseTree current) {
+		if (current instanceof ErrorNode errorNode) {
+			this.listener.visitErrorNode(errorNode);
+			return false;
+		}
+		if (current instanceof TerminalNode terminalNode) {
+			this.listener.visitTerminal(terminalNode);
+			return false;
+		}
+
+		if (this.skipBeforeEnteringRuleNodeClass.contains(current.getClass())) {
+			return false;
+		}
+
+		return true;
 	}
 
 	protected void walkRecursive(ParseTree current) {
-		if (current instanceof ErrorNode) {
-			this.listener.visitErrorNode((ErrorNode) current);
+		if (current instanceof ErrorNode errorNode) {
+			this.listener.visitErrorNode(errorNode);
 			return;
 		}
-		if (current instanceof TerminalNode) {
-			this.listener.visitTerminal((TerminalNode) current);
+		if (current instanceof TerminalNode terminalNode) {
+			this.listener.visitTerminal(terminalNode);
 			return;
 		}
 

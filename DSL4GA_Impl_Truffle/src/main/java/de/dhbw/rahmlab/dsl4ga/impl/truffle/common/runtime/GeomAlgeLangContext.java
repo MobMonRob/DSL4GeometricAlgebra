@@ -8,7 +8,6 @@ import com.oracle.truffle.api.source.Source;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.truffleBox.CgaListTruffleBox;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.runtime.BuiltinRegistry;
 import de.orat.math.gacalc.api.ExprGraphFactory;
-import de.orat.math.gacalc.api.GAExprGraphFactoryService;
 import java.util.ArrayList;
 
 public final class GeomAlgeLangContext {
@@ -19,11 +18,12 @@ public final class GeomAlgeLangContext {
 		return GeomAlgeLangContext.contextRef.get(node);
 	}
 
-	public static final ExprGraphFactory exprGraphFactory = GAExprGraphFactoryService.getExprGraphFactoryThrowing();
 	public final BuiltinRegistry builtinRegistry;
 	public final GeomAlgeLang truffleLanguage;
 	public final TruffleLanguage.Env env;
+	public ExprGraphFactory exprGraphFactory;
 	public CgaListTruffleBox lastListReturn = new CgaListTruffleBox(new ArrayList<>());
+	private Source source = null;
 
 	public GeomAlgeLangContext() {
 		this(null, null);
@@ -34,8 +34,6 @@ public final class GeomAlgeLangContext {
 		this.truffleLanguage = truffleLanguage;
 		this.env = env;
 	}
-
-	private Source source = null;
 
 	public void setSource(Source source) {
 		this.source = source;

@@ -11,6 +11,7 @@ import com.oracle.truffle.api.library.ExportLibrary;
 import com.oracle.truffle.api.library.ExportMessage;
 import com.oracle.truffle.api.nodes.DirectCallNode;
 import com.oracle.truffle.api.nodes.IndirectCallNode;
+import com.oracle.truffle.api.nodes.Node.Child;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.truffleBox.CgaListTruffleBox;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.superClasses.AbstractFunctionRootNode;
 
@@ -38,7 +39,7 @@ public class Function implements TruffleObject {
 		return this.functionRootNode;
 	}
 
-	protected void ensureArity(int presumedArity) throws ArityException {
+	public void ensureArity(int presumedArity) throws ArityException {
 		if (this.arity != presumedArity) {
 			throw ArityException.create(this.arity, this.arity, presumedArity);
 		}

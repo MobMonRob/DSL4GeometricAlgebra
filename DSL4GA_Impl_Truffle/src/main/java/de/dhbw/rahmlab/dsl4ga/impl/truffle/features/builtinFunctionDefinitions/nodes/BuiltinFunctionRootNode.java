@@ -20,6 +20,6 @@ public final class BuiltinFunctionRootNode extends AbstractFunctionRootNode {
 
 	@Override
 	public Object execute(VirtualFrame frame) {
-		return new CgaTruffleBox(this.builtinFuncBody.executeGeneric(frame));
+		return new CgaTruffleBox(this.builtinFuncBody.executeGenericBuiltin(frame));
 	}
 }
