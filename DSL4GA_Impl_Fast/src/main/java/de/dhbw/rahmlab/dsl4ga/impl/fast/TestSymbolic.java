@@ -22,9 +22,7 @@ public class TestSymbolic {
 			arAcc[] = {}  
 			arAcc[0] = 3
             //arAcc[1] = 10
-			rArr[] = {} 
-			//x[] = {1, 2, 3, 4}
-			//y[] = {1}
+			rArr[] = {}
                   
             x [] = {1,2,3,4,5,7}
             a [] = {1,6,2,6,3}
@@ -33,7 +31,7 @@ public class TestSymbolic {
                   
 			for (i; 0; 4; 1) {        
                 b[i] = a[i] +2
-                //x[i] = b[i] - 2
+                x[i] = b[i] - 2
                 y[i+1] = y[i] + b[i]
 			}
             y[0], y[1], y[2], y[3], x[0], x[1], x[2]

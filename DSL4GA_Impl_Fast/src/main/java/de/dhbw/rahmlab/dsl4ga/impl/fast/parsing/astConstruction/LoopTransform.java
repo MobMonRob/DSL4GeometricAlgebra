@@ -162,11 +162,12 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 	public void exitLoopBody(LoopBodyContext ctx){		
 		int levelNr = 0;
 		for (HashMap level : loopLevels){
+			System.out.println(level.keySet());
 			Set<Map.Entry<String, LoopNode>> nodes = level.entrySet();
-			this.isAccumulation = this.levelsAccum.get(levelNr);
 			for (Map.Entry<String, LoopNode> entry : nodes){
 				LoopNode node = entry.getValue();
 				InsideLoopStmtContext line = node.getContext();
+				this.isAccumulation = node.isAccum();
 				determineAssignee(line);
 				determineAssignment(line.loopAssignment());
 				List<MultivectorSymbolic> returnsList = (this.isAccumulation) ? this.returnsAccum : this.returnsArray;
@@ -180,7 +181,7 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 
 				applyLoopResults(res, Collections.nCopies(res.size(), 0), this.loopedArrays);
 			} else {
-				System.out.println("using mapaccum...");
+				System.out.println("Using mapaccum...");
 				var res = fac.getLoopService().mapaccum(paramsAccum, paramsSimple, paramsArray, returnsAccum, returnsArray, argsAccumInitial, argsSimple, argsArray, iterations);
 				applyLoopResults(res.returnsArray(), Collections.nCopies(res.returnsArray().size(), 0), this.loopedArrays);
 				applyLoopResults(res.returnsAccum(), this.accumOffsets, this.accumulatedArrays);
