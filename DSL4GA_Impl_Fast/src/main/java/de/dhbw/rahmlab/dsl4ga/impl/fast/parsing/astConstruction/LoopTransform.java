@@ -11,6 +11,7 @@ import de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils.IndexCalc
 import de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils.IndexCalculationType;
 import static de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils.IndexCalculationType.accum;
 import static de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils.IndexCalculationType.iteratorOperation;
+import de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils.LoopAPILists;
 import de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils.LoopNode;
 import de.orat.math.gacalc.api.ExprGraphFactory;
 import de.orat.math.gacalc.api.FunctionSymbolic;
@@ -20,8 +21,10 @@ import de.orat.math.gacalc.api.MultivectorSymbolic;
 import de.orat.math.gacalc.api.MultivectorSymbolicArray;
 import java.text.DecimalFormat;
 import java.text.ParseException;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -34,10 +37,6 @@ import java.util.logging.Logger;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
-enum Operator {
-Minus,
-Plus
-}
 
 public class LoopTransform extends GeomAlgeParserBaseListener {
 	
@@ -48,31 +47,16 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 	protected LoopStmtContext loopStmtCtx;
 	protected Map<String, MultivectorSymbolic> functionVariables;
 	protected Map<String, MultivectorSymbolicArray> functionArrays;
-	protected final GeomAlgeParser parser;
-	protected List<MultivectorPurelySymbolic> paramsAccum; 
-	protected List<MultivectorPurelySymbolic> paramsSimple; 
-	protected List<MultivectorPurelySymbolic> paramsArray; 
-	protected List<MultivectorSymbolic> returnsAccum; 
-	protected List<MultivectorSymbolic> returnsArray; 
-	protected List<MultivectorSymbolic> argsAccumInitial; 
-	protected List<MultivectorSymbolic> argsSimple; 
-	protected List<MultivectorSymbolicArray> argsArray; 
-	protected Map<String, FunctionSymbolic> functionsView;
-	protected Map<String, MultivectorSymbolic> functionVariablesView;
-	protected Map<String, MultivectorPurelySymbolic> paramsAccumMap = new HashMap<String, MultivectorPurelySymbolic>();
-	protected List<MultivectorSymbolicArray> accumulatedArrays;
-	protected List<String> leftsideArrayNames = new ArrayList<>();
-	protected List<String> accumulatedNames = new ArrayList<>();
-	protected List<Integer> accumOffsets = new ArrayList<>(); 
+	protected final GeomAlgeParser parser;	
+    protected Map<String, FunctionSymbolic> functionsView;
+    protected Map<String, MultivectorSymbolic> functionVariablesView;
 	protected List<HashMap<String, LoopNode>> loopLevels = new ArrayList<>();
 	protected Set<String> assignmentNames = new HashSet<String>();
-	protected List<MultivectorSymbolicArray> loopedArrays = new ArrayList<>(); 
 	protected Boolean nativeLoop = false;
 	protected ExprGraphFactory fac;
-	protected Operator previousOperator;
-	protected MultivectorSymbolic exprMultiVector;
-	protected Boolean isAccumulation;
+	public final List<String> accumulatedNames = new ArrayList<>();
 	protected int iterations;
+	protected LoopAPILists lists = new LoopAPILists();
 	
 	
 	protected LoopTransform(ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.LoopStmtContext loopCtx,							Map<String, MultivectorSymbolic> variables, Map<String, MultivectorSymbolicArray> arrays,
@@ -84,16 +68,7 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 		this.functionArrays = arrays;
 		this.functionsView = functionsView;
 		this.functionVariablesView = functionVariablesView;
-		this.returnsAccum = new ArrayList<MultivectorSymbolic>();
-		this.returnsArray = new ArrayList<MultivectorSymbolic>();
-		this.argsSimple = new ArrayList<MultivectorSymbolic>();
-		this.argsAccumInitial = new ArrayList<MultivectorSymbolic>();
-		this.argsArray = new ArrayList<MultivectorSymbolicArray>();
-		this.paramsAccum = new ArrayList<MultivectorPurelySymbolic>();
-		this.accumulatedArrays = new ArrayList<MultivectorSymbolicArray>();
-		this.paramsArray = new ArrayList<MultivectorPurelySymbolic>();
-		this.paramsSimple = new ArrayList<MultivectorPurelySymbolic>();
-		}
+	}
 	
 	
 	public static void generate(ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.LoopStmtContext loopCtx,								Map<String, MultivectorSymbolic> variables, Map<String, MultivectorSymbolicArray> arrays,
@@ -108,24 +83,47 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 	}
 	
 	
-	
 	@Override
-	public void enterLoopAssignment(LoopAssignmentContext ctx){
+	public void enterLiteralDecimal (LiteralDecimalContext expr){
 		if (!nativeLoop){
-			String name;
-			if (ctx.arrayExprCtx != null){
-				IndexCalculationType type = IndexCalculation.getIndexCalcType(ctx.arrayExprCtx.index, localIterator);
-				Boolean isAccum = (type==accum);
-				String variableName = ctx.arrayExprCtx.array.getText();
-				name = (isAccum) ? String.format("%s+", variableName) : variableName;
-			} else {
-				name = ctx.literalExprCtx.getText();
-			}
+			String name = expr.value.getText();
 			assignmentNames.add(name); 
 		}
 	}
 	
+	@Override
+	public void enterLiteralInteger (LiteralIntegerContext expr){
+		if (!nativeLoop){
+			String name = expr.value.getText();
+			assignmentNames.add(name); 
+		}
+	}
 	
+	@Override
+	public void enterVariableReference (VariableReferenceContext expr){
+		if (!nativeLoop){
+			String name = expr.name.getText();
+			assignmentNames.add(name); 
+		}
+	}
+	
+	@Override 
+	public void enterArrayAccessExpr (ArrayAccessExprContext expr){
+		if (!nativeLoop){
+			IndexCalculationType type = IndexCalculation.getIndexCalcType(expr.index, localIterator);
+			Boolean isAccum = (type==accum);
+			String variableName = expr.array.getText();
+			String name = (isAccum) ? String.format("%s+", variableName) : variableName;
+			assignmentNames.add(name); 
+		}
+	}
+	
+	@Override 
+	public void enterBinOp (BinOpContext expr){
+		if ((expr.op.getType() != GeomAlgeParser.PLUS_SIGN) && (expr.op.getType() != GeomAlgeParser.HYPHEN_MINUS)){
+			this.nativeLoop = true;
+		}
+	}	
 	
 	@Override
 	public void exitInsideLoopStmt(InsideLoopStmtContext line){
@@ -135,10 +133,13 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 			if (type == iteratorOperation) throw new RuntimeException();
 			Boolean isAccum = (type==accum) && assignmentNames.contains(variableName);
 			String name = variableName;
-			if (isAccum){
+			if (type==accum){
 				name = String.format("%s+", variableName); 
-				if (checkForReference(variableName)) this.nativeLoop = true;
-				accumulatedNames.add(variableName);
+				if (checkForReference(variableName)){
+					this.nativeLoop = true;
+					return;
+				}
+				if (isAccum) accumulatedNames.add(variableName);
 			} else if (accumulatedNames.contains(name)){
 				this.nativeLoop = true;
 			}
@@ -170,40 +171,24 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 				Set<Map.Entry<String, LoopNode>> nodes = level.entrySet();
 				for (Map.Entry<String, LoopNode> entry : nodes){
 					LoopNode node = entry.getValue();
-					InsideLoopStmtContext line = node.getContext();
-					this.isAccumulation = node.isAccum();
-					determineAssignee(line);
-					determineAssignment(line.loopAssignment());
-					List<MultivectorSymbolic> returnsList = (this.isAccumulation) ? this.returnsAccum : this.returnsArray;
-					returnsList.add(this.exprMultiVector);
-					this.exprMultiVector = null;
+					Boolean isAccumulation = node.isAccum();
+					LoopAPITransform.generate(fac, parser, node.getContext(), functionVariables, functionArrays, isAccumulation, localIterator, beginning, ending, lists);
+					List<MultivectorSymbolic> returnsList = (isAccumulation) ? lists.returnsAccum : lists.returnsArray;
+					returnsList.add(lists.exprStack.pop());
 				}
-				if (this.accumulatedArrays.isEmpty()) {
+				if (lists.accumulatedArrays.isEmpty()) {
 					//map
 					System.out.println("Using map...");
-					var res = fac.getLoopService().map(paramsSimple, paramsArray, returnsArray, argsSimple, argsArray, iterations);
+					var res = fac.getLoopService().map(lists.paramsSimple, lists.paramsArray, lists.returnsArray, lists.argsSimple, lists.argsArray, iterations);
 
-					applyLoopResults(res, Collections.nCopies(res.size(), 0), this.loopedArrays);
+					applyLoopResults(res, Collections.nCopies(res.size(), 0), lists.loopedArrays);
 				} else {
 					System.out.println("Using mapaccum...");
-					var res = fac.getLoopService().mapaccum(paramsAccum, paramsSimple, paramsArray, returnsAccum, returnsArray, argsAccumInitial, argsSimple, argsArray, iterations);
-					applyLoopResults(res.returnsArray(), Collections.nCopies(res.returnsArray().size(), 0), this.loopedArrays);
-					applyLoopResults(res.returnsAccum(), this.accumOffsets, this.accumulatedArrays);
+					var res = fac.getLoopService().mapaccum(lists.paramsAccum, lists.paramsSimple, lists.paramsArray, lists.returnsAccum, lists.returnsArray, lists.argsAccumInitial, lists.argsSimple, lists.argsArray, iterations);
+					applyLoopResults(res.returnsArray(), Collections.nCopies(res.returnsArray().size(), 0), this.lists.loopedArrays);
+					applyLoopResults(res.returnsAccum(), lists.accumOffsets, lists.accumulatedArrays);
 				}
-				this.returnsAccum = new ArrayList<MultivectorSymbolic>();
-				this.returnsArray = new ArrayList<MultivectorSymbolic>();
-				this.argsSimple = new ArrayList<MultivectorSymbolic>();
-				this.argsAccumInitial = new ArrayList<MultivectorSymbolic>();
-				this.argsArray = new ArrayList<MultivectorSymbolicArray>();
-				this.paramsAccum = new ArrayList<MultivectorPurelySymbolic>();
-				this.accumulatedArrays = new ArrayList<MultivectorSymbolicArray>();
-				this.paramsArray = new ArrayList<MultivectorPurelySymbolic>();
-				this.paramsSimple = new ArrayList<MultivectorPurelySymbolic>();
-				this.paramsAccumMap = new HashMap<String, MultivectorPurelySymbolic>();
-				this.leftsideArrayNames = new ArrayList<>();
-				this.accumulatedNames = new ArrayList<>();
-				this.accumOffsets = new ArrayList<>();
-				this.loopedArrays = new ArrayList<>();
+				this.lists = new LoopAPILists();
 				levelNr++;
 			}
 		} else {
@@ -224,96 +209,6 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 				}
 			}
 		}
-	}
-
-	
-	
-	
-	private void determineAssignee(InsideLoopStmtContext line) {
-		// Check if array exists
-		Token assigned = line.assigned;
-		IndexCalcContext assignedIndexCalcCtx = line.index;
-		if (!this.functionArrays.containsKey(assigned.getText())) throw new RuntimeException("Array existiert nicht"); // Array existiert nicht
-		if (!assignedIndexCalcCtx.id.getText().equals(this.localIterator)) throw new RuntimeException("Nicht der Iterator");
-		MultivectorSymbolicArray assignedArray = this.functionArrays.get(assigned.getText());
-		
-		
-		if (this.isAccumulation){ // Accumulation
-			this.accumulatedArrays.add(assignedArray);
-			MultivectorSymbolic arAcc = assignedArray.get(this.beginning);
-			this.argsAccumInitial.add(arAcc);
-			this.accumOffsets.add(1); //Currently, we assume only [i+1] is possible!
-		} else { // Not an accumulation
-			if (assignedIndexCalcCtx.id!=null){
-				this.loopedArrays.add(assignedArray);
-			} else {
-				throw new UnsupportedOperationException("Not supported yet."); // Probably not handled by API right now(?)
-			}
-		}
-	}
-	
-		
-	private void determineAssignment (LoopAssignmentContext ctx){
-		if (null == ctx) return;
-		MultivectorSymbolic currentMultiVector;
-		String prettyName="";
-		if (ctx.arrayExprCtx != null){ // Array
-			ArrayAccessExprContext arrayCtx = ctx.arrayAccessExpr();
-			if (arrayCtx.index.id != null && arrayCtx.index.len == null){ // Iterator
-				String id = arrayCtx.index.id.getText();
-				int line = arrayCtx.index.id.getLine();
-				if (!id.equals(this.localIterator)){
-					throw new ValidationException(line, String.format("You may only use \"%s\" in combination with len() here.", id));
-				} else if (arrayCtx.index.op != null) {throw new UnsupportedOperationException("Not supported yet.");} // Has to be implemented
-				MultivectorSymbolicArray assignedArray = functionArrays.get(arrayCtx.array.getText());
-				currentMultiVector = assignedArray.get(this.beginning);
-				prettyName = String.format("%s[%s]", arrayCtx.array.getText(), this.localIterator);
-				if (!this.isAccumulation || !this.argsAccumInitial.contains(currentMultiVector)){
-					try {
-						MultivectorSymbolicArray aArr = new MultivectorSymbolicArray(assignedArray.subList(this.beginning, this.ending));
-						MultivectorPurelySymbolic sym_aArr = this.fac.createMultivectorPurelySymbolicFrom(String.format("sym_%s", prettyName), currentMultiVector);
-						this.argsArray.add(aArr);
-						this.paramsArray.add(sym_aArr);
-						currentMultiVector = sym_aArr;
-					} catch (IndexOutOfBoundsException e){
-						if (!this.accumulatedArrays.contains(assignedArray) && !this.leftsideArrayNames.contains(arrayCtx.array.getText())){
-							throw new ValidationException(line, String.format("The loop has more iterations than \"%s\" has elements.", arrayCtx.array.getText()));
-						} else {
-							if (this.accumulatedArrays.contains(assignedArray)){
-								currentMultiVector = this.paramsAccumMap.get(prettyName);
-							} else {
-								currentMultiVector = functionArrays.get(arrayCtx.array.getText()).get(this.beginning);
-							}
-						}
-					}
-				} else {
-					MultivectorPurelySymbolic sym_arAcc = this.fac.createMultivectorPurelySymbolicFrom(String.format("sym_%s", prettyName), currentMultiVector);
-					this.paramsAccum.add(sym_arAcc);
-					this.paramsAccumMap.put(prettyName, sym_arAcc);
-					currentMultiVector = sym_arAcc;
-				}
-			} else{
-				String arrayName = arrayCtx.array.getText();
-				int index = IndexCalculation.calculateIndex(arrayCtx.index, functionArrays);
-				MultivectorSymbolic aSim = functionArrays.get(arrayName).get(index);
-				prettyName=String.format("%s[%s]", arrayName, arrayCtx.index.getText());
-				MultivectorPurelySymbolic sym_aSim = this.fac.createMultivectorPurelySymbolicFrom(String.format("sym_%s", prettyName), aSim);
-				this.argsSimple.add(aSim);
-				this.paramsSimple.add(sym_aSim);
-				currentMultiVector = sym_aSim;
-			}
-		} else {
-			currentMultiVector = parseLiteral(ctx.literalExprCtx);
-			prettyName = currentMultiVector.getName();
-		}
-		if (this.exprMultiVector == null){
-			this.exprMultiVector=currentMultiVector;
-		} else {
-			if (this.previousOperator == Operator.Plus) this.exprMultiVector = this.exprMultiVector.addition(currentMultiVector);
-			else if (this.previousOperator == Operator.Minus) this.exprMultiVector = this.exprMultiVector.subtraction(currentMultiVector);
-		}
-		this.previousOperator = (ctx.plusOp != null) ? Operator.Plus : Operator.Minus;
-		determineAssignment(ctx.nextExpr);
 	}
 	
 	
@@ -357,30 +252,6 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 		// for (i; 0; i; 1).
 	}
 
-	
-	private MultivectorSymbolic parseLiteral(LoopLiteralExprContext ctx) {
-		if (ctx.id != null){
-			MultivectorSymbolic aSim =  this.functionVariables.get(ctx.id.getText());
-			MultivectorPurelySymbolic sym_aSim = this.fac.createMultivectorPurelySymbolicFrom(String.format("sym_%s",ctx.id.getText()), aSim); //Should probably be returned, seems to work with non-purely-symbolic too!
-			this.argsSimple.add(aSim);
-			this.paramsSimple.add(sym_aSim);
-			return sym_aSim;
-		}
-		if (ctx.int_ != null){
-			String intText = ctx.int_.getText();
-			int value = Integer.parseInt(intText);
-			return this.fac.createScalarLiteral(intText, value);
-		}
-		DecimalFormat df = DecimalFormatter.initDecimalFormat();
-		String name = ctx.dec.getText();
-		try {
-			double value = df.parse(name).doubleValue();
-			return  this.fac.createScalarLiteral(name, value);
-		} catch (ParseException ex) {
-			throw new ValidationException(ctx.dec.getLine(), String.format("\"%s\" could not be parsed as decimal.", name));
-		}
-	}
-
 	private void addNode(int i, String name, LoopNode node) {
 		if (loopLevels.size() <= i){
 			loopLevels.add(new LinkedHashMap<String, LoopNode>());
@@ -396,4 +267,31 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 		}
 		return false;
 	}
+	
+	
+	@Override
+	public void enterUnOpExpr (UnOpExprContext expr){
+		this.nativeLoop = true;
+	}
+	
+	@Override
+	public void enterInnerRecursiveExpr (InnerRecursiveExprContext expr){
+		this.nativeLoop = true;
+	}
+	
+	@Override
+	public void enterCall(CallContext expr){
+		this.nativeLoop = true;
+	}
+	
+	@Override
+	public void enterLiteralConstant (LiteralConstantContext expr){
+		this.nativeLoop = true;
+	}
+	
+	@Override
+	public void enterGP (GPContext expr){
+		this.nativeLoop = true;
+	}
+	
 }

@@ -85,7 +85,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		return arrayVars;
 	}
 	
-	public static MultivectorSymbolic generateLoopExprAST(ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.LoopAssignmentContext loopExprCtx, Map<String, FunctionSymbolic> functionsView, Map<String, MultivectorSymbolic> localVariablesView, Map<String, Integer> loopIterator){
+	public static MultivectorSymbolic generateLoopExprAST(ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.ExprContext loopExprCtx, Map<String, FunctionSymbolic> functionsView, Map<String, MultivectorSymbolic> localVariablesView, Map<String, Integer> loopIterator){
 		ExprTransform exprTransform = new ExprTransform(exprGraphFactory, functionsView, localVariablesView);
 		exprTransform.setIterator(loopIterator);
 		SkippingParseTreeWalker.walk(parser, exprTransform, loopExprCtx);

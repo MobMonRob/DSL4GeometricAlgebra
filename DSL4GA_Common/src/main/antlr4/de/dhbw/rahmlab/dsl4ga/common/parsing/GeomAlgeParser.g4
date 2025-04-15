@@ -126,7 +126,7 @@ indexCalc
 loopBody : (stmts+=insideLoopStmt WHITE_LINE+)+;
 
 insideLoopStmt
-	: SPACE* assigned=IDENTIFIER SPACE* L_EDGE_BRACKET SPACE* index=indexCalc SPACE* R_EDGE_BRACKET SPACE* ASSIGNMENT SPACE* assignments=loopAssignment SPACE*
+	: SPACE* assigned=IDENTIFIER SPACE* L_EDGE_BRACKET SPACE* index=indexCalc SPACE* R_EDGE_BRACKET SPACE* ASSIGNMENT SPACE* assignments=expr SPACE*
 	;
 
 loopAssignment
