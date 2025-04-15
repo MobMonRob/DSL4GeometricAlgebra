@@ -64,10 +64,10 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 	protected List<String> leftsideArrayNames = new ArrayList<>();
 	protected List<String> accumulatedNames = new ArrayList<>();
 	protected List<Integer> accumOffsets = new ArrayList<>(); 
-	protected List<Boolean> levelsAccum = new ArrayList<>();
 	protected List<HashMap<String, LoopNode>> loopLevels = new ArrayList<>();
 	protected Set<String> assignmentNames = new HashSet<String>();
 	protected List<MultivectorSymbolicArray> loopedArrays = new ArrayList<>(); 
+	protected Boolean nativeLoop = false;
 	protected ExprGraphFactory fac;
 	protected Operator previousOperator;
 	protected MultivectorSymbolic exprMultiVector;
@@ -111,96 +111,118 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 	
 	@Override
 	public void enterLoopAssignment(LoopAssignmentContext ctx){
-		String name;
-		if (ctx.arrayExprCtx != null){
-			IndexCalculationType type = IndexCalculation.getIndexCalcType(ctx.arrayExprCtx.index, localIterator);
-			Boolean isAccum = (type==accum);
-			String variableName = ctx.arrayExprCtx.array.getText();
-			name = (isAccum) ? String.format("%s+", variableName) : variableName;
-		} else {
-			name = ctx.literalExprCtx.getText();
+		if (!nativeLoop){
+			String name;
+			if (ctx.arrayExprCtx != null){
+				IndexCalculationType type = IndexCalculation.getIndexCalcType(ctx.arrayExprCtx.index, localIterator);
+				Boolean isAccum = (type==accum);
+				String variableName = ctx.arrayExprCtx.array.getText();
+				name = (isAccum) ? String.format("%s+", variableName) : variableName;
+			} else {
+				name = ctx.literalExprCtx.getText();
+			}
+			assignmentNames.add(name); 
 		}
-		assignmentNames.add(name);
 	}
 	
 	
 	
 	@Override
 	public void exitInsideLoopStmt(InsideLoopStmtContext line){
-		String variableName = line.assigned.getText();
-		IndexCalculationType type = IndexCalculation.getIndexCalcType(line.index, localIterator);
-		if (type == iteratorOperation) throw new RuntimeException();
-		Boolean isAccum = (type==accum) && assignmentNames.contains(variableName);
-		String name = variableName;
-		if (isAccum){
-			name = String.format("%s+", variableName); 
-			if (checkForReference(variableName)) System.err.println("NATIVE!");
-			accumulatedNames.add(variableName);
-		} else if (accumulatedNames.contains(name)){
-			System.err.println("NATIVE!");
-		}
-		assignmentNames.add(name);
-		LoopNode node = LoopNode.generateParentNode(line, isAccum);
-		int highestLevel = 0;
-		int currentLevel = 0;
-		for (HashMap level : loopLevels){
-			for (String n : assignmentNames){
-				if (level.containsKey(n)){
-					highestLevel = currentLevel+1;
-				}
+		if (!nativeLoop){
+			String variableName = line.assigned.getText();
+			IndexCalculationType type = IndexCalculation.getIndexCalcType(line.index, localIterator);
+			if (type == iteratorOperation) throw new RuntimeException();
+			Boolean isAccum = (type==accum) && assignmentNames.contains(variableName);
+			String name = variableName;
+			if (isAccum){
+				name = String.format("%s+", variableName); 
+				if (checkForReference(variableName)) this.nativeLoop = true;
+				accumulatedNames.add(variableName);
+			} else if (accumulatedNames.contains(name)){
+				this.nativeLoop = true;
 			}
-			currentLevel ++;
+			assignmentNames.add(name);
+			LoopNode node = LoopNode.generateParentNode(line, isAccum);
+			int highestLevel = 0;
+			int currentLevel = 0;
+			for (HashMap level : loopLevels){
+				for (String n : assignmentNames){
+					if (level.containsKey(n)){
+						highestLevel = currentLevel+1;
+					}
+				}
+				currentLevel ++;
+			}
+			addNode(highestLevel, name, node);
+			assignmentNames = new HashSet<String>();
 		}
-		addNode(highestLevel, name, node);
-		if (isAccum) this.levelsAccum.set(highestLevel, isAccum);
-		assignmentNames = new HashSet<String>();
 	}
 	
 	
 	
 	@Override
-	public void exitLoopBody(LoopBodyContext ctx){		
-		int levelNr = 0;
-		for (HashMap level : loopLevels){
-			System.out.println(level.keySet());
-			Set<Map.Entry<String, LoopNode>> nodes = level.entrySet();
-			for (Map.Entry<String, LoopNode> entry : nodes){
-				LoopNode node = entry.getValue();
-				InsideLoopStmtContext line = node.getContext();
-				this.isAccumulation = node.isAccum();
-				determineAssignee(line);
-				determineAssignment(line.loopAssignment());
-				List<MultivectorSymbolic> returnsList = (this.isAccumulation) ? this.returnsAccum : this.returnsArray;
-				returnsList.add(this.exprMultiVector);
-				this.exprMultiVector = null;
-			}
-			if (this.accumulatedArrays.isEmpty()) {
-				//map
-				System.out.println("Using map...");
-				var res = fac.getLoopService().map(paramsSimple, paramsArray, returnsArray, argsSimple, argsArray, iterations);
+	public void exitLoopBody(LoopBodyContext ctx){	
+		if (!nativeLoop){
+			int levelNr = 0;
+			for (HashMap level : loopLevels){
+				System.out.println(level.keySet());
+				Set<Map.Entry<String, LoopNode>> nodes = level.entrySet();
+				for (Map.Entry<String, LoopNode> entry : nodes){
+					LoopNode node = entry.getValue();
+					InsideLoopStmtContext line = node.getContext();
+					this.isAccumulation = node.isAccum();
+					determineAssignee(line);
+					determineAssignment(line.loopAssignment());
+					List<MultivectorSymbolic> returnsList = (this.isAccumulation) ? this.returnsAccum : this.returnsArray;
+					returnsList.add(this.exprMultiVector);
+					this.exprMultiVector = null;
+				}
+				if (this.accumulatedArrays.isEmpty()) {
+					//map
+					System.out.println("Using map...");
+					var res = fac.getLoopService().map(paramsSimple, paramsArray, returnsArray, argsSimple, argsArray, iterations);
 
-				applyLoopResults(res, Collections.nCopies(res.size(), 0), this.loopedArrays);
-			} else {
-				System.out.println("Using mapaccum...");
-				var res = fac.getLoopService().mapaccum(paramsAccum, paramsSimple, paramsArray, returnsAccum, returnsArray, argsAccumInitial, argsSimple, argsArray, iterations);
-				applyLoopResults(res.returnsArray(), Collections.nCopies(res.returnsArray().size(), 0), this.loopedArrays);
-				applyLoopResults(res.returnsAccum(), this.accumOffsets, this.accumulatedArrays);
+					applyLoopResults(res, Collections.nCopies(res.size(), 0), this.loopedArrays);
+				} else {
+					System.out.println("Using mapaccum...");
+					var res = fac.getLoopService().mapaccum(paramsAccum, paramsSimple, paramsArray, returnsAccum, returnsArray, argsAccumInitial, argsSimple, argsArray, iterations);
+					applyLoopResults(res.returnsArray(), Collections.nCopies(res.returnsArray().size(), 0), this.loopedArrays);
+					applyLoopResults(res.returnsAccum(), this.accumOffsets, this.accumulatedArrays);
+				}
+				this.returnsAccum = new ArrayList<MultivectorSymbolic>();
+				this.returnsArray = new ArrayList<MultivectorSymbolic>();
+				this.argsSimple = new ArrayList<MultivectorSymbolic>();
+				this.argsAccumInitial = new ArrayList<MultivectorSymbolic>();
+				this.argsArray = new ArrayList<MultivectorSymbolicArray>();
+				this.paramsAccum = new ArrayList<MultivectorPurelySymbolic>();
+				this.accumulatedArrays = new ArrayList<MultivectorSymbolicArray>();
+				this.paramsArray = new ArrayList<MultivectorPurelySymbolic>();
+				this.paramsSimple = new ArrayList<MultivectorPurelySymbolic>();
+				this.paramsAccumMap = new HashMap<String, MultivectorPurelySymbolic>();
+				this.leftsideArrayNames = new ArrayList<>();
+				this.accumulatedNames = new ArrayList<>();
+				this.accumOffsets = new ArrayList<>();
+				this.loopedArrays = new ArrayList<>();
+				levelNr++;
 			}
-			this.returnsAccum = new ArrayList<MultivectorSymbolic>();
-			this.returnsArray = new ArrayList<MultivectorSymbolic>();
-			this.argsSimple = new ArrayList<MultivectorSymbolic>();
-			this.argsAccumInitial = new ArrayList<MultivectorSymbolic>();
-			this.argsArray = new ArrayList<MultivectorSymbolicArray>();
-			this.paramsAccum = new ArrayList<MultivectorPurelySymbolic>();
-			this.accumulatedArrays = new ArrayList<MultivectorSymbolicArray>();
-			this.paramsArray = new ArrayList<MultivectorPurelySymbolic>();
-			this.paramsSimple = new ArrayList<MultivectorPurelySymbolic>();
-			this.paramsAccumMap = new HashMap<String, MultivectorPurelySymbolic>();
-			this.leftsideArrayNames = new ArrayList<>();
-			this.accumulatedNames = new ArrayList<>();
-			this.accumOffsets = new ArrayList<>();
-			this.loopedArrays = new ArrayList<>();
-			levelNr++;
+		} else {
+			// Native Loop
+			System.out.println("Going native!");
+			for (int i = this.beginning; i<this.ending; i += this.step){
+				Map iterator = new HashMap();
+				iterator.put(this.localIterator, i);
+				for (InsideLoopStmtContext line : ctx.stmts){
+					MultivectorSymbolicArray array = functionArrays.get(line.assigned.getText());
+					int index = IndexCalculation.calculateIndex(line.index, functionArrays, iterator);
+					MultivectorSymbolic arrayElem = ExprTransform.generateLoopExprAST(fac, parser, line.assignments, functionsView, functionVariablesView, iterator);
+					if(array.size() == index){	// To account for arrays being created empty, we have to allow for the assignment to expand the array's size by 1.
+						array.add(arrayElem);
+					} else{					// For all other cases, we assume it's possible to change the item directly. If not, the native ArrayList will throw an Exception.
+						array.set(index, arrayElem);
+					}
+				}
+			}
 		}
 	}
 
@@ -362,7 +384,6 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 	private void addNode(int i, String name, LoopNode node) {
 		if (loopLevels.size() <= i){
 			loopLevels.add(new LinkedHashMap<String, LoopNode>());
-			this.levelsAccum.add(false);
 		}
 		loopLevels.get(i).put(name, node);
 	}

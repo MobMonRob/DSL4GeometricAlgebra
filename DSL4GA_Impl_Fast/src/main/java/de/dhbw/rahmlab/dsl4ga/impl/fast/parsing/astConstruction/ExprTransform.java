@@ -39,6 +39,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 	protected final Map<String, MultivectorSymbolic> localVariablesView;
 	protected static Map<String, MultivectorSymbolicArray> localArrays = new HashMap<>();
 	protected List<MultivectorSymbolic> lastCallResults = null;
+	protected Map<String, Integer> loopIterator = new HashMap<>();
 
 	protected ExprTransform(ExprGraphFactory exprGraphFactory, Map<String, FunctionSymbolic> functionsView, Map<String, MultivectorSymbolic> localVariablesView) {
 		this.exprGraphFactory = exprGraphFactory;
@@ -83,7 +84,17 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		for(MultivectorSymbolic v : arrayVarsList) arrayVars.add(v);
 		return arrayVars;
 	}
+	
+	public static MultivectorSymbolic generateLoopExprAST(ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.LoopAssignmentContext loopExprCtx, Map<String, FunctionSymbolic> functionsView, Map<String, MultivectorSymbolic> localVariablesView, Map<String, Integer> loopIterator){
+		ExprTransform exprTransform = new ExprTransform(exprGraphFactory, functionsView, localVariablesView);
+		exprTransform.setIterator(loopIterator);
+		SkippingParseTreeWalker.walk(parser, exprTransform, loopExprCtx);
+		
+		MultivectorSymbolic rootNode = exprTransform.nodeStack.getFirst();
+		return rootNode;
+	}
 
+	@Deprecated
 	public static MultivectorSymbolic generateArrayAssgnAST(ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.ExprContext exprCtx, Map<String, FunctionSymbolic> functionsView, Map<String, MultivectorSymbolic> localVariablesView) {
 		ExprTransform exprTransform = new ExprTransform(exprGraphFactory, functionsView, localVariablesView);
 
@@ -325,7 +336,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 	@Override
 	public void exitArrayAccessExpr (GeomAlgeParser.ArrayAccessExprContext ctx){
 		String arrayName = ctx.array.getText();
-		int index = IndexCalculation.calculateIndex(ctx.index, this.localArrays);
+		int index = IndexCalculation.calculateIndex(ctx.index, this.localArrays, this.loopIterator);
 		MultivectorSymbolicArray array = this.localArrays.get(arrayName);
 		var node = array.get(index);
 		nodeStack.push(node);
@@ -458,4 +469,9 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 			}
 		}
 	}
+	
+	public void setIterator (Map<String, Integer> iterator){
+		this.loopIterator = iterator;
+	}
+	
 }

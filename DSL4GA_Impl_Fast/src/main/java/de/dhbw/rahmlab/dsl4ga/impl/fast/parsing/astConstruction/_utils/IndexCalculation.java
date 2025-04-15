@@ -8,9 +8,8 @@ import de.orat.math.gacalc.api.MultivectorSymbolicArray;
 import java.util.Map;
 
 public class IndexCalculation {	
-	@Deprecated
 	public static int calculateIndex(IndexCalcContext ctx, Map<String, MultivectorSymbolicArray> arrays, Map<String, Integer> loopIndex){
-		if (loopIndex.containsKey(ctx.id.getText())) {
+		if (null != ctx.id && loopIndex.containsKey(ctx.id.getText())) {
 			int integerValue = 0;
 			if (ctx.integer != null){
 				String integerLiteral = ctx.integer.getText();
