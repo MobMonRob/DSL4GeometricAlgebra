@@ -1,9 +1,9 @@
 package de.dhbw.rahmlab.dsl4ga.test.arrays;
 
 import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationException;
-import de.dhbw.rahmlab.dsl4ga.test.arrays._util.FastImplSpecifics;
-import de.dhbw.rahmlab.dsl4ga.test.arrays._util.ImplementationSpecifics;
-import de.dhbw.rahmlab.dsl4ga.test.arrays._util.ProgramRunner;
+import de.dhbw.rahmlab.dsl4ga.test._util.FastImplSpecifics;
+import de.dhbw.rahmlab.dsl4ga.test._util.ImplementationSpecifics;
+import de.dhbw.rahmlab.dsl4ga.test._util.ProgramRunner;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;

@@ -1,4 +1,4 @@
-package de.dhbw.rahmlab.dsl4ga.test.arrays._util;
+package de.dhbw.rahmlab.dsl4ga.test._util;
 
 import de.dhbw.rahmlab.dsl4ga.api.iProgramFactory;
 import de.dhbw.rahmlab.dsl4ga.impl.fast.api.FastProgramFactory;
