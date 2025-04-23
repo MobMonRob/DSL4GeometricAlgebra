@@ -42,7 +42,7 @@ public class IndexCalculation {
 	}
 	
 	public static IndexCalculationType getIndexCalcType(IndexCalcContext ctx, String iterator){
-		if (!ctx.id.getText().equals(iterator) || ctx.integer == null) return notIterator;
+		if (ctx.id == null || !ctx.id.getText().equals(iterator) || ctx.integer == null) return notIterator;
 		if (ctx.len != null){
 			int line = ctx.len.getLine();
 			throw new ValidationException(line, String.format("You can't use len(%s) because %s is the iterator.", iterator, iterator));

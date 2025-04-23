@@ -7,10 +7,10 @@ public class LoopNode {
 	private InsideLoopStmtContext line;
 	private Boolean isParent;
 	
-	private LoopNode(InsideLoopStmtContext line, Boolean isAccum, Boolean isParent){
+	private LoopNode(InsideLoopStmtContext line, Boolean isParent){
 		this.line = line;
-		this.isAccum = isAccum;
 		this.isParent = isParent;
+		this.isAccum = false;
 	}
 	
 	public InsideLoopStmtContext getContext(){
@@ -25,11 +25,15 @@ public class LoopNode {
 		return isParent;
 	}
 	
-	public static LoopNode generateParentNode (InsideLoopStmtContext line, Boolean isAccum){
-		return new LoopNode(line, isAccum, true);
+	public static LoopNode generateParentNode (InsideLoopStmtContext line){
+		return new LoopNode(line, true);
 	}
 	
 	public static LoopNode generateChildNode (){
-		return new LoopNode(null, false, false);
+		return new LoopNode(null, false);
 	}
+	
+	public void makeAccum(){
+		this.isAccum = true;
+	}	
 }

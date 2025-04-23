@@ -5,36 +5,25 @@ import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParser.*;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParserBaseListener;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.SkippingParseTreeWalker;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationException;
-import de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils.DecimalFormatter;
-import static de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils.DecimalFormatter.initDecimalFormat;
 import de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils.IndexCalculation;
 import de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils.IndexCalculationType;
 import static de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils.IndexCalculationType.accum;
 import static de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils.IndexCalculationType.iteratorOperation;
 import de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils.LoopAPILists;
 import de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils.LoopNode;
+import de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils.VariableType;
 import de.orat.math.gacalc.api.ExprGraphFactory;
 import de.orat.math.gacalc.api.FunctionSymbolic;
-import de.orat.math.gacalc.api.GAExprGraphFactoryService;
-import de.orat.math.gacalc.api.MultivectorPurelySymbolic;
 import de.orat.math.gacalc.api.MultivectorSymbolic;
 import de.orat.math.gacalc.api.MultivectorSymbolicArray;
-import java.text.DecimalFormat;
-import java.text.ParseException;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
 
@@ -51,10 +40,11 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
     protected Map<String, FunctionSymbolic> functionsView;
     protected Map<String, MultivectorSymbolic> functionVariablesView;
 	protected List<HashMap<String, LoopNode>> loopLevels = new ArrayList<>();
-	protected Set<String> assignmentNames = new HashSet<String>();
+	protected Set<String> rightSideNames = new HashSet<String>();
+	protected Set<String> leftSideNames = new HashSet<String>();
 	protected Boolean nativeLoop = false;
 	protected ExprGraphFactory fac;
-	public final List<String> accumulatedNames = new ArrayList<>();
+	public final Set<String> accumulatedNames = new HashSet<String>();
 	protected int iterations;
 	protected LoopAPILists lists = new LoopAPILists();
 	
@@ -84,26 +74,11 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 	
 	
 	@Override
-	public void enterLiteralDecimal (LiteralDecimalContext expr){
-		if (!nativeLoop){
-			String name = expr.value.getText();
-			assignmentNames.add(name); 
-		}
-	}
-	
-	@Override
-	public void enterLiteralInteger (LiteralIntegerContext expr){
-		if (!nativeLoop){
-			String name = expr.value.getText();
-			assignmentNames.add(name); 
-		}
-	}
-	
-	@Override
-	public void enterVariableReference (VariableReferenceContext expr){
+	public void enterVariableReference (VariableReferenceContext expr){ // for fold
 		if (!nativeLoop){
 			String name = expr.name.getText();
-			assignmentNames.add(name); 
+			if (!leftSideNames.contains(name)) rightSideNames.add(name); 
+			else lists.variableTypes.put(name, VariableType.noList);
 		}
 	}
 	
@@ -114,7 +89,8 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 			Boolean isAccum = (type==accum);
 			String variableName = expr.array.getText();
 			String name = (isAccum) ? String.format("%s+", variableName) : variableName;
-			assignmentNames.add(name); 
+			if (!leftSideNames.contains(name)) rightSideNames.add(name); 
+			else lists.variableTypes.put(name, VariableType.noList);
 		}
 	}
 	
@@ -130,8 +106,7 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 		if (!nativeLoop){
 			String variableName = line.assigned.getText();
 			IndexCalculationType type = IndexCalculation.getIndexCalcType(line.index, localIterator);
-			if (type == iteratorOperation) throw new RuntimeException();
-			Boolean isAccum = (type==accum) && assignmentNames.contains(variableName);
+			if (type == iteratorOperation) throw new RuntimeException(); // Replace with native=true (?)
 			String name = variableName;
 			if (type==accum){
 				name = String.format("%s+", variableName); 
@@ -139,24 +114,27 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 					this.nativeLoop = true;
 					return;
 				}
-				if (isAccum) accumulatedNames.add(variableName);
+				accumulatedNames.add(variableName);
+				lists.accumulatedArrays.add(functionArrays.get(variableName));
 			} else if (accumulatedNames.contains(name)){
 				this.nativeLoop = true;
+			} else {
+				lists.loopedArrays.add(functionArrays.get(variableName));
 			}
-			assignmentNames.add(name);
-			LoopNode node = LoopNode.generateParentNode(line, isAccum);
+			leftSideNames.add(name);
+			
+			/*LoopNode node = LoopNode.generateParentNode(line);
 			int highestLevel = 0;
 			int currentLevel = 0;
 			for (HashMap level : loopLevels){
-				for (String n : assignmentNames){
+				for (String n : rightSideNames){
 					if (level.containsKey(n)){
 						highestLevel = currentLevel+1;
 					}
 				}
 				currentLevel ++;
 			}
-			addNode(highestLevel, name, node);
-			assignmentNames = new HashSet<String>();
+			addNode(highestLevel, name, node);*/
 		}
 	}
 	
@@ -165,32 +143,43 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 	@Override
 	public void exitLoopBody(LoopBodyContext ctx){	
 		if (!nativeLoop){
-			int levelNr = 0;
-			for (HashMap level : loopLevels){
-				System.out.println(level.keySet());
-				Set<Map.Entry<String, LoopNode>> nodes = level.entrySet();
-				for (Map.Entry<String, LoopNode> entry : nodes){
-					LoopNode node = entry.getValue();
-					Boolean isAccumulation = node.isAccum();
-					LoopAPITransform.generate(fac, parser, node.getContext(), functionVariables, functionArrays, isAccumulation, localIterator, beginning, ending, lists);
-					List<MultivectorSymbolic> returnsList = (isAccumulation) ? lists.returnsAccum : lists.returnsArray;
-					returnsList.add(lists.exprStack.pop());
+			/* rightSideNames now contains all variable references array accesses of the loop. Now, we have to move the accumulated variables from rightSideNames into paramsAccum */
+			for (String name : accumulatedNames){
+				if (rightSideNames.contains(name)){
+					rightSideNames.remove(name);
+					lists.variableTypes.put(name, VariableType.accumulation);
 				}
-				if (lists.accumulatedArrays.isEmpty()) {
-					//map
-					System.out.println("Using map...");
-					var res = fac.getLoopService().map(lists.paramsSimple, lists.paramsArray, lists.returnsArray, lists.argsSimple, lists.argsArray, iterations);
-
-					applyLoopResults(res, Collections.nCopies(res.size(), 0), lists.loopedArrays);
-				} else {
-					System.out.println("Using mapaccum...");
-					var res = fac.getLoopService().mapaccum(lists.paramsAccum, lists.paramsSimple, lists.paramsArray, lists.returnsAccum, lists.returnsArray, lists.argsAccumInitial, lists.argsSimple, lists.argsArray, iterations);
-					applyLoopResults(res.returnsArray(), Collections.nCopies(res.returnsArray().size(), 0), this.lists.loopedArrays);
-					applyLoopResults(res.returnsAccum(), lists.accumOffsets, lists.accumulatedArrays);
-				}
-				this.lists = new LoopAPILists();
-				levelNr++;
 			}
+			for (String name : rightSideNames){
+				lists.variableTypes.put(name, VariableType.array);
+			}
+			System.out.println(lists.variableTypes);
+			
+			for (InsideLoopStmtContext line : ctx.insideLoopStmt()){ // for line in loop
+				LoopAPITransform.generate(fac, parser, line, functionVariables, functionArrays, localIterator, beginning, ending, lists);
+				List<MultivectorSymbolic> returnsList = (null != line.index.op) ? lists.returnsAccum : lists.returnsArray;
+				returnsList.add(lists.exprStack.pop());
+			}
+			System.out.println(lists.paramsAccum);
+			System.out.println(lists.paramsSimple);
+			System.out.println(lists.paramsArray);
+			System.out.println(lists.returnsAccum);
+			System.out.println(lists.returnsArray);
+			System.out.println(lists.argsAccumInitial);
+			System.out.println(lists.argsSimple);
+			System.out.println(lists.argsArray);
+			if (lists.returnsAccum.isEmpty()) {
+				//map
+				System.out.println("Using map...");
+				var res = fac.getLoopService().map(lists.paramsSimple, lists.paramsArray, lists.returnsArray, lists.argsSimple, lists.argsArray, iterations);
+				applyLoopResults(res, 0, lists.loopedArrays);
+			} else {
+				System.out.println("Using mapaccum...");
+				var res = fac.getLoopService().mapaccum(lists.paramsAccum, lists.paramsSimple, lists.paramsArray, lists.returnsAccum, lists.returnsArray, lists.argsAccumInitial, lists.argsSimple, lists.argsArray, iterations);
+				applyLoopResults(res.returnsAccum(), 1, lists.accumulatedArrays);
+				applyLoopResults(res.returnsArray(), 0, this.lists.loopedArrays);
+			}
+			this.lists = new LoopAPILists();
 		} else {
 			// Native Loop
 			System.out.println("Going native!");
@@ -212,9 +201,9 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 	}
 	
 	
-	private void applyLoopResults(List<MultivectorSymbolicArray> res, List<Integer> beginnings, List<MultivectorSymbolicArray> arrays) {
+	private void applyLoopResults(List<MultivectorSymbolicArray> res, Integer offset, List<MultivectorSymbolicArray> arrays) {
 		for (int i = 0; i<res.size(); i++){
-			int e = this.beginning + beginnings.get(i);
+			int e = this.beginning + offset;
 			MultivectorSymbolicArray assignedArray = arrays.get(i);
 			for (MultivectorSymbolic mv : res.get(i)){
 				if (e >= assignedArray.size()) assignedArray.add(mv);
@@ -223,7 +212,6 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 			}
 		}
 	}
-	
 	
 	private int parseLoopParam(IndexCalcContext param){
 		if (param.id!=null) {
@@ -292,6 +280,5 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 	@Override
 	public void enterGP (GPContext expr){
 		this.nativeLoop = true;
-	}
-	
+	}	
 }

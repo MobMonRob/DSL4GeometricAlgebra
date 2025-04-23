@@ -27,6 +27,7 @@ public class LoopAPILists {
 	public final Map<String, MultivectorSymbolic> functionVariablesView = new HashMap<>();
 	public final Map<String, MultivectorPurelySymbolic> paramsAccumMap = new HashMap<>();
 	public final Deque<MultivectorSymbolic> exprStack = new ArrayDeque<>();
+	public final Map<String, VariableType> variableTypes = new HashMap<>();
 	
 	public LoopAPILists(){}
 }

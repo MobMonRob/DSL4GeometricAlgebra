@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TestSymbolic {
-
+	
 	public static void main(String[] args) throws Exception {
 		invocationTest();
 	}
@@ -14,30 +14,14 @@ public class TestSymbolic {
 	private static void invocationTest() throws Exception {
 		String source = """
         #algebra cga
-		fn main() {
-            //b = 0 
-            //a [] = {200, 300, 400}
-			aSim = 5
-			aArr[] = {7,11}
-			arAcc[] = {}  
-			arAcc[0] = 3
-            //arAcc[1] = 10
-			rArr[] = {}
-                  
-            x [] = {1,2,3,4,5,7}
-            a [] = {1,6,2,6,3}
-            b [] = {9,4,8,2,4}
-            y [] = {7,2,5,7,8}
-            c [] = {1,2,3,4,5,7}
-                  
-			for (i; 0; 4; 1) {        
-                x[i] = a[i] + 4
-                b[i] = x[i] -7
-                x[i+1] = b[i] + 1
-                y[i] = c[i] -2
-                x[i] = y[i] +4
+		fn main (){
+			x[] = {1, 2, 3, 4}
+			y[] = {}
+			for (i; 0; len(x)-1; 1) {
+				y[i] = x[i] + 2
+				x[i+1] = y[i] +1
 			}
-            x[0], x[1], x[2], x[3]
+			y[0], y[1], y[2]
 		}
 		""";
 

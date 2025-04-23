@@ -279,4 +279,90 @@ public class LoopResultsTest {
 
 		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
 	}
+	
+	
+	@Test
+	void indirectSelfReferenceLoop (){
+		String code = """
+			fn main (){
+				x[] = {1, 2, 3, 4}
+				y[] = {}
+				for (i; 0; len(x)-1; 1) {
+					y[i] = x[i] + 2
+					x[i+1] = y[i] +1
+				}
+				y[0], y[1], y[2]
+			}
+		""";
+
+
+		expectedStrings.add(specifics.createMultivectorString(3));
+		expectedStrings.add(specifics.createMultivectorString(6));
+		expectedStrings.add(specifics.createMultivectorString(9));
+
+		runner.parseAndRun(code);
+
+		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+	}
+
+
+	@Test
+	void disconnectedReferenceLoop (){
+		String code = """
+			fn main (){
+				x[] = {1, 2, 3, 4}
+				a[] = {4,5,6,7,9}
+				y[] = {}
+				for (i; 0; len(x)-1; 1) {
+					y[i] = x[i] + 2
+					x[i+1] = a[i] +1
+				}
+				y[0], y[1], y[2]
+			}
+		""";
+
+
+		expectedStrings.add(specifics.createMultivectorString(3));
+		expectedStrings.add(specifics.createMultivectorString(7));
+		expectedStrings.add(specifics.createMultivectorString(9));
+
+		runner.parseAndRun(code);
+
+		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+	}
+	
+	
+	@Test
+	void referencesToAccumulatedAndOriginalArray(){
+		String code = """
+			fn main (){
+				x[] = {1, 2, 3, 4}
+				a[] = {4,5,6,7,9}
+                b[] = {41, 83, 97, 11}
+				y[] = {}
+                z[] = {}
+				for (i; 0; len(x)-1; 1) {
+					y[i] = x[i] + 2
+					x[i] = a[i] +1
+                    z[i] = x[i] + 12
+                    x[i+1] = b[i] + 4
+				}
+				y[0], y[1], y[2], z[0], z[1], z[2]
+			}
+		""";
+
+
+		expectedStrings.add(specifics.createMultivectorString(3));
+		expectedStrings.add(specifics.createMultivectorString(47));
+		expectedStrings.add(specifics.createMultivectorString(89));
+		
+		expectedStrings.add(specifics.createMultivectorString(17));
+		expectedStrings.add(specifics.createMultivectorString(18));
+		expectedStrings.add(specifics.createMultivectorString(19));
+
+		runner.parseAndRun(code);
+
+		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+	}
+	
 }
