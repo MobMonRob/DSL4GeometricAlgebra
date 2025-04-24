@@ -38,7 +38,7 @@ public class LoopAPITransform extends GeomAlgeParserBaseListener {
 	protected Map<String, MultivectorSymbolicArray> functionArrays;
 	protected final GeomAlgeParser parser;
 	protected Map<String, MultivectorPurelySymbolic> paramsAccumMap = new HashMap<String, MultivectorPurelySymbolic>();
-	public final List<String> leftsideArrayNames = new ArrayList<>();
+	protected Boolean referencesInsideLoop = false;
 	protected ExprGraphFactory fac;
 	protected final LoopAPILists lists;
 	
@@ -133,24 +133,17 @@ public class LoopAPITransform extends GeomAlgeParserBaseListener {
 				throw new ValidationException(line, String.format("You may only use \"%s\" in combination with len() here.", id)); //TODO: Move to LoopTransform
 			}
 			MultivectorSymbolicArray assignedArray = functionArrays.get(arrayName); //TODO: Check if exists in LoopTransform
-			Boolean fromReturns = false;
-			try {
-				currentMultiVector = assignedArray.get(this.beginning);
-			} catch (Exception e) {
-				fromReturns=true;
-				currentMultiVector = lists.returnsArray.getFirst();
-			}
-			prettyName = String.format("%s[%s]", arrayName, this.localIterator);
+			referencesInsideLoop = false;
 			VariableType variableType = lists.variableTypes.get(arrayName);
+			currentMultiVector = getMultiVectorFromArray(arrayName, assignedArray, line, variableType);
+			prettyName = String.format("%s[%s]", arrayName, this.localIterator);
+			System.out.println(line + " " + arrayName +  " " + variableType + " " + referencesInsideLoop);
 			if (null != variableType) switch (variableType) {
 			case array:
 				currentMultiVector = handleArrayArgs(prettyName, assignedArray, currentMultiVector, line);
 				break;
 			case accumulation:
 				currentMultiVector = handleAccumArgs(prettyName, arrayName, currentMultiVector);
-				break;
-			case noList:
-				if (!fromReturns) currentMultiVector = functionArrays.get(arrayName).get(this.beginning);
 				break;
 			default:
 				break;
@@ -187,20 +180,52 @@ public class LoopAPITransform extends GeomAlgeParserBaseListener {
 		try {
 			MultivectorSymbolicArray aArr = new MultivectorSymbolicArray(array.subList(this.beginning, this.ending)); // Trim array to the dimensions of the loop
 			MultivectorPurelySymbolic sym_aArr = this.fac.createMultivectorPurelySymbolicFrom(String.format("sym_%s", name), currentMultiVector);
-			lists.argsArray.add(aArr);
-			lists.paramsArray.add(sym_aArr);
-			return sym_aArr;
+			if (!referencesInsideLoop){
+				lists.argsArray.add(aArr);
+				lists.paramsArray.add(sym_aArr);
+				lists.arrayNames.add(name);
+				return sym_aArr;
+			} else {
+				return currentMultiVector;
+			}
 		} catch (IndexOutOfBoundsException e){
 			throw new ValidationException(line, String.format("The loop has more iterations than \"%s\" has elements.", name)); //TODO: Move to LoopTransform
 		}
 	}
 	
 	private MultivectorSymbolic handleAccumArgs(String formattedName, String rawName, MultivectorSymbolic currentMultiVector){
-		MultivectorPurelySymbolic sym_arAcc = this.fac.createMultivectorPurelySymbolicFrom(String.format("sym_%s", formattedName), currentMultiVector);
+		MultivectorPurelySymbolic sym_arAcc = this.fac.createMultivectorPurelySymbolicFrom(String.format("sym_%s_accum", formattedName), currentMultiVector);
 		MultivectorSymbolicArray array = this.functionArrays.get(rawName);
-		if (!lists.argsAccumInitial.contains(array.get(this.beginning))) lists.argsAccumInitial.add(array.get(this.beginning));
-		lists.paramsAccum.add(sym_arAcc);
-		lists.paramsAccumMap.put(formattedName, sym_arAcc);
-		return sym_arAcc;
+		if (!referencesInsideLoop && !lists.accumNames.contains(rawName)){
+			lists.argsAccumInitial.add(array.get(this.beginning));
+			lists.paramsAccum.add(sym_arAcc);
+			lists.paramsAccumMap.put(formattedName, sym_arAcc);
+			lists.accumNames.add(rawName);
+			return sym_arAcc;
+		} else {
+			return currentMultiVector;
+		}
+	}
+
+	private MultivectorSymbolic getMultiVectorFromArray(String name, MultivectorSymbolicArray array, Integer line, VariableType type) {
+		List<Integer> lines = lists.leftSideNames.get(name);
+		if (null != lines){
+			Integer referencedLine = 0;
+			for (Integer i : lines.reversed()){
+				if (i < line){
+					referencedLine = i;
+					this.referencesInsideLoop = true;
+					break;
+				}
+			}
+			if (referencesInsideLoop){
+				return lists.returns.get(referencedLine);
+			}
+		} 
+		try {
+			return array.get(this.beginning);
+		} catch (IndexOutOfBoundsException e){
+			throw new ValidationException(line, String.format("The loop has more iterations than \"%s\" has elements.", name));
+		}
 	}
 }

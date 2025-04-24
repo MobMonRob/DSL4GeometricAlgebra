@@ -41,7 +41,6 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
     protected Map<String, MultivectorSymbolic> functionVariablesView;
 	protected List<HashMap<String, LoopNode>> loopLevels = new ArrayList<>();
 	protected Set<String> rightSideNames = new HashSet<String>();
-	protected Set<String> leftSideNames = new HashSet<String>();
 	protected Boolean nativeLoop = false;
 	protected ExprGraphFactory fac;
 	public final Set<String> accumulatedNames = new HashSet<String>();
@@ -49,7 +48,7 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 	protected LoopAPILists lists = new LoopAPILists();
 	
 	
-	protected LoopTransform(ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.LoopStmtContext loopCtx,							Map<String, MultivectorSymbolic> variables, Map<String, MultivectorSymbolicArray> arrays,
+	protected LoopTransform(ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.LoopStmtContext loopCtx, Map<String, MultivectorSymbolic> variables, Map<String, MultivectorSymbolicArray> arrays,
 		Map<String, FunctionSymbolic> functionsView, Map<String, MultivectorSymbolic> functionVariablesView) {
 		this.fac = exprGraphFactory;
 		this.parser = parser;
@@ -77,8 +76,7 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 	public void enterVariableReference (VariableReferenceContext expr){ // for fold
 		if (!nativeLoop){
 			String name = expr.name.getText();
-			if (!leftSideNames.contains(name)) rightSideNames.add(name); 
-			else lists.variableTypes.put(name, VariableType.noList);
+			if (!lists.leftSideNames.containsKey(name)) rightSideNames.add(name); 
 		}
 	}
 	
@@ -89,8 +87,7 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 			Boolean isAccum = (type==accum);
 			String variableName = expr.array.getText();
 			String name = (isAccum) ? String.format("%s+", variableName) : variableName;
-			if (!leftSideNames.contains(name)) rightSideNames.add(name); 
-			else lists.variableTypes.put(name, VariableType.noList);
+			if (!lists.leftSideNames.containsKey(name)) rightSideNames.add(name); 
 		}
 	}
 	
@@ -121,7 +118,7 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 			} else {
 				lists.loopedArrays.add(functionArrays.get(variableName));
 			}
-			leftSideNames.add(name);
+			addLeftSideName(variableName, line.assigned.getLine());
 			
 			/*LoopNode node = LoopNode.generateParentNode(line);
 			int highestLevel = 0;
@@ -144,6 +141,7 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 	public void exitLoopBody(LoopBodyContext ctx){	
 		if (!nativeLoop){
 			/* rightSideNames now contains all variable references array accesses of the loop. Now, we have to move the accumulated variables from rightSideNames into paramsAccum */
+			System.out.println(lists.leftSideNames);
 			for (String name : accumulatedNames){
 				if (rightSideNames.contains(name)){
 					rightSideNames.remove(name);
@@ -157,8 +155,17 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 			
 			for (InsideLoopStmtContext line : ctx.insideLoopStmt()){ // for line in loop
 				LoopAPITransform.generate(fac, parser, line, functionVariables, functionArrays, localIterator, beginning, ending, lists);
-				List<MultivectorSymbolic> returnsList = (null != line.index.op) ? lists.returnsAccum : lists.returnsArray;
-				returnsList.add(lists.exprStack.pop());
+				int lineNr = line.assigned.getLine();
+				MultivectorSymbolic result = lists.exprStack.pop();
+				List<MultivectorSymbolic> returnsList;
+				if (null == line.index.op){
+					returnsList = lists.returnsArray;
+					lists.returns.put(lineNr, result);
+				} else {
+					returnsList = lists.returnsAccum;
+					lists.returns.put(lineNr, lists.paramsAccum.getLast());
+				}
+				returnsList.add(result);
 			}
 			System.out.println(lists.paramsAccum);
 			System.out.println(lists.paramsSimple);
@@ -256,6 +263,15 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 		return false;
 	}
 	
+	private void addLeftSideName(String name, int line) {
+		if (lists.leftSideNames.containsKey(name)) {
+			List previousElements = lists.leftSideNames.get(name);
+			previousElements.add(line);
+			lists.leftSideNames.replace(name, previousElements);
+		} else {
+			lists.leftSideNames.put(name, new ArrayList<>(List.of(line)));
+		}
+	}
 	
 	@Override
 	public void enterUnOpExpr (UnOpExprContext expr){
