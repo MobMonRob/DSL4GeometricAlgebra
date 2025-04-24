@@ -324,7 +324,7 @@ public class LoopResultsTest {
 
 		expectedStrings.add(specifics.createMultivectorString(3));
 		expectedStrings.add(specifics.createMultivectorString(7));
-		expectedStrings.add(specifics.createMultivectorString(9));
+		expectedStrings.add(specifics.createMultivectorString(8));
 
 		runner.parseAndRun(code);
 

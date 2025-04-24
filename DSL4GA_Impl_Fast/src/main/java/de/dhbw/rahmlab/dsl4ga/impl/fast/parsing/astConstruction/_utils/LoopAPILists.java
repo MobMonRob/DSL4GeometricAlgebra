@@ -8,10 +8,8 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class LoopAPILists {
 	public final List<MultivectorPurelySymbolic> paramsAccum = new ArrayList<>(); 
@@ -32,8 +30,8 @@ public class LoopAPILists {
 	public final Map<String, VariableType> variableTypes = new HashMap<>();
 	public final Map<String, List<Integer>> leftSideNames = new HashMap<>();
 	public final Map<Integer, MultivectorSymbolic> returns = new HashMap<>();
-	public final Set<String> arrayNames = new HashSet<>();
-	public final Set<String> accumNames = new HashSet<>();
+	public final Map<String, MultivectorSymbolic> arrayNames = new HashMap<>();
+	public final Map<String, MultivectorSymbolic> accumNames = new HashMap<>();
 	
 	public LoopAPILists(){}
 }

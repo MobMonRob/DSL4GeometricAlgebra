@@ -181,10 +181,14 @@ public class LoopAPITransform extends GeomAlgeParserBaseListener {
 			MultivectorSymbolicArray aArr = new MultivectorSymbolicArray(array.subList(this.beginning, this.ending)); // Trim array to the dimensions of the loop
 			MultivectorPurelySymbolic sym_aArr = this.fac.createMultivectorPurelySymbolicFrom(String.format("sym_%s", name), currentMultiVector);
 			if (!referencesInsideLoop){
-				lists.argsArray.add(aArr);
-				lists.paramsArray.add(sym_aArr);
-				lists.arrayNames.add(name);
-				return sym_aArr;
+				if (!lists.arrayNames.containsKey(name)){
+					lists.argsArray.add(aArr);
+					lists.paramsArray.add(sym_aArr);
+					lists.arrayNames.put(name, sym_aArr);
+					return sym_aArr;
+				} else {
+					return lists.arrayNames.get(name);
+				}
 			} else {
 				return currentMultiVector;
 			}
@@ -196,12 +200,16 @@ public class LoopAPITransform extends GeomAlgeParserBaseListener {
 	private MultivectorSymbolic handleAccumArgs(String formattedName, String rawName, MultivectorSymbolic currentMultiVector){
 		MultivectorPurelySymbolic sym_arAcc = this.fac.createMultivectorPurelySymbolicFrom(String.format("sym_%s_accum", formattedName), currentMultiVector);
 		MultivectorSymbolicArray array = this.functionArrays.get(rawName);
-		if (!referencesInsideLoop && !lists.accumNames.contains(rawName)){
-			lists.argsAccumInitial.add(array.get(this.beginning));
-			lists.paramsAccum.add(sym_arAcc);
-			lists.paramsAccumMap.put(formattedName, sym_arAcc);
-			lists.accumNames.add(rawName);
-			return sym_arAcc;
+		if (!referencesInsideLoop){
+			if (!lists.accumNames.containsKey(rawName)){
+				lists.argsAccumInitial.add(array.get(this.beginning));
+				lists.paramsAccum.add(sym_arAcc);
+				lists.paramsAccumMap.put(formattedName, sym_arAcc);
+				lists.accumNames.put(rawName, sym_arAcc);
+				return sym_arAcc;
+			} else {
+				return lists.accumNames.get(rawName);
+			}
 		} else {
 			return currentMultiVector;
 		}
