@@ -9,26 +9,19 @@ import de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils.IndexCalc
 import de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils.IndexCalculationType;
 import static de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils.IndexCalculationType.accum;
 import static de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils.IndexCalculationType.iteratorOperation;
-import de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils.LoopAPILists;
-import de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils.LoopNode;
-import de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils.VariableType;
+import de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils.LoopTransformSharedResources;
 import de.orat.math.gacalc.api.ExprGraphFactory;
 import de.orat.math.gacalc.api.FunctionSymbolic;
 import de.orat.math.gacalc.api.MultivectorSymbolic;
 import de.orat.math.gacalc.api.MultivectorSymbolicArray;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import org.antlr.v4.runtime.Token;
 
 
 public class LoopTransform extends GeomAlgeParserBaseListener {
-	
 	protected int beginning;
 	protected int step;
 	protected int ending;
@@ -39,13 +32,10 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 	protected final GeomAlgeParser parser;	
     protected Map<String, FunctionSymbolic> functionsView;
     protected Map<String, MultivectorSymbolic> functionVariablesView;
-	protected List<HashMap<String, LoopNode>> loopLevels = new ArrayList<>();
-	protected Set<String> rightSideNames = new HashSet<String>();
 	protected Boolean nativeLoop = false;
 	protected ExprGraphFactory fac;
-	public final Set<String> accumulatedNames = new HashSet<String>();
 	protected int iterations;
-	protected LoopAPILists lists = new LoopAPILists();
+	protected LoopTransformSharedResources sharedResources = new LoopTransformSharedResources();
 	
 	
 	protected LoopTransform(ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.LoopStmtContext loopCtx, Map<String, MultivectorSymbolic> variables, Map<String, MultivectorSymbolicArray> arrays,
@@ -75,28 +65,9 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 	@Override
 	public void enterVariableReference (VariableReferenceContext expr){ // for fold
 		if (!nativeLoop){
-			String name = expr.name.getText();
-			if (!lists.leftSideNames.containsKey(name)) rightSideNames.add(name); 
+			
 		}
 	}
-	
-	@Override 
-	public void enterArrayAccessExpr (ArrayAccessExprContext expr){
-		if (!nativeLoop){
-			IndexCalculationType type = IndexCalculation.getIndexCalcType(expr.index, localIterator);
-			Boolean isAccum = (type==accum);
-			String variableName = expr.array.getText();
-			String name = (isAccum) ? String.format("%s+", variableName) : variableName;
-			if (!lists.leftSideNames.containsKey(name)) rightSideNames.add(name); 
-		}
-	}
-	
-	@Override 
-	public void enterBinOp (BinOpContext expr){
-		if ((expr.op.getType() != GeomAlgeParser.PLUS_SIGN) && (expr.op.getType() != GeomAlgeParser.HYPHEN_MINUS)){
-			this.nativeLoop = true;
-		}
-	}	
 	
 	@Override
 	public void exitInsideLoopStmt(InsideLoopStmtContext line){
@@ -104,89 +75,59 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 			String variableName = line.assigned.getText();
 			IndexCalculationType type = IndexCalculation.getIndexCalcType(line.index, localIterator);
 			if (type == iteratorOperation) throw new RuntimeException(); // Replace with native=true (?)
-			String name = variableName;
 			if (type==accum){
-				name = String.format("%s+", variableName); 
-				if (checkForReference(variableName)){
-					this.nativeLoop = true;
-					return;
-				}
-				accumulatedNames.add(variableName);
-				lists.accumulatedArrays.add(functionArrays.get(variableName));
-			} else if (accumulatedNames.contains(name)){
+				sharedResources.accumulatedArrayNames.add(variableName);
+				sharedResources.accumulatedArrays.add(functionArrays.get(variableName));
+			} else if (sharedResources.accumulatedArrayNames.contains(variableName)){
+				System.out.println(line.assigned.getLine() + variableName);
 				this.nativeLoop = true;
 			} else {
-				lists.loopedArrays.add(functionArrays.get(variableName));
+				sharedResources.loopedArrays.add(functionArrays.get(variableName));
 			}
 			addLeftSideName(variableName, line.assigned.getLine());
-			
-			/*LoopNode node = LoopNode.generateParentNode(line);
-			int highestLevel = 0;
-			int currentLevel = 0;
-			for (HashMap level : loopLevels){
-				for (String n : rightSideNames){
-					if (level.containsKey(n)){
-						highestLevel = currentLevel+1;
-					}
-				}
-				currentLevel ++;
-			}
-			addNode(highestLevel, name, node);*/
 		}
 	}
-	
-	
 	
 	@Override
 	public void exitLoopBody(LoopBodyContext ctx){	
 		if (!nativeLoop){
-			/* rightSideNames now contains all variable references array accesses of the loop. Now, we have to move the accumulated variables from rightSideNames into paramsAccum */
-			System.out.println(lists.leftSideNames);
-			for (String name : accumulatedNames){
-				if (rightSideNames.contains(name)){
-					rightSideNames.remove(name);
-					lists.variableTypes.put(name, VariableType.accumulation);
-				}
-			}
-			for (String name : rightSideNames){
-				lists.variableTypes.put(name, VariableType.array);
-			}
-			System.out.println(lists.variableTypes);
-			
 			for (InsideLoopStmtContext line : ctx.insideLoopStmt()){ // for line in loop
-				LoopAPITransform.generate(fac, parser, line, functionVariables, functionArrays, localIterator, beginning, ending, lists);
+				LoopAPITransform.generate(fac, parser, line, functionVariables, functionArrays, localIterator, beginning, ending, sharedResources);
 				int lineNr = line.assigned.getLine();
-				MultivectorSymbolic result = lists.exprStack.pop();
+				MultivectorSymbolic result = sharedResources.exprStack.pop();
 				List<MultivectorSymbolic> returnsList;
+				System.out.println("\n --- \n");
+				System.out.println(sharedResources.paramsAccum);
+				System.out.println(sharedResources.paramsSimple);
+				System.out.println(sharedResources.paramsArray);
+				System.out.println(sharedResources.returnsAccum);
+				System.out.println(sharedResources.returnsArray);
+				System.out.println(sharedResources.argsAccumInitial);
+				System.out.println(sharedResources.argsSimple);
+				System.out.println(sharedResources.argsArray);
 				if (null == line.index.op){
-					returnsList = lists.returnsArray;
-					lists.returns.put(lineNr, result);
+					returnsList = sharedResources.returnsArray;
+					sharedResources.lineReferences.put(lineNr, result);
 				} else {
-					returnsList = lists.returnsAccum;
-					lists.returns.put(lineNr, lists.paramsAccum.getLast());
+					returnsList = sharedResources.returnsAccum;
+					sharedResources.lineReferences.put(lineNr, sharedResources.paramsAccum.getLast());
 				}
 				returnsList.add(result);
 			}
-			System.out.println(lists.paramsAccum);
-			System.out.println(lists.paramsSimple);
-			System.out.println(lists.paramsArray);
-			System.out.println(lists.returnsAccum);
-			System.out.println(lists.returnsArray);
-			System.out.println(lists.argsAccumInitial);
-			System.out.println(lists.argsSimple);
-			System.out.println(lists.argsArray);
-			if (lists.returnsAccum.isEmpty()) {
+			/*
+			*/
+			if (sharedResources.returnsAccum.isEmpty()) {
 				//map
 				System.out.println("Using map...");
-				var res = fac.getLoopService().map(lists.paramsSimple, lists.paramsArray, lists.returnsArray, lists.argsSimple, lists.argsArray, iterations);
-				applyLoopResults(res, 0, lists.loopedArrays);
+				var res = fac.getLoopService().map(sharedResources.paramsSimple, sharedResources.paramsArray, sharedResources.returnsArray, sharedResources.argsSimple, sharedResources.argsArray, iterations);
+				applyLoopResults(res, 0, sharedResources.loopedArrays);
 			} else {
 				System.out.println("Using mapaccum...");
-				var res = fac.getLoopService().mapaccum(lists.paramsAccum, lists.paramsSimple, lists.paramsArray, lists.returnsAccum, lists.returnsArray, lists.argsAccumInitial, lists.argsSimple, lists.argsArray, iterations);
-				applyLoopResults(res.returnsAccum(), 1, lists.accumulatedArrays);
-				applyLoopResults(res.returnsArray(), 0, this.lists.loopedArrays);
+				var res = fac.getLoopService().mapaccum(sharedResources.paramsAccum, sharedResources.paramsSimple, sharedResources.paramsArray, sharedResources.returnsAccum, sharedResources.returnsArray, sharedResources.argsAccumInitial, sharedResources.argsSimple, sharedResources.argsArray, iterations);
+				applyLoopResults(res.returnsAccum(), 1, sharedResources.accumulatedArrays);
+				applyLoopResults(res.returnsArray(), 0, this.sharedResources.loopedArrays);
 			}
-			this.lists = new LoopAPILists();
+			this.sharedResources = new LoopTransformSharedResources();
 		} else {
 			// Native Loop
 			System.out.println("Going native!");
@@ -247,29 +188,14 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 		// for (i; 0; i; 1).
 	}
 
-	private void addNode(int i, String name, LoopNode node) {
-		if (loopLevels.size() <= i){
-			loopLevels.add(new LinkedHashMap<String, LoopNode>());
-		}
-		loopLevels.get(i).put(name, node);
-	}
-
-	private Boolean checkForReference(String name) {
-		for (HashMap level : loopLevels){
-			if (level.containsKey(name)){
-				return true;
-			}
-		}
-		return false;
-	}
 	
 	private void addLeftSideName(String name, int line) {
-		if (lists.leftSideNames.containsKey(name)) {
-			List previousElements = lists.leftSideNames.get(name);
+		if (sharedResources.leftSideNames.containsKey(name)) {
+			List previousElements = sharedResources.leftSideNames.get(name);
 			previousElements.add(line);
-			lists.leftSideNames.replace(name, previousElements);
+			sharedResources.leftSideNames.replace(name, previousElements);
 		} else {
-			lists.leftSideNames.put(name, new ArrayList<>(List.of(line)));
+			sharedResources.leftSideNames.put(name, new ArrayList<>(List.of(line)));
 		}
 	}
 	
@@ -297,4 +223,36 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 	public void enterGP (GPContext expr){
 		this.nativeLoop = true;
 	}	
+	
+	@Override
+	public void enterInsideLoopStmt (InsideLoopStmtContext ctx){
+		Token assigned = ctx.assigned;
+		String arrayName = assigned.getText();
+		GeomAlgeParser.IndexCalcContext assignedIndexCalcCtx = ctx.index;
+		String idName = assignedIndexCalcCtx.id.getText();
+		int lineNr = assigned.getLine();
+		if (!idName.equals(this.localIterator)) throw new ValidationException(lineNr, String.format("\"%s\" is not the iterator.", idName));
+		if (!this.functionArrays.containsKey(arrayName)) throw new ValidationException(lineNr, String.format("Array \"%s\" doesn't exist.", arrayName));
+	}
+	
+	@Override 
+	public void enterArrayAccessExpr (ArrayAccessExprContext expr){
+		String id = expr.index.id.getText();
+		int line = expr.index.id.getLine();
+		String arrayName = expr.array.getText();
+		if (!id.equals(this.localIterator)){
+			throw new ValidationException(line, String.format("You may only use \"%s\" in combination with len() here.", id)); 
+		}
+		if (!functionArrays.containsKey(arrayName)){
+			throw new ValidationException(line, String.format("Array \"%s\" has not been defined before.", arrayName)); 
+		}
+	}
+	
+	@Override 
+	public void enterBinOp (BinOpContext expr){
+		if ((expr.op.getType() != GeomAlgeParser.PLUS_SIGN) && (expr.op.getType() != GeomAlgeParser.HYPHEN_MINUS)){
+			this.nativeLoop = true;
+		}
+	}	
+	
 }

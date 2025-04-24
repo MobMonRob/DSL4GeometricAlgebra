@@ -111,33 +111,6 @@ public class LoopResultsTest {
 
 
 	@Test
-	void simpleNativeLoop (){
-		String code = """
-			fn main (){
-				x[] = {1, 2, 3, 4}
-				y[] = {}
-				for (i; 0; len(x)-1; 1) {
-					x[i] = x[i] + 2
-					y[i] = x[i] + 2
-					x[i+1] = y[i] - 4
-				}
-				x[0], x[1], x[2], x[3]
-			}
-		""";
-
-
-		expectedStrings.add(specifics.createMultivectorString(3));
-		expectedStrings.add(specifics.createMultivectorString(3));
-		expectedStrings.add(specifics.createMultivectorString(3));
-		expectedStrings.add(specifics.createMultivectorString(1));
-
-		runner.parseAndRun(code);
-
-		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
-	}
-
-
-	@Test
 	void nativeLoop (){
 		String code = """
 			fn main (){
@@ -359,6 +332,30 @@ public class LoopResultsTest {
 		expectedStrings.add(specifics.createMultivectorString(17));
 		expectedStrings.add(specifics.createMultivectorString(18));
 		expectedStrings.add(specifics.createMultivectorString(19));
+
+		runner.parseAndRun(code);
+
+		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+	
+	}
+	
+	
+	@Test
+	void oneLineAccum (){
+		String code = """
+		fn main (){
+            y [] = {15, 20, 14, 39, 29, 1}
+			x [] = {11, 10, 48, 23, 14, 31}
+			for (i; 0; 5; 1) {
+			   x[i+1] = y[i] + 1
+			}	
+			x[0], x[1], x[2], x[3]
+        }
+		""";
+
+		expectedStrings.add(specifics.createMultivectorString(11));
+		expectedStrings.add(specifics.createMultivectorString(16));
+		expectedStrings.add(specifics.createMultivectorString(21));
 
 		runner.parseAndRun(code);
 

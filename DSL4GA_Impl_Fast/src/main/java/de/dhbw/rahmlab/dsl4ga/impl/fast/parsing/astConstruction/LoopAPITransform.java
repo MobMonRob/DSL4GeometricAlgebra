@@ -6,27 +6,15 @@ import de.dhbw.rahmlab.dsl4ga.common.parsing.SkippingParseTreeWalker;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationException;
 import de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils.DecimalFormatter;
 import de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils.IndexCalculation;
-import de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils.IndexCalculationType;
-import static de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils.IndexCalculationType.accum;
-import de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils.LoopAPILists;
-import de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils.LoopNode;
-import de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils.VariableType;
+import de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils.LoopTransformSharedResources;
 import de.orat.math.gacalc.api.ExprGraphFactory;
-import de.orat.math.gacalc.api.FunctionSymbolic;
 import de.orat.math.gacalc.api.MultivectorPurelySymbolic;
 import de.orat.math.gacalc.api.MultivectorSymbolic;
 import de.orat.math.gacalc.api.MultivectorSymbolicArray;
 import java.text.DecimalFormat;
 import java.text.ParseException;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import org.antlr.v4.runtime.Token;
 
 public class LoopAPITransform extends GeomAlgeParserBaseListener {
 	protected int beginning;
@@ -37,19 +25,18 @@ public class LoopAPITransform extends GeomAlgeParserBaseListener {
 	protected Map<String, MultivectorSymbolic> functionVariables;
 	protected Map<String, MultivectorSymbolicArray> functionArrays;
 	protected final GeomAlgeParser parser;
-	protected Map<String, MultivectorPurelySymbolic> paramsAccumMap = new HashMap<String, MultivectorPurelySymbolic>();
 	protected Boolean referencesInsideLoop = false;
 	protected ExprGraphFactory fac;
-	protected final LoopAPILists lists;
+	protected final LoopTransformSharedResources sharedResources;
 	
 	
-	protected LoopAPITransform(ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.ExprContext exprCtx,	Map<String, MultivectorSymbolic> variables, Map<String, MultivectorSymbolicArray> arrays, String iterator, int beginning, int ending, LoopAPILists lists) {
+	protected LoopAPITransform(ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.ExprContext exprCtx, Map<String, MultivectorSymbolic> variables, Map<String, MultivectorSymbolicArray> arrays, String iterator, int beginning, int ending, LoopTransformSharedResources sharedResources) {
 		this.fac = exprGraphFactory;
 		this.parser = parser;
 		this.exprCtx = exprCtx;
 		this.functionVariables = variables;
 		this.functionArrays = arrays;
-		this.lists = lists;
+		this.sharedResources = sharedResources;
 		this.localIterator = iterator;
 		this.beginning = beginning;
 		this.ending = ending;
@@ -57,40 +44,10 @@ public class LoopAPITransform extends GeomAlgeParserBaseListener {
 	
 	
 	public static void generate(ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.InsideLoopStmtContext lineCtx,	Map<String, MultivectorSymbolic> variables, Map<String, MultivectorSymbolicArray> arrays, String iterator, int beginning, int ending,
-							 LoopAPILists lists){
+							 LoopTransformSharedResources sharedResources){
 		
-		LoopAPITransform loopAPITransform = new LoopAPITransform(exprGraphFactory, parser, lineCtx.assignments, variables, arrays, iterator, beginning, ending, lists);
+		LoopAPITransform loopAPITransform = new LoopAPITransform(exprGraphFactory, parser, lineCtx.assignments, variables, arrays, iterator, beginning, ending, sharedResources);
 		SkippingParseTreeWalker.walk(parser, loopAPITransform,lineCtx);
-	}
-	
-	@Override
-	public void enterInsideLoopStmt (GeomAlgeParser.InsideLoopStmtContext line) {
-		// Check if array exists
-		Token assigned = line.assigned;
-		GeomAlgeParser.IndexCalcContext assignedIndexCalcCtx = line.index;
-		String idName = assignedIndexCalcCtx.id.getText();
-		int lineNr = assigned.getLine();
-		String arrayName = assigned.getText();
-		//TODO: Check if exists in LoopTransform
-		if (!this.functionArrays.containsKey(arrayName)) throw new ValidationException(lineNr, String.format("Array \"%s\" doesn't exist.", arrayName)); // Array existiert nicht
-		if (!idName.equals(this.localIterator)) throw new ValidationException(lineNr, String.format("\"%s\" is not the iterator.", idName)); 
-//		MultivectorSymbolicArray assignedArray = this.functionArrays.get(assigned.getText());
-		
-		/*
-		if (this.isAccumulation){ // Accumulation
-			lists.accumulatedArrays.add(assignedArray);
-			MultivectorSymbolic arAcc = assignedArray.get(this.beginning);
-			lists.argsAccumInitial.add(arAcc);
-			lists.accumOffsets.add(1); //Currently, we assume only [i+1] is possible! 
-		} else { // Not an accumulation
-			if (assignedIndexCalcCtx.id!=null){
-				lists.loopedArrays.add(assignedArray);
-			} else {
-				throw new UnsupportedOperationException("Not supported yet."); // Probably not handled by API right now(?)
-			}
-		}
-		*/
-		//TODO: Move these checks to LoopTransform
 	}
 	
 	@Override
@@ -100,7 +57,7 @@ public class LoopAPITransform extends GeomAlgeParserBaseListener {
 		try {
 			double value = df.parse(name).doubleValue();
 			MultivectorSymbolic scalarLiteral = this.fac.createScalarLiteral(name, value);
-			lists.exprStack.push(scalarLiteral);
+			sharedResources.exprStack.push(scalarLiteral);
 		} catch (ParseException ex) {
 			throw new ValidationException(expr.value.getLine(), String.format("\"%s\" could not be parsed as decimal.", name));
 		}
@@ -111,7 +68,7 @@ public class LoopAPITransform extends GeomAlgeParserBaseListener {
 		String intText = expr.value.getText();
 		int value = Integer.parseInt(intText);
 		MultivectorSymbolic scalarLiteral = this.fac.createScalarLiteral(intText, value);
-		lists.exprStack.push(scalarLiteral);
+		sharedResources.exprStack.push(scalarLiteral);
 	}
 	
 	@Override
@@ -126,29 +83,20 @@ public class LoopAPITransform extends GeomAlgeParserBaseListener {
 		MultivectorSymbolic currentMultiVector;
 		String prettyName="";
 		if (arrayCtx.index.id != null && arrayCtx.index.len == null){ // Iterator in index
-			String id = arrayCtx.index.id.getText();
 			String arrayName = arrayCtx.array.getText();
 			int line = arrayCtx.index.id.getLine();
-			if (!id.equals(this.localIterator)){
-				throw new ValidationException(line, String.format("You may only use \"%s\" in combination with len() here.", id)); //TODO: Move to LoopTransform
-			}
-			MultivectorSymbolicArray assignedArray = functionArrays.get(arrayName); //TODO: Check if exists in LoopTransform
+			MultivectorSymbolicArray assignedArray = functionArrays.get(arrayName); 
 			referencesInsideLoop = false;
-			VariableType variableType = lists.variableTypes.get(arrayName);
-			currentMultiVector = getMultiVectorFromArray(arrayName, assignedArray, line, variableType);
+			currentMultiVector = getMultiVectorFromArray(arrayName, assignedArray, line);
 			prettyName = String.format("%s[%s]", arrayName, this.localIterator);
-			System.out.println(line + " " + arrayName +  " " + variableType + " " + referencesInsideLoop);
-			if (null != variableType) switch (variableType) {
-			case array:
-				currentMultiVector = handleArrayArgs(prettyName, assignedArray, currentMultiVector, line);
-				break;
-			case accumulation:
-				currentMultiVector = handleAccumArgs(prettyName, arrayName, currentMultiVector);
-				break;
-			default:
-				break;
+			if (!referencesInsideLoop){
+				if (sharedResources.accumulatedArrayNames.contains(arrayName)) {
+					currentMultiVector = handleAccumArgs(prettyName, arrayName, currentMultiVector);
+				} else {
+					currentMultiVector = handleArrayArgs(prettyName, assignedArray, currentMultiVector, line);
+				}
 			}
-			lists.exprStack.push(currentMultiVector);
+			sharedResources.exprStack.push(currentMultiVector);
 		} else {
 			String arrayName = arrayCtx.array.getText();
 			int index = IndexCalculation.calculateIndex(arrayCtx.index, functionArrays);
@@ -161,39 +109,40 @@ public class LoopAPITransform extends GeomAlgeParserBaseListener {
 	
 	@Override
 	public void exitBinOp (GeomAlgeParser.BinOpContext expr){
-		MultivectorSymbolic rightSide = lists.exprStack.pop();
-		MultivectorSymbolic leftSide = lists.exprStack.pop();
+		MultivectorSymbolic rightSide = sharedResources.exprStack.pop();
+		MultivectorSymbolic leftSide = sharedResources.exprStack.pop();
 		MultivectorSymbolic exprMultivector;
 		if (expr.op.getType() == GeomAlgeParser.PLUS_SIGN) exprMultivector = leftSide.addition(rightSide);
 		else exprMultivector = leftSide.subtraction(rightSide);
-		lists.exprStack.push(exprMultivector);
+		sharedResources.exprStack.push(exprMultivector);
 	}
 	
 	private void handleSimpleArgs(String name, MultivectorSymbolic multiVector){
 		MultivectorPurelySymbolic sym_aSim = this.fac.createMultivectorPurelySymbolicFrom(String.format("sym_%s", name), multiVector);
-		lists.argsSimple.add(multiVector);
-		lists.paramsSimple.add(sym_aSim);
-		lists.exprStack.push(sym_aSim);
+		sharedResources.argsSimple.add(multiVector);
+		sharedResources.paramsSimple.add(sym_aSim);
+		sharedResources.exprStack.push(sym_aSim);
 	}
 	
 	private MultivectorSymbolic handleArrayArgs (String name, MultivectorSymbolicArray array, MultivectorSymbolic currentMultiVector, Integer line){
+		MultivectorSymbolicArray aArr;
 		try {
-			MultivectorSymbolicArray aArr = new MultivectorSymbolicArray(array.subList(this.beginning, this.ending)); // Trim array to the dimensions of the loop
-			MultivectorPurelySymbolic sym_aArr = this.fac.createMultivectorPurelySymbolicFrom(String.format("sym_%s", name), currentMultiVector);
-			if (!referencesInsideLoop){
-				if (!lists.arrayNames.containsKey(name)){
-					lists.argsArray.add(aArr);
-					lists.paramsArray.add(sym_aArr);
-					lists.arrayNames.put(name, sym_aArr);
-					return sym_aArr;
-				} else {
-					return lists.arrayNames.get(name);
-				}
-			} else {
-				return currentMultiVector;
-			}
+			aArr = new MultivectorSymbolicArray(array.subList(this.beginning, this.ending)); // Trim array to the dimensions of the loop
 		} catch (IndexOutOfBoundsException e){
-			throw new ValidationException(line, String.format("The loop has more iterations than \"%s\" has elements.", name)); //TODO: Move to LoopTransform
+			throw new ValidationException(line, String.format("The loop has more iterations than \"%s\" has elements.", name));
+		}
+		MultivectorPurelySymbolic sym_aArr = this.fac.createMultivectorPurelySymbolicFrom(String.format("sym_%s", name), currentMultiVector);
+		if (!referencesInsideLoop){
+			if (!sharedResources.paramsArrayNamesSymbolic.containsKey(name)){
+				sharedResources.argsArray.add(aArr);
+				sharedResources.paramsArray.add(sym_aArr);
+				sharedResources.paramsArrayNamesSymbolic.put(name, sym_aArr);
+				return sym_aArr;
+			} else {
+				return sharedResources.paramsArrayNamesSymbolic.get(name);
+			}
+		} else {
+			return currentMultiVector;
 		}
 	}
 	
@@ -201,22 +150,21 @@ public class LoopAPITransform extends GeomAlgeParserBaseListener {
 		MultivectorPurelySymbolic sym_arAcc = this.fac.createMultivectorPurelySymbolicFrom(String.format("sym_%s_accum", formattedName), currentMultiVector);
 		MultivectorSymbolicArray array = this.functionArrays.get(rawName);
 		if (!referencesInsideLoop){
-			if (!lists.accumNames.containsKey(rawName)){
-				lists.argsAccumInitial.add(array.get(this.beginning));
-				lists.paramsAccum.add(sym_arAcc);
-				lists.paramsAccumMap.put(formattedName, sym_arAcc);
-				lists.accumNames.put(rawName, sym_arAcc);
+			if (!sharedResources.paramsAccumNamesSymbolic.containsKey(rawName)){
+				sharedResources.argsAccumInitial.add(array.get(this.beginning));
+				sharedResources.paramsAccum.add(sym_arAcc);
+				sharedResources.paramsAccumNamesSymbolic.put(rawName, sym_arAcc);
 				return sym_arAcc;
 			} else {
-				return lists.accumNames.get(rawName);
+				return sharedResources.paramsAccumNamesSymbolic.get(rawName);
 			}
 		} else {
 			return currentMultiVector;
 		}
 	}
 
-	private MultivectorSymbolic getMultiVectorFromArray(String name, MultivectorSymbolicArray array, Integer line, VariableType type) {
-		List<Integer> lines = lists.leftSideNames.get(name);
+	private MultivectorSymbolic getMultiVectorFromArray(String name, MultivectorSymbolicArray array, Integer line) {
+		List<Integer> lines = sharedResources.leftSideNames.get(name);
 		if (null != lines){
 			Integer referencedLine = 0;
 			for (Integer i : lines.reversed()){
@@ -227,7 +175,7 @@ public class LoopAPITransform extends GeomAlgeParserBaseListener {
 				}
 			}
 			if (referencesInsideLoop){
-				return lists.returns.get(referencedLine);
+				return sharedResources.lineReferences.get(referencedLine);
 			}
 		} 
 		try {
