@@ -22,12 +22,17 @@ public class LoopTransformSharedResources {
 	public final List<MultivectorSymbolic> argsSimple = new ArrayList<>();  
 	public final List<MultivectorSymbolicArray> argsArray = new ArrayList<>();  
 	public final Deque<MultivectorSymbolic> exprStack = new ArrayDeque<>();
-	public final AssigmentsMap leftSideNames = new AssigmentsMap();
+	public final Map<String, List<Integer>> leftSideNames = new HashMap<>();
 	public final Map<Integer, MultivectorSymbolic> lineReferences = new HashMap<>();
 	public final Map<String, MultivectorSymbolic> paramsArrayNamesSymbolic = new HashMap<>();
 	public final Map<String, MultivectorSymbolic> paramsAccumNamesSymbolic = new HashMap<>();
 	public final Set<String> accumulatedArrayNames = new HashSet<>();
+	public final Map<String,MultivectorSymbolic> functionVariables;
+	public final Map<String,MultivectorSymbolicArray> functionArrays;
 
 	
-	public LoopTransformSharedResources(){}
+	public LoopTransformSharedResources(Map<String,MultivectorSymbolic> variables, Map<String,MultivectorSymbolicArray> arrays){
+		this.functionVariables = variables;
+		this.functionArrays = arrays;
+	}
 }

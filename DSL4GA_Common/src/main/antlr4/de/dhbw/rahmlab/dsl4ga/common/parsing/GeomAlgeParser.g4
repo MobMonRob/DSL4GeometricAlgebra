@@ -126,20 +126,12 @@ indexCalc
 loopBody : (stmts+=insideLoopStmt WHITE_LINE+)+;
 
 insideLoopStmt
-	: SPACE* assigned=IDENTIFIER SPACE* L_EDGE_BRACKET SPACE* index=indexCalc SPACE* R_EDGE_BRACKET SPACE* ASSIGNMENT SPACE* assignments=expr SPACE*
+	:  SPACE* assigned=IDENTIFIER SPACE* (array=loopArray)? SPACE* ASSIGNMENT SPACE* assignments=expr SPACE*
 	;
 
-loopAssignment
-	: arrayExprCtx=arrayAccessExpr 
-	| literalExprCtx=loopLiteralExpr
-	| (arrayExprCtx=arrayAccessExpr | literalExprCtx=loopLiteralExpr ) SPACE * (plusOp=PLUS_SIGN | minusOp=HYPHEN_MINUS) SPACE* nextExpr=loopAssignment
+loopArray
+	: L_EDGE_BRACKET SPACE* index=indexCalc SPACE* R_EDGE_BRACKET 
 	;
-
-loopLiteralExpr
-	: int=INTEGER_LITERAL	
-    | dec=DECIMAL_LITERAL	
-    | id=IDENTIFIER			
-    ;
 
 ///////////////////////////////////////////////////////////////////////////
 // UnOp | singleSideRecursive

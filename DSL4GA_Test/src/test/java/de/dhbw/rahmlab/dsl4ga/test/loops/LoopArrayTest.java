@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LoopResultsTest {
+public class LoopArrayTest {
 	private final ImplementationSpecifics specifics = new FastImplSpecifics();
 	private final ProgramRunner runner = new ProgramRunner(specifics);
 	private final List<String> expectedStrings = new ArrayList<>();
@@ -53,26 +53,6 @@ public class LoopResultsTest {
 		expectedStrings.add(specifics.createMultivectorString(1));
 		expectedStrings.add(specifics.createMultivectorString(3));
 		expectedStrings.add(specifics.createMultivectorString(5));
-		expectedStrings.add(specifics.createMultivectorString(7));
-
-		runner.parseAndRun(code);
-
-		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
-	}
-
-
-	@Test
-	void simpleFoldLoop(){
-		String code = """
-			fn main (){
-				a = 1
-				for (i; 0; 3; 1) {
-					a = a + 2
-				}
-				a
-			}
-		""";
-
 		expectedStrings.add(specifics.createMultivectorString(7));
 
 		runner.parseAndRun(code);
