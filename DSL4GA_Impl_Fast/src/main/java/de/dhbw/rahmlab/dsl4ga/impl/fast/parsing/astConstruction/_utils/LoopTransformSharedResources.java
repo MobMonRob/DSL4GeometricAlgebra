@@ -21,8 +21,6 @@ public class LoopTransformSharedResources {
 	public final List<MultivectorSymbolic> argsAccumInitial = new ArrayList<>(); 
 	public final List<MultivectorSymbolic> argsSimple = new ArrayList<>();  
 	public final List<MultivectorSymbolicArray> argsArray = new ArrayList<>();  
-	public final List<MultivectorSymbolicArray> loopedArrays = new ArrayList<>(); 
-	public final List<MultivectorSymbolicArray> accumulatedArrays = new ArrayList<>();
 	public final Deque<MultivectorSymbolic> exprStack = new ArrayDeque<>();
 	public final Map<String, List<Integer>> leftSideNames = new HashMap<>();
 	public final Map<Integer, MultivectorSymbolic> lineReferences = new HashMap<>();

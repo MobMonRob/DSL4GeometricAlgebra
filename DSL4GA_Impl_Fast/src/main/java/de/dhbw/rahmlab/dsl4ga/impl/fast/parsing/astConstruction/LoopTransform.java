@@ -15,9 +15,12 @@ import de.orat.math.gacalc.api.FunctionSymbolic;
 import de.orat.math.gacalc.api.MultivectorSymbolic;
 import de.orat.math.gacalc.api.MultivectorSymbolicArray;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.antlr.v4.runtime.Token;
 
 
@@ -36,6 +39,11 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 	protected ExprGraphFactory fac;
 	protected int iterations;
 	protected LoopTransformSharedResources sharedResources = new LoopTransformSharedResources();
+	protected final Set<String> leftSideNamesNoOperator = new HashSet<>();
+	protected final List<ReturnsArray> accumulatedActualArrays = new ArrayList<>();
+	protected final List<ReturnsArray> mapActualArrays = new ArrayList<>();
+	protected final Set<String> rightSideUniqueNames = new HashSet<>();
+
 	
 	
 	protected LoopTransform(ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.LoopStmtContext loopCtx, Map<String, MultivectorSymbolic> variables, Map<String, MultivectorSymbolicArray> arrays,
@@ -64,8 +72,7 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 	
 	@Override
 	public void enterVariableReference (VariableReferenceContext expr){ // for fold
-		if (!nativeLoop){
-			
+		if (!nativeLoop){ 
 		}
 	}
 	
@@ -77,55 +84,58 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 			if (type == iteratorOperation) throw new RuntimeException(); // Replace with native=true (?)
 			if (type==accum){
 				sharedResources.accumulatedArrayNames.add(variableName);
-				sharedResources.accumulatedArrays.add(functionArrays.get(variableName));
 			} else if (sharedResources.accumulatedArrayNames.contains(variableName)){
 				System.out.println(line.assigned.getLine() + variableName);
 				this.nativeLoop = true;
-			} else {
-				sharedResources.loopedArrays.add(functionArrays.get(variableName));
 			}
-			addLeftSideName(variableName, line.assigned.getLine());
+			Boolean operator = (line.index.op != null);
+			addLeftSideName(variableName, line.assigned.getLine(), operator);
 		}
 	}
 	
 	@Override
 	public void exitLoopBody(LoopBodyContext ctx){	
 		if (!nativeLoop){
+			sharedResources.accumulatedArrayNames.retainAll(rightSideUniqueNames);
+			System.out.println(sharedResources.accumulatedArrayNames);
 			for (InsideLoopStmtContext line : ctx.insideLoopStmt()){ // for line in loop
 				LoopAPITransform.generate(fac, parser, line, functionVariables, functionArrays, localIterator, beginning, ending, sharedResources);
 				int lineNr = line.assigned.getLine();
+				String name = line.assigned.getText();
 				MultivectorSymbolic result = sharedResources.exprStack.pop();
 				List<MultivectorSymbolic> returnsList;
-				System.out.println("\n --- \n");
-				System.out.println(sharedResources.paramsAccum);
-				System.out.println(sharedResources.paramsSimple);
-				System.out.println(sharedResources.paramsArray);
-				System.out.println(sharedResources.returnsAccum);
-				System.out.println(sharedResources.returnsArray);
-				System.out.println(sharedResources.argsAccumInitial);
-				System.out.println(sharedResources.argsSimple);
-				System.out.println(sharedResources.argsArray);
-				if (null == line.index.op){
-					returnsList = sharedResources.returnsArray;
-					sharedResources.lineReferences.put(lineNr, result);
-				} else {
+				ReturnsArray array = new ReturnsArray(name, line.index);
+				if (null != line.index.op && sharedResources.accumulatedArrayNames.contains(name)){ // Accumulation
 					returnsList = sharedResources.returnsAccum;
 					sharedResources.lineReferences.put(lineNr, sharedResources.paramsAccum.getLast());
+					accumulatedActualArrays.add(array);
+				} else { // Array
+					returnsList = sharedResources.returnsArray;
+					sharedResources.lineReferences.put(lineNr, result);
+					mapActualArrays.add(array);
 				}
 				returnsList.add(result);
 			}
-			/*
-			*/
+			System.out.println("\n --- \n");
+			System.out.println(sharedResources.paramsAccum);
+			System.out.println(sharedResources.paramsSimple);
+			System.out.println(sharedResources.paramsArray);
+			System.out.println(sharedResources.returnsAccum);
+			System.out.println(sharedResources.returnsArray);
+			System.out.println(sharedResources.argsAccumInitial);
+			System.out.println(sharedResources.argsSimple);
+			System.out.println(sharedResources.argsArray);
 			if (sharedResources.returnsAccum.isEmpty()) {
 				//map
 				System.out.println("Using map...");
 				var res = fac.getLoopService().map(sharedResources.paramsSimple, sharedResources.paramsArray, sharedResources.returnsArray, sharedResources.argsSimple, sharedResources.argsArray, iterations);
-				applyLoopResults(res, 0, sharedResources.loopedArrays);
+				applyLoopResults(res, mapActualArrays);
 			} else {
 				System.out.println("Using mapaccum...");
 				var res = fac.getLoopService().mapaccum(sharedResources.paramsAccum, sharedResources.paramsSimple, sharedResources.paramsArray, sharedResources.returnsAccum, sharedResources.returnsArray, sharedResources.argsAccumInitial, sharedResources.argsSimple, sharedResources.argsArray, iterations);
-				applyLoopResults(res.returnsAccum(), 1, sharedResources.accumulatedArrays);
-				applyLoopResults(res.returnsArray(), 0, this.sharedResources.loopedArrays);
+				System.out.println(accumulatedActualArrays + " map: " + mapActualArrays);
+				applyLoopResults(res.returnsAccum(), accumulatedActualArrays);
+				applyLoopResults(res.returnsArray(), mapActualArrays);
 			}
 			this.sharedResources = new LoopTransformSharedResources();
 		} else {
@@ -149,10 +159,17 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 	}
 	
 	
-	private void applyLoopResults(List<MultivectorSymbolicArray> res, Integer offset, List<MultivectorSymbolicArray> arrays) {
-		for (int i = 0; i<res.size(); i++){
-			int e = this.beginning + offset;
-			MultivectorSymbolicArray assignedArray = arrays.get(i);
+	private void applyLoopResults(List<MultivectorSymbolicArray> res, List<ReturnsArray> arrays) {
+		List<Integer> indicesOrderedByOffset = new ArrayList <>();
+		for (int i = 0; i<arrays.size(); i++){
+			indicesOrderedByOffset.add(i);
+		}
+		
+		indicesOrderedByOffset.sort(Comparator.comparingInt(i -> arrays.get(i).offset * -1));
+		System.out.println(indicesOrderedByOffset);
+		for (int i : indicesOrderedByOffset){
+			int e = this.beginning + arrays.get(i).offset;
+			MultivectorSymbolicArray assignedArray = arrays.get(i).array;
 			for (MultivectorSymbolic mv : res.get(i)){
 				if (e >= assignedArray.size()) assignedArray.add(mv);
 				else assignedArray.set(e, mv);
@@ -189,7 +206,8 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 	}
 
 	
-	private void addLeftSideName(String name, int line) {
+	private void addLeftSideName(String name, int line, Boolean operator) {
+		if (!operator) leftSideNamesNoOperator.add(name);
 		if (sharedResources.leftSideNames.containsKey(name)) {
 			List previousElements = sharedResources.leftSideNames.get(name);
 			previousElements.add(line);
@@ -240,6 +258,7 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 		String id = expr.index.id.getText();
 		int line = expr.index.id.getLine();
 		String arrayName = expr.array.getText();
+		if (!this.nativeLoop && !leftSideNamesNoOperator.contains(arrayName)) rightSideUniqueNames.add(arrayName);
 		if (!id.equals(this.localIterator)){
 			throw new ValidationException(line, String.format("You may only use \"%s\" in combination with len() here.", id)); 
 		}
@@ -254,5 +273,18 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 			this.nativeLoop = true;
 		}
 	}	
-	
+
+	private class ReturnsArray {
+		MultivectorSymbolicArray array;
+		Integer offset;
+		
+		public ReturnsArray (String name, IndexCalcContext index){
+			array = functionArrays.get(name);
+			if (index.op == null) offset = 0;
+			else{
+				Map <String, Integer> iteratorMap = Map.of(localIterator, 0);
+				offset = IndexCalculation.calculateIndex(index, functionArrays, iteratorMap);
+			}
+		}
+	}
 }
