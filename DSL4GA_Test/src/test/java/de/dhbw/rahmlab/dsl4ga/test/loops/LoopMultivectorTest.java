@@ -14,7 +14,7 @@ public class LoopMultivectorTest {
 	private final List<String> expectedStrings = new ArrayList<>();
 	
 	@Test
-	void simpleFoldLoopWithReference(){
+	void simpleFoldLoopWithSelfReference(){
 		String code = """
 			fn main (){
 				v = 1
@@ -302,5 +302,28 @@ public class LoopMultivectorTest {
 		runner.parseAndRun(code);
 
 		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());	
+	}
+	
+	
+	@Test
+	void simpleFoldLoopWithMultipleFolds(){
+		String code = """
+			fn main (){
+				v = 1
+                v2 = 1
+				for (i; 0; 3; 1) {
+					v = v + 2
+                    v2 = v2 + 4
+				}
+				v, v2
+			}
+		""";
+
+		expectedStrings.add(specifics.createMultivectorString(7));
+		expectedStrings.add(specifics.createMultivectorString(13));
+
+		runner.parseAndRun(code);
+
+		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
 	}
 }

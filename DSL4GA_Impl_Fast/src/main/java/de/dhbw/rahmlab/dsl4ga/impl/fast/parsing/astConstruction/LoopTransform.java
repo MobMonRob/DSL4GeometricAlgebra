@@ -159,9 +159,13 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 				//fold
 				System.out.println("Using fold...");
 				var res = fac.getLoopService().fold(sharedResources.paramsAccum, sharedResources.paramsSimple, sharedResources.paramsArray, sharedResources.returnsAccum, sharedResources.returnsArray, sharedResources.argsAccumInitial, sharedResources.argsSimple, sharedResources.argsArray, iterations);
-				MultivectorSymbolicArray returnsAccum = new MultivectorSymbolicArray();
-				res.returnsAccum().forEach(mv -> returnsAccum.add(mv));
-				applyLoopResults(List.of(returnsAccum), accumulatedActualArrays);
+				List<MultivectorSymbolicArray> returnsAccumList = new ArrayList<>();
+				res.returnsAccum().forEach(mv -> {
+					MultivectorSymbolicArray returnsAccum = new MultivectorSymbolicArray();
+					returnsAccum.add(mv);
+					returnsAccumList.add(returnsAccum);
+				});
+				applyLoopResults(returnsAccumList, accumulatedActualArrays);
 				applyLoopResults(res.returnsArray(), mapActualArrays);
 			}
 			this.sharedResources = new LoopTransformSharedResources(functionVariables, functionArrays);
@@ -193,7 +197,6 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 		}
 		
 		indicesOrderedByOffset.sort(Comparator.comparingInt(i -> returns.get(i).getOffset() * -1));
-		
 		
 		for (int i : indicesOrderedByOffset){
 			ReturnLine line = returns.get(i);
