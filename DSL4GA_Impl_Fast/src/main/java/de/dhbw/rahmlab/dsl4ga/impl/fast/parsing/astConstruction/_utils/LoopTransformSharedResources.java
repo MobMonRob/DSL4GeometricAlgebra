@@ -27,8 +27,10 @@ public class LoopTransformSharedResources {
 	public final Map<String, MultivectorSymbolic> paramsArrayNamesSymbolic = new HashMap<>();
 	public final Map<String, MultivectorSymbolic> paramsAccumNamesSymbolic = new HashMap<>();
 	public final Set<String> accumulatedArrayNames = new HashSet<>();
+	public final FoldSet potentialFoldMVs = new FoldSet();
 	public final Map<String,MultivectorSymbolic> functionVariables;
 	public final Map<String,MultivectorSymbolicArray> functionArrays;
+	public boolean isAccum;
 
 	
 	public LoopTransformSharedResources(Map<String,MultivectorSymbolic> variables, Map<String,MultivectorSymbolicArray> arrays){

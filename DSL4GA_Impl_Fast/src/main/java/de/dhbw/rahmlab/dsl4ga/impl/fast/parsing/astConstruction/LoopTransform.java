@@ -42,6 +42,9 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 	protected final List<ReturnLine> accumulatedActualArrays = new ArrayList<>();
 	protected final List<ReturnLine> mapActualArrays = new ArrayList<>();
 	protected final Set<String> rightSideUniqueNames = new HashSet<>();
+	protected final HashMap<String, Integer> lastPotentialMVaccums = new HashMap<>();
+	protected final Set<String> actuallyUsedAccums = new HashSet<>();
+	private String currentLeftSideName;
 
 	
 	
@@ -74,7 +77,10 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 	public void enterVariableReference (VariableReferenceContext expr){ // for fold
 		if (!nativeLoop){ 
 			String name = expr.name.getText();
-			if (!sharedResources.leftSideNames.containsKey(name)) rightSideUniqueNames.add(name); 		
+			int line = expr.name.getLine();
+			if (!sharedResources.leftSideNames.containsKey(name)) rightSideUniqueNames.add(name); 	
+			else if (!currentLeftSideName.equals(name)) sharedResources.potentialFoldMVs.removeIfContained(name, line);
+			if (!currentLeftSideName.equals(name)) actuallyUsedAccums.add(name);
 		}
 	}
 	
@@ -84,15 +90,17 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 		if (!nativeLoop){
 			String variableName = line.assigned.getText();
 			Boolean operator = false;
-			if (null != line.array){
+			if (null != line.array){ // ARRAY
 				IndexCalculationType type = IndexCalculation.getIndexCalcType(line.array.index, localIterator);
 				if (type == iteratorOperation) throw new RuntimeException(); // Replace with native=true (?)
 				if (type==accum){
 					sharedResources.accumulatedArrayNames.add(variableName);
 				}
 				operator = (line.array.index.op != null);
-				
-			} 
+			} else { // MV
+				int lineNr = line.assigned.getLine();
+				if (rightSideUniqueNames.contains(variableName)) lastPotentialMVaccums.put(variableName, lineNr); 
+			}
 			addLeftSideName(variableName, line.assigned.getLine(), operator);
 		}
 	}
@@ -100,7 +108,9 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 	@Override
 	public void exitLoopBody(LoopBodyContext ctx){	
 		if (!nativeLoop){
-			sharedResources.accumulatedArrayNames.retainAll(rightSideUniqueNames);			
+			sharedResources.accumulatedArrayNames.retainAll(rightSideUniqueNames);
+			lastPotentialMVaccums.keySet().retainAll(actuallyUsedAccums);
+			sharedResources.isAccum = !sharedResources.accumulatedArrayNames.isEmpty() || !lastPotentialMVaccums.isEmpty();
 			for (InsideLoopStmtContext line : ctx.insideLoopStmt()){ // for line in loop
 				LoopAPITransform.generate(fac, parser, line, localIterator, beginning, ending, sharedResources);
 				int lineNr = line.assigned.getLine();
@@ -108,38 +118,56 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 				MultivectorSymbolic result = sharedResources.exprStack.pop();
 				List<MultivectorSymbolic> returnsList;
 				ReturnLine returnLine = new ReturnLine(name, line, localIterator, sharedResources);
-				if (returnLine.getType() == LoopObjectType.ARRAY){
-					if (null != line.array.index.op && sharedResources.accumulatedArrayNames.contains(name)){ // Accumulation
-						returnsList = sharedResources.returnsAccum;
-						sharedResources.lineReferences.put(lineNr, sharedResources.paramsAccum.getLast());
-						accumulatedActualArrays.add(returnLine);
-					} else { // Array
-						returnsList = sharedResources.returnsArray;
-						sharedResources.lineReferences.put(lineNr, result);
-						mapActualArrays.add(returnLine);
-					}
-				} else {
+				LoopObjectType lineType = returnLine.getType();
+				if ((lineNr == lastPotentialMVaccums.getOrDefault(name, -1))
+					|| (sharedResources.potentialFoldMVs.contains(name, lineNr) && !sharedResources.isAccum)
+					|| ((null != line.array) && (null != line.array.index.op && sharedResources.accumulatedArrayNames.contains(name)))) { // Accumulation
+					returnsList = sharedResources.returnsAccum;
+					if (lineType == LoopObjectType.ARRAY) sharedResources.lineReferences.put(lineNr, sharedResources.paramsAccum.getLast());
+					else sharedResources.lineReferences.put(lineNr, result);
+					accumulatedActualArrays.add(returnLine);
+				} else { // Map
 					returnsList = sharedResources.returnsArray;
 					sharedResources.lineReferences.put(lineNr, result);
 					mapActualArrays.add(returnLine);
 				}
+				
 				returnsList.add(result);
-			}
-			if (sharedResources.returnsAccum.isEmpty()) {
-				//map
+			}			
+			
+			/*System.out.println("\n --- \n");
+			System.out.println(sharedResources.paramsAccum);
+			System.out.println(sharedResources.paramsSimple);
+			System.out.println(sharedResources.paramsArray);
+			System.out.println(sharedResources.returnsAccum);
+			System.out.println(sharedResources.returnsArray);
+			System.out.println(sharedResources.argsAccumInitial);
+			System.out.println(sharedResources.argsSimple);
+			System.out.println(sharedResources.argsArray);*/
+			
+			if (sharedResources.isAccum){
+				System.out.println("Using mapaccum...");
+				var res = fac.getLoopService().mapaccum(sharedResources.paramsAccum, sharedResources.paramsSimple, sharedResources.paramsArray, sharedResources.returnsAccum, sharedResources.returnsArray, sharedResources.argsAccumInitial, sharedResources.argsSimple, sharedResources.argsArray, iterations);
+				applyLoopResults(res.returnsAccum(), accumulatedActualArrays);
+				applyLoopResults(res.returnsArray(), mapActualArrays);
+			} else if (sharedResources.returnsAccum.isEmpty()){
+				//map 
 				System.out.println("Using map...");
 				var res = fac.getLoopService().map(sharedResources.paramsSimple, sharedResources.paramsArray, sharedResources.returnsArray, sharedResources.argsSimple, sharedResources.argsArray, iterations);
 				applyLoopResults(res, mapActualArrays);
 			} else {
-				System.out.println("Using mapaccum...");
-				var res = fac.getLoopService().mapaccum(sharedResources.paramsAccum, sharedResources.paramsSimple, sharedResources.paramsArray, sharedResources.returnsAccum, sharedResources.returnsArray, sharedResources.argsAccumInitial, sharedResources.argsSimple, sharedResources.argsArray, iterations);
-				applyLoopResults(res.returnsAccum(), accumulatedActualArrays);
+				//fold
+				System.out.println("Using fold...");
+				var res = fac.getLoopService().fold(sharedResources.paramsAccum, sharedResources.paramsSimple, sharedResources.paramsArray, sharedResources.returnsAccum, sharedResources.returnsArray, sharedResources.argsAccumInitial, sharedResources.argsSimple, sharedResources.argsArray, iterations);
+				MultivectorSymbolicArray returnsAccum = new MultivectorSymbolicArray();
+				res.returnsAccum().forEach(mv -> returnsAccum.add(mv));
+				applyLoopResults(List.of(returnsAccum), accumulatedActualArrays);
 				applyLoopResults(res.returnsArray(), mapActualArrays);
 			}
 			this.sharedResources = new LoopTransformSharedResources(functionVariables, functionArrays);
 		} else {
 			// Native Loop
-			System.out.println("Going native!");
+			System.out.println("Using native loop...");
 			for (int i = this.beginning; i<this.ending; i += this.step){
 				Map iterator = new HashMap();
 				iterator.put(this.localIterator, i);
@@ -166,6 +194,7 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 		
 		indicesOrderedByOffset.sort(Comparator.comparingInt(i -> returns.get(i).getOffset() * -1));
 		
+		
 		for (int i : indicesOrderedByOffset){
 			ReturnLine line = returns.get(i);
 			if (line.getType() == ARRAY){
@@ -178,15 +207,14 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 				}
 			} else {
 				String name = line.getName();
-				MultivectorSymbolic mv = res.get(i).getLast();
-				functionVariables.replace(name, mv);
+				if (line.getLineNr() == sharedResources.leftSideNames.get(name).getLast()){
+					MultivectorSymbolic mv = res.get(i).getLast();
+					functionVariables.replace(name, mv);
+				}
 			}
 		}
 	}
 	
-	private void applyLoopResults(MultivectorSymbolic res, List<ReturnLine> returns) {
-		return;
-	}
 	
 	private int parseLoopParam(IndexCalcContext param){
 		if (param.id!=null) {
@@ -256,20 +284,26 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 	@Override
 	public void enterInsideLoopStmt (InsideLoopStmtContext ctx){
 		Token assigned = ctx.assigned;
-		String variableName = assigned.getText();		
+		String variableName = assigned.getText();	
+		currentLeftSideName = variableName;
 		int lineNr = assigned.getLine();
-		if (null != ctx.array){
+		if (null == ctx.array){
+			if (!rightSideUniqueNames.contains(variableName)) {
+				sharedResources.potentialFoldMVs.add(variableName);
+			} else if (variableName.equals(localIterator)){
+				throw new ValidationException(lineNr, String.format("You cannot reassign the iterator \"%s\".", localIterator));
+			} else if (!this.functionVariables.containsKey(variableName)){
+				throw new ValidationException(lineNr, String.format("Multivector \"%s\" has not been declared before.", variableName));
+			} else if (this.functionArrays.containsKey(variableName)){
+				throw new ValidationException(lineNr, String.format("Array \"%s\" can't be accessed like a multivector.", variableName));
+			} 
+		} else {
 			GeomAlgeParser.IndexCalcContext assignedIndexCalcCtx = ctx.array.index;
 			String idName = assignedIndexCalcCtx.id.getText();
 			if (!this.functionArrays.containsKey(variableName)) throw new ValidationException(lineNr, String.format("Array \"%s\" has not been declared before.", variableName));
 			if (!idName.equals(this.localIterator)) throw new ValidationException(lineNr, String.format("\"%s\" is not the iterator.", idName));
-		} else if (variableName.equals(localIterator)){
-			throw new ValidationException(lineNr, String.format("You cannot reassign the iterator \"%s\".", localIterator));
-		} else if (!this.functionVariables.containsKey(variableName)){
-			throw new ValidationException(lineNr, String.format("Multivector \"%s\" has not been declared before.", variableName));
-		} else if (this.functionArrays.containsKey(variableName)){
-			throw new ValidationException(lineNr, String.format("Array \"%s\" can't be accessed like a multivector.", variableName));
-		}
+		} 
+		
 	}
 	
 	@Override 

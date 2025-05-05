@@ -20,6 +20,7 @@ public class LoopAPITransform extends GeomAlgeParserBaseListener {
 	protected int beginning;
 	protected int step;
 	protected int ending;
+	protected int currentLineNr;
 	protected String localIterator;
 	protected GeomAlgeParser.ExprContext exprCtx;
 	protected final GeomAlgeParser parser;
@@ -28,7 +29,7 @@ public class LoopAPITransform extends GeomAlgeParserBaseListener {
 	protected final LoopTransformSharedResources sharedResources;
 	
 	
-	protected LoopAPITransform(ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.ExprContext exprCtx, String iterator, int beginning, int ending, LoopTransformSharedResources sharedResources) {
+	protected LoopAPITransform(ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.ExprContext exprCtx, String iterator, int beginning, int ending, int line, LoopTransformSharedResources sharedResources) {
 		this.fac = exprGraphFactory;
 		this.parser = parser;
 		this.exprCtx = exprCtx;
@@ -36,12 +37,13 @@ public class LoopAPITransform extends GeomAlgeParserBaseListener {
 		this.localIterator = iterator;
 		this.beginning = beginning;
 		this.ending = ending;
+		this.currentLineNr = line;
 	}
 	
 	
 	public static void generate(ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.InsideLoopStmtContext lineCtx,	String iterator, int beginning, int ending, LoopTransformSharedResources sharedResources){
-		
-		LoopAPITransform loopAPITransform = new LoopAPITransform(exprGraphFactory, parser, lineCtx.assignments, iterator, beginning, ending, sharedResources);
+		int line = lineCtx.assigned.getLine();
+		LoopAPITransform loopAPITransform = new LoopAPITransform(exprGraphFactory, parser, lineCtx.assignments, iterator, beginning, ending, line, sharedResources);
 		SkippingParseTreeWalker.walk(parser, loopAPITransform,lineCtx);
 	}
 	
@@ -54,7 +56,7 @@ public class LoopAPITransform extends GeomAlgeParserBaseListener {
 			MultivectorSymbolic scalarLiteral = this.fac.createScalarLiteral(name, value);
 			sharedResources.exprStack.push(scalarLiteral);
 		} catch (ParseException ex) {
-			throw new ValidationException(expr.value.getLine(), String.format("\"%s\" could not be parsed as decimal.", name));
+			throw new ValidationException(currentLineNr, String.format("\"%s\" could not be parsed as decimal.", name));
 		}
 	}
 	
@@ -68,9 +70,24 @@ public class LoopAPITransform extends GeomAlgeParserBaseListener {
 	
 	@Override
 	public void enterVariableReference (GeomAlgeParser.VariableReferenceContext expr){ //TODO: fold!
-		MultivectorSymbolic aSim =  sharedResources.functionVariables.get(expr.name.getText());
 		String name = expr.name.getText();
-		handleSimpleArgs(name, aSim);
+		MultivectorSymbolic aSim =  sharedResources.functionVariables.get(name);
+		List<Integer> lines = sharedResources.leftSideNames.get(name);
+		int referencedLine = getReferencedLine(lines);
+		if (referencesInsideLoop) { // the MV is referenced before this access.
+			MultivectorSymbolic lineReference = sharedResources.lineReferences.get(referencedLine);
+			sharedResources.exprStack.push(lineReference);
+		} else { // the MV may be referenced after this access, ...
+			if (sharedResources.leftSideNames.containsKey(name)){	// ...necessitating accum
+				MultivectorPurelySymbolic sym_arAcc = this.fac.createMultivectorPurelySymbolicFrom(String.format("sym_%s_accum", name), aSim);
+				sharedResources.argsAccumInitial.add(aSim);
+				sharedResources.paramsAccum.add(sym_arAcc);
+				if (sharedResources.potentialFoldMVs.contains(name, currentLineNr)) sharedResources.paramsAccumNamesSymbolic.put(name, sym_arAcc);
+				sharedResources.exprStack.push(sym_arAcc);
+			} else {												// ...or it isn't referenced again, necessitating simple
+				handleSimpleArgs(name, aSim);
+			}
+		}
 	}
 	
 	@Override 
@@ -79,16 +96,14 @@ public class LoopAPITransform extends GeomAlgeParserBaseListener {
 		String prettyName="";
 		if (arrayCtx.index.id != null && arrayCtx.index.len == null){ // Iterator in index
 			String arrayName = arrayCtx.array.getText();
-			int line = arrayCtx.index.id.getLine();
 			MultivectorSymbolicArray assignedArray = sharedResources.functionArrays.get(arrayName); 
-			referencesInsideLoop = false;
-			currentMultiVector = getMultiVectorFromArray(arrayName, assignedArray, line);
+			currentMultiVector = getMultiVectorFromArray(arrayName, assignedArray);
 			prettyName = String.format("%s[%s]", arrayName, this.localIterator);
 			if (!referencesInsideLoop){
 				if (sharedResources.accumulatedArrayNames.contains(arrayName)) {
 					currentMultiVector = handleAccumArgs(prettyName, arrayName, currentMultiVector);
 				} else {
-					currentMultiVector = handleArrayArgs(prettyName, assignedArray, currentMultiVector, line);
+					currentMultiVector = handleArrayArgs(prettyName, assignedArray, currentMultiVector, currentLineNr);
 				}
 			}
 			sharedResources.exprStack.push(currentMultiVector);
@@ -158,25 +173,32 @@ public class LoopAPITransform extends GeomAlgeParserBaseListener {
 		}
 	}
 
-	private MultivectorSymbolic getMultiVectorFromArray(String name, MultivectorSymbolicArray array, Integer line) {
+	private MultivectorSymbolic getMultiVectorFromArray(String name, MultivectorSymbolicArray array) {
 		List<Integer> lines = sharedResources.leftSideNames.get(name);
-		if (null != lines){
+		int referencedLine = getReferencedLine (lines);
+		if (this.referencesInsideLoop) return sharedResources.lineReferences.get(referencedLine);
+		try {
+			return array.get(this.beginning);
+		} catch (IndexOutOfBoundsException e){
+			throw new ValidationException(currentLineNr, String.format("The loop has more iterations than \"%s\" has elements.", name));
+		}
+	}
+
+	private Integer getReferencedLine (List<Integer> lines) {
+		this.referencesInsideLoop = false;
+		if (null != lines) {
 			Integer referencedLine = 0;
 			for (Integer i : lines.reversed()){
-				if (i < line){
+				if (i < currentLineNr){
 					referencedLine = i;
 					this.referencesInsideLoop = true;
 					break;
 				}
 			}
-			if (referencesInsideLoop){
-				return sharedResources.lineReferences.get(referencedLine);
+			if (referencesInsideLoop) {
+				return referencedLine;
 			}
-		} 
-		try {
-			return array.get(this.beginning);
-		} catch (IndexOutOfBoundsException e){
-			throw new ValidationException(line, String.format("The loop has more iterations than \"%s\" has elements.", name));
 		}
+		return 0; 
 	}
 }

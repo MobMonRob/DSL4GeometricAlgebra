@@ -14,16 +14,19 @@ public class TestSymbolic {
 	private static void invocationTest() throws Exception {
 		String source = """
         #algebra cga
-			fn main (){
+			fn main () {
 				x [] = {11, 10, 48, 23, 14, 31}
 				a [] = {50, 3, 16, 32, 11, 18}
+				b [] = {18, 6, 13, 50, 41, 34}
 				y [] = {15, 20, 14, 39, 29, 1}
-				d [] = {}
-                v = 0
-				for (i; 0; 5; 1) {
-				   v = x[i] +1
-				}	
-				y[0], y[1], y[2], y[3], y[4]
+				v = 0
+
+				for (i; 0; 5; 1){
+					v = y[i] + x[i] + 8
+					a[i] = v + b[i] -4
+					v = a[i] + x[i] + 2
+				}
+				v
 			}
 		""";
 

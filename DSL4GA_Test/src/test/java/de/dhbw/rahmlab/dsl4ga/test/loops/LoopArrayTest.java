@@ -372,4 +372,24 @@ public class LoopArrayTest {
 		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
 	}
 	
+	@Test
+	void useIntAsIndex (){
+		String code = """
+             fn main (){
+				x[] = {1,2,3}
+				for (i; 0; 3; 1) {
+					x[0] = x[i] + 2
+				}
+				x[0]
+			}   
+		""";
+		
+		expectedStrings.add(specifics.createMultivectorString(5));
+		expectedStrings.add(specifics.createMultivectorString(2));
+		expectedStrings.add(specifics.createMultivectorString(3));
+		
+		runner.parseAndRun(code);
+
+		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+	}
 }

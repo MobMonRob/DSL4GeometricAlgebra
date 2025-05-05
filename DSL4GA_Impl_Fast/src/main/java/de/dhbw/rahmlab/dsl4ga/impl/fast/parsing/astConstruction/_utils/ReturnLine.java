@@ -13,11 +13,13 @@ public class ReturnLine {
 	private MultivectorSymbolic mv;
 	private String name;
 	private Integer offset;
+	private Integer lineNr;
 	private LoopObjectType type;
 	
 	
 	public ReturnLine (String name, GeomAlgeParser.InsideLoopStmtContext line, String iterator, LoopTransformSharedResources resources){
 		this.name = name;
+		this.lineNr = line.assigned.getLine();
 		if (null == line.array){
 			mv = resources.functionVariables.get(name);
 			type = LoopTransform.LoopObjectType.MULTIVECTOR;
@@ -44,7 +46,11 @@ public class ReturnLine {
 	public String getName(){
 		return name;
 	}
-
+	
+	public int getLineNr(){
+		return lineNr;
+	}
+	
 	public MultivectorSymbolicArray getArray() {
 		if (type == LoopTransform.LoopObjectType.ARRAY) return array;
 		else throw new RuntimeException("ReturnLine type is not array");
