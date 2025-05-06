@@ -126,10 +126,13 @@ indexCalc
 // Loop
 ///////////////////////////////////////////////////////////////////////////
 
-loopBody : ((stmts+=insideLoopStmt|newLoopStmt) WHITE_LINE+)+ ;
+loopBody 
+    : (stmts+=insideLoopStmt WHITE_LINE+)+ 
+    ;
 
 insideLoopStmt
 	:  SPACE* assigned=IDENTIFIER SPACE* (array=loopArray)? SPACE* ASSIGNMENT SPACE* assignments=expr SPACE* 
+	|  newLoopStmt
 	;
 
 loopArray

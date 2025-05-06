@@ -14,7 +14,6 @@ import de.orat.math.gacalc.api.MultivectorSymbolicArray;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.List;
-import java.util.Map;
 
 public class LoopAPITransform extends GeomAlgeParserBaseListener {
 	protected int beginning;

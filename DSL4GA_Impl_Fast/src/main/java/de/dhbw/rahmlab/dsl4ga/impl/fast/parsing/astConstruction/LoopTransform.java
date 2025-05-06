@@ -43,34 +43,48 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 	protected final Set<String> rightSideUniqueNames = new HashSet<>();
 	protected final HashMap<String, Integer> lastPotentialMVaccums = new HashMap<>();
 	protected final Set<String> actuallyUsedAccums = new HashSet<>();
+	protected final List<Boolean> isNewNestedLoopLine = new ArrayList<>();
+	protected final List<NewLoopStmtContext> newNestedLoopStmts = new ArrayList();
 	private String currentLeftSideName;
+	private Map<String, Integer> nestedIndices;
 
 	
 	
-	protected LoopTransform(ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, Map<String, MultivectorSymbolic> variables, Map<String, MultivectorSymbolicArray> arrays,
-		Map<String, FunctionSymbolic> functionsView, Map<String, MultivectorSymbolic> functionVariablesView) {
+	protected LoopTransform(ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, Map<String, MultivectorSymbolic> variables, Map<String, MultivectorSymbolicArray> arrays, Map<String, FunctionSymbolic> functionsView, Map<String, MultivectorSymbolic> functionVariablesView, Map<String, Integer> nestedIndices) {
 		this.fac = exprGraphFactory;
 		this.parser = parser;
 		this.functionVariables = variables;
 		this.functionArrays = arrays;
 		this.functionsView = functionsView;
 		this.functionVariablesView = functionVariablesView;
+		this.nestedIndices = nestedIndices;
 		this.sharedResources = new LoopTransformSharedResources(variables, arrays);
 	}
 	
-	public static void generate (ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.NewLoopStmtContext loopCtx,								Map<String, MultivectorSymbolic> variables, Map<String, MultivectorSymbolicArray> arrays,
-								Map<String, FunctionSymbolic> functionsView,  Map<String, MultivectorSymbolic> functionVariablesView){
-		LoopTransform loopTransform = new LoopTransform(exprGraphFactory, parser, variables, arrays, functionsView, functionVariablesView);
+	public static void generate (ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.NewLoopStmtContext loopCtx, Map<String, MultivectorSymbolic> variables, Map<String, MultivectorSymbolicArray> arrays, Map<String, FunctionSymbolic> functionsView,  Map<String, MultivectorSymbolic> functionVariablesView){
+		Map emptyMap = new HashMap<>();
+		LoopTransform loopTransform = generateLoopTransform(exprGraphFactory, parser, loopCtx, variables, arrays, functionsView, functionVariablesView, emptyMap);
+		SkippingParseTreeWalker.walk(parser, loopTransform, loopCtx.loopBody(), Set.of(NewLoopStmtContext.class));
+	}
+	
+	private static void generateNestedLoop (ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.NewLoopStmtContext loopCtx,	 Map<String, MultivectorSymbolic> variables, Map<String, MultivectorSymbolicArray> arrays, Map<String, FunctionSymbolic> functionsView,  Map<String, MultivectorSymbolic> functionVariablesView, Map<String, Integer> nestedIndices){
+		LoopTransform loopTransform = generateLoopTransform(exprGraphFactory, parser, loopCtx, variables, arrays, functionsView, functionVariablesView, nestedIndices);
+		loopTransform.nativeLoop = true;
+		SkippingParseTreeWalker.walk(parser, loopTransform, loopCtx.loopBody(), Set.of(NewLoopStmtContext.class));
+	}
+	
+	private static LoopTransform generateLoopTransform(ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.NewLoopStmtContext loopCtx, Map<String, MultivectorSymbolic> variables, Map<String, MultivectorSymbolicArray> arrays, Map<String, FunctionSymbolic> functionsView,  Map<String, MultivectorSymbolic> functionVariablesView, Map<String, Integer> nestedIndices){
+		LoopTransform loopTransform = new LoopTransform(exprGraphFactory, parser, variables, arrays, functionsView, functionVariablesView, nestedIndices);
 		loopTransform.addIndex(loopCtx);
 		loopTransform.beginning = loopTransform.parseLoopParam(loopCtx.beginning);
 		loopTransform.step = loopTransform.parseLoopParam(loopCtx.step);
 		loopTransform.ending = loopTransform.parseLoopParam(loopCtx.ending);
 		loopTransform.iterations = loopTransform.ending - loopTransform.beginning;
-		SkippingParseTreeWalker.walk(parser, loopTransform, loopCtx.loopBody());
+		return loopTransform;
 	}
 	
 	@Override
-	public void enterVariableReference (VariableReferenceContext expr){ // for fold
+	public void enterVariableReference (VariableReferenceContext expr){
 		if (!nativeLoop){ 
 			String name = expr.name.getText();
 			int line = expr.name.getLine();
@@ -107,7 +121,7 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 			sharedResources.accumulatedArrayNames.retainAll(rightSideUniqueNames);
 			lastPotentialMVaccums.keySet().retainAll(actuallyUsedAccums);
 			sharedResources.isAccum = !sharedResources.accumulatedArrayNames.isEmpty() || !lastPotentialMVaccums.isEmpty();
-			for (InsideLoopStmtContext line : ctx.insideLoopStmt()){ // for line in loop
+			for (InsideLoopStmtContext line : ctx.stmts){ // for line in loop
 				LoopAPITransform.generate(fac, parser, line, localIterator, beginning, ending, sharedResources);
 				int lineNr = line.assigned.getLine();
 				String name = line.assigned.getText();
@@ -130,16 +144,6 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 				
 				returnsList.add(result);
 			}			
-			
-			/*System.out.println("\n --- \n");
-			System.out.println(sharedResources.paramsAccum);
-			System.out.println(sharedResources.paramsSimple);
-			System.out.println(sharedResources.paramsArray);
-			System.out.println(sharedResources.returnsAccum);
-			System.out.println(sharedResources.returnsArray);
-			System.out.println(sharedResources.argsAccumInitial);
-			System.out.println(sharedResources.argsSimple);
-			System.out.println(sharedResources.argsArray);*/
 			
 			if (sharedResources.isAccum){
 				System.out.println("Using mapaccum...");
@@ -166,13 +170,28 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 			}
 			this.sharedResources = new LoopTransformSharedResources(functionVariables, functionArrays);
 		} else {
-			// Native Loop
-			System.out.println("Using native loop...");
-			Set<String> loopScopedVars = new HashSet<>();
-			for (int i = this.beginning; i<this.ending; i += this.step){
-				Map iterator = new HashMap();
-				iterator.put(this.localIterator, i);
-				for (InsideLoopStmtContext line : ctx.stmts){
+			handleNativeLoop(ctx);
+		}
+	}
+	
+	private void handleNativeLoop(LoopBodyContext ctx) {
+		// Native Loop
+		System.out.println("Using native loop...");
+		Set<String> loopScopedVars = new HashSet<>();
+		for (int i = this.beginning; i<this.ending; i += this.step){
+			Map iterator = new HashMap();
+			iterator.put(this.localIterator, i);
+			int loopIndex = 0;
+			int lineIndex = 0;
+			for (Boolean isNestedLoop : this.isNewNestedLoopLine){
+				if (isNestedLoop){
+					functionVariables.put(localIterator, fac.createScalarLiteral(localIterator, i));
+					this.nestedIndices.put(localIterator, i);
+					generateNestedLoop(fac, parser, newNestedLoopStmts.get(loopIndex), functionVariables, functionArrays, functionsView, functionVariablesView, nestedIndices);
+					functionVariables.remove(localIterator);
+					loopIndex++;
+				} else {
+					InsideLoopStmtContext line = ctx.stmts.get(lineIndex+loopIndex);
 					String varName = line.assigned.getText();
 					if (null != line.array){
 						MultivectorSymbolicArray array = functionArrays.get(line.assigned.getText());
@@ -188,12 +207,12 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 						if (null == mv) loopScopedVars.add(varName);
 						functionVariables.put(varName,  ExprTransform.generateLoopExprAST(fac, parser, line.assignments, functionsView, functionVariablesView, iterator));
 					}
+					lineIndex++;
 				}
 			}
-			functionVariables.keySet().removeAll(loopScopedVars);
 		}
+		functionVariables.keySet().removeAll(loopScopedVars);
 	}
-	
 	
 	private void applyLoopResults(List<MultivectorSymbolicArray> res, List<ReturnLine> returns) {
 		List<Integer> indicesOrderedByOffset = new ArrayList <>();
@@ -232,7 +251,7 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 				throw new ValidationException(line, String.format("You can't use the loop's own index as a parameter.", idName));
 			}
 		}
-		return IndexCalculation.calculateIndex(param, this.functionArrays);
+		return IndexCalculation.calculateIndex(param, this.functionArrays, this.nestedIndices);
 	}	
 	
 	
@@ -245,10 +264,11 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 		}
 		this.localIterator = indexStr;
 		
-		// If, in the future, it should be allowed to create a loop inside a loop, here should be the check which allows
+		// If, in the future, it should be allowed to create nested loops which utilize API calls, here should be the check which allows
 		// for (e; 0; i; 1) {...}
 		// but doesn't allow 
-		// for (i; 0; i; 1).
+		// for (i; 0; i; 1). 
+		// THIS IS ALREADY TAKEN CARE OF WITH NESTED LOOPS WHICH ARE HANDLED NATIVELY!
 	}
 
 	
@@ -291,37 +311,40 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 	
 	@Override
 	public void enterInsideLoopStmt (InsideLoopStmtContext ctx){
-		Token assigned = ctx.assigned;
-		String variableName = assigned.getText();	
-		currentLeftSideName = variableName;
-		int lineNr = assigned.getLine();
-		if (null == ctx.array){
-			if (!rightSideUniqueNames.contains(variableName)) {
-				sharedResources.potentialFoldMVs.add(variableName);
-			} else if (variableName.equals(localIterator)){
-				throw new ValidationException(lineNr, String.format("You cannot reassign the iterator \"%s\".", localIterator));
-			} else if (!this.functionVariables.containsKey(variableName)){
-				throw new ValidationException(lineNr, String.format("Multivector \"%s\" has not been declared before.", variableName));
-			} else if (this.functionArrays.containsKey(variableName)){
-				throw new ValidationException(lineNr, String.format("Array \"%s\" can't be accessed like a multivector.", variableName));
+		if (null != ctx.assigned){
+			this.isNewNestedLoopLine.add(false);
+			Token assigned = ctx.assigned;
+			String variableName = assigned.getText();	
+			currentLeftSideName = variableName;
+			int lineNr = assigned.getLine();
+			if (null == ctx.array){
+				if (!rightSideUniqueNames.contains(variableName)) {
+					sharedResources.potentialFoldMVs.add(variableName);
+				} else if (variableName.equals(localIterator)){
+					throw new ValidationException(lineNr, String.format("You cannot reassign the iterator \"%s\".", localIterator));
+				} else if (!this.functionVariables.containsKey(variableName)){
+					throw new ValidationException(lineNr, String.format("Multivector \"%s\" has not been declared before.", variableName));
+				} else if (this.functionArrays.containsKey(variableName)){
+					throw new ValidationException(lineNr, String.format("Array \"%s\" can't be accessed like a multivector.", variableName));
+				} 
+			} else {
+				GeomAlgeParser.IndexCalcContext assignedIndexCalcCtx = ctx.array.index;
+				if (null != assignedIndexCalcCtx.id){
+					String idName = assignedIndexCalcCtx.id.getText();
+					if ( !idName.equals(this.localIterator)) throw new ValidationException(lineNr, String.format("You may only use \"%s\" in combination with len() here.", idName));
+				} else {
+					this.nativeLoop = true;
+				}
+				if (!this.functionArrays.containsKey(variableName)) throw new ValidationException(lineNr, String.format("Array \"%s\" has not been declared before.", variableName));
+
 			} 
 		} else {
-			GeomAlgeParser.IndexCalcContext assignedIndexCalcCtx = ctx.array.index;
-			if (null != assignedIndexCalcCtx.id){
-				String idName = assignedIndexCalcCtx.id.getText();
-				if ( !idName.equals(this.localIterator)) throw new ValidationException(lineNr, String.format("You may only use \"%s\" in combination with len() here.", idName));
-			} else {
-				this.nativeLoop = true;
-			}
-			if (!this.functionArrays.containsKey(variableName)) throw new ValidationException(lineNr, String.format("Array \"%s\" has not been declared before.", variableName));
-			
-		} 
+			this.nativeLoop = true;
+			this.isNewNestedLoopLine.add(true);
+			this.newNestedLoopStmts.add(ctx.newLoopStmt());
+		}
 	}
 	
-	@Override
-	public void enterNewLoopStmt (NewLoopStmtContext ctx){
-		LoopTransform.generate(this.fac, this.parser, ctx, this.functionVariables, this.functionArrays, this.functionsView, this.functionVariablesView);
-	}
 	
 	@Override 
 	public void enterArrayAccessExpr (ArrayAccessExprContext expr){
