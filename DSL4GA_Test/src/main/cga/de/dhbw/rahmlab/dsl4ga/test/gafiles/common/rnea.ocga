@@ -1,0 +1,21 @@
+
+// recursive newton euler
+// the inertial frame is attached to i=0 centered at the origin
+// G spatial inertia tensor
+// l array of screw lines (associated to the joints)
+fn rnea(G, l, q, q_dot, q_ddot){
+	n = length(q) // number of joints
+	s[0] = 0 // zero twist referred to frame 0
+	// outward iterations
+	for (i; 1; n; 1){
+		s[i] = l[i] q_dot[i] + M[i][i-1] s[i-1] M[i][i-1]˜ // 
+		s_dot[i] = l[i] q_ddot[i] + M[i][i-1] s_dot[i-1] M[i][i-1]˜ + (l[i]∧s[i]) q_dot[i] // spatial acceleration
+	}
+	// inward iterations
+	w[n+1] = 0 // if not external force apply to the end-effector
+	for (i; n; 1; -1){
+		w[i] = 
+	}
+	
+	return w l
+}

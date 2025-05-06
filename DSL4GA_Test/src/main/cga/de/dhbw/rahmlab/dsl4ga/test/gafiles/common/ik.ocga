@@ -1,3 +1,5 @@
+#algebra cga casadi410
+
 fn main(p, ae) {
 
 // dh parameters UR5e
