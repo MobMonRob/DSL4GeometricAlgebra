@@ -1,4 +1,5 @@
 import re
+import textwrap
 from os import listdir
 from os.path import isfile, join
 import nbformat as nbf
@@ -34,7 +35,7 @@ def extract_java_functions(java_file_path):
 		return []
 
 
-def dsl_to_python_from_original(dsl, name):
+def dsl_to_python_from_original(dsl):
 	safetybuffer = "0, " * MININDENTS
 	safetybuffer=safetybuffer[:-2]
 	lines = dsl.strip().splitlines()
@@ -43,7 +44,6 @@ def dsl_to_python_from_original(dsl, name):
 	current_indent = ""
 	index = 1
 	lastLine = len(lines)
-	function = "main"
 	returns = ""
 
 	for line in lines:
@@ -53,7 +53,6 @@ def dsl_to_python_from_original(dsl, name):
 		if stripped.startswith("fn main"):
 			current_indent = "    "
 			indent_stack.append(current_indent)
-			function = name
 		elif stripped == "}":
 			if len(indent_stack) > 1:
 				indent_stack.pop()
@@ -74,7 +73,7 @@ def dsl_to_python_from_original(dsl, name):
 		elif stripped:
 			result.append(current_indent + stripped)
 
-	return function, "\n".join(result).replace("//", "#"), returns
+	return "\n".join(result).replace("//", "#"), returns
 
 def extractSingleFile(folderName, fileName):
 	fns = extract_java_functions(join(folderName, f"{fileName}.java"))
@@ -85,12 +84,13 @@ def extractSingleFile(folderName, fileName):
 		firstStr = fn[1].find("\"\"\"") + 3
 		lastStr = fn[1][firstStr:].find("\"\"\";") + firstStr
 		code = fn[1][firstStr:lastStr]
-		conv = dsl_to_python_from_original(code, fn[0])
-		print(conv)
-		functionsFile += f"def {conv[0]}():\n{conv[1]}\n    return {conv[2]}\n\n"
-		inter = conv[1].replace("        ", "§INDENT§") + f"\n{conv[2]}"
-		notebookFile["cells"] += [nbf.v4.new_markdown_cell(f"# {conv[0]}"),
-				   nbf.v4.new_code_cell(inter.replace("    ", "").replace("§INDENT§", "    "))]
+		if firstStr<5 and lastStr <5:
+			code = fn[1]
+		conv = dsl_to_python_from_original(code)
+		functionsFile += f"def {fn[0]}():\n{conv[0]}\n    return {conv[1]}\n\n\n"
+		inter = f"{textwrap.dedent(conv[0])}\n{conv[1]}"
+		notebookFile["cells"] += [nbf.v4.new_markdown_cell(f"# {fn[0]}"),
+				   nbf.v4.new_code_cell(inter)]
 
 
 	with open(join("extracted", f"functions_{fileName}.py"), "w") as f:
@@ -106,7 +106,6 @@ folderName = "../" #../arrays"
 onlyfiles = [f for f in listdir(folderName) if isfile(join(folderName, f))]
 
 for file in onlyfiles:
-	print(file.replace(".java", ""))
 	extractSingleFile(folderName, file.replace(".java", ""))
 
 
