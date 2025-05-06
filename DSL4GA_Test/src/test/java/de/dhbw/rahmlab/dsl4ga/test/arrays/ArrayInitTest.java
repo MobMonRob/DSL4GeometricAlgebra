@@ -55,11 +55,7 @@ public class ArrayInitTest {
             a
 		}
 		""";
-		try {
-			runner.parseAndRun(code);
-			Assertions.assertTrue(false);
-		} catch (ValidationException e) {
-			Assertions.assertTrue(true);
-		}
+		
+		Assertions.assertThrows(ValidationException.class, () -> runner.parseAndRun(code));
 	}
 }

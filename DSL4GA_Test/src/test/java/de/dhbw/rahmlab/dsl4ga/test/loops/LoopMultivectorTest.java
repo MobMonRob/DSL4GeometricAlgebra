@@ -1,5 +1,6 @@
 package de.dhbw.rahmlab.dsl4ga.test.loops;
 
+import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationException;
 import de.dhbw.rahmlab.dsl4ga.test._util.FastImplSpecifics;
 import de.dhbw.rahmlab.dsl4ga.test._util.ImplementationSpecifics;
 import de.dhbw.rahmlab.dsl4ga.test._util.ProgramRunner;
@@ -47,6 +48,27 @@ public class LoopMultivectorTest {
 		""";
 
 		expectedStrings.add(specifics.createMultivectorString(5));
+
+		runner.parseAndRun(code);
+
+		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+	}
+	
+	
+	@Test
+	void simpleNativeLoop(){
+		String code = """
+			fn main (){
+                x[] = {1,2,3}
+				v = 1
+				for (i; 0; 3; 1) {
+					v = x[i] + 2 + ε₀
+				}
+				v
+			}
+		""";
+
+		expectedStrings.add("T{5, 00, 00, 00, -0.5, 0.5, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00}");
 
 		runner.parseAndRun(code);
 
@@ -325,5 +347,133 @@ public class LoopMultivectorTest {
 		runner.parseAndRun(code);
 
 		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+	}
+	
+	
+	@Test
+	void declarationInsideMapAccumLoop(){
+		String code = """
+			fn main (){
+				v = 1
+				x[] = {1,2,3}
+				for (i; 0; 3; 1) {
+                    newv = x[i] + v
+					v = newv + 2
+				}
+				v
+			}
+		""";
+
+		expectedStrings.add(specifics.createMultivectorString(13));
+
+		runner.parseAndRun(code);
+
+		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+	}
+	
+	
+	@Test
+	void declarationInsideFoldLoop(){
+		String code = """
+			fn main (){
+				v = 1
+				x[] = {1,2,3}
+				for (i; 0; 3; 1) {
+                    newv = x[i] + 2
+					v = newv + 2
+				}
+				v
+			}
+		""";
+
+		expectedStrings.add(specifics.createMultivectorString(7));
+
+		runner.parseAndRun(code);
+
+		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+	}
+	
+	
+	
+	@Test
+	void declarationInsideMapLoop(){
+		String code = """
+			fn main (){
+				v = 1
+				x[] = {1,2,3}
+				for (i; 0; 3; 1) {
+                    newv = x[i] + 2
+					v = newv + 2
+                    x[i] = v
+				}
+				v, x[0], x[1], x[2]
+			}
+		""";
+
+		expectedStrings.add(specifics.createMultivectorString(7));
+		expectedStrings.add(specifics.createMultivectorString(5));
+		expectedStrings.add(specifics.createMultivectorString(6));
+		expectedStrings.add(specifics.createMultivectorString(7));
+
+		runner.parseAndRun(code);
+
+		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+	}
+	
+	
+	
+	@Test
+	void declarationInsideNativeLoop(){
+		String code = """
+			fn main (){
+				v = 1
+				x[] = {1,2,3,4}
+				for (i; 0; 3; 1) {
+                    newv = x[i+1] + 3
+					v = newv + 2
+				}
+				v
+			}
+		""";
+
+		expectedStrings.add(specifics.createMultivectorString(9));
+
+		runner.parseAndRun(code);
+
+		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+	}
+	
+	
+	@Test
+	void invalidAccessToLoopScopedVariableFold(){
+		String code = """
+			fn main (){
+				v = 1
+				x[] = {1,2,3}
+				for (i; 0; 3; 1) {
+                    newv = x[i] + v
+				}
+				newv
+			}
+		""";
+
+		Assertions.assertThrows(ValidationException.class, () -> runner.parseAndRun(code));
+	}
+	
+	
+	@Test
+	void invalidAccessToLoopScopedVariableNative(){
+		String code = """
+			fn main (){
+				v = 1
+				x[] = {1,2,3, 4}
+				for (i; 0; 3; 1) {
+                    newv = x[i+1]
+				}
+				newv
+			}
+		""";
+
+		Assertions.assertThrows(ValidationException.class, () -> runner.parseAndRun(code));
 	}
 }

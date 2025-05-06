@@ -28,7 +28,6 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 	protected int step;
 	protected int ending;
 	protected String localIterator;
-	protected LoopStmtContext loopStmtCtx;
 	protected Map<String, MultivectorSymbolic> functionVariables;
 	protected Map<String, MultivectorSymbolicArray> functionArrays;
 	protected final GeomAlgeParser parser;	
@@ -48,11 +47,10 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 
 	
 	
-	protected LoopTransform(ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.LoopStmtContext loopCtx, Map<String, MultivectorSymbolic> variables, Map<String, MultivectorSymbolicArray> arrays,
+	protected LoopTransform(ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, Map<String, MultivectorSymbolic> variables, Map<String, MultivectorSymbolicArray> arrays,
 		Map<String, FunctionSymbolic> functionsView, Map<String, MultivectorSymbolic> functionVariablesView) {
 		this.fac = exprGraphFactory;
 		this.parser = parser;
-		this.loopStmtCtx = loopCtx;
 		this.functionVariables = variables;
 		this.functionArrays = arrays;
 		this.functionsView = functionsView;
@@ -60,18 +58,16 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 		this.sharedResources = new LoopTransformSharedResources(variables, arrays);
 	}
 	
-	
-	public static void generate(ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.LoopStmtContext loopCtx,								Map<String, MultivectorSymbolic> variables, Map<String, MultivectorSymbolicArray> arrays,
+	public static void generate (ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.NewLoopStmtContext loopCtx,								Map<String, MultivectorSymbolic> variables, Map<String, MultivectorSymbolicArray> arrays,
 								Map<String, FunctionSymbolic> functionsView,  Map<String, MultivectorSymbolic> functionVariablesView){
-		LoopTransform loopTransform = new LoopTransform(exprGraphFactory, parser, loopCtx, variables, arrays, functionsView, functionVariablesView);
-		loopTransform.addIndex();
+		LoopTransform loopTransform = new LoopTransform(exprGraphFactory, parser, variables, arrays, functionsView, functionVariablesView);
+		loopTransform.addIndex(loopCtx);
 		loopTransform.beginning = loopTransform.parseLoopParam(loopCtx.beginning);
 		loopTransform.step = loopTransform.parseLoopParam(loopCtx.step);
 		loopTransform.ending = loopTransform.parseLoopParam(loopCtx.ending);
 		loopTransform.iterations = loopTransform.ending - loopTransform.beginning;
-		SkippingParseTreeWalker.walk(parser, loopTransform, loopCtx);
+		SkippingParseTreeWalker.walk(parser, loopTransform, loopCtx.loopBody());
 	}
-	
 	
 	@Override
 	public void enterVariableReference (VariableReferenceContext expr){ // for fold
@@ -172,20 +168,29 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 		} else {
 			// Native Loop
 			System.out.println("Using native loop...");
+			Set<String> loopScopedVars = new HashSet<>();
 			for (int i = this.beginning; i<this.ending; i += this.step){
 				Map iterator = new HashMap();
 				iterator.put(this.localIterator, i);
 				for (InsideLoopStmtContext line : ctx.stmts){
-					MultivectorSymbolicArray array = functionArrays.get(line.assigned.getText());
-					int index = IndexCalculation.calculateIndex(line.array.index, functionArrays, iterator);
-					MultivectorSymbolic arrayElem = ExprTransform.generateLoopExprAST(fac, parser, line.assignments, functionsView, functionVariablesView, iterator);
-					if(array.size() == index){	// To account for arrays being created empty, we have to allow for the assignment to expand the array's size by 1.
-						array.add(arrayElem);
-					} else{					// For all other cases, we assume it's possible to change the item directly. If not, the native ArrayList will throw an Exception.
-						array.set(index, arrayElem);
+					String varName = line.assigned.getText();
+					if (null != line.array){
+						MultivectorSymbolicArray array = functionArrays.get(line.assigned.getText());
+						int index = IndexCalculation.calculateIndex(line.array.index, functionArrays, iterator);
+						MultivectorSymbolic arrayElem = ExprTransform.generateLoopExprAST(fac, parser, line.assignments, functionsView, functionVariablesView, iterator);
+						if(array.size() == index){	// To account for arrays being created empty, we have to allow for the assignment to expand the array's size by 1.
+							array.add(arrayElem);
+						} else{					// For all other cases, we assume it's possible to change the item directly. If not, the native ArrayList will throw an Exception.
+							array.set(index, arrayElem);
+						}
+					} else {
+						MultivectorSymbolic mv = functionVariables.get(varName);
+						if (null == mv) loopScopedVars.add(varName);
+						functionVariables.put(varName,  ExprTransform.generateLoopExprAST(fac, parser, line.assignments, functionsView, functionVariablesView, iterator));
 					}
 				}
 			}
+			functionVariables.keySet().removeAll(loopScopedVars);
 		}
 	}
 	
@@ -231,8 +236,8 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 	}	
 	
 	
-	private void addIndex(){
-		Token index = this.loopStmtCtx.loopVar;
+	private void addIndex(NewLoopStmtContext loopStmtCtx){
+		Token index = loopStmtCtx.loopVar;
 		String indexStr = index.getText();
 		if(this.functionArrays.containsKey(indexStr) || this.functionVariables.containsKey(indexStr)){
 			int line = index.getLine();
@@ -302,15 +307,25 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 			} 
 		} else {
 			GeomAlgeParser.IndexCalcContext assignedIndexCalcCtx = ctx.array.index;
-			String idName = assignedIndexCalcCtx.id.getText();
+			if (null != assignedIndexCalcCtx.id){
+				String idName = assignedIndexCalcCtx.id.getText();
+				if ( !idName.equals(this.localIterator)) throw new ValidationException(lineNr, String.format("You may only use \"%s\" in combination with len() here.", idName));
+			} else {
+				this.nativeLoop = true;
+			}
 			if (!this.functionArrays.containsKey(variableName)) throw new ValidationException(lineNr, String.format("Array \"%s\" has not been declared before.", variableName));
-			if (!idName.equals(this.localIterator)) throw new ValidationException(lineNr, String.format("\"%s\" is not the iterator.", idName));
+			
 		} 
-		
+	}
+	
+	@Override
+	public void enterNewLoopStmt (NewLoopStmtContext ctx){
+		LoopTransform.generate(this.fac, this.parser, ctx, this.functionVariables, this.functionArrays, this.functionsView, this.functionVariablesView);
 	}
 	
 	@Override 
 	public void enterArrayAccessExpr (ArrayAccessExprContext expr){
+		if (null != expr.index.op) this.nativeLoop = true;
 		String id = expr.index.id.getText();
 		int line = expr.index.id.getLine();
 		String arrayName = expr.array.getText();

@@ -111,12 +111,8 @@ public class ArrayModificationTest {
 				a[0]
 			}      
 		""";
-		try {
-			runner.parseAndRun(code);
-			Assertions.assertTrue(false);
-		} catch (ValidationException e){
-			Assertions.assertTrue(true);
-		}
+		
+		Assertions.assertThrows(ValidationException.class, () -> runner.parseAndRun(code));
 	}
 	
 	@Test
@@ -128,12 +124,8 @@ public class ArrayModificationTest {
 				a[1]
 			}      
 		""";
-		try {
-			runner.parseAndRun(code);
-			Assertions.assertTrue(false);
-		} catch (ValidationException e){
-			Assertions.assertTrue(true);
-		}
+		
+		Assertions.assertThrows(ValidationException.class, () -> runner.parseAndRun(code));
 	}
 	
 	@Test
@@ -145,12 +137,8 @@ public class ArrayModificationTest {
 				a[0]
 			}      
 		""";
-		try {
-			runner.parseAndRun(code);
-			Assertions.assertTrue(false);
-		} catch (ValidationException e){
-			Assertions.assertTrue(true);
-		}
+		
+		Assertions.assertThrows(ValidationException.class, () -> runner.parseAndRun(code));
 	}
 	
 	@Test 
@@ -162,12 +150,8 @@ public class ArrayModificationTest {
 				a[0]
 			}      
 		""";
-		try {
-			runner.parseAndRun(code);
-			Assertions.assertTrue(false);
-		} catch (ValidationException e){
-			Assertions.assertTrue(true);
-		}
+		
+		Assertions.assertThrows(ValidationException.class, () -> runner.parseAndRun(code));
 	}
 	
 	@Test 
@@ -179,12 +163,8 @@ public class ArrayModificationTest {
 				a[0]
 			}      
 		""";
-		try {
-			runner.parseAndRun(code);
-			Assertions.assertTrue(false);
-		} catch (ValidationException e){
-			Assertions.assertTrue(true);
-		}
+		
+		Assertions.assertThrows(ValidationException.class, () -> runner.parseAndRun(code));
 	}
 	
 	@Test
@@ -196,12 +176,8 @@ public class ArrayModificationTest {
 				a[0]
 			}      
 		""";
-		try {
-			runner.parseAndRun(code);
-			Assertions.assertTrue(false);
-		} catch (ValidationException e){
-			Assertions.assertTrue(true);
-		}
+		
+		Assertions.assertThrows(ValidationException.class, () -> runner.parseAndRun(code));
 	}
 	
 	@Test
@@ -217,12 +193,8 @@ public class ArrayModificationTest {
                 a[0], a[1], a[2]
 			}      
 		""";
-		try {
-			runner.parseAndRun(code);
-			Assertions.assertTrue(false);
-		} catch (ValidationException e){
-			Assertions.assertTrue(true);
-		}
+		
+		Assertions.assertThrows(ValidationException.class, () -> runner.parseAndRun(code));
 	}
 	
 	@Test
@@ -238,12 +210,8 @@ public class ArrayModificationTest {
                 a[0], a[1], a[2]
 			}      
 		""";
-		try {
-			runner.parseAndRun(code);
-			Assertions.assertTrue(false);
-		} catch (ValidationException e){
-			Assertions.assertTrue(true);
-		}
+		
+		Assertions.assertThrows(ValidationException.class, () -> runner.parseAndRun(code));
 	}
 	
 	@Test
@@ -259,12 +227,8 @@ public class ArrayModificationTest {
                 a[0], a[1], a[2]
 			}      
 		""";
-		try {
-			runner.parseAndRun(code);
-			Assertions.assertTrue(false);
-		} catch (ValidationException e){
-			Assertions.assertTrue(true);
-		}
+		
+		Assertions.assertThrows(ValidationException.class, () -> runner.parseAndRun(code));
 	}
 	
 	@Test
@@ -280,12 +244,8 @@ public class ArrayModificationTest {
                 a[0], a[1], a[2]
 			}      
 		""";
-		try {
-			runner.parseAndRun(code);
-			Assertions.assertTrue(false);
-		} catch (ValidationException e){
-			Assertions.assertTrue(true);
-		}
+		
+		Assertions.assertThrows(ValidationException.class, () -> runner.parseAndRun(code));
 	}
 	
 	@Test
@@ -301,12 +261,8 @@ public class ArrayModificationTest {
                 a[0]
 			}      
 		""";
-		try {
-			runner.parseAndRun(code);
-			Assertions.assertTrue(false);
-		} catch (ValidationException e){
-			Assertions.assertTrue(true);
-		}
+		
+		Assertions.assertThrows(ValidationException.class, () -> runner.parseAndRun(code));
 	}
 	
 	
@@ -320,12 +276,7 @@ public class ArrayModificationTest {
 			}      
 		""";
 		
-		try {
-			runner.parseAndRun(code);
-			Assertions.assertTrue(false);
-		} catch (ValidationException e){
-			Assertions.assertTrue(true);
-		}
+		Assertions.assertThrows(ValidationException.class, () -> runner.parseAndRun(code));
 	}
 	
 	
@@ -339,11 +290,6 @@ public class ArrayModificationTest {
 			}      
 		""";
 		
-		try {
-			runner.parseAndRun(code);
-			Assertions.assertTrue(false);
-		} catch (ValidationException e){
-			Assertions.assertTrue(true);
-		}
+		Assertions.assertThrows(ValidationException.class, () -> runner.parseAndRun(code));
 	}
 }

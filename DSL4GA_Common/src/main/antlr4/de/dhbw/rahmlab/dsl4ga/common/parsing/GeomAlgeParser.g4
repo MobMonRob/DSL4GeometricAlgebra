@@ -64,7 +64,7 @@ stmt
 	:	SPACE* vizAssigned=vizAssignedR SPACE* ASSIGNMENT SPACE* exprCtx=expr SPACE*		#AssgnStmt
 	|	SPACE* vizAssigned+=vizAssignedR SPACE* (COMMA SPACE* vizAssigned+=vizAssignedR SPACE*)* ASSIGNMENT SPACE* callCtx=callExpr SPACE*		#TupleAssgnStmt
 	|	SPACE* assigned=IDENTIFIER SPACE* L_EDGE_BRACKET R_EDGE_BRACKET SPACE* ASSIGNMENT SPACE* L_CURLY_BRACKET SPACE* arrayCtx=arrayExpr? SPACE* R_CURLY_BRACKET SPACE* # ArrayInitStmt
-	|	SPACE* FOR_INDICATOR SPACE* L_PARENTHESIS SPACE* loopVar=IDENTIFIER SPACE* SEMICOLON SPACE* beginning=indexCalc SPACE* SEMICOLON SPACE* ending=indexCalc SPACE* SEMICOLON SPACE* step=indexCalc SPACE* R_PARENTHESIS (SPACE | WHITE_LINE)* L_CURLY_BRACKET (SPACE | WHITE_LINE)* loopBody R_CURLY_BRACKET SPACE* #LoopStmt
+	|	newLoopStmt #LoopStmt
 	;
 
 vizAssignedR
@@ -80,6 +80,9 @@ retExpr
 	|	exprContext=expr COMMA retExpr	#RetExprStmtExpr
 	;
 
+newLoopStmt
+	: SPACE* FOR_INDICATOR SPACE* L_PARENTHESIS SPACE* loopVar=IDENTIFIER SPACE* SEMICOLON SPACE* beginning=indexCalc SPACE* SEMICOLON SPACE* ending=indexCalc SPACE* SEMICOLON SPACE* step=indexCalc SPACE* R_PARENTHESIS (SPACE | WHITE_LINE)* L_CURLY_BRACKET (SPACE | WHITE_LINE)* loopBody R_CURLY_BRACKET SPACE* 
+	;
 
 ///////////////////////////////////////////////////////////////////////////
 // ArrayExpr
@@ -123,10 +126,10 @@ indexCalc
 // Loop
 ///////////////////////////////////////////////////////////////////////////
 
-loopBody : (stmts+=insideLoopStmt WHITE_LINE+)+;
+loopBody : ((stmts+=insideLoopStmt|newLoopStmt) WHITE_LINE+)+ ;
 
 insideLoopStmt
-	:  SPACE* assigned=IDENTIFIER SPACE* (array=loopArray)? SPACE* ASSIGNMENT SPACE* assignments=expr SPACE*
+	:  SPACE* assigned=IDENTIFIER SPACE* (array=loopArray)? SPACE* ASSIGNMENT SPACE* assignments=expr SPACE* 
 	;
 
 loopArray

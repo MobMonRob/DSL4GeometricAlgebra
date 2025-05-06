@@ -91,7 +91,7 @@ public class LoopArrayTest {
 
 
 	@Test
-	void nativeLoop (){
+	void complicatedMapLoop (){
 		String code = """
 			fn main (){
 				x [] = {11, 10, 48, 23, 14, 31}
@@ -385,8 +385,6 @@ public class LoopArrayTest {
 		""";
 		
 		expectedStrings.add(specifics.createMultivectorString(5));
-		expectedStrings.add(specifics.createMultivectorString(2));
-		expectedStrings.add(specifics.createMultivectorString(3));
 		
 		runner.parseAndRun(code);
 

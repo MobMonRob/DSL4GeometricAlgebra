@@ -123,12 +123,8 @@ public class ArrayAccessTest {
 				x
 			}      
 		""";
-		try {
-			runner.parseAndRun(code);
-			Assertions.assertTrue(false);
-		} catch (ValidationException e){
-			Assertions.assertTrue(true);
-		}
+		
+		Assertions.assertThrows(ValidationException.class, () -> runner.parseAndRun(code));
 	}
 	
 	
@@ -140,12 +136,8 @@ public class ArrayAccessTest {
 				a[]
 			}      
 		""";
-		try {
-			runner.parseAndRun(code);
-			Assertions.assertTrue(false);
-		} catch (ValidationException e){
-			Assertions.assertTrue(true);
-		}
+		
+		Assertions.assertThrows(ValidationException.class, () -> runner.parseAndRun(code));
 	}
 	
 	
@@ -157,12 +149,8 @@ public class ArrayAccessTest {
 				a
 			}      
 		""";
-		try {
-			runner.parseAndRun(code);
-			Assertions.assertTrue(false);
-		} catch (ValidationException e){
-			Assertions.assertTrue(true);
-		}
+		
+		Assertions.assertThrows(ValidationException.class, () -> runner.parseAndRun(code));
 	}
 	
 	
@@ -174,12 +162,8 @@ public class ArrayAccessTest {
 				a[1,2]
 			}      
 		""";
-		try {
-			runner.parseAndRun(code);
-			Assertions.assertTrue(false);
-		} catch (ValidationException e){
-			Assertions.assertTrue(true);
-		}
+		
+		Assertions.assertThrows(ValidationException.class, () -> runner.parseAndRun(code));
 	}
 	
 	
@@ -191,12 +175,8 @@ public class ArrayAccessTest {
 				a[1+2]
 			}      
 		""";
-		try {
-			runner.parseAndRun(code);
-			Assertions.assertTrue(false);
-		} catch (ValidationException e){
-			Assertions.assertTrue(true);
-		}
+		
+		Assertions.assertThrows(ValidationException.class, () -> runner.parseAndRun(code));
 	}
 	
 	
@@ -208,12 +188,8 @@ public class ArrayAccessTest {
 				a[3]
 			}      
 		""";
-		try {
-			runner.parseAndRun(code);
-			Assertions.assertTrue(false);
-		} catch (ValidationException e){
-			Assertions.assertTrue(true);
-		}
+		
+		Assertions.assertThrows(ValidationException.class, () -> runner.parseAndRun(code));
 	}
 	
 	
