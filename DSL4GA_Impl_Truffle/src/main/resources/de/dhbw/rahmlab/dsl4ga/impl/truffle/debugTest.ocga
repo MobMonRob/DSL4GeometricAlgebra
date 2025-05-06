@@ -1,3 +1,5 @@
+#algebra cga
+
 // round point from 3 euclidean coordinates
 fn rp(x,y,z){
 	p = xε₁+yε₂+zε₃

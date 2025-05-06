@@ -11,7 +11,8 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.stmtSuperClasses.NonRetu
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.ValidationException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.BuiltinFunctionRootNode;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.builtins.GetLastListReturnFactory;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.builtins.GetLastListReturn;
+// import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.builtins.GetLastListReturnFactory;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.builtinsSuperClasses.BuiltinFunctionBody;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionCalls.nodes.expr.FunctionCall;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionCalls.nodes.expr.FunctionCallNodeGen;
@@ -62,9 +63,9 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 		return this.scopeVisibleVariablesIndex++;
 	}
 
-	public static Function generate(GeomAlgeParser.FunctionContext ctx, GeomAlgeLangContext geomAlgeLangContext, Map<String, Function> functionsView) {
+	public static Function generate(GeomAlgeParser parser, GeomAlgeParser.FunctionContext ctx, GeomAlgeLangContext geomAlgeLangContext, Map<String, Function> functionsView) {
 		FuncTransform transform = new FuncTransform(geomAlgeLangContext, functionsView);
-		SkippingParseTreeWalker.walk(transform, ctx, GeomAlgeParser.ExprContext.class);
+		SkippingParseTreeWalker.walk(parser, transform, ctx, GeomAlgeParser.ExprContext.class);
 
 		RetExprStmt retExprStmt = new RetExprStmt(transform.retExprs.toArray(ExpressionBaseNode[]::new), transform.getNewScopeVisibleVariablesIndex());
 		if (!transform.retExprs.isEmpty()) {
@@ -82,6 +83,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 			transform.stmts.toArray(NonReturningStatementBaseNode[]::new),
 			retExprStmt,
 			cleanupViz);
+		functionDefinitionBody.setSourceSection(ctx.getStart().getStartIndex(), ctx.getStop().getStopIndex());
 
 		FrameDescriptor frameDescriptor = transform.frameDescriptorBuilder.build();
 
@@ -140,19 +142,21 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 		visualize(assigned, ctx.vizAssigned.viz, name, frameSlot);
 	}
 
-	private void visualize(Token assigned, Token viz, String name, int frameSlot) {
-		if (viz != null) {
-			if (this.vizContext == null) {
-				this.vizContext = new VisualizerFunctionContext();
-			}
-			LocalVariableReference varRefNode = LocalVariableReferenceNodeGen.create(name, frameSlot);
-			varRefNode.setSourceSection(assigned.getStartIndex(), assigned.getStopIndex());
-
-			VisualizeMultivector vizNode = VisualizeMultivectorNodeGen.create(varRefNode, getNewScopeVisibleVariablesIndex(), this.vizContext);
-			vizNode.setSourceSection(viz.getStartIndex(), viz.getStopIndex());
-
-			this.stmts.add(vizNode);
+	private void visualize(Token assigned, List<Token> viz, String name, int frameSlot) {
+		if (viz.isEmpty()) {
+			return;
 		}
+		if (this.vizContext == null) {
+			this.vizContext = new VisualizerFunctionContext();
+		}
+		LocalVariableReference varRefNode = LocalVariableReferenceNodeGen.create(name, frameSlot);
+		varRefNode.setSourceSection(assigned.getStartIndex(), assigned.getStopIndex());
+		boolean isIPNS = viz.size() == 1;
+
+		VisualizeMultivector vizNode = VisualizeMultivectorNodeGen.create(varRefNode, getNewScopeVisibleVariablesIndex(), this.vizContext, isIPNS);
+		vizNode.setSourceSection(viz.getFirst().getStartIndex(), viz.getLast().getStopIndex());
+
+		this.stmts.add(vizNode);
 	}
 
 	@Override
@@ -188,7 +192,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 			int frameSlot = this.frameDescriptorBuilder.addSlot(FrameSlotKind.Static, null, null);
 			this.localVariables.put(name, frameSlot);
 
-			BuiltinFunctionBody builtinFunctionBody = GetLastListReturnFactory.create(new FunctionArgumentReader[0], i);
+			BuiltinFunctionBody builtinFunctionBody = new GetLastListReturn(i);
 			BuiltinFunctionRootNode builtinFunctionRootNode = new BuiltinFunctionRootNode(this.geomAlgeLangContext.truffleLanguage, builtinFunctionBody, "GetlastListReturn");
 			Function function = new Function(builtinFunctionRootNode, 0);
 			FunctionCall functionCall = FunctionCallNodeGen.create(function, new ExpressionBaseNode[0]);

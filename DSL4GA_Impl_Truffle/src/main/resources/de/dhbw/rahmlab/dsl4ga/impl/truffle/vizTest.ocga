@@ -1,6 +1,8 @@
+#algebra cga
+
 fn f2(a, b) {
 	:c = a
-	:d = b
+	::d = b
 	c, d
 }
 
@@ -8,7 +10,7 @@ fn f2(a, b) {
 fn f1(a, b) {
 	g = f2(a, b)
 	:c = a
-	:d = b
+	::d = b
 	c, d
 }
 
@@ -16,6 +18,6 @@ fn f1(a, b) {
 fn main(a, b) {
 	:c = a
 	g = f1(a, b)
-	:d = b
+	::d = b
 	c, d
 }

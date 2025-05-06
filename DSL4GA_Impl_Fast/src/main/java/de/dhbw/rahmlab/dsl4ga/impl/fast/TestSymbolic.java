@@ -13,6 +13,8 @@ public class TestSymbolic {
 
 	private static void invocationTest() throws Exception {
 		String source = """
+		#algebra cga
+
 		fn test(a) {
 			a, 5
 		}
@@ -23,7 +25,7 @@ public class TestSymbolic {
 		}
 		""";
 
-		System.out.println("source: " + source);
+		System.out.println("source:\n" + source);
 
 		var fac = new FastProgramFactory();
 

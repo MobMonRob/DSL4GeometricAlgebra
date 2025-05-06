@@ -4,8 +4,6 @@ import de.dhbw.rahmlab.dsl4ga.api.iProgramFactory;
 import de.dhbw.rahmlab.dsl4ga.common.AutoCloser;
 import de.dhbw.rahmlab.dsl4ga.common.LifeTimeExtender;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLang;
-import de.orat.math.gacalc.api.ExprGraphFactory;
-import de.orat.math.gacalc.api.GAExprGraphFactoryService;
 import java.io.Reader;
 import java.net.URL;
 import org.graalvm.polyglot.Context;
@@ -23,7 +21,6 @@ public class TruffleProgramFactory implements iProgramFactory<TruffleProgram> {
 		return context;
 	}
 
-	private static final ExprGraphFactory exprGraphFactory = GAExprGraphFactoryService.getExprGraphFactoryThrowing();
 	private final AutoCloser<Context> contextCloser = AutoCloser.create(createContext());
 
 	/**
@@ -32,7 +29,7 @@ public class TruffleProgramFactory implements iProgramFactory<TruffleProgram> {
 	@Override
 	public TruffleProgram parse(URL url) {
 		var context = contextCloser.get();
-		var truffleProgam = new TruffleProgram(exprGraphFactory, context, url);
+		var truffleProgam = new TruffleProgram(context, url);
 		LifeTimeExtender.extend(contextCloser, truffleProgam);
 		return truffleProgam;
 	}
@@ -40,7 +37,7 @@ public class TruffleProgramFactory implements iProgramFactory<TruffleProgram> {
 	@Override
 	public TruffleProgram parse(Reader sourceReader) {
 		var context = contextCloser.get();
-		var truffleProgam = new TruffleProgram(exprGraphFactory, context, sourceReader);
+		var truffleProgam = new TruffleProgram(context, sourceReader);
 		LifeTimeExtender.extend(contextCloser, truffleProgam);
 		return truffleProgam;
 	}

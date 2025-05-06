@@ -30,14 +30,14 @@ public class VisualizerService {
 		return INSTANCE;
 	}
 
-	public void add(MultivectorNumeric mv, String name, VisualizerFunctionContext vizContext) throws InterpreterInternalException {
+	public void add(MultivectorNumeric mv, String name, VisualizerFunctionContext vizContext, boolean isIPNS) throws InterpreterInternalException {
 		var sparseDoubleMatrix = mv.elements();
 		var sparseDoubleColumnVector = new SparseDoubleColumnVector(sparseDoubleMatrix);
 		var doubleArray = sparseDoubleColumnVector.toArray();
 		//FIXME vermutlich erwartet der Konstruktor ein doubleArray Argument in einer anderen Representation
 		var cgaMultivector = new CGAMultivector(doubleArray);
 
-		CGAKVector mv2 = CGAKVector.specialize(cgaMultivector, true);
+		CGAKVector mv2 = CGAKVector.specialize(cgaMultivector, isIPNS);
 		if (mv2 instanceof CGAKVector cgakVector) {
 			CGAViewObject cgaViewObject = this.viewer.addCGAObject(cgakVector, name);
 			if (cgaViewObject != null){

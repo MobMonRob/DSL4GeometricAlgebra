@@ -1,3 +1,5 @@
+#algebra cga
+
 fn main(P1, P2, P3, PIc) {
     :L01 = (ε₀^ε₃^εᵢ)*
 	:L12 = (P1^P2^εᵢ)*

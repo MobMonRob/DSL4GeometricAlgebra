@@ -8,7 +8,6 @@ import com.oracle.truffle.api.instrumentation.StandardTags;
 import com.oracle.truffle.api.instrumentation.Tag;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.superClasses.GeomAlgeLangBaseNode;
 import de.orat.math.gacalc.api.MultivectorNumeric;
-import java.util.Objects;
 
 @GenerateWrapper
 public abstract class ExpressionBaseNode extends GeomAlgeLangBaseNode implements InstrumentableNode {
@@ -18,11 +17,6 @@ public abstract class ExpressionBaseNode extends GeomAlgeLangBaseNode implements
 	@Override
 	public WrapperNode createWrapper(ProbeNode probeNode) {
 		return new ExpressionBaseNodeWrapper(this, probeNode);
-	}
-
-	@Override
-	public final boolean isInstrumentable() {
-		return Objects.nonNull(super.getSourceSection());
 	}
 
 	@Override

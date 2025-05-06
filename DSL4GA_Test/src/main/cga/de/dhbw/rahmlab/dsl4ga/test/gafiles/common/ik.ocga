@@ -1,4 +1,4 @@
-#algebra cga casadi410
+#algebra cga
 
 fn main(p, ae) {
 

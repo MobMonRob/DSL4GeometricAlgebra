@@ -101,10 +101,13 @@ public abstract class TruffleLSPTest /*extends TestCase*/ {
 
     //@Before
     @BeforeEach
-    public void setUp() {
+	public void setUp() {
+		System.setProperty("truffle.instrumentation.trace", "true");
+
         engine = Engine.newBuilder(LANGUAGE_ID).allowExperimentalOptions(true).build();
         Instrument instrument = engine.getInstruments().get("lsp");
-        EnvironmentProvider envProvider = instrument.lookup(EnvironmentProvider.class);
+		EnvironmentProvider envProvider = instrument.lookup(EnvironmentProvider.class);
+		var environment = envProvider.getEnvironment();
 
         // This class delegates LSP requests of LanguageServerImpl to specific 
         // implementations of AbstractRequestHandler.
@@ -113,12 +116,11 @@ public abstract class TruffleLSPTest /*extends TestCase*/ {
         // has entered a org.graalvm.polyglot.Context. 
         // https://github.com/oracle/graal/blob/master/tools/src/org.graalvm.tools.lsp/src/org/graalvm/tools/lsp/server/TruffleAdapter.java
         // mit dem Aufruf des Konstruktors werden nur die übergebenen Objekte gespeichert
-        truffleAdapter = new TruffleAdapter(envProvider.getEnvironment(), true);
+        truffleAdapter = new TruffleAdapter(environment, true);
 
         Builder contextBuilder = Context.newBuilder();
         contextBuilder.allowAllAccess(true);
-		// contextBuilder.allowIO(IOAccess.newBuilder().fileSystem(LSPFileSystem.
-		//        newReadOnlyFileSystem(truffleAdapter)).build());
+		contextBuilder.allowIO(IOAccess.newBuilder().fileSystem(LSPFileSystem.newReadOnlyFileSystem(truffleAdapter)).build());
         contextBuilder.engine(engine);
         //contextBuilder.option("gl.UseBytecode", useBytecode.toString());
         context = contextBuilder.build();

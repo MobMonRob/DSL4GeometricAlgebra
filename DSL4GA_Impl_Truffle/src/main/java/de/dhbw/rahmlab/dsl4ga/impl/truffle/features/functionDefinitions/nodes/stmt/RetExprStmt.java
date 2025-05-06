@@ -17,6 +17,11 @@ import java.util.List;
 public class RetExprStmt extends StatementBaseNode {
 
 	@Override
+	public void executeGeneric(VirtualFrame frame) {
+		execute(frame);
+	}
+
+	@Override
 	public InstrumentableNode.WrapperNode createWrapper(ProbeNode probeNode) {
 		return new RetExprStmtWrapper(this, probeNode);
 	}

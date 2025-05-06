@@ -7,7 +7,6 @@ import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationException;
 import de.orat.math.gacalc.api.ConstantsFactorySymbolic;
 import de.orat.math.gacalc.api.ExprGraphFactory;
 import de.orat.math.gacalc.api.FunctionSymbolic;
-import de.orat.math.gacalc.api.GAExprGraphFactoryService;
 import de.orat.math.gacalc.api.MultivectorSymbolic;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -29,31 +28,33 @@ import java.util.List;
  */
 public class ExprTransform extends GeomAlgeParserBaseListener {
 
-	protected final ExprGraphFactory exprGraphFactory = GAExprGraphFactoryService.getExprGraphFactoryThrowing();
-	protected final ConstantsFactorySymbolic constants = exprGraphFactory.constantsSymbolic();
+	protected final ExprGraphFactory exprGraphFactory;
+	protected final ConstantsFactorySymbolic constants;
 	protected final Deque<MultivectorSymbolic> nodeStack = new ArrayDeque<>();
 	protected final Map<String, FunctionSymbolic> functionsView;
 	protected final Map<String, MultivectorSymbolic> localVariablesView;
 	protected List<MultivectorSymbolic> lastCallResults = null;
 
-	protected ExprTransform(Map<String, FunctionSymbolic> functionsView, Map<String, MultivectorSymbolic> localVariablesView) {
+	protected ExprTransform(ExprGraphFactory exprGraphFactory, Map<String, FunctionSymbolic> functionsView, Map<String, MultivectorSymbolic> localVariablesView) {
+		this.exprGraphFactory = exprGraphFactory;
+		this.constants = exprGraphFactory.constantsSymbolic();
 		this.functionsView = functionsView;
 		this.localVariablesView = localVariablesView;
 	}
 
-	public static MultivectorSymbolic generateExprAST(GeomAlgeParser parser, GeomAlgeParser.ExprContext exprCtx, Map<String, FunctionSymbolic> functionsView, Map<String, MultivectorSymbolic> localVariablesView) {
-		ExprTransform exprTransform = new ExprTransform(functionsView, localVariablesView);
+	public static MultivectorSymbolic generateExprAST(ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.ExprContext exprCtx, Map<String, FunctionSymbolic> functionsView, Map<String, MultivectorSymbolic> localVariablesView) {
+		ExprTransform exprTransform = new ExprTransform(exprGraphFactory, functionsView, localVariablesView);
 
-		SkippingParseTreeWalker.walk(parser, exprTransform, exprCtx, SkippingParseTreeWalker.DummyNode.class);
+		SkippingParseTreeWalker.walk(parser, exprTransform, exprCtx);
 
 		MultivectorSymbolic rootNode = exprTransform.nodeStack.getFirst();
 		return rootNode;
 	}
 
-	public static List<MultivectorSymbolic> generateCallAST(GeomAlgeParser parser, GeomAlgeParser.CallExprContext callExprCtx, Map<String, FunctionSymbolic> functionsView, Map<String, MultivectorSymbolic> localVariablesView) {
-		ExprTransform exprTransform = new ExprTransform(functionsView, localVariablesView);
+	public static List<MultivectorSymbolic> generateCallAST(ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.CallExprContext callExprCtx, Map<String, FunctionSymbolic> functionsView, Map<String, MultivectorSymbolic> localVariablesView) {
+		ExprTransform exprTransform = new ExprTransform(exprGraphFactory, functionsView, localVariablesView);
 
-		SkippingParseTreeWalker.walk(parser, exprTransform, callExprCtx, SkippingParseTreeWalker.DummyNode.class);
+		SkippingParseTreeWalker.walk(parser, exprTransform, callExprCtx);
 
 		return exprTransform.lastCallResults;
 	}

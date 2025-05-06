@@ -2,7 +2,10 @@ package de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.stmtSuperClasses;
 
 import com.oracle.truffle.api.dsl.NodeField;
 import com.oracle.truffle.api.frame.Frame;
+import com.oracle.truffle.api.frame.VirtualFrame;
+import com.oracle.truffle.api.instrumentation.GenerateWrapper;
 import com.oracle.truffle.api.instrumentation.InstrumentableNode;
+import com.oracle.truffle.api.instrumentation.ProbeNode;
 import com.oracle.truffle.api.instrumentation.StandardTags;
 import com.oracle.truffle.api.instrumentation.Tag;
 import com.oracle.truffle.api.interop.NodeLibrary;
@@ -15,15 +18,17 @@ import java.util.Objects;
 
 @ExportLibrary(value = NodeLibrary.class)
 @NodeField(name = "scopeVisibleVariablesIndex", type = int.class)
+@GenerateWrapper
 public abstract class StatementBaseNode extends GeomAlgeLangBaseNode implements InstrumentableNode {
 
-	public abstract int getScopeVisibleVariablesIndex();
-
-	// Needed for Debugger.
 	@Override
-	public final boolean isInstrumentable() {
-		return Objects.nonNull(super.getSourceSection());
+	public WrapperNode createWrapper(ProbeNode probeNode) {
+		return new StatementBaseNodeWrapper(this, probeNode);
 	}
+
+	public abstract void executeGeneric(VirtualFrame frame);
+
+	public abstract int getScopeVisibleVariablesIndex();
 
 	// Needed for Debugger.
 	@Override
