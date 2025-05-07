@@ -220,7 +220,7 @@ public class NestedLoopsTest {
 				for (i; 0; 3; 1) {
 					v2 = v + 2
 					for (i; 0; 5; 1) {  
-                        v2 = v + x[i]
+                        v2 = v + 3
 					}
                     v = v2
 				}
@@ -229,5 +229,32 @@ public class NestedLoopsTest {
 		""";
 		
 		Assertions.assertThrows(ValidationException.class, ()->runner.parseAndRun(code));
+	}
+	
+	@Test 
+	void usingOuterIteratorInInnerIndex(){
+		String code = """
+			fn main (){
+				v = 1
+				x[] = {1,2,3, 4}
+				a[] = {82, 42, 13, 62}
+				for (e; 0; 3; 1) {
+					for (i; 0; len(x)-1; 1) {
+						x[i] = a[e] +1
+					}
+				}
+				x[0], x[1], x[2], x[3]
+			}
+		""";
+		
+		expectedStrings.add(specifics.createMultivectorString(14));
+		expectedStrings.add(specifics.createMultivectorString(14));
+		expectedStrings.add(specifics.createMultivectorString(14));
+		expectedStrings.add(specifics.createMultivectorString(4));
+		
+		runner.parseAndRun(code);
+		
+		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		
 	}
 }

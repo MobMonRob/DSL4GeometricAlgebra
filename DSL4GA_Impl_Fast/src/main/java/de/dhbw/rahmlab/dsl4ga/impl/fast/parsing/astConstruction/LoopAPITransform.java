@@ -14,6 +14,7 @@ import de.orat.math.gacalc.api.MultivectorSymbolicArray;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.List;
+import java.util.Map;
 
 public class LoopAPITransform extends GeomAlgeParserBaseListener {
 	protected int beginning;
@@ -26,9 +27,10 @@ public class LoopAPITransform extends GeomAlgeParserBaseListener {
 	protected Boolean referencesInsideLoop = false;
 	protected ExprGraphFactory fac;
 	protected final LoopTransformSharedResources sharedResources;
+	private final Map<String, Integer> nestedIterators;
 	
 	
-	protected LoopAPITransform(ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.ExprContext exprCtx, String iterator, int beginning, int ending, int line, LoopTransformSharedResources sharedResources) {
+	protected LoopAPITransform(ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.ExprContext exprCtx, String iterator, int beginning, int ending, int line, LoopTransformSharedResources sharedResources, Map<String, Integer> nestedIterators) {
 		this.fac = exprGraphFactory;
 		this.parser = parser;
 		this.exprCtx = exprCtx;
@@ -37,12 +39,13 @@ public class LoopAPITransform extends GeomAlgeParserBaseListener {
 		this.beginning = beginning;
 		this.ending = ending;
 		this.currentLineNr = line;
+		this.nestedIterators = nestedIterators;
 	}
 	
 	
-	public static void generate(ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.InsideLoopStmtContext lineCtx,	String iterator, int beginning, int ending, LoopTransformSharedResources sharedResources){
+	public static void generate(ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.InsideLoopStmtContext lineCtx,	String iterator, int beginning, int ending, LoopTransformSharedResources sharedResources, Map<String, Integer> nestedIterators){
 		int line = lineCtx.assigned.getLine();
-		LoopAPITransform loopAPITransform = new LoopAPITransform(exprGraphFactory, parser, lineCtx.assignments, iterator, beginning, ending, line, sharedResources);
+		LoopAPITransform loopAPITransform = new LoopAPITransform(exprGraphFactory, parser, lineCtx.assignments, iterator, beginning, ending, line, sharedResources, nestedIterators);
 		SkippingParseTreeWalker.walk(parser, loopAPITransform,lineCtx);
 	}
 	
@@ -102,7 +105,12 @@ public class LoopAPITransform extends GeomAlgeParserBaseListener {
 				if (sharedResources.accumulatedArrayNames.contains(arrayName)) {
 					currentMultiVector = handleAccumArgs(prettyName, arrayName, currentMultiVector);
 				} else {
-					currentMultiVector = handleArrayArgs(prettyName, assignedArray, currentMultiVector, currentLineNr);
+					String idName = arrayCtx.index.id.getText();
+					if (!this.nestedIterators.containsKey(idName)) currentMultiVector = handleArrayArgs(prettyName, assignedArray, currentMultiVector, currentLineNr);
+					else{
+						currentMultiVector = handleNestedIterator(assignedArray, idName);
+						handleSimpleArgs(prettyName, currentMultiVector);
+					}
 				}
 			}
 			sharedResources.exprStack.push(currentMultiVector);
@@ -124,6 +132,11 @@ public class LoopAPITransform extends GeomAlgeParserBaseListener {
 		if (expr.op.getType() == GeomAlgeParser.PLUS_SIGN) exprMultivector = leftSide.addition(rightSide);
 		else exprMultivector = leftSide.subtraction(rightSide);
 		sharedResources.exprStack.push(exprMultivector);
+	}
+	
+	private MultivectorSymbolic handleNestedIterator (MultivectorSymbolicArray array, String iterator){
+		int index = this.nestedIterators.get(iterator);
+		return array.get(index);
 	}
 	
 	private void handleSimpleArgs(String name, MultivectorSymbolic multiVector){
