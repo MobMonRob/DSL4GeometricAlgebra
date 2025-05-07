@@ -29,6 +29,7 @@ public class IndexCalculation {
 		int integerValue = 0;
 		if (ctx.integer != null){
 			String integerLiteral = ctx.integer.getText();
+			if (null != ctx.minus) integerLiteral = String.format("-%s", integerLiteral);
 			integerValue = Integer.parseInt(integerLiteral);
 			if (ctx.op==null)
 				return integerValue;

@@ -38,6 +38,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 	protected final Map<String, FunctionSymbolic> functionsView;
 	protected final Map<String, MultivectorSymbolic> localVariablesView;
 	protected static Map<String, MultivectorSymbolicArray> localArrays = new HashMap<>();
+	protected Map<String, MultivectorSymbolic> resolvedArrays = new HashMap<>();
 	protected List<MultivectorSymbolic> lastCallResults = null;
 	protected Map<String, Integer> loopIterator = new HashMap<>();
 
@@ -46,6 +47,14 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		this.constants = exprGraphFactory.constantsSymbolic();
 		this.functionsView = functionsView;
 		this.localVariablesView = localVariablesView;
+	}
+	
+	protected ExprTransform(ExprGraphFactory exprGraphFactory, Map<String, FunctionSymbolic> functionsView, Map<String, MultivectorSymbolic> localVariablesView, Map<String, MultivectorSymbolic> resolvedArrays) {
+		this.exprGraphFactory = exprGraphFactory;
+		this.constants = exprGraphFactory.constantsSymbolic();
+		this.functionsView = functionsView;
+		this.localVariablesView = localVariablesView;
+		this.resolvedArrays = resolvedArrays;
 	}
 
 	public static MultivectorSymbolic generateExprAST(ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.ExprContext exprCtx, Map<String, FunctionSymbolic> functionsView, Map<String, MultivectorSymbolic> localVariablesView) {
@@ -85,9 +94,17 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		return arrayVars;
 	}
 	
-	public static MultivectorSymbolic generateLoopExprAST(ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.ExprContext loopExprCtx, Map<String, FunctionSymbolic> functionsView, Map<String, MultivectorSymbolic> localVariablesView, Map<String, Integer> loopIterator){
+	public static MultivectorSymbolic generateNativeLoopExprAST(ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.ExprContext loopExprCtx, Map<String, FunctionSymbolic> functionsView, Map<String, MultivectorSymbolic> localVariablesView, Map<String, Integer> loopIterator){
 		ExprTransform exprTransform = new ExprTransform(exprGraphFactory, functionsView, localVariablesView);
 		exprTransform.setIterator(loopIterator);
+		SkippingParseTreeWalker.walk(parser, exprTransform, loopExprCtx);
+		
+		MultivectorSymbolic rootNode = exprTransform.nodeStack.getFirst();
+		return rootNode;
+	}
+	
+	public static MultivectorSymbolic generateAPILoopExprAST(ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.ExprContext loopExprCtx, Map<String, FunctionSymbolic> functionsView, Map<String, MultivectorSymbolic> localVariablesView, Map<String, MultivectorSymbolic> resolvedArrays){
+		ExprTransform exprTransform = new ExprTransform(exprGraphFactory, functionsView, localVariablesView, resolvedArrays);
 		SkippingParseTreeWalker.walk(parser, exprTransform, loopExprCtx);
 		
 		MultivectorSymbolic rootNode = exprTransform.nodeStack.getFirst();
@@ -336,10 +353,14 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 	@Override
 	public void exitArrayAccessExpr (GeomAlgeParser.ArrayAccessExprContext ctx){
 		String arrayName = ctx.array.getText();
-		int index = IndexCalculation.calculateIndex(ctx.index, this.localArrays, this.loopIterator);
-		MultivectorSymbolicArray array = this.localArrays.get(arrayName);
-		var node = array.get(index);
-		nodeStack.push(node);
+		if (resolvedArrays.containsKey(arrayName)){
+			nodeStack.push(resolvedArrays.get(arrayName));
+		} else {
+			int index = IndexCalculation.calculateIndex(ctx.index, this.localArrays, this.loopIterator);
+			MultivectorSymbolicArray array = this.localArrays.get(arrayName);
+			var node = array.get(index);
+			nodeStack.push(node);
+		}
 	}
 
 	private static class EnterCallMarker extends MultivectorSymbolic {

@@ -373,7 +373,7 @@ public class LoopArrayTest {
 	}
 	
 	@Test
-	void useIntAsIndex (){
+	void useIntAsIndexLeftSide (){
 		String code = """
              fn main (){
 				x[] = {1,2,3}
@@ -385,6 +385,30 @@ public class LoopArrayTest {
 		""";
 		
 		expectedStrings.add(specifics.createMultivectorString(5));
+		
+		runner.parseAndRun(code);
+
+		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+	}
+	
+	
+	@Test
+	void useIntAsIndexRightSide (){
+		String code = """
+             fn main (){
+				x[] = {1,2,3}
+                a[] = {32, 48, 12}
+				for (i; 0; 3; 1) {
+                    a[i] = x[i] + 12
+					x[i] = a[1] + 2
+				}
+				x[0], x[1], x[2]
+			}   
+		""";
+		
+		expectedStrings.add(specifics.createMultivectorString(50));
+		expectedStrings.add(specifics.createMultivectorString(16));
+		expectedStrings.add(specifics.createMultivectorString(16));
 		
 		runner.parseAndRun(code);
 
