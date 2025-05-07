@@ -5,7 +5,6 @@ import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParser.*;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParserBaseListener;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.SkippingParseTreeWalker;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationException;
-import static de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction.LoopTransform.LoopObjectType.ARRAY;
 import de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils.*;
 import static de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils.IndexCalculationType.accum;
 import static de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils.IndexCalculationType.iteratorOperation;
@@ -45,6 +44,7 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 	protected final Set<String> actuallyUsedAccums = new HashSet<>();
 	protected final List<Boolean> isNewNestedLoopLine = new ArrayList<>();
 	protected final List<NewLoopStmtContext> newNestedLoopStmts = new ArrayList();
+	protected final Set<String> arrayAccessesWithoutIterator = new HashSet<>();
 	private final Map<String, MultivectorSymbolic> originalFunctionVariablesView;
 	private String currentLeftSideName;
 	
@@ -79,7 +79,7 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 		loopTransform.iterations = loopTransform.ending - loopTransform.beginning; // for API, make this abs() (?)
 		if(loopTransform.beginning > loopTransform.ending || abs(loopTransform.step) != 1){
 			loopTransform.nativeLoop = true;
-			System.out.println("Going to use native loop because of loop steps != +1");
+			System.out.println("Going to use native loop because of loop steps != +1.");
 		}
 		return loopTransform;
 	}
@@ -92,6 +92,69 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 			if (!sharedResources.leftSideNames.containsKey(name)) rightSideUniqueNames.add(name); 	
 			else if (!currentLeftSideName.equals(name)) sharedResources.potentialFoldMVs.removeIfContained(name, line);
 			if (!currentLeftSideName.equals(name)) actuallyUsedAccums.add(name);
+		}
+	}
+	
+	
+	@Override
+	public void enterInsideLoopStmt (InsideLoopStmtContext ctx){ // Assess assignment (left of =)
+		if (null != ctx.assigned){
+			this.isNewNestedLoopLine.add(false);
+			Token assigned = ctx.assigned;
+			String variableName = assigned.getText();	
+			currentLeftSideName = variableName;
+			int lineNr = assigned.getLine();
+			if (null == ctx.array){ // Multivector
+				if (!rightSideUniqueNames.contains(variableName)) {
+					sharedResources.potentialFoldMVs.add(variableName);
+				} else if (variableName.equals(localIterator)){
+					throw new ValidationException(lineNr, String.format("You cannot reassign the iterator \"%s\".", localIterator));
+				} else if (!this.functionVariables.containsKey(variableName)){
+					throw new ValidationException(lineNr, String.format("Multivector \"%s\" has not been declared before.", variableName));
+				} else if (this.functionArrays.containsKey(variableName)){
+					throw new ValidationException(lineNr, String.format("Array \"%s\" can't be accessed like a multivector.", variableName));
+				} 
+			} else { // Array
+				GeomAlgeParser.IndexCalcContext assignedIndexCalcCtx = ctx.array.index;
+				if (null != assignedIndexCalcCtx.id){
+					String idName = assignedIndexCalcCtx.id.getText();
+					if ( !idName.equals(this.localIterator)) throw new ValidationException(lineNr, String.format("You may only use \"%s\" in combination with len() here.", idName));
+				} else {
+					this.nativeLoop = true;
+					System.out.println("Going to use native loop because assignment index is not the iterator.");
+				}
+				if (!this.functionArrays.containsKey(variableName)) throw new ValidationException(lineNr, String.format("Array \"%s\" has not been declared before.", variableName));
+
+			} 
+		} else {
+			this.nativeLoop = true;
+			System.out.println("Going to use native because a nested loop has been detected.");
+			this.isNewNestedLoopLine.add(true);
+			this.newNestedLoopStmts.add(ctx.newLoopStmt());
+		}
+	}
+	
+	
+	@Override 
+	public void enterArrayAccessExpr (ArrayAccessExprContext expr){
+		if (null != expr.index.op && null == expr.index.len){
+			this.nativeLoop = true;
+			System.out.println("Going to use native loop because of an operation in the array access index.");
+		}
+		int line = expr.array.getLine();
+		String arrayName = expr.array.getText();
+		if (!this.nativeLoop && !leftSideNamesNoOperator.contains(arrayName)) rightSideUniqueNames.add(arrayName);
+		if (null != expr.index.id){
+			String id = expr.index.id.getText();
+			if (!id.equals(this.localIterator) && !sharedResources.nestedIterators.containsKey(id)){
+				if(null == expr.index.len) throw new ValidationException(line, String.format("You may only use \"%s\" in combination with len() here.", id)); 
+				else arrayAccessesWithoutIterator.add(arrayName);
+			}
+		} else { // ID is null --> int in index
+			arrayAccessesWithoutIterator.add(arrayName);
+		}
+		if (!functionArrays.containsKey(arrayName)){
+			throw new ValidationException(line, String.format("Array \"%s\" has not been defined before.", arrayName)); 
 		}
 	}
 	
@@ -118,6 +181,12 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 	
 	@Override
 	public void exitLoopBody(LoopBodyContext ctx){	
+		arrayAccessesWithoutIterator.retainAll(sharedResources.leftSideNames.keySet()); 
+		if (!arrayAccessesWithoutIterator.isEmpty()){
+			nativeLoop = true;
+			System.out.println("Going to use native loop because there is a constant array access to an array in the same loop.");
+		}
+		
 		if (!nativeLoop){
 			sharedResources.accumulatedArrayNames.retainAll(rightSideUniqueNames);
 			lastPotentialMVaccums.keySet().retainAll(actuallyUsedAccums);
@@ -131,12 +200,13 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 				MultivectorSymbolic result = ExprTransform.generateAPILoopExprAST(fac, parser, line.expr(), functionsView, sharedResources.functionVariablesView, sharedResources.resolvedArrays);
 				List<MultivectorSymbolic> returnsList;
 				ReturnLine returnLine = new ReturnLine(name, line, localIterator, sharedResources);
-				LoopObjectType lineType = returnLine.getType();
-				if ((lineNr == lastPotentialMVaccums.getOrDefault(name, -1))
-					|| (sharedResources.potentialFoldMVs.contains(name, lineNr) && !sharedResources.isAccum)
-					|| ((null != line.array) && (null != line.array.index.op && sharedResources.accumulatedArrayNames.contains(name)))) { // Accumulation
+				Boolean isArray = returnLine.isArray();
+				if ((lineNr == lastPotentialMVaccums.getOrDefault(name, -1)) // if multivector is being accumulated
+						|| (sharedResources.potentialFoldMVs.contains(name, lineNr) && !sharedResources.isAccum) // if fold
+						|| ((null != line.array) && (null != line.array.index.op && sharedResources.accumulatedArrayNames.contains(name)))){ // if accumulation
+					
 					returnsList = sharedResources.returnsAccum;
-					if (lineType == LoopObjectType.ARRAY) sharedResources.lineReferences.put(lineNr, sharedResources.paramsAccum.getLast());
+					if (isArray) sharedResources.lineReferences.put(lineNr, sharedResources.paramsAccum.getLast());
 					else sharedResources.lineReferences.put(lineNr, result);
 					accumulatedActualArrays.add(returnLine);
 				} else { // Map
@@ -163,7 +233,7 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 					System.out.println("Using fold...");
 					var res = fac.getLoopService().fold(sharedResources.paramsAccum, sharedResources.paramsSimple, sharedResources.paramsArray, sharedResources.returnsAccum, sharedResources.returnsArray, sharedResources.argsAccumInitial, sharedResources.argsSimple, sharedResources.argsArray, iterations);
 					List<MultivectorSymbolicArray> returnsAccumList = new ArrayList<>();
-					res.returnsAccum().forEach(mv -> {
+					res.returnsAccum().forEach(mv -> { // unpack the accum results so applyLoopResults can use them
 						MultivectorSymbolicArray returnsAccum = new MultivectorSymbolicArray();
 						returnsAccum.add(mv);
 						returnsAccumList.add(returnsAccum);
@@ -218,22 +288,17 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 		functionVariables.keySet().removeAll(loopScopedVars);
 	}
 	
-	private Boolean endingCalc(int i){
-		if (this.beginning < this.ending) return i<this.ending;
-		else return i>this.ending;
-	}
-	
 	private void applyLoopResults(List<MultivectorSymbolicArray> res, List<ReturnLine> returns) {
 		List<Integer> indicesOrderedByOffset = new ArrayList <>();
 		for (int i = 0; i<returns.size(); i++){
 			indicesOrderedByOffset.add(i);
 		}
 		
-		indicesOrderedByOffset.sort(Comparator.comparingInt(i -> returns.get(i).getOffset() * -1));
+		indicesOrderedByOffset.sort(Comparator.comparingInt(i -> returns.get(i).getOffset() * -1)); 
 		
 		for (int i : indicesOrderedByOffset){
 			ReturnLine line = returns.get(i);
-			if (line.getType() == ARRAY){
+			if (line.isArray() == true){
 				int e = this.beginning + line.getOffset();
 				MultivectorSymbolicArray assignedArray = line.getArray();
 				for (MultivectorSymbolic mv : res.get(i)){
@@ -272,12 +337,6 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 			throw new ValidationException(line, String.format("Variable \"%s\" has already been declared.", indexStr));
 		}
 		this.localIterator = indexStr;
-		
-		// If, in the future, it should be allowed to create nested loops which utilize API calls, here should be the check which allows
-		// for (e; 0; i; 1) {...}
-		// but doesn't allow 
-		// for (i; 0; i; 1). 
-		// THIS IS ALREADY TAKEN CARE OF WITH NESTED LOOPS WHICH ARE HANDLED NATIVELY!
 	}
 
 	
@@ -292,66 +351,8 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 		}
 	}
 	
-	
-	@Override
-	public void enterInsideLoopStmt (InsideLoopStmtContext ctx){
-		if (null != ctx.assigned){
-			this.isNewNestedLoopLine.add(false);
-			Token assigned = ctx.assigned;
-			String variableName = assigned.getText();	
-			currentLeftSideName = variableName;
-			int lineNr = assigned.getLine();
-			if (null == ctx.array){
-				if (!rightSideUniqueNames.contains(variableName)) {
-					sharedResources.potentialFoldMVs.add(variableName);
-				} else if (variableName.equals(localIterator)){
-					throw new ValidationException(lineNr, String.format("You cannot reassign the iterator \"%s\".", localIterator));
-				} else if (!this.functionVariables.containsKey(variableName)){
-					throw new ValidationException(lineNr, String.format("Multivector \"%s\" has not been declared before.", variableName));
-				} else if (this.functionArrays.containsKey(variableName)){
-					throw new ValidationException(lineNr, String.format("Array \"%s\" can't be accessed like a multivector.", variableName));
-				} 
-			} else {
-				GeomAlgeParser.IndexCalcContext assignedIndexCalcCtx = ctx.array.index;
-				if (null != assignedIndexCalcCtx.id){
-					String idName = assignedIndexCalcCtx.id.getText();
-					if ( !idName.equals(this.localIterator)) throw new ValidationException(lineNr, String.format("You may only use \"%s\" in combination with len() here.", idName));
-				} else {
-					this.nativeLoop = true;
-				}
-				if (!this.functionArrays.containsKey(variableName)) throw new ValidationException(lineNr, String.format("Array \"%s\" has not been declared before.", variableName));
-
-			} 
-		} else {
-			this.nativeLoop = true;
-			this.isNewNestedLoopLine.add(true);
-			this.newNestedLoopStmts.add(ctx.newLoopStmt());
-		}
-	}
-	
-	
-	@Override 
-	public void enterArrayAccessExpr (ArrayAccessExprContext expr){
-		if (null != expr.index.op) this.nativeLoop = true;
-		int line = expr.array.getLine();
-		String arrayName = expr.array.getText();
-		if (!this.nativeLoop && !leftSideNamesNoOperator.contains(arrayName)) rightSideUniqueNames.add(arrayName);
-		if (null != expr.index.id){
-			String id = expr.index.id.getText();
-			if (!id.equals(this.localIterator) && !sharedResources.nestedIterators.containsKey(id)){
-				throw new ValidationException(line, String.format("You may only use \"%s\" in combination with len() here.", id)); 
-			}
-		} else { // ID is null --> int in index
-			this.nativeLoop = true;
-		}
-		if (!functionArrays.containsKey(arrayName)){
-			throw new ValidationException(line, String.format("Array \"%s\" has not been defined before.", arrayName)); 
-		}
-	}
-	
-
-	public enum LoopObjectType{
-		ARRAY,
-		MULTIVECTOR
+	private Boolean endingCalc(int i){
+		if (this.beginning < this.ending) return i<this.ending;
+		else return i>this.ending;
 	}
 }

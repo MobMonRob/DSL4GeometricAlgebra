@@ -14,7 +14,6 @@ import de.orat.math.gacalc.api.MultivectorSymbolicArray;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.List;
-import java.util.Map;
 
 public class LoopAPITransform extends GeomAlgeParserBaseListener {
 	protected int beginning;
@@ -95,7 +94,7 @@ public class LoopAPITransform extends GeomAlgeParserBaseListener {
 	public void enterArrayAccessExpr (GeomAlgeParser.ArrayAccessExprContext arrayCtx){
 		MultivectorSymbolic currentMultiVector;
 		String prettyName="";
-		if (arrayCtx.index.id != null && arrayCtx.index.len == null){ // Iterator in index
+		if (arrayCtx.index.id != null && arrayCtx.index.len == null){ // Iterator in index --> either accum or array
 			String arrayName = arrayCtx.array.getText();
 			MultivectorSymbolicArray assignedArray = sharedResources.functionArrays.get(arrayName); 
 			currentMultiVector = getMultiVectorFromArray(arrayName, assignedArray);
@@ -114,14 +113,13 @@ public class LoopAPITransform extends GeomAlgeParserBaseListener {
 			}
 			sharedResources.resolvedArrays.put(arrayName, currentMultiVector);
 			System.out.println(sharedResources.resolvedArrays);
-		} else {
+		} else { // Something else in index --> simple
 			String arrayName = arrayCtx.array.getText();
 			int index = IndexCalculation.calculateIndex(arrayCtx.index, sharedResources.functionArrays);
 			MultivectorSymbolic aSim = sharedResources.functionArrays.get(arrayName).get(index);
 			prettyName=String.format("%s[%s]", arrayName, arrayCtx.index.getText());
 			MultivectorPurelySymbolic sym_aSim = handleSimpleArgs(prettyName, aSim);
 			sharedResources.resolvedArrays.put(arrayName, sym_aSim);
-			System.out.println(sharedResources.resolvedArrays);
 		}
 	}
 	
@@ -143,8 +141,8 @@ public class LoopAPITransform extends GeomAlgeParserBaseListener {
 			if (this.beginning < this.ending){
 				aArr = new MultivectorSymbolicArray(array.subList(this.beginning, this.ending)); // Trim array to the dimensions of the loop
 			} else {
-				throw new RuntimeException("Invalid beginning > ending");
-				//aArr = new MultivectorSymbolicArray(array.subList(this.ending, this.beginning)); // Trim array to the dimensions of the loop
+				throw new RuntimeException("Invalid beginning > ending. If you get this error, you have disabled forcing native for this case.");
+				// Probably reversing the array and trimming the dimensions to (ending, beginning).
 			}
 		} catch (IndexOutOfBoundsException e){
 			throw new ValidationException(line, String.format("The loop has more iterations than \"%s\" has elements.", name));
