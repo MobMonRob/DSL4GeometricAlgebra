@@ -1,0 +1,10 @@
+- alle benötigten Klassen erst mal aus ConformalGeometricAlgebra package hier herkopieren und anpassen
+- alles CGA-spezifisches auslagern in die CGACasadi-Implementierung
+- hier nur das belassen was nicht von der Algebra abhängt
+
+- Fabian erweitert GACalcAPI um eine Methode Algebra getAlgebra(), die gleichnamige alte Methode wird umbenannt
+  in String getAlgebraAsString()
+
+- Die Visualierer-Methode add() bekommen ja einen Multivektor übergeben und über diesen soll dann die Algebra
+  beschafft werden, damit Multivektoren verschiedener Algebren im gleichen Visualisierer dargestellt werden
+  können.
