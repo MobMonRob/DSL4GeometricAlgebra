@@ -116,10 +116,10 @@ expr
 ///////////////////////////////////////////////////////////////////////////
 
 indexCalc
-	: integer=INTEGER_LITERAL	
+	: (minus=HYPHEN_MINUS)? SPACE* integer=INTEGER_LITERAL	
 	| id=IDENTIFIER			
-    | id=IDENTIFIER (op=PLUS_SIGN|op=HYPHEN_MINUS) integer=INTEGER_LITERAL 
-	| len=LENGTH_INDICATOR SPACE* L_PARENTHESIS SPACE* id=IDENTIFIER SPACE* R_PARENTHESIS SPACE* ((op=PLUS_SIGN|op=HYPHEN_MINUS) SPACE* integer=INTEGER_LITERAL)? 
+    | id=IDENTIFIER (op=PLUS_SIGN|op=HYPHEN_MINUS) SPACE* integer=INTEGER_LITERAL 
+	| len=LENGTH_INDICATOR SPACE* L_PARENTHESIS SPACE* id=IDENTIFIER SPACE* R_PARENTHESIS SPACE* ((op=PLUS_SIGN|op=HYPHEN_MINUS) SPACE* (minus=HYPHEN_MINUS)? SPACE* integer=INTEGER_LITERAL)? 
     ;
 
 ///////////////////////////////////////////////////////////////////////////

@@ -2,8 +2,6 @@
 package de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils;
 
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParser;
-import de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction.LoopTransform;
-import de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction.LoopTransform.LoopObjectType;
 import de.orat.math.gacalc.api.MultivectorSymbolic;
 import de.orat.math.gacalc.api.MultivectorSymbolicArray;
 import java.util.Map;
@@ -14,7 +12,7 @@ public class ReturnLine {
 	private String name;
 	private Integer offset;
 	private Integer lineNr;
-	private LoopObjectType type;
+	private Boolean isArray;
 	
 	
 	public ReturnLine (String name, GeomAlgeParser.InsideLoopStmtContext line, String iterator, LoopTransformSharedResources resources){
@@ -22,11 +20,11 @@ public class ReturnLine {
 		this.lineNr = line.assigned.getLine();
 		if (null == line.array){
 			mv = resources.functionVariables.get(name);
-			type = LoopTransform.LoopObjectType.MULTIVECTOR;
+			isArray = false;
 			offset = 0;
 		} else {
 			array = resources.functionArrays.get(name);
-			type = LoopTransform.LoopObjectType.ARRAY;
+			isArray = true;
 			if (line.array.index.op == null) offset = 0;
 			else{
 				Map <String, Integer> iteratorMap = Map.of(iterator, 0);
@@ -35,8 +33,8 @@ public class ReturnLine {
 		}
 	}
 	
-	public LoopObjectType getType(){
-		return type;
+	public Boolean isArray(){
+		return isArray;
 	}
 	
 	public Integer getOffset(){
@@ -52,13 +50,13 @@ public class ReturnLine {
 	}
 	
 	public MultivectorSymbolicArray getArray() {
-		if (type == LoopTransform.LoopObjectType.ARRAY) return array;
+		if (isArray()) return array;
 		else throw new RuntimeException("ReturnLine type is not array");
 
 	}
 
 	public MultivectorSymbolic getMv() {
-		if (type == LoopTransform.LoopObjectType.MULTIVECTOR) return mv;
+		if (!isArray()) return mv;
 		else throw new RuntimeException("ReturnLine type is not Multivector");
 	}
 }

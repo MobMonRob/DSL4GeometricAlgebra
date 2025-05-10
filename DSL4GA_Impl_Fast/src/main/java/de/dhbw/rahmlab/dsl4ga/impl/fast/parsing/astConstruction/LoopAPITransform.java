@@ -53,7 +53,7 @@ public class LoopAPITransform extends GeomAlgeParserBaseListener {
 		try {
 			double value = df.parse(name).doubleValue();
 			MultivectorSymbolic scalarLiteral = this.fac.createScalarLiteral(name, value);
-			sharedResources.exprStack.push(scalarLiteral);
+			sharedResources.functionVariablesView.put(name, scalarLiteral);
 		} catch (ParseException ex) {
 			throw new ValidationException(currentLineNr, String.format("\"%s\" could not be parsed as decimal.", name));
 		}
@@ -64,7 +64,7 @@ public class LoopAPITransform extends GeomAlgeParserBaseListener {
 		String intText = expr.value.getText();
 		int value = Integer.parseInt(intText);
 		MultivectorSymbolic scalarLiteral = this.fac.createScalarLiteral(intText, value);
-		sharedResources.exprStack.push(scalarLiteral);
+		sharedResources.functionVariablesView.put(intText, scalarLiteral);
 	}
 	
 	@Override
@@ -75,16 +75,17 @@ public class LoopAPITransform extends GeomAlgeParserBaseListener {
 		int referencedLine = getReferencedLine(lines);
 		if (referencesInsideLoop) { // the MV is referenced before this access.
 			MultivectorSymbolic lineReference = sharedResources.lineReferences.get(referencedLine);
-			sharedResources.exprStack.push(lineReference);
+			sharedResources.functionVariablesView.put(name, lineReference);
 		} else { // the MV may be referenced after this access, ...
 			if (sharedResources.leftSideNames.containsKey(name)){	// ...necessitating accum
 				MultivectorPurelySymbolic sym_arAcc = this.fac.createMultivectorPurelySymbolicFrom(String.format("sym_%s_accum", name), aSim);
 				sharedResources.argsAccumInitial.add(aSim);
 				sharedResources.paramsAccum.add(sym_arAcc);
 				if (sharedResources.potentialFoldMVs.contains(name, currentLineNr)) sharedResources.paramsAccumNamesSymbolic.put(name, sym_arAcc);
-				sharedResources.exprStack.push(sym_arAcc);
+				sharedResources.functionVariablesView.put(name, sym_arAcc);
 			} else {												// ...or it isn't referenced again, necessitating simple
-				handleSimpleArgs(name, aSim);
+				MultivectorPurelySymbolic sym_aSim = handleSimpleArgs(name, aSim);
+				sharedResources.functionVariablesView.put(name, sym_aSim);
 			}
 		}
 	}
@@ -93,7 +94,7 @@ public class LoopAPITransform extends GeomAlgeParserBaseListener {
 	public void enterArrayAccessExpr (GeomAlgeParser.ArrayAccessExprContext arrayCtx){
 		MultivectorSymbolic currentMultiVector;
 		String prettyName="";
-		if (arrayCtx.index.id != null && arrayCtx.index.len == null){ // Iterator in index
+		if (arrayCtx.index.id != null && arrayCtx.index.len == null){ // Iterator in index --> either accum or array
 			String arrayName = arrayCtx.array.getText();
 			MultivectorSymbolicArray assignedArray = sharedResources.functionArrays.get(arrayName); 
 			currentMultiVector = getMultiVectorFromArray(arrayName, assignedArray);
@@ -102,41 +103,47 @@ public class LoopAPITransform extends GeomAlgeParserBaseListener {
 				if (sharedResources.accumulatedArrayNames.contains(arrayName)) {
 					currentMultiVector = handleAccumArgs(prettyName, arrayName, currentMultiVector);
 				} else {
-					currentMultiVector = handleArrayArgs(prettyName, assignedArray, currentMultiVector, currentLineNr);
+					String idName = arrayCtx.index.id.getText();
+					if (!sharedResources.nestedIterators.containsKey(idName)) currentMultiVector = handleArrayArgs(prettyName, assignedArray, currentMultiVector, currentLineNr);
+					else{
+						currentMultiVector = handleNestedIterator(assignedArray, idName);
+						currentMultiVector = handleSimpleArgs(prettyName, currentMultiVector);
+					}
 				}
 			}
-			sharedResources.exprStack.push(currentMultiVector);
-		} else {
+			sharedResources.resolvedArrays.put(arrayName, currentMultiVector);
+			System.out.println(sharedResources.resolvedArrays);
+		} else { // Something else in index --> simple
 			String arrayName = arrayCtx.array.getText();
 			int index = IndexCalculation.calculateIndex(arrayCtx.index, sharedResources.functionArrays);
 			MultivectorSymbolic aSim = sharedResources.functionArrays.get(arrayName).get(index);
 			prettyName=String.format("%s[%s]", arrayName, arrayCtx.index.getText());
-			handleSimpleArgs(prettyName, aSim);
+			MultivectorPurelySymbolic sym_aSim = handleSimpleArgs(prettyName, aSim);
+			sharedResources.resolvedArrays.put(arrayName, sym_aSim);
 		}
 	}
 	
-	
-	@Override
-	public void exitBinOp (GeomAlgeParser.BinOpContext expr){
-		MultivectorSymbolic rightSide = sharedResources.exprStack.pop();
-		MultivectorSymbolic leftSide = sharedResources.exprStack.pop();
-		MultivectorSymbolic exprMultivector;
-		if (expr.op.getType() == GeomAlgeParser.PLUS_SIGN) exprMultivector = leftSide.addition(rightSide);
-		else exprMultivector = leftSide.subtraction(rightSide);
-		sharedResources.exprStack.push(exprMultivector);
+	private MultivectorSymbolic handleNestedIterator (MultivectorSymbolicArray array, String iterator){
+		int index = sharedResources.nestedIterators.get(iterator);
+		return array.get(index);
 	}
 	
-	private void handleSimpleArgs(String name, MultivectorSymbolic multiVector){
+	private MultivectorPurelySymbolic handleSimpleArgs(String name, MultivectorSymbolic multiVector){
 		MultivectorPurelySymbolic sym_aSim = this.fac.createMultivectorPurelySymbolicFrom(String.format("sym_%s", name), multiVector);
 		sharedResources.argsSimple.add(multiVector);
 		sharedResources.paramsSimple.add(sym_aSim);
-		sharedResources.exprStack.push(sym_aSim);
+		return sym_aSim;
 	}
 	
 	private MultivectorSymbolic handleArrayArgs (String name, MultivectorSymbolicArray array, MultivectorSymbolic currentMultiVector, Integer line){
 		MultivectorSymbolicArray aArr;
 		try {
-			aArr = new MultivectorSymbolicArray(array.subList(this.beginning, this.ending)); // Trim array to the dimensions of the loop
+			if (this.beginning < this.ending){
+				aArr = new MultivectorSymbolicArray(array.subList(this.beginning, this.ending)); // Trim array to the dimensions of the loop
+			} else {
+				throw new RuntimeException("Invalid beginning > ending. If you get this error, you have disabled forcing native for this case.");
+				// Probably reversing the array and trimming the dimensions to (ending, beginning).
+			}
 		} catch (IndexOutOfBoundsException e){
 			throw new ValidationException(line, String.format("The loop has more iterations than \"%s\" has elements.", name));
 		}
