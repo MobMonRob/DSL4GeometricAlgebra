@@ -77,7 +77,7 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 		loopTransform.step = loopTransform.parseLoopParam(loopCtx.step);
 		loopTransform.ending = loopTransform.parseLoopParam(loopCtx.ending);
 		loopTransform.iterations = loopTransform.ending - loopTransform.beginning; // for API, make this abs() (?)
-		if(loopTransform.beginning > loopTransform.ending || abs(loopTransform.step) != 1){
+		if(loopTransform.beginning > loopTransform.ending || loopTransform.step != 1){
 			loopTransform.nativeLoop = true;
 			System.out.println("Going to use native loop because of loop steps != +1.");
 		}
