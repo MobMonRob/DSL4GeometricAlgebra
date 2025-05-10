@@ -5,6 +5,7 @@ import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParser.*;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParserBaseListener;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.SkippingParseTreeWalker;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationException;
+import static de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction.FuncTransform.setArrayElement;
 import static de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction.LoopTransform.LoopObjectType.ARRAY;
 import de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils.*;
 import static de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction._utils.IndexCalculationType.accum;
@@ -197,11 +198,7 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 						MultivectorSymbolicArray array = functionArrays.get(line.assigned.getText());
 						int index = IndexCalculation.calculateIndex(line.array.index, functionArrays, iterator);
 						MultivectorSymbolic arrayElem = ExprTransform.generateLoopExprAST(fac, parser, line.assignments, functionsView, functionVariablesView, iterator);
-						if(array.size() == index){	// To account for arrays being created empty, we have to allow for the assignment to expand the array's size by 1.
-							array.add(arrayElem);
-						} else{					// For all other cases, we assume it's possible to change the item directly. If not, the native ArrayList will throw an Exception.
-							array.set(index, arrayElem);
-						}
+						setArrayElement(array, index, arrayElem);
 					} else {
 						MultivectorSymbolic mv = functionVariables.get(varName);
 						if (null == mv) loopScopedVars.add(varName);

@@ -66,6 +66,27 @@ public class ArrayModificationTest {
 	}
 	
 	@Test
+	void simpleExpansionByCall(){
+		String code = """
+            fn func (){
+                1, 1
+			}
+                
+            fn main (){
+                a[] = {0}
+                a[1], _ = func()
+                a[0], a[1]
+			}      
+		""";
+		
+		expectedStrings.add(specifics.createMultivectorString(0));
+		expectedStrings.add(specifics.createMultivectorString(1));
+		
+		runner.parseAndRun(code);
+		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+	}
+	
+	@Test
 	void multipleModificationsByCall(){
 		String code = """
             fn func (){
@@ -85,6 +106,29 @@ public class ArrayModificationTest {
 		runner.parseAndRun(code);
 		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
 	}
+	
+	
+	@Test
+	void multipleExpansionsByCall(){
+		String code = """
+            fn func (){
+                0, 1
+			}
+                
+            fn main (){
+                a[] = {}
+                a[0], a[1] = func()
+                a[0], a[1]
+			}      
+		""";
+		
+		expectedStrings.add(specifics.createMultivectorString(0));
+		expectedStrings.add(specifics.createMultivectorString(1));
+		
+		runner.parseAndRun(code);
+		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+	}
+	
 	
 	
 	@Test
@@ -223,7 +267,7 @@ public class ArrayModificationTest {
                 
             fn main (){
                 a[] = {5, 6, 7}
-                a[0], x, a[1], _, a[3] = func()
+                a[0], x, a[1], _, a[4] = func()
                 a[0], a[1], a[2]
 			}      
 		""";

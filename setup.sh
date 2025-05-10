@@ -28,7 +28,7 @@ if [ -n "$dependencyPath" ]; then
  if [ ! -d "$dependencyPath" ]; then
   mkdir -p "$dependencyPath"
   if [ ! $? -eq 0 ]; then
-   printf "$dependencyPath ${RED}konnte nicht erstellt werden${NC}!"
+   printf "$dependencyPath ${RED}could not be created${NC}!"
    exit 2
   fi
  fi
@@ -38,25 +38,40 @@ cd "$dependencyPath"
 displayMsg "First, we need ${BLUE}sudo to install a number of dependencies${NC}."
 
 if $execStep; then
+# Normal apt installs
 sudo apt install git -y
 sudo apt install build-essential -y
 sudo apt install mingw-w64 mingw-w64-tools -y
 sudo apt install cmake -y
-sudo apt install swig -y
+sudo apt install wget -y
+sudo apt install tar -y
+	
+# Install swig 4.0.1 for compatability with Ubuntu24
+wget -O swig4.0.1_amd64.deb
+https://launchpad.net/ubuntu/+archive/primary/+files/swig4.0_4.0.1-5build1_amd64.deb
+sudo dpkg -i swig4.0.1_amd64.deb
+rm -f swig4.0.1_amd64.deb
+
+wget -O swig4.0.1_all.deb
+https://launchpad.net/ubuntu/+archive/primary/+files/swig_4.0.1-5build1_all.deb
+sudo dpkg -i swig4.0.1_all.deb
+rm -f swig4.0.1_all.deb
+
+sudo apt-mark hold swig
 fi
 
 displayMsg "Now, we use ${BLUE}git to clone (or update) necessary repositories${NC}."
 
 if $execStep; then
 git clone https://github.com/orat/ConformalGeometricAlgebra &> /dev/null || ( cd ConformalGeometricAlgebra && git pull && cd .. )
-git clone https://github.com/orat/GeometricAlgebra &> /dev/null || ( cd ConformalGeometricAlgebra && git pull && cd .. )
-git clone https://github.com/orat/Euclid3DViewAPI &> /dev/null || ( cd ConformalGeometricAlgebra && git pull && cd .. )
-git clone https://github.com/orat/EuclidView3d &> /dev/null || ( cd ConformalGeometricAlgebra && git pull && cd .. )
-git clone https://github.com/orat/SparseMatrix &> /dev/null || ( cd ConformalGeometricAlgebra && git pull && cd .. )
-git clone https://github.com/orat/CGACasADi &> /dev/null || ( cd ConformalGeometricAlgebra && git pull && cd .. )
-git clone https://github.com/MobMonRob/JCasADi &> /dev/null || ( cd ConformalGeometricAlgebra && git pull && cd .. )
-git clone https://github.com/MobMonRob/JNativeLibLoader &> /dev/null || ( cd ConformalGeometricAlgebra && git pull && cd .. )
-git clone https://github.com/orat/GACalcAPI &> /dev/null || ( cd ConformalGeometricAlgebra && git pull && cd .. )
+git clone https://github.com/orat/GeometricAlgebra &> /dev/null || ( cd GeometricAlgebra && git pull && cd .. )
+git clone https://github.com/orat/Euclid3DViewAPI &> /dev/null || ( cd Euclid3DViewAPI && git pull && cd .. )
+git clone https://github.com/orat/EuclidView3d &> /dev/null || ( cd EuclidView3d && git pull && cd .. )
+git clone https://github.com/orat/SparseMatrix &> /dev/null || ( cd SparseMatrix && git pull && cd .. )
+git clone https://github.com/orat/CGACasADi &> /dev/null || ( cd CGACasADi && git pull && cd .. )
+git clone https://github.com/MobMonRob/JCasADi &> /dev/null || ( cd JCasADi && git pull && cd .. )
+git clone https://github.com/MobMonRob/JNativeLibLoader &> /dev/null || ( cd JNativeLibLoader && git pull && cd .. )
+git clone https://github.com/orat/GACalcAPI &> /dev/null || ( cd GACalcAPI && git pull && cd .. )
 wget -O vecmath.jar https://jogamp.org/deployment/java3d/1.7.1-build-20200222/vecmath.jar
 fi
 

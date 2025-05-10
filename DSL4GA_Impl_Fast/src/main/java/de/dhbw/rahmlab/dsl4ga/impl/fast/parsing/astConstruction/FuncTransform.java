@@ -84,12 +84,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 			// ARRAY
 			int index = IndexCalculation.calculateIndex(ctx.vizAssigned.index, this.localArrays);
 			MultivectorSymbolicArray array = this.localArrays.get(name);
-			
-			if(array.size() == index){	// To account for arrays being created empty, we have to allow for the assignment to expand the array's size by 1.
-				array.add(expr);
-			} else{					// For all other cases, we assume it's possible to change the item directly. If not, the native ArrayList will throw an Exception.
-				array.set(index, expr);
-			}
+			setArrayElement(array, index, expr);
 			this.localArrays.remove(name);
 			this.localArrays.put(name, array);
 			ExprTransform.updateArrays(localArrays);
@@ -98,7 +93,6 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 		// To just ignore the viz is better then to force removing the colon symbols.
 	}
-
 
 	@Override
 	public void enterTupleAssgnStmt(GeomAlgeParser.TupleAssgnStmtContext ctx) {
@@ -128,9 +122,8 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 				if (arrayMap.containsKey(name) && arrayMap.get(name) == index){
 					throw new ValidationException (line, String.format("You are trying to assign \"%s[%d]\" twice in the same call.", name, index));
 				}
-				arrayMap.put(name, index);
-				array.set(index, results.get(i));
-				this.localArrays.remove(name);
+				arrayMap.put(name, index);				
+				setArrayElement(array, index, results.get(i));
 				this.localArrays.put(name, array);
 				ExprTransform.updateArrays(localArrays);
 			} else {
@@ -167,4 +160,13 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 		// System.out.println("retExpr: " + retExpr);
 		this.retExprs.add(retExpr);
 	}
+	
+	public static void setArrayElement(MultivectorSymbolicArray array, int index, MultivectorSymbolic multivector) {
+		if(array.size() == index){	// To account for arrays being created empty, we have to allow for the assignment to expand the array's size by 1.
+			array.add(multivector);
+		} else{					// For all other cases, we assume it's possible to change the item directly. If not, the native ArrayList will throw an Exception.
+			array.set(index, multivector);
+		}
+	}
+
 }
