@@ -17,7 +17,9 @@ _If apt is not supported, you need to have these installed:_
 </details>
 
 ## Usage
-> `./setup.sh /path/to/where/the/dependencies/should/be/installed`
+```shell
+./setup.sh /path/to/where/the/dependencies/should/be/installed
+```
 
 You can run the script by executing the command above. **It is recommended to supply a path where the folders for the dependencies should be created**. If no path is supplied, they will be created in the folder where the script has been executed from.
 
