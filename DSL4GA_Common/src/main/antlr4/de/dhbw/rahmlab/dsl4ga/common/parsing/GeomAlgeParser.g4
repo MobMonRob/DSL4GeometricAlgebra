@@ -69,7 +69,11 @@ stmt
 
 vizAssignedR
 	: viz+=COLON? viz+=COLON? assigned=(IDENTIFIER|LOW_LINE)
-	| viz+=COLON? viz+=COLON? assigned=IDENTIFIER SPACE* L_EDGE_BRACKET SPACE* index=indexCalc SPACE* R_EDGE_BRACKET
+	| viz+=COLON? viz+=COLON? assigned=IDENTIFIER SPACE* array=arrayIndex
+	;
+
+arrayIndex
+	: L_EDGE_BRACKET SPACE* index=indexCalc SPACE* R_EDGE_BRACKET 
 	;
 
 // The list-form (1) needs iteration in the transformer while the tree-form (2) don't.
@@ -131,12 +135,8 @@ loopBody
     ;
 
 insideLoopStmt
-	:  SPACE* assigned=IDENTIFIER SPACE* (array=loopArray)? SPACE* ASSIGNMENT SPACE* assignments=expr SPACE* 
+	:  SPACE* assigned=IDENTIFIER SPACE* (array=arrayIndex)? SPACE* ASSIGNMENT SPACE* assignments=expr SPACE* 
 	|  newLoopStmt
-	;
-
-loopArray
-	: L_EDGE_BRACKET SPACE* index=indexCalc SPACE* R_EDGE_BRACKET 
 	;
 
 ///////////////////////////////////////////////////////////////////////////

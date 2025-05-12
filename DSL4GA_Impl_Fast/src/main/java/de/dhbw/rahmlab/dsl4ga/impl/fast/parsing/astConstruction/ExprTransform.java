@@ -313,7 +313,8 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 
 		if (!this.localVariablesView.containsKey(name)) {
 			int line = ctx.name.getLine();
-			throw new ValidationException(line, String.format("Variable \"%s\" has not been declared before.", name));
+			if (this.localArrays.containsKey(name)) throw new ValidationException(line, String.format("Variable \"%s\" is an array.", name));
+			else throw new ValidationException(line, String.format("Variable \"%s\" has not been declared before.", name));
 		}
 
 		MultivectorSymbolic node = this.localVariablesView.get(name);

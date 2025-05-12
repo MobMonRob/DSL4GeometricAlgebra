@@ -348,7 +348,6 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 	}
 	
 	private Boolean endingCalc(int i){
-		if (this.beginning < this.ending) return i<this.ending;
-		else return i>this.ending;
+		return (this.beginning < this.ending) ? i<this.ending : i>this.ending;
 	}
 }

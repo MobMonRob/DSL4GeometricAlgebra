@@ -73,7 +73,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 		// Assignment
 		String name = ctx.vizAssigned.assigned.getText();
-		if (ctx.vizAssigned.index == null){
+		if (null == ctx.vizAssigned.array){
 			// NOT AN ARRAY
 			if (this.localVariables.containsKey(name) || this.localArrays.containsKey(name)) {
 				int line = ctx.vizAssigned.assigned.getLine();
@@ -82,10 +82,9 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 			this.localVariables.put(name, expr);
 		} else {
 			// ARRAY
-			int index = IndexCalculation.calculateIndex(ctx.vizAssigned.index, this.localArrays);
+			int index = IndexCalculation.calculateIndex(ctx.vizAssigned.array.index, this.localArrays);
 			MultivectorSymbolicArray array = this.localArrays.get(name);
 			setArrayElement(array, index, expr);
-			this.localArrays.remove(name);
 			this.localArrays.put(name, array);
 			ExprTransform.updateArrays(localArrays);
 		}
@@ -118,7 +117,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 				throw new ValidationException(line, String.format("\"%s\" cannot be assigned again.", name));
 			} else if (this.localArrays.containsKey(name)){
 				MultivectorSymbolicArray array = localArrays.get(name);
-				int index = IndexCalculation.calculateIndex(ctx.vizAssigned.get(i).index, localArrays);
+				int index = IndexCalculation.calculateIndex(ctx.vizAssigned.get(i).array.index, localArrays);
 				if (arrayMap.containsKey(name) && arrayMap.get(name) == index){
 					throw new ValidationException (line, String.format("You are trying to assign \"%s[%d]\" twice in the same call.", name, index));
 				}

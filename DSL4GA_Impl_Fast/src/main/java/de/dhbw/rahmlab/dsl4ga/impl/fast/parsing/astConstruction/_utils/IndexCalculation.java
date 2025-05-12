@@ -24,7 +24,8 @@ public class IndexCalculation {
 	public static int calculateIndex (IndexCalcContext ctx, Map<String, MultivectorSymbolicArray> arrays){
 		if ((ctx.len == null)&&(ctx.id!=null)){
 			int line = ctx.id.getLine();
-			throw new ValidationException(line, String.format("You may only use \"%s\" in combination with len() here.", ctx.id.getText()));
+			String id = ctx.id.getText();
+			throw new ValidationException(line, String.format("You may only use \"len(%s)\" here, not \"%s\" on its own.", id, id));
 		}
 		int integerValue = 0;
 		if (ctx.integer != null){
@@ -38,6 +39,7 @@ public class IndexCalculation {
 		if (!arrays.containsKey(id)){
 			throw new ValidationException(ctx.id.getLine(), String.format("Array \"%s\" has not been declared before.", id));
 		}
+		// Now, the only option left is an  
 		MultivectorSymbolicArray array = arrays.get(ctx.id.getText());
 		return calculateOp(ctx, array.size(), integerValue);
 	}
@@ -46,7 +48,7 @@ public class IndexCalculation {
 		if (ctx.id == null || !ctx.id.getText().equals(iterator) || ctx.integer == null) return notIterator;
 		if (ctx.len != null){
 			int line = ctx.len.getLine();
-			throw new ValidationException(line, String.format("You can't use len(%s) because %s is the iterator.", iterator, iterator));
+			throw new ValidationException(line, String.format("You can't use \"len(%s)\" because \"%s\" is the iterator.", iterator, iterator));
 		}
 		if (calculateOp(ctx, 0, Integer.parseInt(ctx.integer.getText())) != 1) return iteratorOperation;
 		return accum;
