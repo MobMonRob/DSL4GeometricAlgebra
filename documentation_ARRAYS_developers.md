@@ -12,7 +12,7 @@ Since, unlike loops for example, arrays are just a data type, they don't have a 
 
 ### Detecting an array during assignment
 [Grammar for functions](DSL4GA_Common/src/main/antlr4/de/dhbw/rahmlab/dsl4ga/common/parsing/GeomAlgeParser.g4): 
-```antlr4
+```ANTLR
 stmt
 	:	SPACE* vizAssigned=vizAssignedR SPACE* ASSIGNMENT [...] 								# AssgnStmt
 	| 	SPACE* assigned=IDENTIFIER SPACE* L_EDGE_BRACKET R_EDGE_BRACKET SPACE* ASSIGNMENT [...] # ArrayInitStmt
@@ -27,7 +27,7 @@ Because of the syntactical differences between the creation of multivectors and 
 **Array accesses on the right side of the assignment** (right of the `=`) can also be handled straightforward because of their separate `arrayAccessExpr` [parser rule](DSL4GA_Common/src/main/antlr4/de/dhbw/rahmlab/dsl4ga/common/parsing/GeomAlgeParser.g4). Referencing the variable name of an array without an index is not allowed semantically but can't be suppressed syntactically, which is why [`EpxrTransform`](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/ExprTransform.java).`exitVariableReference()` only checks for multivector variables and throws an exception if it detects an array's variable name (using the [afforementioned](#detecting-an-array-during-assignment) hash map, which is filled during assignment).
 
 **Array accesses on the left side of the assignment** (left of the `=`) can't be differentiated as easily, because they are both contained in the following [parser rule](DSL4GA_Common/src/main/antlr4/de/dhbw/rahmlab/dsl4ga/common/parsing/GeomAlgeParser.g4):
-```antlr4
+```ANTLR
 vizAssignedR
 	: viz+=COLON? viz+=COLON? assigned=(IDENTIFIER|LOW_LINE)
 	| viz+=COLON? viz+=COLON? assigned=IDENTIFIER SPACE* array=arrayIndex
@@ -51,13 +51,13 @@ As described [above](#detecting-an-array), only individual elements of arrays ca
 
 ### IndexCalculation
 The [`IndexCalculation`](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/_utils/IndexCalculation.java) class is used in array indices and [loop parameters](documentation_LOOPS_developers.md) to ensure valid expressions and correct interpretations of them. [Syntactically](DSL4GA_Common/src/main/antlr4/de/dhbw/rahmlab/dsl4ga/common/parsing/GeomAlgeParser.g4), an index can either be an integer literal, an [built-in length function of arrays](#length-function) (or, [in loops, the iterator variable](documentation_LOOPS_developers.md)), or a simple addition or subtraction between the two:
-```antlr4
+```ANTLR
 indexCalc
 	: (minus=HYPHEN_MINUS)? SPACE* integer=INTEGER_LITERAL	
 	| id=IDENTIFIER			
-    | id=IDENTIFIER (op=PLUS_SIGN|op=HYPHEN_MINUS) SPACE* integer=INTEGER_LITERAL 
+	| id=IDENTIFIER (op=PLUS_SIGN|op=HYPHEN_MINUS) SPACE* integer=INTEGER_LITERAL 
 	| len=LENGTH_INDICATOR SPACE* L_PARENTHESIS SPACE* id=IDENTIFIER SPACE* R_PARENTHESIS SPACE* ((op=PLUS_SIGN|op=HYPHEN_MINUS) SPACE* (minus=HYPHEN_MINUS)? SPACE* integer=INTEGER_LITERAL)? 
-    ;
+	;
 ```
 This limitation is due to the fact that only integer literals, [loop iterators](documentation_LOOPS_developers.md) and [length functions](#length-function) can actually be interpreted as integers and all other expressions are handled, stored and interpreted as multivectors (or arrays of multivectors).
 
