@@ -1,4 +1,6 @@
 # Loops
+>**_NOTE:_** Loops are currently only implemented in the `FastImplementation`!
+
 Loops are used to iterate through a code segment multiple times. They utilize an iterator variable which is manipulated after each iteration and can be used inside the code to dynamically access [arrays](documentation_ARRAYS_users.md). In loops, the immutability of the language is lifted, so it is possible to reassign multivectors. This documentation should contain enough information to fully understand and use loops when writing programs with the DSL. For more detailed information or when developing on the project, it is recommended to also refer to the [developer documentation](documentation_LOOPS_developers.md).
 
 # Usage
