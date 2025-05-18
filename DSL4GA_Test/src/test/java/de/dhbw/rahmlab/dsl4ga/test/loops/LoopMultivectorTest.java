@@ -476,4 +476,19 @@ public class LoopMultivectorTest {
 
 		Assertions.assertThrows(ValidationException.class, () -> runner.parseAndRun(code));
 	}
+	
+	@Test
+	void invalidReassignmentOfArrayToLoopScopedMV(){
+		String code = """
+			fn main (){
+				a[] = {0}
+				for (i; 0; 3; 1) {
+                    a = 1
+				}
+				a[0]
+			}
+		""";
+
+		Assertions.assertThrows(ValidationException.class, () -> runner.parseAndRun(code));
+	}
 }

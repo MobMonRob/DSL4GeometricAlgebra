@@ -47,30 +47,9 @@ public class LoopAPITransform extends GeomAlgeParserBaseListener {
 	}
 	
 	@Override
-	public void enterLiteralDecimal (GeomAlgeParser.LiteralDecimalContext expr){
-		DecimalFormat df = DecimalFormatter.initDecimalFormat();
-		String name = expr.value.getText();
-		try {
-			double value = df.parse(name).doubleValue();
-			MultivectorSymbolic scalarLiteral = this.fac.createScalarLiteral(name, value);
-			sharedResources.functionVariablesView.put(name, scalarLiteral);
-		} catch (ParseException ex) {
-			throw new ValidationException(currentLineNr, String.format("\"%s\" could not be parsed as decimal.", name));
-		}
-	}
-	
-	@Override
-	public void enterLiteralInteger (GeomAlgeParser.LiteralIntegerContext expr){
-		String intText = expr.value.getText();
-		int value = Integer.parseInt(intText);
-		MultivectorSymbolic scalarLiteral = this.fac.createScalarLiteral(intText, value);
-		sharedResources.functionVariablesView.put(intText, scalarLiteral);
-	}
-	
-	@Override
-	public void enterVariableReference (GeomAlgeParser.VariableReferenceContext expr){ //TODO: fold!
+	public void enterVariableReference (GeomAlgeParser.VariableReferenceContext expr){
 		String name = expr.name.getText();
-		MultivectorSymbolic aSim =  sharedResources.functionVariables.get(name);
+		MultivectorSymbolic mvSim =  sharedResources.functionVariables.get(name);
 		List<Integer> lines = sharedResources.leftSideNames.get(name);
 		int referencedLine = getReferencedLine(lines);
 		if (referencesInsideLoop) { // the MV is referenced before this access.
@@ -78,14 +57,13 @@ public class LoopAPITransform extends GeomAlgeParserBaseListener {
 			sharedResources.functionVariablesView.put(name, lineReference);
 		} else { // the MV may be referenced after this access, ...
 			if (sharedResources.leftSideNames.containsKey(name)){	// ...necessitating accum
-				MultivectorPurelySymbolic sym_arAcc = this.fac.createMultivectorPurelySymbolicFrom(String.format("sym_%s_accum", name), aSim);
-				sharedResources.argsAccumInitial.add(aSim);
-				sharedResources.paramsAccum.add(sym_arAcc);
-				if (sharedResources.potentialFoldMVs.contains(name, currentLineNr)) sharedResources.paramsAccumNamesSymbolic.put(name, sym_arAcc);
-				sharedResources.functionVariablesView.put(name, sym_arAcc);
+				MultivectorPurelySymbolic sym_mvAcc = this.fac.createMultivectorPurelySymbolicFrom(String.format("sym_%s_accum", name), mvSim);
+				sharedResources.argsAccumInitial.add(mvSim);
+				sharedResources.paramsAccum.add(sym_mvAcc);
+				sharedResources.functionVariablesView.put(name, sym_mvAcc);
 			} else {												// ...or it isn't referenced again, necessitating simple
-				MultivectorPurelySymbolic sym_aSim = handleSimpleArgs(name, aSim);
-				sharedResources.functionVariablesView.put(name, sym_aSim);
+				MultivectorPurelySymbolic sym_mvSim = handleSimpleArgs(name, mvSim);
+				sharedResources.functionVariablesView.put(name, sym_mvSim);
 			}
 		}
 	}
@@ -100,8 +78,8 @@ public class LoopAPITransform extends GeomAlgeParserBaseListener {
 			currentMultiVector = getMultiVectorFromArray(arrayName, assignedArray);
 			prettyName = String.format("%s[%s]", arrayName, this.localIterator);
 			if (!referencesInsideLoop){
-				if (sharedResources.accumulatedArrayNames.contains(arrayName)) {
-					currentMultiVector = handleAccumArgs(prettyName, arrayName, currentMultiVector);
+				if (sharedResources.accumArrayNames.contains(arrayName)) {
+					currentMultiVector = handleArrayAccumArgs(prettyName, arrayName, currentMultiVector);
 				} else {
 					String idName = arrayCtx.index.id.getText();
 					if (!sharedResources.nestedIterators.containsKey(idName)) currentMultiVector = handleArrayArgs(prettyName, assignedArray, currentMultiVector, currentLineNr);
@@ -112,7 +90,6 @@ public class LoopAPITransform extends GeomAlgeParserBaseListener {
 				}
 			}
 			sharedResources.resolvedArrays.put(arrayName, currentMultiVector);
-			System.out.println(sharedResources.resolvedArrays);
 		} else { // Something else in index --> simple
 			String arrayName = arrayCtx.array.getText();
 			int index = IndexCalculation.calculateIndex(arrayCtx.index, sharedResources.functionArrays);
@@ -148,34 +125,26 @@ public class LoopAPITransform extends GeomAlgeParserBaseListener {
 			throw new ValidationException(line, String.format("The loop has more iterations than \"%s\" has elements.", name));
 		}
 		MultivectorPurelySymbolic sym_aArr = this.fac.createMultivectorPurelySymbolicFrom(String.format("sym_%s", name), currentMultiVector);
-		if (!referencesInsideLoop){
-			if (!sharedResources.paramsArrayNamesSymbolic.containsKey(name)){
-				sharedResources.argsArray.add(aArr);
-				sharedResources.paramsArray.add(sym_aArr);
-				sharedResources.paramsArrayNamesSymbolic.put(name, sym_aArr);
-				return sym_aArr;
-			} else {
-				return sharedResources.paramsArrayNamesSymbolic.get(name);
-			}
+		if (!sharedResources.paramsArrayNamesSymbolic.containsKey(name)){
+			sharedResources.argsArray.add(aArr);
+			sharedResources.paramsArray.add(sym_aArr);
+			sharedResources.paramsArrayNamesSymbolic.put(name, sym_aArr);
+			return sym_aArr;
 		} else {
-			return currentMultiVector;
+			return sharedResources.paramsArrayNamesSymbolic.get(name);
 		}
 	}
 	
-	private MultivectorSymbolic handleAccumArgs(String formattedName, String rawName, MultivectorSymbolic currentMultiVector){
+	private MultivectorSymbolic handleArrayAccumArgs(String formattedName, String rawName, MultivectorSymbolic currentMultiVector){
 		MultivectorPurelySymbolic sym_arAcc = this.fac.createMultivectorPurelySymbolicFrom(String.format("sym_%s_accum", formattedName), currentMultiVector);
 		MultivectorSymbolicArray array = this.sharedResources.functionArrays.get(rawName);
-		if (!referencesInsideLoop){
-			if (!sharedResources.paramsAccumNamesSymbolic.containsKey(rawName)){
-				sharedResources.argsAccumInitial.add(array.get(this.beginning));
-				sharedResources.paramsAccum.add(sym_arAcc);
-				sharedResources.paramsAccumNamesSymbolic.put(rawName, sym_arAcc);
-				return sym_arAcc;
-			} else {
-				return sharedResources.paramsAccumNamesSymbolic.get(rawName);
-			}
+		if (!sharedResources.paramsAccumNamesSymbolic.containsKey(rawName)){
+			sharedResources.argsAccumInitial.add(array.get(this.beginning));
+			sharedResources.paramsAccum.add(sym_arAcc);
+			sharedResources.paramsAccumNamesSymbolic.put(rawName, sym_arAcc);
+			return sym_arAcc;
 		} else {
-			return currentMultiVector;
+			return sharedResources.paramsAccumNamesSymbolic.get(rawName);
 		}
 	}
 

@@ -233,6 +233,29 @@ For nested loops, the outer loop needs to be executed natively. The inner loop "
 
 </td>
 </tr>
+<tr>
+<td>
+
+#### [Access to the length of an array which is being modified in the same loop](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/LoopTransform.java#L111)
+</td>
+<td>
+
+```
+for (i; 0; 3; 1){
+    a[len(a)] = foo()
+    a[i] = bar()
+    v = a[len(a)] x
+}
+```
+</td>
+<td>
+
+If an array is being modified, its length may change, which can't be conveyed to the [`GACalcAPI` functions](#the-different-execution-methods).
+</td>
+<td>
+
+</td>
+</tr>
 </tbody>
 </table>
 

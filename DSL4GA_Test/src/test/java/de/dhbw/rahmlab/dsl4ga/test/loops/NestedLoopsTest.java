@@ -71,35 +71,6 @@ public class NestedLoopsTest {
 	
 	
 	@Test
-	void accessToOuterIterator(){
-		String code = """
-			fn main (){
-				v = 1
-				x[] = {1,2,3, 4}
-				y[] = {}
-				for (i; 0; 3; 1) {
-                    v = v + 2
-                    for (e; 0; 5; 1){
-                        y[e] = v + i             
-					}
-				}
-				y[0], y[1], y[2], y[3], y[4]
-			}
-		""";
-
-		expectedStrings.add(specifics.createMultivectorString(9));
-		expectedStrings.add(specifics.createMultivectorString(9));
-		expectedStrings.add(specifics.createMultivectorString(9));
-		expectedStrings.add(specifics.createMultivectorString(9));
-		expectedStrings.add(specifics.createMultivectorString(9));
-
-		runner.parseAndRun(code);
-
-		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
-	}
-	
-	
-	@Test
 	void outerIteratorAsLoopParam(){
 		String code = """
 			fn main (){
@@ -211,6 +182,58 @@ public class NestedLoopsTest {
 		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
 	}
 	
+	@Test 
+	void usingOuterIteratorAsInnerParameter(){
+		String code = """
+			fn main (){
+				v = 1
+				x[] = {1,2,3,4}
+				a[] = {82, 42, 13, 62}
+				for (e; 0; 3; 1) {
+					for (i; 0; len(x)-1; 1) {
+						x[i] = a[e] +1
+					}
+				}
+				x[0], x[1], x[2], x[3]
+			}
+		""";
+		
+		expectedStrings.add(specifics.createMultivectorString(14));
+		expectedStrings.add(specifics.createMultivectorString(14));
+		expectedStrings.add(specifics.createMultivectorString(14));
+		expectedStrings.add(specifics.createMultivectorString(4));
+		
+		runner.parseAndRun(code);
+		
+		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		
+	}
+	
+	@Test
+	void usingVaryingArrayLengthAsInnerParameter(){
+		String code = """
+			fn main (){
+				v = 0
+				a[] = {1, 2}
+				for (i; 1; len(a)+3; 1) {
+					a[i+1] = a[i] + 1
+					for (e; 0; len(a); 1) {
+						v = v + 1
+					}
+				}
+				v, a[5]
+			}
+		""";
+		
+		expectedStrings.add(specifics.createMultivectorString(18));
+		expectedStrings.add(specifics.createMultivectorString(6));
+		
+		runner.parseAndRun(code);
+		
+		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		
+	}
+	
 	@Test
 	void invalidSameIterators(){
 		String code = """
@@ -231,30 +254,23 @@ public class NestedLoopsTest {
 		Assertions.assertThrows(ValidationException.class, ()->runner.parseAndRun(code));
 	}
 	
-	@Test 
-	void usingOuterIteratorInInnerIndex(){
+	@Test
+	void invalidAccessToOuterIterator(){
 		String code = """
 			fn main (){
 				v = 1
 				x[] = {1,2,3, 4}
-				a[] = {82, 42, 13, 62}
-				for (e; 0; 3; 1) {
-					for (i; 0; len(x)-1; 1) {
-						x[i] = a[e] +1
+				y[] = {}
+				for (i; 0; 3; 1) {
+                    v = v + 2
+                    for (e; 0; 5; 1){
+                        y[e] = v + i             
 					}
 				}
-				x[0], x[1], x[2], x[3]
+				y[0], y[1], y[2], y[3], y[4]
 			}
 		""";
-		
-		expectedStrings.add(specifics.createMultivectorString(14));
-		expectedStrings.add(specifics.createMultivectorString(14));
-		expectedStrings.add(specifics.createMultivectorString(14));
-		expectedStrings.add(specifics.createMultivectorString(4));
-		
-		runner.parseAndRun(code);
-		
-		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
-		
+
+		Assertions.assertThrows(ValidationException.class, () -> runner.parseAndRun(code));
 	}
 }

@@ -23,8 +23,7 @@ public class LoopTransformSharedResources {
 	public final Map<Integer, MultivectorSymbolic> lineReferences = new HashMap<>();
 	public final Map<String, MultivectorSymbolic> paramsArrayNamesSymbolic = new HashMap<>();
 	public final Map<String, MultivectorSymbolic> paramsAccumNamesSymbolic = new HashMap<>();
-	public final Set<String> accumulatedArrayNames = new HashSet<>();
-	public final FoldSet potentialFoldMVs = new FoldSet();
+	public final Set<String> accumArrayNames = new HashSet<>();
 	public final Map<String,MultivectorSymbolic> functionVariables;
 	public final Map<String,MultivectorSymbolic> functionVariablesView;
 	public final Map<String,MultivectorSymbolic> resolvedArrays = new HashMap<>();

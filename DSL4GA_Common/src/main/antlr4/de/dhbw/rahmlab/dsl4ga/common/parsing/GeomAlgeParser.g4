@@ -84,10 +84,6 @@ retExpr
 	|	exprContext=expr COMMA retExpr	#RetExprStmtExpr
 	;
 
-newLoopStmt
-	: SPACE* FOR_INDICATOR SPACE* L_PARENTHESIS SPACE* loopVar=IDENTIFIER SPACE* SEMICOLON SPACE* beginning=indexCalc SPACE* SEMICOLON SPACE* ending=indexCalc SPACE* SEMICOLON SPACE* step=indexCalc SPACE* R_PARENTHESIS (SPACE | WHITE_LINE)* L_CURLY_BRACKET (SPACE | WHITE_LINE)* loopBody R_CURLY_BRACKET SPACE* 
-	;
-
 ///////////////////////////////////////////////////////////////////////////
 // ArrayExpr
 ///////////////////////////////////////////////////////////////////////////
@@ -129,6 +125,10 @@ indexCalc
 ///////////////////////////////////////////////////////////////////////////
 // Loop
 ///////////////////////////////////////////////////////////////////////////
+
+newLoopStmt
+	: SPACE* FOR_INDICATOR SPACE* L_PARENTHESIS SPACE* loopVar=IDENTIFIER SPACE* SEMICOLON SPACE* beginning=indexCalc SPACE* SEMICOLON SPACE* ending=indexCalc SPACE* SEMICOLON SPACE* step=indexCalc SPACE* R_PARENTHESIS (SPACE | WHITE_LINE)* L_CURLY_BRACKET (SPACE | WHITE_LINE)* loopBody R_CURLY_BRACKET SPACE* 
+	;
 
 loopBody 
     : (stmts+=insideLoopStmt WHITE_LINE+)+ 

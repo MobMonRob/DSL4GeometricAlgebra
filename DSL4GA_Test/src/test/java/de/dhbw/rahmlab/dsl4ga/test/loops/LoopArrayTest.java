@@ -414,4 +414,26 @@ public class LoopArrayTest {
 
 		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
 	}
+	
+	@Test
+	void lengthExpandsInsideOfLoop (){
+		String code = """
+			fn main () {
+	            a[] = {}
+	            a2[] = {0, 1, 2}
+				for (i; 0; 3; 1) {
+					a[i] = a2[len(a)]
+				}
+				a[0], a[1], a[2] // a is now {0, 1, 2}
+			}
+		""";
+		
+		expectedStrings.add(specifics.createMultivectorString(0));
+		expectedStrings.add(specifics.createMultivectorString(1));
+		expectedStrings.add(specifics.createMultivectorString(2));
+		
+		runner.parseAndRun(code);
+
+		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+	}
 }

@@ -40,11 +40,13 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 	protected final List<ReturnLine> accumulatedActualArrays = new ArrayList<>();
 	protected final List<ReturnLine> mapActualArrays = new ArrayList<>();
 	protected final Set<String> rightSideUniqueNames = new HashSet<>();
-	protected final HashMap<String, Integer> lastPotentialMVaccums = new HashMap<>();
+	protected final HashMap<String, Integer> accumMVnames = new HashMap<>();
 	protected final Set<String> actuallyUsedAccums = new HashSet<>();
 	protected final List<Boolean> isNewNestedLoopLine = new ArrayList<>();
 	protected final List<NewLoopStmtContext> newNestedLoopStmts = new ArrayList();
 	protected final Set<String> arrayAccessesWithoutIterator = new HashSet<>();
+	protected final Set<String> arraysWithLengthAccesses = new HashSet<>();
+	protected final FoldSet foldMVnames = new FoldSet();
 	private final Map<String, MultivectorSymbolic> originalFunctionVariablesView;
 	private String currentLeftSideName;
 	
@@ -72,7 +74,7 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 	
 	private static LoopTransform generateLoopTransform(ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.NewLoopStmtContext loopCtx, Map<String, MultivectorSymbolic> variables, Map<String, MultivectorSymbolicArray> arrays, Map<String, FunctionSymbolic> functionsView,  Map<String, MultivectorSymbolic> functionVariablesView, Map<String, Integer> nestedIterators){
 		LoopTransform loopTransform = new LoopTransform(exprGraphFactory, parser, variables, arrays, functionsView, functionVariablesView, nestedIterators);
-		loopTransform.addIndex(loopCtx);
+		loopTransform.addIterator(loopCtx);
 		loopTransform.beginning = loopTransform.parseLoopParam(loopCtx.beginning);
 		loopTransform.step = loopTransform.parseLoopParam(loopCtx.step);
 		loopTransform.ending = loopTransform.parseLoopParam(loopCtx.ending);
@@ -82,17 +84,6 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 			System.out.println("Going to use native loop because of loop steps != +1.");
 		}
 		return loopTransform;
-	}
-	
-	@Override
-	public void enterVariableReference (VariableReferenceContext expr){
-		if (!nativeLoop){ 
-			String name = expr.name.getText();
-			int line = expr.name.getLine();
-			if (!sharedResources.leftSideNames.containsKey(name)) rightSideUniqueNames.add(name); 	
-			else if (!currentLeftSideName.equals(name)) sharedResources.potentialFoldMVs.removeIfContained(name, line);
-			if (!currentLeftSideName.equals(name)) actuallyUsedAccums.add(name);
-		}
 	}
 	
 	
@@ -105,20 +96,29 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 			currentLeftSideName = variableName;
 			int lineNr = assigned.getLine();
 			if (null == ctx.array){ // Multivector
-				if (!rightSideUniqueNames.contains(variableName)) {
-					sharedResources.potentialFoldMVs.add(variableName);
-				} else if (variableName.equals(localIterator)){
+				if (variableName.equals(localIterator)){
 					throw new ValidationException(lineNr, String.format("You cannot reassign the iterator \"%s\".", localIterator));
-				} else if (!this.functionVariables.containsKey(variableName)){
-					throw new ValidationException(lineNr, String.format("Multivector \"%s\" has not been declared before.", variableName));
 				} else if (this.functionArrays.containsKey(variableName)){
 					throw new ValidationException(lineNr, String.format("Array \"%s\" can't be accessed like a multivector.", variableName));
 				}
+				if (!rightSideUniqueNames.contains(variableName)) {
+					foldMVnames.add(variableName);
+				} 
 			} else { // Array
 				GeomAlgeParser.IndexCalcContext assignedIndexCalcCtx = ctx.array.index;
 				if (null != assignedIndexCalcCtx.id){
 					String idName = assignedIndexCalcCtx.id.getText();
-					if ( !idName.equals(this.localIterator)) throw new ValidationException(lineNr, String.format("You may only use \"%s\" in combination with len() here.", idName));
+					if (null != assignedIndexCalcCtx.len){
+						if (sharedResources.leftSideNames.containsKey(idName)){
+							System.out.println("Going to use native because the length of an array which is being modified in the same loop is accessed.");
+							this.nativeLoop = true;
+						} else {
+							this.arraysWithLengthAccesses.add(idName);
+						}
+					}
+					if (!idName.equals(this.localIterator)){
+						if (!idName.equals(variableName)) throw new ValidationException(lineNr, String.format("You may only use \"%s\" in combination with len() here.", idName));
+					}
 				} else {
 					this.nativeLoop = true;
 					System.out.println("Going to use native loop because assignment index is not the iterator.");
@@ -133,8 +133,19 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 			this.newNestedLoopStmts.add(ctx.newLoopStmt());
 		}
 	}
-
-
+	
+	
+	@Override
+	public void enterVariableReference (VariableReferenceContext expr){
+		if (!nativeLoop){ 
+			String name = expr.name.getText();
+			int line = expr.name.getLine();
+			if (!sharedResources.leftSideNames.containsKey(name)) rightSideUniqueNames.add(name); 	
+			else if (!currentLeftSideName.equals(name)) foldMVnames.removeIfContained(name, line);
+			if (!currentLeftSideName.equals(name)) actuallyUsedAccums.add(name);
+		}
+	}
+	
 	@Override
 	public void enterArrayAccessExpr (ArrayAccessExprContext expr){
 		if (null != expr.index.op && null == expr.index.len){
@@ -146,6 +157,14 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 		if (!this.nativeLoop && !leftSideNamesNoOperator.contains(arrayName)) rightSideUniqueNames.add(arrayName);
 		if (null != expr.index.id){
 			String id = expr.index.id.getText();
+			if (null != expr.index.len){
+						if (sharedResources.leftSideNames.containsKey(id)){
+							System.out.println("Going to use native because the length of an array which is being modified in the same loop is accessed.");
+							this.nativeLoop = true;
+						} else {
+							this.arraysWithLengthAccesses.add(id);
+						}
+					}
 			if (!id.equals(this.localIterator) && !sharedResources.nestedIterators.containsKey(id)){
 				if(null == expr.index.len) throw new ValidationException(line, String.format("You may only use \"%s\" in combination with len() here.", id));
 				else arrayAccessesWithoutIterator.add(arrayName);
@@ -166,14 +185,14 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 			Boolean operator = false;
 			if (null != line.array){ // ARRAY
 				IndexCalculationType type = IndexCalculation.getIndexCalcType(line.array.index, localIterator);
-				if (type == iteratorOperation) throw new RuntimeException(); // Replace with native=true (?)
+				if (type == iteratorOperation) this.nativeLoop = true;
 				if (type==accum){
-					sharedResources.accumulatedArrayNames.add(variableName);
+					sharedResources.accumArrayNames.add(variableName);
 				}
 				operator = (line.array.index.op != null);
 			} else { // MV
 				int lineNr = line.assigned.getLine();
-				if (rightSideUniqueNames.contains(variableName)) lastPotentialMVaccums.put(variableName, lineNr); 
+				if (rightSideUniqueNames.contains(variableName)) accumMVnames.put(variableName, lineNr); 
 			}
 			addLeftSideName(variableName, line.assigned.getLine(), operator);
 		}
@@ -184,26 +203,25 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 		arrayAccessesWithoutIterator.retainAll(sharedResources.leftSideNames.keySet());
 		if (!arrayAccessesWithoutIterator.isEmpty()){
 			nativeLoop = true;
-			System.out.println("Going to use native loop because there is a constant array access to an array in the same loop.");
+			System.out.println("Going to use native loop because there is a constant array access to an array which is changed in the same loop.");
 		}
 
 		if (!nativeLoop){
-			sharedResources.accumulatedArrayNames.retainAll(rightSideUniqueNames);
-			lastPotentialMVaccums.keySet().retainAll(actuallyUsedAccums);
-			sharedResources.isAccum = !sharedResources.accumulatedArrayNames.isEmpty() || !lastPotentialMVaccums.isEmpty();
+			sharedResources.accumArrayNames.retainAll(rightSideUniqueNames);
+			accumMVnames.keySet().retainAll(actuallyUsedAccums);
+			sharedResources.isAccum = !sharedResources.accumArrayNames.isEmpty() || !accumMVnames.isEmpty();
 
 			for (InsideLoopStmtContext line : ctx.stmts){ // for line in loop
 				LoopAPITransform.generate(fac, parser, line, localIterator, beginning, ending, sharedResources);
-				System.out.println(sharedResources.resolvedArrays);
 				int lineNr = line.assigned.getLine();
 				String name = line.assigned.getText();
-				MultivectorSymbolic result = ExprTransform.generateAPILoopExprAST(fac, parser, line.expr(), functionsView, sharedResources.functionVariablesView, sharedResources.resolvedArrays);
+				MultivectorSymbolic result = ExprTransform.generateAPILoopExprAST(fac, parser, line.expr(), functionsView, sharedResources.functionVariablesView, sharedResources.resolvedArrays, sharedResources.nestedIterators);
 				List<MultivectorSymbolic> returnsList;
 				ReturnLine returnLine = new ReturnLine(name, line, localIterator, sharedResources);
 				Boolean isArray = returnLine.isArray();
-				if ((lineNr == lastPotentialMVaccums.getOrDefault(name, -1)) // if multivector is being accumulated
-						|| (sharedResources.potentialFoldMVs.contains(name, lineNr) && !sharedResources.isAccum) // if fold
-						|| ((null != line.array) && (null != line.array.index.op && sharedResources.accumulatedArrayNames.contains(name)))){ // if accumulation
+				if ((lineNr == accumMVnames.getOrDefault(name, -1)) // if multivector is being accumulated
+						|| (foldMVnames.contains(name, lineNr) && !sharedResources.isAccum) // if fold
+						|| ((null != line.array) && (null != line.array.index.op && sharedResources.accumArrayNames.contains(name)))){ // if accumulation
 
 					returnsList = sharedResources.returnsAccum;
 					if (isArray) sharedResources.lineReferences.put(lineNr, sharedResources.paramsAccum.getLast());
@@ -270,12 +288,12 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 					if (null != line.array){
 						MultivectorSymbolicArray array = functionArrays.get(line.assigned.getText());
 						int index = IndexCalculation.calculateIndex(line.array.index, functionArrays, iterator);
-						MultivectorSymbolic arrayElem = ExprTransform.generateNativeLoopExprAST(fac, parser, line.assignments, functionsView, originalFunctionVariablesView, iterator);
+						MultivectorSymbolic arrayElem = ExprTransform.generateNativeLoopExprAST(fac, parser, line.assignments, functionsView, originalFunctionVariablesView, iterator, sharedResources.nestedIterators);
 						setArrayElement(array, index, arrayElem);
 					} else {
 						MultivectorSymbolic mv = functionVariables.get(varName);
 						if (null == mv) loopScopedVars.add(varName);
-						functionVariables.put(varName,  ExprTransform.generateNativeLoopExprAST(fac, parser, line.assignments, functionsView, originalFunctionVariablesView, iterator));
+						functionVariables.put(varName,  ExprTransform.generateNativeLoopExprAST(fac, parser, line.assignments, functionsView, originalFunctionVariablesView, iterator, sharedResources.nestedIterators));
 					}
 					lineIndex++;
 				}
@@ -298,8 +316,7 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 				int e = this.beginning + line.getOffset();
 				MultivectorSymbolicArray assignedArray = line.getArray();
 				for (MultivectorSymbolic mv : res.get(i)){
-					if (e >= assignedArray.size()) assignedArray.add(mv);
-					else assignedArray.set(e, mv);
+					setArrayElement(assignedArray, e, mv);
 					e++;
 				}
 			} else {
@@ -325,18 +342,22 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 	}	
 	
 	
-	private void addIndex(NewLoopStmtContext loopStmtCtx){
-		Token index = loopStmtCtx.loopVar;
-		String indexStr = index.getText();
-		if(this.functionArrays.containsKey(indexStr) || this.functionVariables.containsKey(indexStr)){
-			int line = index.getLine();
-			throw new ValidationException(line, String.format("Variable \"%s\" has already been declared.", indexStr));
+	private void addIterator(NewLoopStmtContext loopStmtCtx){
+		Token iterator = loopStmtCtx.loopVar;
+		String iteratorStr = iterator.getText();
+		if(this.functionArrays.containsKey(iteratorStr) || this.functionVariables.containsKey(iteratorStr)){
+			int line = iterator.getLine();
+			throw new ValidationException(line, String.format("Variable \"%s\" has already been declared.", iteratorStr));
 		}
-		this.localIterator = indexStr;
+		this.localIterator = iteratorStr;
 	}
 
 	
 	private void addLeftSideName(String name, int line, Boolean operator) {
+		if (this.arraysWithLengthAccesses.contains(name)){
+			nativeLoop = true;
+			System.out.println("Going to use native because the length of an array which is being modified in the same loop is accessed.");
+		}
 		if (!operator) leftSideNamesNoOperator.add(name);
 		if (sharedResources.leftSideNames.containsKey(name)) {
 			List previousElements = sharedResources.leftSideNames.get(name);

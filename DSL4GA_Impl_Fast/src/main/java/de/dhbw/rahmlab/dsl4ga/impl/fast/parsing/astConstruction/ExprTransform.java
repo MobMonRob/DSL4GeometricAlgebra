@@ -41,6 +41,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 	protected Map<String, MultivectorSymbolic> resolvedArrays = new HashMap<>();
 	protected List<MultivectorSymbolic> lastCallResults = null;
 	protected Map<String, Integer> loopIterator = new HashMap<>();
+	protected Map<String, Integer> nestedIterators = new HashMap<>();
 
 	protected ExprTransform(ExprGraphFactory exprGraphFactory, Map<String, FunctionSymbolic> functionsView, Map<String, MultivectorSymbolic> localVariablesView) {
 		this.exprGraphFactory = exprGraphFactory;
@@ -94,17 +95,19 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		return arrayVars;
 	}
 	
-	public static MultivectorSymbolic generateNativeLoopExprAST(ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.ExprContext loopExprCtx, Map<String, FunctionSymbolic> functionsView, Map<String, MultivectorSymbolic> localVariablesView, Map<String, Integer> loopIterator){
+	public static MultivectorSymbolic generateNativeLoopExprAST(ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.ExprContext loopExprCtx, Map<String, FunctionSymbolic> functionsView, Map<String, MultivectorSymbolic> localVariablesView, Map<String, Integer> loopIterator, Map<String, Integer> nestedIterators){
 		ExprTransform exprTransform = new ExprTransform(exprGraphFactory, functionsView, localVariablesView);
 		exprTransform.setIterator(loopIterator);
+		exprTransform.setNestedIterators(nestedIterators);
 		SkippingParseTreeWalker.walk(parser, exprTransform, loopExprCtx);
 		
 		MultivectorSymbolic rootNode = exprTransform.nodeStack.getFirst();
 		return rootNode;
 	}
 	
-	public static MultivectorSymbolic generateAPILoopExprAST(ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.ExprContext loopExprCtx, Map<String, FunctionSymbolic> functionsView, Map<String, MultivectorSymbolic> localVariablesView, Map<String, MultivectorSymbolic> resolvedArrays){
+	public static MultivectorSymbolic generateAPILoopExprAST(ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.ExprContext loopExprCtx, Map<String, FunctionSymbolic> functionsView, Map<String, MultivectorSymbolic> localVariablesView, Map<String, MultivectorSymbolic> resolvedArrays, Map<String, Integer> nestedIterators){
 		ExprTransform exprTransform = new ExprTransform(exprGraphFactory, functionsView, localVariablesView, resolvedArrays);
+		exprTransform.setNestedIterators(nestedIterators);
 		SkippingParseTreeWalker.walk(parser, exprTransform, loopExprCtx);
 		
 		MultivectorSymbolic rootNode = exprTransform.nodeStack.getFirst();
@@ -310,13 +313,13 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 	@Override
 	public void exitVariableReference(GeomAlgeParser.VariableReferenceContext ctx) {
 		String name = ctx.name.getText();
+		int line = ctx.name.getLine();
 
 		if (!this.localVariablesView.containsKey(name)) {
-			int line = ctx.name.getLine();
 			if (this.localArrays.containsKey(name)) throw new ValidationException(line, String.format("Variable \"%s\" is an array.", name));
 			else throw new ValidationException(line, String.format("Variable \"%s\" has not been declared before.", name));
 		}
-
+		if (this.nestedIterators.containsKey(name)) throw new ValidationException(line, String.format("Iterator \"%s\" can't be used as variable reference.", name));
 		MultivectorSymbolic node = this.localVariablesView.get(name);
 
 		nodeStack.push(node);
@@ -496,4 +499,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		this.loopIterator = iterator;
 	}
 	
+	public void setNestedIterators (Map<String, Integer> iterator){
+		this.nestedIterators = iterator;
+	}
 }
