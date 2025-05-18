@@ -128,14 +128,14 @@ for (i; 5; 0; -1){
 </td>
 <td>
 
-The `GACalcAPI` functions don't get information about the loop parameters other than the number of iterations (see the [section on LoopAPITransform.handleArrayArgs()]).  </td>
+The `GACalcAPI` functions don't get information about the loop parameters other than the number of iterations (see the [handleArrayArgs()](#loopapitransform)).  </td>
 <td>
 
 This can be solved by further manipulating the arrays which are supplied to the functions: 
 - Example 1: Drop every second element of array `a`.
 - Example 2: Reverse array `a`.
 
-It's then also important to adjust the [applyLoopResults() method] accordingly. It currently doesn't take the loop step into account.
+It's then also important to adjust [applyLoopResults()](#applyloopresults) accordingly. It currently doesn't take the loop step into account.
 
 </td>
 <tr>
@@ -253,7 +253,7 @@ Because the representation for the [`GACalcAPI` method uses a second class to pa
 <tr>
 <td colspan="4" style="text-align:center">
 
-#### Arrays used to determine which execution method is going to be used 
+#### Variables used to determine which execution method is going to be used 
 </td>
 </tr>
 <tr>
@@ -464,18 +464,188 @@ The `returns` parameters are filled with the representations of each line of the
 [`LoopTransformSharedResources`](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/_utils/LoopTransformSharedResources.java)
 </td>
 </tr>
+<tr>
+<td colspan="4" style="text-align:center">
+
+#### Variables used to fill the [arrays directly used by the `GACalcAPI` method](#gacalcapi-method)
+</td>
+</tr>
+<tr>
+<td>
+
+#### `lineReferences`
+
+</td>
+<td>
+
+`Map<Integer, MultivectorSymbolic>`
+</td>
+<td>
+
+This contains the correct reference to any given line, which can either be a `MultivectorSymbolic` or a `MultivectorPurelySymbolic`. 
+</td>
+<td>
+
+[`LoopTransformSharedResources`](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/_utils/LoopTransformSharedResources.java)
+</td>
+</tr>
+<tr>
+<td>
+
+#### `paramsAccumNamesSymbolic`
+
+</td>
+<td>
+
+`Map<String, MultivectorSymbolic>`
+</td>
+<td>
+
+This contains the correct reference to any given **array variable** which is being used in [`paramsAccum`](#paramsaccum). Multivector variables **don't** need to be tracked this way, since their method of referencing them doesn't change.
+</td>
+<td>
+
+[`LoopTransformSharedResources`](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/_utils/LoopTransformSharedResources.java)
+</td>
+</tr>
+<tr>
+<td>
+
+#### `paramsArrayNamesSymbolic`
+
+</td>
+<td>
+
+`Map<String, MultivectorSymbolic>`
+</td>
+<td>
+
+This contains the correct reference to any given array variable which is being used in [`paramsArray`](#arrays-directly-used-by-the-gacalcapi-method). 
+</td>
+<td>
+
+[`LoopTransformSharedResources`](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/_utils/LoopTransformSharedResources.java)
+</td>
+</tr>
+<tr>
+<td>
+
+#### `resolvedArrays`
+
+</td>
+<td>
+
+`Map<String, MultivectorSymbolic>`
+</td>
+<td>
+
+This contains the correct reference to any given array variable and has the purpose of tracking the correct references to the arrays which have been handled during the [second parsing](#loopapitransform), so they can be used during the [third parsing](#exprtransform) by [`ExprTransform`.`exitArrayAccessExpr()`](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/ExprTransform.java#L355). 
+</td>
+<td>
+
+[`LoopTransformSharedResources`](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/_utils/LoopTransformSharedResources.java) and [`ExprTransform`](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/ExprTransform.java)
+</td>
+</tr>
+<tr>
+<td>
+
+#### `nestedIterators`
+
+</td>
+<td>
+
+`Map<String, Integer>`
+</td>
+<td>
+
+This is used to track the values of multiple iterators in a nested loop. For the outer loop's iterator, it contains its current value. See [section on nested loops](SECTION ON NESTED LOOPS).
+</td>
+<td>
+
+[`LoopTransformSharedResources`](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/_utils/LoopTransformSharedResources.java)
+</td>
+</tr>
 </tbody>
 </table>
 
 ## Executing the loop
-In [`LoopTransform`.`exitLoopBody`](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/LoopTransform.java#L182), the actual execution of the loop is initiated. At this point, the [arrays used to determine which execution method is going to be used](#arrays-used-to-determine-which-execution-method-is-going-to-be-used) are completely filled and `nativeLoop` has its final value. If it's `true`, the [native method](#java-native-method) is called, if it's `false`, the [`GACalcAPI`](#gacalcapi-method) is used.
+In [`LoopTransform`.`exitLoopBody`](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/LoopTransform.java#L182), the actual execution of the loop is initiated. At this point, the [arrays used to determin which execution method is going to be used](#arrays-used-to-determine-which-execution-method-is-going-to-be-used) are completely filled and `nativeLoop` has its final value. If it's `true`, the [native method](#java-native-method) is called, if it's `false`, the [`GACalcAPI`](#gacalcapi-method) is used.
 
 ### `GACalcAPI` method
 While the [arrays used to determine which execution method is going to be used](#arrays-used-to-determine-which-execution-method-is-going-to-be-used) are filled, the [arrays needed for the function calls](#arrays-directly-used-by-the-gacalcapi-method) aren't yet. To fill them, [`LoopAPITransform`.`generate()`](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/LoopAPITransform.java) is [called for each line of the loop](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/LoopTransform.java#L194).
 
 #### [`LoopAPITransform`](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/LoopAPITransform.java)
-LoopAPITransform performs a second parsing of the loop, this time to fill up the [arrays needed for the function calls](#arrays-directly-used-by-the-gacalcapi-method). 
+LoopAPITransform performs a second parsing of the loop (again, using the `SkippingParseTreeWalker`), this time to fill up [all arrays needed for the function calls **except the `returns` arrays**](#arrays-directly-used-by-the-gacalcapi-method). The [`returns` arrays](#returnsaccum) are going to get filled up [in a third parsing by `ExprTransform`](#exprtransform). In order for that third parsing to generate the representations needed for the [`returns` arrays](#returnsaccum), the [`functionVariablesView` map](#functionvariables-functionvariablesview) needs to be modified, because it contains the "normal" symbolic multivectors which represent the actual values of variables. In order for the representation to work, they need to be replaced by purely symbolic multivectors which represent references to the variables. This is achieved using the following functions: 
 
+- [**`getReferencedLine()`**](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/LoopAPITransform.java#L171): For any given variable name it returns the line of the last reassignment (_on the left side of the assignment_) **before the current line** of that variable inside the loop. If such a reference is found, it also sets the `referencesInsideLoop` flag to `true`. 
 
-### Java-native method
+- [**`handleSimpleArgs()`**](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/LoopAPITransform.java#L108): Gets a `MultivectorSymbolic` and its name as input and adds it to [`argsSimple`](#argssimple). Then, it creates a `MultivectorPurelySymbolic` from the input multivector, puts it into [`paramsSimple`](#paramssimple) and returns it.
 
+- [**`handleArrayArgs()`**](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/LoopAPITransform.java#L115):  Gets a `MultivectorSymbolic`, its name, its line and the array it references. The first step is to [trim the array to the bounds of the loop](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/LoopAPITransform.java#L119) so that the new array's first element is the one at the iterator's first value. After that, a `MultivectorPurelySymbolic` is created from the input multivector and it is checked if the array variable is already contained in [`paramsArrayNamesSymbolic`](#paramsarraynamessymbolic).
+    - If that is the case, the variable reference doesn't need to be added to any of the [`array` params](#arrays-directly-used-by-the-gacalcapi-method) anymore and the version which is contained in the [`paramsArrayNamesSymbolic`](#paramsarraynamessymbolic) is returned.
+    - If that's not the case:
+        - The trimmed array is added to [`argsArray`](#argsarray)
+        - The `MultivectorPurelySymbolic` is added to [`paramsArray`](#paramsarray), put into [`paramsArrayNamesSymbolic`](#paramsarraynamessymbolic) and returned. 
+
+- [**`handleArrayAccumArgs()`**](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/LoopAPITransform.java#L142): Gets a `MultivectorSymbolic` and its names (one formatted, one only the variable name), creates a `MultivectorPurelySymbolic` from the input multivector and gets the array's contents from the [`functionArrays`](#functionarrays). It then checks if the variable name is already contained in the [`paramsAccumNamesSymbolic`](#paramsaccumnamessymbolic).
+    - If that is the case, the variable reference doesn't need to be added to any of the [`accum` params](#arrays-directly-used-by-the-gacalcapi-method) anymore and the version which is contained in the [`paramsAccumNamesSymbolic`](#paramsaccumnamessymbolic) is returned.
+    - If that's not the case:
+        - The array's actual first value is added to [`argsAccumInitial`](#argsaccuminitial)
+        - The `MultivectorPurelySymbolic` is added to [`paramsAccum`](#paramsaccum), put into [`paramsAccumNamesSymbolic`](#paramsaccumnamessymbolic) and returned.
+
+<br>
+
+- [**`enterVariableReference()`**](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/LoopAPITransform.java#L50): Is called when a variable is referenced on the right side of the assignment. It calls `getReferencedLine()` to detect if that variable is reassigned before its current occurence. 
+    - If that is the case (`referencesInsideLoop` == `true`), it uses [`lineReferences`](#linereferences) to put the correct reference into [`functionVariablesView`](#functionvariables-functionvariablesview).
+    - If that's not the case (`referencesInsideLoop` == `false`), it checks if the variable is accessed reassigned (_on the left side of the assignment_) after its current occurence using [`leftSideNames`](#leftsidenames).`containsKey()`.
+        - If that is the case, the variable belongs to the [`accum` parameters](#arrays-directly-used-by-the-gacalcapi-method), which means that:
+            - The "normal" `MultivectorSymbolic` representation of the variable is put into [`argsAccumInitial`](#argsaccuminitial), since that is its initial value.
+            - A `MultivectorPurelySymbolic` is created from the `MultivectorSymbolic`. This is added to [`paramsAccum`](#paramsaccum) and put into [`functionVariablesView`](#functionvariables-functionvariablesview).  
+        - If that's not the case, the `MultivectorSymbolic` of the variable is handed over to `handleSimpleArgs()` and the result put into [`functionVariablesView`](#functionvariables-functionvariablesview).
+
+- [**`enterArrayAccessExpr()`**](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/LoopAPITransform.java#L72): Is called when an array element is referenced on the right side of the assignment. First, it checks if an iterator is in the array's index.
+    - If that's the case, the variable either belongs to the [`accum`](#arrays-directly-used-by-the-gacalcapi-method) or [`array` parameters](#arrays-directly-used-by-the-gacalcapi-method). It then checks whether the variable has been referenced before the current line.
+        - If that is the case, that means the current variable has already been handled in this function, and the current reference to the array variable is put into [`resolvedArrays`](#resolvedarrays)
+        - If that's not the case, it is checked if the variable's name is contained in [`accumArrayNames`](#accumarraynames):
+            - If that is the case, the `MultivectorSymbolic` of the variable is handed over to `handleArrayAccumArgs()` and the result put into [`resolvedArrays`](#resolvedarrays)
+            - If that's not the case, it is checked whether the iterator in the index is contained in [`nestedIterators`](#nestediterators). 
+                - If that is the case, it means the current loop is the inner loop and thus this array access can be handled as constant via `handleSimpleArgs()`, the result of which is put into [`resolvedArrays`](#resolvedarrays).
+                - If that's not the case, it means the current variable can be handled via `handleArrayArgs()`, the result of which is put into [`resolvedArrays`](#resolvedarrays).
+    - If that's not the case, that means the array is accessed constantly, which means it can be handled via `handleSimpleArgs()`, the result of which is put into [`resolvedArrays`](#resolvedarrays).
+
+---
+
+Instantly after a line has been parsed this way, a third parsing for that line takes place:
+
+#### [`ExprTransform`](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/ExprTransform.java)
+[`ExprTransform`.`generateAPILoopExprAST()`](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/ExprTransform.java#L106) is called so [`ExprTransform`](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/ExprTransform.java) gets the [`functionVariablesView`](#functionvariables-functionvariablesview) which has just been updated and the [`nestedIterators`](#nestediterators). Because of the modified [`functionVariablesView`](#functionvariables-functionvariablesview), this function now returns a representation of the calculation instead of the result of the calculation. 
+
+---
+
+This resulting representation then needs to be added to one of the [`returns` arrays](#returnsaccum). To determine which is the correct one, it is checked whether: 
+- The current line is the line for the current variable in [`accumMVnames`](#accummvnames), in which case the result is a reference to a multivector which is being [`accumulated` using `mapaccum`](#arrays-directly-used-by-the-gacalcapi-method), which means the resulting representaiton needs to be added to [`returnsAccum`](#returnsaccum).
+- The current line is the line for the current variable in [`foldMVnames`](#foldmvnames), in which case the result is a reference to a multivector which is being [`accumulated` using `fold`](#arrays-directly-used-by-the-gacalcapi-method), which means the resulting representaiton needs to be added to [`returnsAccum`](#returnsaccum).
+- The variable which is being assigned is contained in [`accumArrayNames`](#accumarraynames), in which case the result is a reference to an array which is being [`accumulated` using `mapaccum`](#arrays-directly-used-by-the-gacalcapi-method), which means the resulting representaiton needs to be added to [`returnsAccum`](#returnsaccum).
+
+If none of these cases are fulfilled, the resulting representation needs to be added to [`returnsArray`](#returnsarray).
+
+---
+
+After all lines have been parsed a second and third time, the loop is actually executed. To decide which of the [three possible functions](#mapaccum) has to be used, the following checks are made (in this order):
+- If [`accumArrayNames`](#accumarraynames) or [`accumMVnames`](#accummvnames) contain any elements, [`mapaccum()`](#mapaccum) has to be used. 
+- If [`returnsAccum`](#returnsaccum) contains any elements, [`fold()`](#fold) has to be used. 
+- If [`returnsAccum`](#returnsaccum) is empty, [`map()`](#map) has to be used.
+
+---
+
+After the loop has been executed, the results still have to be stored back in the [`functionVariables`](#functionvariables-functionvariablesview) and [`functionArrays`](#functionarrays):
+
+#### [`applyLoopResults()`](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/LoopTransform.java#258)
+Since [`accumulated` lines](#mapaccum) manipulate an array before [non-`accumulated` lines](#map), they also have to be stored back first. This is achieved by ordering the accessed indices by largest first, so that the lines with the largest indices are being stored back before the lines with smaller indices are.  
+
+### [`Java-native method`](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/LoopTransform.java#L249)
+The Java-native methode to execute the loops uses a Java for-loop with the same parameters as the loop that is being parsed.
+
+Inside of this loop, another for-loop iterates over each line and checks if it is a [`newLoopStmt`](DSL4GA_Common/src/main/antlr4/de/dhbw/rahmlab/dsl4ga/common/parsing/GeomAlgeParser.g4#L129). 
+- If it is, a new `LoopTransform` object [is generated](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/LoopTransform.java#L262) which fully parses and executes the inner loop, updating [`functionVariables`](#functionvariables-functionvariablesview) and [`functionArrays`](#functionarrays).
+- If it isn't, the right side of the assignment is calculated by [using](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/LoopTransform.java#L271) [`ExprTransform`.`generateNativeLoopExprAST()`](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/ExprTransform.java#L97) which, unlike with the other method, calculates the resulting value. This is then assigned to the assignee left of the assignment.
