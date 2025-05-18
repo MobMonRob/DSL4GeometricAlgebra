@@ -9,7 +9,7 @@ for (VARIABLE_NAME; BEGINNING; ENDING; STEP){
 	// loop body
 }
 ```
-### Loop paramters
+### Loop parameters
 - `VARIABLE_NAME`: The name of the iterator variable. It can only be referenced inside of the loop and can't have the same name as another, already existing, variable. It also can't be reassigned. However, it is allowed to initialize a variable with the same name after the loop.
 - `BEGINNING`: The first value the iterator should have. This uses the same syntax as [array indices](documentation_ARRAYS_users.md), which means it can be an integer literal, a [built-in length function of an array](documentation_ARRAYS_users.md), or a simple addition or subtraction between the two. 
 - `ENDING`: The **exclusive** limit for the loop. The loop stops **before** the iterator has reached (or exceeded) this value. It has the same syntax as `BEGINNING`. 
@@ -30,6 +30,7 @@ for (i; 0; 3; 1) {
 	// Stop after that, because it would reach the ENDING, 3
 }
 ```
+
 - Simple backwards loop:
 ```
 for (i; 3; 0; -1) {
@@ -40,6 +41,7 @@ for (i; 3; 0; -1) {
 	// Stop after that, because it would reach the ENDING, 0
 }
 ```
+
 - Skipping forward loop:
 ```
 a[] = {1, 2, 3, 4, 5}
@@ -51,7 +53,9 @@ for (i; 0; len(a)+1; 2) {
 	// Stop after that, because it would reach the ENDING, len(a)+1 = 6
 }
 ```
+
 >**_NOTE:_** Expanding array `a` inside the loop would not change the ending of the loop. The size of the array **before** the loop starts is used as parameter. In nested loops, it is possibble to use the expansion of an array in the outer loop to vary parameters of the inner loop, see [NestedLoopsTest](DSL4GA_Test/src/test/java/de/dhbw/rahmlab/dsl4ga/test/loops/NestedLoopsTest.java).`usingVaryingArrayLengthAsInnerParameter()`.
+
 - Skipping backwards loop:
 ```
 for (i; 3; -4; -3) {
@@ -62,6 +66,7 @@ for (i; 3; -4; -3) {
 	// Stop after that, because it would exceed the ENDING, -4
 }
 ```
+
 - Nested loop:
 ```
 for (i; 1; 4; 1) {
@@ -84,6 +89,7 @@ for (i; 1; 4; 1) {
 
 ### Reassigning variables
 It is allowed to reassign all multivector variables and array elements. After the loop has been executed, they have the last value which was assigned to them in the loop: 
+
 - Reassigning a multivector variable:
 ```
 fn main() {
@@ -94,6 +100,7 @@ fn main() {
 	v // is now 3
 }
 ```
+
 - Reassigning array elements:
 ```
 fn main() {
@@ -104,14 +111,14 @@ fn main() {
 	a[0], a[1], a[2] // a is now {1, 2, 3}
 }
 ```
-- Expanding an array:
 
+- Expanding an array:
 ```
 fn main() {
 	a[] = {} // len(a) = 0
-	a2[] = {0, 1, 2}
+	a2[] = {0, 1, 2, 3}
 	for (i; 0; 3; 1) {
-		a[i] = len(a)
+		a[i] = a2[i+1]
 	}
 	a[0], a[1], a[2] // a is now {0, 1, 2}; len(a) = 3
 }
@@ -123,8 +130,8 @@ It is allowed to create variables inside of loops (as long as they're not arrays
 ```
 fn main() {
 	a[] = {1, 2, 3}
-	for (i; 0; 3; 1) {
-		v = a[i] // v is reassigned in each iteration.
+	for (i; 2; 5; 1) {
+		v = a[i-2] // v is reassigned in each iteration.
 		[...]
 	}
 	// v cannot be accessed here anymore.
