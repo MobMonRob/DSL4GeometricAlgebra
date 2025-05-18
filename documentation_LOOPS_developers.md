@@ -1,5 +1,6 @@
 # Loops
 >**_NOTE:_** Loops are currently only implemented in the `FastImplementation`!
+
 Loops are used to iterate through a code segment multiple times. Their execution is implemented in two ways, with one approach being [`GACalcAPI`-specific](#gacalcapi-method) and one being the [broader, "catch-all" approach](#java-native-method). This documentation is aimed at developers and advanced users of the DSL. For a more user-centric guide on how to use loops when writing programs for the DSL, it is recommended to refer to the [user documentation](documentation_LOOPS_users.md).
 
 # Grammar
