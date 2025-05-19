@@ -86,7 +86,6 @@ public class LoopTransform extends GeomAlgeParserBaseListener {
 		return loopTransform;
 	}
 	
-	
 	@Override
 	public void enterInsideLoopStmt (InsideLoopStmtContext ctx){ // Assess assignment (left of =)
 		if (null != ctx.assigned){
