@@ -183,13 +183,18 @@ Hint: The Unicode and Latex name for the symbol used for left contraction is "RI
 | precedence | symbol   | latex   | unicode | name | hints |
 | :--------: | :------: | ------- | ------- | ---- | ----- |
 | 4          |          |         | \u0020  | geometric product | Zero or more space characters are interpreted as the operator. |
-| 3          | &#x2227; | \wedge  | \u2227  | "wedge" or outer product (join, span for no common subspace) | joining linearily independend vectors/two disjoint subspaces: $A\wedge B =  \langle A B\rangle_{|k+l|}$ |
+| 3          | &#x2227; | \wedge  | \u2227  | "wedge" or outer product (join, span for no common subspace) | joining linearily independend vectors/two disjoint subspaces |
 | 1          | &#x002B; | +       | \u002B  | addition | |
 | 1          | &#x002D; | -       | \u002D  | subtraction | |
-| 3          | &#x230B; | \rfloor | \u230B  | left contraction | $A\rfloor B = \langle A B\rangle_{|l-k|}$ |
+| 3          | &#x230B; | \rfloor | \u230B  | left contraction |  |
 | 3          | &#x230A; | \lfloor | \u230A  | right contraction | | where the grade operator for negative grades is zero. This implies that `something of higher grade cannot be contracted onto something of lower grade`. |
 | 3          | &#x2228; | \vee    | \u2228  | "vee" or regressive product (meet if intersected) | |
 | 2          | &#x002F; | /       | \u002F  | division (inverse geometric product) |  |
+
+##### Implementation
+$A\wedge B = \langle A B\rangle_{|k+l|}$
+
+$A\rfloor B = \langle A B\rangle_{|l-k|}$
 
 #### Additional 2-ary operators
 | precedence | symbol   | latex | unicode | description |
@@ -197,6 +202,9 @@ Hint: The Unicode and Latex name for the symbol used for left contraction is "RI
 | 3          | &#x22C5; | \cdot | \u22C5  | dot product (inner product without scalar parts) $A\cdot B=\langle A B\rangle_{|k-l|,k\neq 0, l\neq 0}$|
 | 3          | &#x2229; | \cap  | \u2229  | meet (intersection) = largest common subspace |
 | 3          | &#x222A; | \cup  | \u222A  | join  (union) of two subspaces is there smallest superspace = smallest space containing them both |
+
+##### Implementation
+$A\cdot B=\langle A B\rangle_{|k-l|,k\neq 0, l\neq 0}$
 
 ### 1-ary operators
 All 1-ary operators have higher precedence than 2-ary ones. \
