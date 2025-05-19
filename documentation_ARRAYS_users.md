@@ -1,4 +1,6 @@
 # Arrays
+>**_NOTE:_** Arrays are currently only implemented in the `FastImplementation`!
+
 Arrays are used to store multiple multivectors, which can be accessed and changed by addressing them with their indices, inside of a single variable. Since all data types are immutable (except if they are used [in loops](documentation_LOOPS_users.md)), the only option to change a multivector, while keeping its way of addressing it, is to put it in an array. This documentation should contain enough information to fully understand and use arrays when writing programs with the DSL. For more detailed information or when developing on the project, it is recommended to also refer to the [developer documentation](documentation_ARRAYS_developers.md).
 
 # Indices

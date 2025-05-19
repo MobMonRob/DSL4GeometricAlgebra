@@ -1,4 +1,6 @@
 # Loops
+>**_NOTE:_** Loops are currently only implemented in the `FastImplementation`!
+
 Loops are used to iterate through a code segment multiple times. Their execution is implemented in two ways, with one approach being [`GACalcAPI`-specific](#gacalcapi-method) and one being the [broader, "catch-all" approach](#java-native-method). This documentation is aimed at developers and advanced users of the DSL. For a more user-centric guide on how to use loops when writing programs for the DSL, it is recommended to refer to the [user documentation](documentation_LOOPS_users.md).
 
 # Grammar
@@ -31,7 +33,14 @@ Used if there are dependencies between iterations (one iteration influences the 
 
 ```
 for (i; 0; 3; 1){
-    a[i+1] = a[i] + 1 // a[i+1] changes the following value of a
+    a[i+1] = a[i] + x // a[i+1] changes the following value of a
+}
+```
+
+```
+for (i; 0; 3; 1){
+   a[i] = v + x	// This v is being changed by the following line for the next iteration
+   v = foo()
 }
 ```
 
@@ -50,7 +59,7 @@ Like mapaccum, except that intermediate results are not calculated/returned, whi
 
 ```
 for (i; 0; 3; 1){
-    v = v + 1 // v depends on the previous iteration
+    v = v + x // v depends on the previous iteration
 }
 ```
 
@@ -68,7 +77,7 @@ Used if the calculations between iterations are independent of each other.</td>
 
 ```
 for (i; 0; 3; 1){
-    a[i] = a[i] + 1 // a[i] depends only on the current value
+    a[i] = a[i] + x // a[i] depends only on the current value
 }
 ```
 
@@ -89,7 +98,7 @@ Like in [`FuncTransform`](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/
 
 ### Validating the loop
 The validations during the first parsing take place in the [`generateLoopTransform()`](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/LoopTransform.java#L73), [`enterInsideLoopStmt()`](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/LoopTransform.java#L100) and [`enterArrayAccessExpr()`](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/LoopTransform.java#L138). 
-- [`generateLoopTransform()`](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/LoopTransform.java#L73) created the `LoopTransform` object and handles the [loop parameters](documentation_LOOPS_users.md#loop-parameters), using [`addIterator()`](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/LoopTransform.java#L326) to parse the iterator variable and [`parseLoopParam()`](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/LoopTransform.java#L314) to parse the other loop parameters. The validation for the iterator variable consists of ensuring that no variable with the same name has been declared before. For the other parameters, the validation consits of ensuring that the none of the parameters is the iterator variable, since that could lead to a never-ending loop.
+- [`generateLoopTransform()`](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/LoopTransform.java#L73) creates the `LoopTransform` object and handles the [loop parameters](documentation_LOOPS_users.md#loop-parameters), using [`addIterator()`](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/LoopTransform.java#L326) to parse the iterator variable and [`parseLoopParam()`](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/LoopTransform.java#L314) to parse the other loop parameters. The validation for the iterator variable consists of ensuring that no variable with the same name has been declared before. For the other parameters, the validation consits of ensuring that the none of the parameters is the iterator variable, since that could lead to a never-ending loop.
 - [`enterInsideLoopStmt()`](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/LoopTransform.java#L100) is used to parse the left side of assignments in the loop body. Here, the validation consists of ensuring that only correct assignments are made, meaning that: No multivector variable is accessed as array variable (or vice versa), the iterator variable isn't reassigned and arrays are accessed correctly.
 - [`enterArrayAccessExpr()`](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/LoopTransform.java#L138) is used to parse array accesses on the right side of assignments in the loop body. Here, it is validated that arrays are accessed correctly.
 
@@ -128,7 +137,7 @@ for (i; 5; 0; -1){
 </td>
 <td>
 
-The `GACalcAPI` functions don't get information about the loop parameters other than the number of iterations (see the [handleArrayArgs()](#loopapitransform)).  </td>
+The `GACalcAPI` functions don't get information about the loop parameters other than the number of iterations (see [handleArrayArgs()](#loopapitransform)).  </td>
 <td>
 
 This can be solved by further manipulating the arrays which are supplied to the functions: 
@@ -337,7 +346,7 @@ This is used to keep track of which variables are being assigned at which point 
 </td>
 <td>
 
-Contains the names of all variables which are being accessed (_right of the assignment_) before they are being reassigned (_left of the assignment_) in the loop. 
+Contains the names of all variables which are being accessed (_right of the assignment_) before they are being reassigned (_left of the assignment_) in the loop. That means this set only contains variables which, when parsed in an expression, have not previously been parsed on the left side.
 
 This is used to [detect which multivectors are being](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/LoopTransform.java#L190) [`accumulated`](#mapaccum).
 </td>
@@ -363,7 +372,7 @@ Variable names are added if they occur on the left side of the assignment and re
 </td>
 <td>
 
-[`LoopTransformSharedResources`](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/_utils/LoopTransformSharedResources.java)</td>
+[`LoopTransform`](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/LoopTransform.java)</td>
 </tr>
 <tr>
 <td>
@@ -455,7 +464,7 @@ The `args` parameters are filled with the values of the loop which are already k
 </td>
 <td>
 
-The `params` parameters are filled with purely symbolic multivectors representations `args` parameters. These purely symbolic multivectors are used to represent relations of variables to each other without calculating their actual values. For each `args` parameter, a `params` parameter has to be supplied:
+The `params` parameters are filled with purely symbolic multivector representations of the `args` parameters. These purely symbolic multivectors are used to represent relations of variables to each other without calculating their actual values. For each `args` parameter, a `params` parameter has to be supplied:
 - `paramsAccum`: Purely symbolic representations of multivectors of variables which are being accumulated using [`mapaccum`](#mapaccum) or [`fold`](#fold).
 - `paramsSimple`: Purely symbolic representations of the multivectors and array elements which are being used, but not reassigned, in the loop.
 - `paramsArray`: Purely symbolic representations of the arrays which are being reassigned in the loop.
@@ -478,7 +487,7 @@ The `params` parameters are filled with purely symbolic multivectors representat
 </td>
 <td>
 
-The `returns` parameters are filled with the representations of each line of the loop and [consist of](SECTION TO FILL THE ARRAYS) combinations of elements from the `params` arrays:
+The `returns` parameters are filled with the representations of each line of the loop and consist of combinations of elements from the `params` arrays:
 - `returnsAccum`: Contains the representations of all lines which affect the following iteration. 
 - `returnsArray`: Contains the representations of all lines which don't affect the following iteration.
 </td>
@@ -581,18 +590,18 @@ This contains the correct reference to any given array variable and has the purp
 </td>
 <td>
 
-This is used to track the values of multiple iterators in a nested loop. For the outer loop's iterator, it contains its current value. See [section on nested loops](SECTION ON NESTED LOOPS).
+This is used to track the values of multiple iterators in a nested loop. For the outer loop's iterator, it contains its current value. See [section on nested loops](#jva-native-method).
 </td>
 <td>
 
-[`LoopTransformSharedResources`](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/_utils/LoopTransformSharedResources.java)
+[`LoopTransformSharedResources`](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/_utils/LoopTransformSharedResources.java) and [`ExprTransform`](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/ExprTransform.java)
 </td>
 </tr>
 </tbody>
 </table>
 
 ## Executing the loop
-In [`LoopTransform`.`exitLoopBody`](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/LoopTransform.java#L182), the actual execution of the loop is initiated. At this point, the [arrays used to determine which execution method is going to be used](#variables-used-to-determine-which-execution-method-is-going-to-be-used) are completely filled and `nativeLoop` has its final value. If it's `true`, the [native method](#java-native-method) is called, if it's `false`, the [`GACalcAPI`](#gacalcapi-method) is used.
+In [`LoopTransform`.`exitLoopBody()`](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/LoopTransform.java#L182), the actual execution of the loop is initiated. At this point, the [arrays used to determine which execution method is going to be used](#variables-used-to-determine-which-execution-method-is-going-to-be-used) are completely filled and `nativeLoop` has its final value. If it's `true`, the [native method](#java-native-method) is called, if it's `false`, the [`GACalcAPI`](#gacalcapi-method) is used.
 
 ### `GACalcAPI` method
 While the [variables used to determine which execution method is going to be used](#variables-used-to-determine-which-execution-method-is-going-to-be-used) are filled, the [arrays needed for the function calls](#arrays-directly-used-by-the-gacalcapi-method) aren't yet. To fill them, [`LoopAPITransform`.`generate()`](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/LoopAPITransform.java) is [called for each line of the loop](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/LoopTransform.java#L194).
@@ -665,6 +674,8 @@ After the loop has been executed, the results still have to be stored back in th
 
 #### [`applyLoopResults()`](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/LoopTransform.java#258)
 Since [`accumulated` lines](#mapaccum) manipulate an array before [non-`accumulated` lines](#map), they also have to be stored back first. This is achieved by ordering the accessed indices by largest first, so that the lines with the largest indices are being stored back before the lines with smaller indices are.  
+
+---
 
 ### [`Java-native method`](DSL4GA_Impl_Fast/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/fast/parsing/astConstruction/LoopTransform.java#L249)
 The Java-native methode to execute the loops uses a Java for-loop with the same parameters as the loop that is being parsed.

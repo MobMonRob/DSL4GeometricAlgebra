@@ -1,4 +1,6 @@
 # Arrays
+>**_NOTE:_** Arrays are currently only implemented in the `FastImplementation`!
+
 Arrays are used to store multiple multivectors, which can be accessed and changed by addressing them with their indices, inside of a single variable. The arrays are implemented using [`MultivectorSymbolicArray`](https://github.com/orat/GACalcAPI/blob/master/src/main/java/de/orat/math/gacalc/api/MultivectorSymbolicArray.java). This documentation is aimed at developers and advanced users of the DSL. For a more user-centric guide on how to use arrays when writing programs for the DSL, it is recommended to refer to the [user documentation](documentation_ARRAYS_users.md).
 
 # Grammar
