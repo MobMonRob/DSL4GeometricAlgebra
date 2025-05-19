@@ -10,9 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LoopArrayTest {
-	private final ImplementationSpecifics specifics = new FastImplSpecifics();
-	private final ProgramRunner runner = new ProgramRunner(specifics);
+	private final ImplementationSpecifics fastSpecifics = new FastImplSpecifics();
+	private final ProgramRunner fastRunner = new ProgramRunner(fastSpecifics);
+	private final List<ProgramRunner> runners = new ArrayList<>(List.of(fastRunner));
 	private final List<String> expectedStrings = new ArrayList<>();
+
 
 	@Test
 	void simpleMapLoop (){
@@ -27,14 +29,15 @@ public class LoopArrayTest {
 			}
 		""";
 
-
-		expectedStrings.add(specifics.createMultivectorString(3));
-		expectedStrings.add(specifics.createMultivectorString(4));
-		expectedStrings.add(specifics.createMultivectorString(5));
-
-		runner.parseAndRun(code);
-
-		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		for (ProgramRunner runner : runners) {
+			expectedStrings.add(runner.createMultivectorString(3));
+			expectedStrings.add(runner.createMultivectorString(4));
+			expectedStrings.add(runner.createMultivectorString(5));
+	
+			runner.parseAndRun(code);
+	
+			Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		}
 	}
 
 	@Test
@@ -49,15 +52,16 @@ public class LoopArrayTest {
 			}
 		""";
 
-
-		expectedStrings.add(specifics.createMultivectorString(1));
-		expectedStrings.add(specifics.createMultivectorString(3));
-		expectedStrings.add(specifics.createMultivectorString(5));
-		expectedStrings.add(specifics.createMultivectorString(7));
-
-		runner.parseAndRun(code);
-
-		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		for (ProgramRunner runner : runners) {
+			expectedStrings.add(runner.createMultivectorString(1));
+			expectedStrings.add(runner.createMultivectorString(3));
+			expectedStrings.add(runner.createMultivectorString(5));
+			expectedStrings.add(runner.createMultivectorString(7));
+	
+			runner.parseAndRun(code);
+	
+			Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		}
 	}
 
 	@Test
@@ -78,15 +82,17 @@ public class LoopArrayTest {
 			} 
 		""";
 
-		expectedStrings.add(specifics.createMultivectorString(3));
-		expectedStrings.add(specifics.createMultivectorString(10));
-		expectedStrings.add(specifics.createMultivectorString(21));
-		expectedStrings.add(specifics.createMultivectorString(10));
-		expectedStrings.add(specifics.createMultivectorString(17));
-
-		runner.parseAndRun(code);
-
-		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		for (ProgramRunner runner : runners) {
+			expectedStrings.add(runner.createMultivectorString(3));
+			expectedStrings.add(runner.createMultivectorString(10));
+			expectedStrings.add(runner.createMultivectorString(21));
+			expectedStrings.add(runner.createMultivectorString(10));
+			expectedStrings.add(runner.createMultivectorString(17));
+	
+			runner.parseAndRun(code);
+	
+			Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		}
 	}
 
 
@@ -110,21 +116,21 @@ public class LoopArrayTest {
 			}
 		""";
 
-
-
-		expectedStrings.add(specifics.createMultivectorString(52));
-		expectedStrings.add(specifics.createMultivectorString(5));
-		expectedStrings.add(specifics.createMultivectorString(18));
-		expectedStrings.add(specifics.createMultivectorString(34));
-
-		expectedStrings.add(specifics.createMultivectorString(47));
-		expectedStrings.add(specifics.createMultivectorString(0));
-		expectedStrings.add(specifics.createMultivectorString(13));
-		expectedStrings.add(specifics.createMultivectorString(29));
-
-		runner.parseAndRun(code);
-
-		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		for (ProgramRunner runner : runners) {
+			expectedStrings.add(runner.createMultivectorString(52));
+			expectedStrings.add(runner.createMultivectorString(5));
+			expectedStrings.add(runner.createMultivectorString(18));
+			expectedStrings.add(runner.createMultivectorString(34));
+	
+			expectedStrings.add(runner.createMultivectorString(47));
+			expectedStrings.add(runner.createMultivectorString(0));
+			expectedStrings.add(runner.createMultivectorString(13));
+			expectedStrings.add(runner.createMultivectorString(29));
+	
+			runner.parseAndRun(code);
+	
+			Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		}
 	}
 
 
@@ -148,22 +154,22 @@ public class LoopArrayTest {
 				x[0], x[1], x[2], x[3], b[0], b[1], b[2], b[3] 
 			}
 		""";
-
-
-
-		expectedStrings.add(specifics.createMultivectorString(52));
-		expectedStrings.add(specifics.createMultivectorString(5));
-		expectedStrings.add(specifics.createMultivectorString(18));
-		expectedStrings.add(specifics.createMultivectorString(34));
-
-		expectedStrings.add(specifics.createMultivectorString(47));
-		expectedStrings.add(specifics.createMultivectorString(0));
-		expectedStrings.add(specifics.createMultivectorString(13));
-		expectedStrings.add(specifics.createMultivectorString(29));
-
-		runner.parseAndRun(code);
-
-		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		
+		for (ProgramRunner runner : runners) {
+			expectedStrings.add(runner.createMultivectorString(52));
+			expectedStrings.add(runner.createMultivectorString(5));
+			expectedStrings.add(runner.createMultivectorString(18));
+			expectedStrings.add(runner.createMultivectorString(34));
+	
+			expectedStrings.add(runner.createMultivectorString(47));
+			expectedStrings.add(runner.createMultivectorString(0));
+			expectedStrings.add(runner.createMultivectorString(13));
+			expectedStrings.add(runner.createMultivectorString(29));
+	
+			runner.parseAndRun(code);
+	
+			Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		}
 	}
 
 	@Test
@@ -182,22 +188,22 @@ public class LoopArrayTest {
 				x[0], x[1], x[2], x[3], b[0], b[1], b[2], b[3] 
 			}
 		""";
-
-
-
-		expectedStrings.add(specifics.createMultivectorString(11));
-		expectedStrings.add(specifics.createMultivectorString(12));
-		expectedStrings.add(specifics.createMultivectorString(13));
-		expectedStrings.add(specifics.createMultivectorString(14));
-
-		expectedStrings.add(specifics.createMultivectorString(4));
-		expectedStrings.add(specifics.createMultivectorString(5));
-		expectedStrings.add(specifics.createMultivectorString(6));
-		expectedStrings.add(specifics.createMultivectorString(7));
-
-		runner.parseAndRun(code);
-
-		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		
+		for (ProgramRunner runner : runners) {
+			expectedStrings.add(runner.createMultivectorString(11));
+			expectedStrings.add(runner.createMultivectorString(12));
+			expectedStrings.add(runner.createMultivectorString(13));
+			expectedStrings.add(runner.createMultivectorString(14));
+	
+			expectedStrings.add(runner.createMultivectorString(4));
+			expectedStrings.add(runner.createMultivectorString(5));
+			expectedStrings.add(runner.createMultivectorString(6));
+			expectedStrings.add(runner.createMultivectorString(7));
+	
+			runner.parseAndRun(code);
+	
+			Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		}
 	}
 
 	@Test
@@ -218,19 +224,19 @@ public class LoopArrayTest {
 			}
 		""";
 
-
-
-		expectedStrings.add(specifics.createMultivectorString(34));
-		expectedStrings.add(specifics.createMultivectorString(45));
-		expectedStrings.add(specifics.createMultivectorString(34));
-		expectedStrings.add(specifics.createMultivectorString(85));
-		expectedStrings.add(specifics.createMultivectorString(66));
-		expectedStrings.add(specifics.createMultivectorString(1));
-
-
-		runner.parseAndRun(code);
-
-		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		for (ProgramRunner runner : runners) {
+			expectedStrings.add(runner.createMultivectorString(34));
+			expectedStrings.add(runner.createMultivectorString(45));
+			expectedStrings.add(runner.createMultivectorString(34));
+			expectedStrings.add(runner.createMultivectorString(85));
+			expectedStrings.add(runner.createMultivectorString(66));
+			expectedStrings.add(runner.createMultivectorString(1));
+	
+	
+			runner.parseAndRun(code);
+	
+			Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		}
 	}
 	
 	
@@ -248,14 +254,15 @@ public class LoopArrayTest {
 			}
 		""";
 
-
-		expectedStrings.add(specifics.createMultivectorString(3));
-		expectedStrings.add(specifics.createMultivectorString(6));
-		expectedStrings.add(specifics.createMultivectorString(9));
-
-		runner.parseAndRun(code);
-
-		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		for (ProgramRunner runner : runners) {
+			expectedStrings.add(runner.createMultivectorString(3));
+			expectedStrings.add(runner.createMultivectorString(6));
+			expectedStrings.add(runner.createMultivectorString(9));
+	
+			runner.parseAndRun(code);
+	
+			Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		}
 	}
 
 
@@ -274,14 +281,15 @@ public class LoopArrayTest {
 			}
 		""";
 
-
-		expectedStrings.add(specifics.createMultivectorString(3));
-		expectedStrings.add(specifics.createMultivectorString(7));
-		expectedStrings.add(specifics.createMultivectorString(8));
-
-		runner.parseAndRun(code);
-
-		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		for (ProgramRunner runner : runners) {
+			expectedStrings.add(runner.createMultivectorString(3));
+			expectedStrings.add(runner.createMultivectorString(7));
+			expectedStrings.add(runner.createMultivectorString(8));
+	
+			runner.parseAndRun(code);
+	
+			Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		}
 	}
 	
 	
@@ -304,19 +312,19 @@ public class LoopArrayTest {
 			}
 		""";
 
-
-		expectedStrings.add(specifics.createMultivectorString(3));
-		expectedStrings.add(specifics.createMultivectorString(47));
-		expectedStrings.add(specifics.createMultivectorString(89));
-		
-		expectedStrings.add(specifics.createMultivectorString(17));
-		expectedStrings.add(specifics.createMultivectorString(18));
-		expectedStrings.add(specifics.createMultivectorString(19));
-
-		runner.parseAndRun(code);
-
-		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		for (ProgramRunner runner : runners) {
+			expectedStrings.add(runner.createMultivectorString(3));
+			expectedStrings.add(runner.createMultivectorString(47));
+			expectedStrings.add(runner.createMultivectorString(89));
+			
+			expectedStrings.add(runner.createMultivectorString(17));
+			expectedStrings.add(runner.createMultivectorString(18));
+			expectedStrings.add(runner.createMultivectorString(19));
 	
+			runner.parseAndRun(code);
+	
+			Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		}	
 	}
 	
 	
@@ -333,13 +341,15 @@ public class LoopArrayTest {
 			}
 		""";
 
-		expectedStrings.add(specifics.createMultivectorString(11));
-		expectedStrings.add(specifics.createMultivectorString(16));
-		expectedStrings.add(specifics.createMultivectorString(21));
-
-		runner.parseAndRun(code);
-
-		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		for (ProgramRunner runner : runners) {
+			expectedStrings.add(runner.createMultivectorString(11));
+			expectedStrings.add(runner.createMultivectorString(16));
+			expectedStrings.add(runner.createMultivectorString(21));
+	
+			runner.parseAndRun(code);
+	
+			Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		}
 	}
 	
 	
@@ -360,16 +370,18 @@ public class LoopArrayTest {
 			}
 		""";
 
-		expectedStrings.add(specifics.createMultivectorString(54));
-		expectedStrings.add(specifics.createMultivectorString(7));
-		expectedStrings.add(specifics.createMultivectorString(20));
-		expectedStrings.add(specifics.createMultivectorString(36));
-		expectedStrings.add(specifics.createMultivectorString(15));
-		expectedStrings.add(specifics.createMultivectorString(30));
-
-		runner.parseAndRun(code);
-
-		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		for (ProgramRunner runner : runners) {
+			expectedStrings.add(runner.createMultivectorString(54));
+			expectedStrings.add(runner.createMultivectorString(7));
+			expectedStrings.add(runner.createMultivectorString(20));
+			expectedStrings.add(runner.createMultivectorString(36));
+			expectedStrings.add(runner.createMultivectorString(15));
+			expectedStrings.add(runner.createMultivectorString(30));
+	
+			runner.parseAndRun(code);
+	
+			Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		}
 	}
 	
 	@Test
@@ -384,11 +396,13 @@ public class LoopArrayTest {
 			}   
 		""";
 		
-		expectedStrings.add(specifics.createMultivectorString(5));
+		for (ProgramRunner runner : runners) {
+			expectedStrings.add(runner.createMultivectorString(5));
 		
-		runner.parseAndRun(code);
-
-		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+			runner.parseAndRun(code);
+	
+			Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		}
 	}
 	
 	
@@ -406,13 +420,15 @@ public class LoopArrayTest {
 			}   
 		""";
 		
-		expectedStrings.add(specifics.createMultivectorString(50));
-		expectedStrings.add(specifics.createMultivectorString(16));
-		expectedStrings.add(specifics.createMultivectorString(16));
-		
-		runner.parseAndRun(code);
-
-		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		for (ProgramRunner runner : runners) {
+			expectedStrings.add(runner.createMultivectorString(50));
+			expectedStrings.add(runner.createMultivectorString(16));
+			expectedStrings.add(runner.createMultivectorString(16));
+			
+			runner.parseAndRun(code);
+	
+			Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		}
 	}
 	
 	@Test
@@ -428,12 +444,14 @@ public class LoopArrayTest {
 			}
 		""";
 		
-		expectedStrings.add(specifics.createMultivectorString(0));
-		expectedStrings.add(specifics.createMultivectorString(1));
-		expectedStrings.add(specifics.createMultivectorString(2));
-		
-		runner.parseAndRun(code);
-
-		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		for (ProgramRunner runner : runners) {
+			expectedStrings.add(runner.createMultivectorString(0));
+			expectedStrings.add(runner.createMultivectorString(1));
+			expectedStrings.add(runner.createMultivectorString(2));
+			
+			runner.parseAndRun(code);
+	
+			Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		}
 	}
 }

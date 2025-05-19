@@ -11,9 +11,11 @@ import org.junit.jupiter.api.Test;
 
 
 public class RealWorldTest {
-	private final ImplementationSpecifics specifics = new FastImplSpecifics();
-	private final ProgramRunner runner = new ProgramRunner(specifics);
+	private final ImplementationSpecifics fastSpecifics = new FastImplSpecifics();
+	private final ProgramRunner fastRunner = new ProgramRunner(fastSpecifics);
+	private final List<ProgramRunner> runners = new ArrayList<>(List.of(fastRunner));
 	private final List<String> expectedStrings = new ArrayList<>();
+
 	
 	@Test
 	public void test1(){
@@ -69,9 +71,11 @@ public class RealWorldTest {
 		}
 		""";
 		
-		runner.parseAndRun(code);
+		for (ProgramRunner runner : runners) {
+			runner.parseAndRun(code);
 		
-		assertTrue(true);
+			//assertTrue(true);
+		}
 	}
 	
 	
@@ -89,13 +93,14 @@ public class RealWorldTest {
 			}   
 		""";
 		
-		expectedStrings.add(specifics.createMultivectorString(1));
-		expectedStrings.add(specifics.createMultivectorString(16));
-		expectedStrings.add(specifics.createMultivectorString(17));
-		
-		runner.parseAndRun(code);
-
-		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
-		
+		for (ProgramRunner runner : runners) {
+			expectedStrings.add(runner.createMultivectorString(1));
+			expectedStrings.add(runner.createMultivectorString(16));
+			expectedStrings.add(runner.createMultivectorString(17));
+			
+			runner.parseAndRun(code);
+	
+			Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		}		
 	}
 }

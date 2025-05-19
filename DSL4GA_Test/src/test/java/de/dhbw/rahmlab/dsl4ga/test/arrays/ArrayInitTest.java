@@ -12,9 +12,11 @@ import org.junit.jupiter.api.Test;
 
 
 public class ArrayInitTest {
-	private final ImplementationSpecifics specifics = new FastImplSpecifics();
-	private final ProgramRunner runner = new ProgramRunner(specifics);
+	private final ImplementationSpecifics fastSpecifics = new FastImplSpecifics();
+	private final ProgramRunner fastRunner = new ProgramRunner(fastSpecifics);
+	private final List<ProgramRunner> runners = new ArrayList<>(List.of(fastRunner));
 	private final List<String> expectedStrings = new ArrayList<>();
+
 
 	@Test
 	void correctInit (){
@@ -26,10 +28,14 @@ public class ArrayInitTest {
 			}
 		""";
 		
-		expectedStrings.add(specifics.createMultivectorString(1));
-		expectedStrings.add(specifics.createMultivectorString(2));
-		runner.parseAndRun(code);	
-		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		for (ProgramRunner runner : runners) {
+			expectedStrings.add(runner.createMultivectorString(1));
+			expectedStrings.add(runner.createMultivectorString(2));
+			
+			runner.parseAndRun(code);	
+			
+			Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		}
 	}
 	
 	@Test
@@ -42,9 +48,13 @@ public class ArrayInitTest {
 			}
 		""";
 		
-		expectedStrings.add(specifics.createMultivectorString(1));
-		runner.parseAndRun(code);	
-		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		for (ProgramRunner runner : runners) {
+			expectedStrings.add(runner.createMultivectorString(1));
+		
+			runner.parseAndRun(code);	
+		
+			Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		}
 	}
 	
 	@Test
@@ -56,6 +66,8 @@ public class ArrayInitTest {
 		}
 		""";
 		
-		Assertions.assertThrows(ValidationException.class, () -> runner.parseAndRun(code));
+		for (ProgramRunner runner : runners) {
+			Assertions.assertThrows(ValidationException.class, () -> runner.parseAndRun(code));
+		}
 	}
 }

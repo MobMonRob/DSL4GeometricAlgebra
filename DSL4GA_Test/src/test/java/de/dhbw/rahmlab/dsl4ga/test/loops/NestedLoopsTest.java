@@ -10,9 +10,11 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class NestedLoopsTest {
-	private final ImplementationSpecifics specifics = new FastImplSpecifics();
-	private final ProgramRunner runner = new ProgramRunner(specifics);
+	private final ImplementationSpecifics fastSpecifics = new FastImplSpecifics();
+	private final ProgramRunner fastRunner = new ProgramRunner(fastSpecifics);
+	private final List<ProgramRunner> runners = new ArrayList<>(List.of(fastRunner));
 	private final List<String> expectedStrings = new ArrayList<>();
+
 	
 	@Test
 	void simpleNestedLoop(){
@@ -30,11 +32,13 @@ public class NestedLoopsTest {
 			}
 		""";
 
-		expectedStrings.add(specifics.createMultivectorString(31));
+		for (ProgramRunner runner : runners) {
+			expectedStrings.add(runner.createMultivectorString(31));
 
-		runner.parseAndRun(code);
-
-		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+			runner.parseAndRun(code);
+	
+			Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		}
 	}
 	
 	
@@ -57,16 +61,18 @@ public class NestedLoopsTest {
 			}
 		""";
 
-		expectedStrings.add(specifics.createMultivectorString(5));
-		expectedStrings.add(specifics.createMultivectorString(14));
-		expectedStrings.add(specifics.createMultivectorString(14));
-		expectedStrings.add(specifics.createMultivectorString(5));
-		expectedStrings.add(specifics.createMultivectorString(14));
-		expectedStrings.add(specifics.createMultivectorString(14));
-
-		runner.parseAndRun(code);
-
-		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		for (ProgramRunner runner : runners) {
+			expectedStrings.add(runner.createMultivectorString(5));
+			expectedStrings.add(runner.createMultivectorString(14));
+			expectedStrings.add(runner.createMultivectorString(14));
+			expectedStrings.add(runner.createMultivectorString(5));
+			expectedStrings.add(runner.createMultivectorString(14));
+			expectedStrings.add(runner.createMultivectorString(14));
+	
+			runner.parseAndRun(code);
+	
+			Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		}
 	}
 	
 	
@@ -90,20 +96,22 @@ public class NestedLoopsTest {
 			}
 		""";
 
-		expectedStrings.add(specifics.createMultivectorString(6));
-		expectedStrings.add(specifics.createMultivectorString(8));
-		expectedStrings.add(specifics.createMultivectorString(10));
-		expectedStrings.add(specifics.createMultivectorString(10));
-		expectedStrings.add(specifics.createMultivectorString(10));
-		
-		expectedStrings.add(specifics.createMultivectorString(4));
-		expectedStrings.add(specifics.createMultivectorString(4));
-		expectedStrings.add(specifics.createMultivectorString(3));
-		expectedStrings.add(specifics.createMultivectorString(4));
-
-		runner.parseAndRun(code);
-
-		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		for (ProgramRunner runner : runners) {
+			expectedStrings.add(runner.createMultivectorString(6));
+			expectedStrings.add(runner.createMultivectorString(8));
+			expectedStrings.add(runner.createMultivectorString(10));
+			expectedStrings.add(runner.createMultivectorString(10));
+			expectedStrings.add(runner.createMultivectorString(10));
+			
+			expectedStrings.add(runner.createMultivectorString(4));
+			expectedStrings.add(runner.createMultivectorString(4));
+			expectedStrings.add(runner.createMultivectorString(3));
+			expectedStrings.add(runner.createMultivectorString(4));
+	
+			runner.parseAndRun(code);
+	
+			Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		}
 	}
 	
 	@Test
@@ -126,37 +134,22 @@ public class NestedLoopsTest {
 			}
 		""";
 
-		expectedStrings.add(specifics.createMultivectorString(10));
-		expectedStrings.add(specifics.createMultivectorString(10));
-		expectedStrings.add(specifics.createMultivectorString(10));
-		expectedStrings.add(specifics.createMultivectorString(10));
-		
-		expectedStrings.add(specifics.createMultivectorString(13));
-		expectedStrings.add(specifics.createMultivectorString(13));
-		expectedStrings.add(specifics.createMultivectorString(13));
-		expectedStrings.add(specifics.createMultivectorString(13));
-
-		runner.parseAndRun(code);
-
-		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
-	}
+		for (ProgramRunner runner : runners) {
+			expectedStrings.add(runner.createMultivectorString(10));
+			expectedStrings.add(runner.createMultivectorString(10));
+			expectedStrings.add(runner.createMultivectorString(10));
+			expectedStrings.add(runner.createMultivectorString(10));
+			
+			expectedStrings.add(runner.createMultivectorString(13));
+			expectedStrings.add(runner.createMultivectorString(13));
+			expectedStrings.add(runner.createMultivectorString(13));
+			expectedStrings.add(runner.createMultivectorString(13));
 	
-	@Test
-	void loopScopedVariablesOutsideNestedLoops(){
-		String code = """
-			fn main (){
-				for (i; 0; 3; 1) {
-					for (e; 0; 5; 1) {  
-						v2 = v + 2
-					}	
-				}
-				v2
-			}
-		""";
-		
-		Assertions.assertThrows(ValidationException.class, ()->runner.parseAndRun(code));
-	}
+			runner.parseAndRun(code);
 	
+			Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		}
+	}
 	
 	@Test
 	void loopScopedVariablesInsideNestedLoops(){
@@ -175,11 +168,13 @@ public class NestedLoopsTest {
 			}
 		""";
 		
-		expectedStrings.add(specifics.createMultivectorString(16));
+		for (ProgramRunner runner : runners) {
+			expectedStrings.add(runner.createMultivectorString(16));
 		
-		runner.parseAndRun(code);
-		
-		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+			runner.parseAndRun(code);
+			
+			Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		}
 	}
 	
 	@Test 
@@ -198,15 +193,16 @@ public class NestedLoopsTest {
 			}
 		""";
 		
-		expectedStrings.add(specifics.createMultivectorString(14));
-		expectedStrings.add(specifics.createMultivectorString(14));
-		expectedStrings.add(specifics.createMultivectorString(14));
-		expectedStrings.add(specifics.createMultivectorString(4));
-		
-		runner.parseAndRun(code);
-		
-		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
-		
+		for (ProgramRunner runner : runners) {
+			expectedStrings.add(runner.createMultivectorString(14));
+			expectedStrings.add(runner.createMultivectorString(14));
+			expectedStrings.add(runner.createMultivectorString(14));
+			expectedStrings.add(runner.createMultivectorString(4));
+			
+			runner.parseAndRun(code);
+			
+			Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		}
 	}
 	
 	@Test
@@ -225,13 +221,14 @@ public class NestedLoopsTest {
 			}
 		""";
 		
-		expectedStrings.add(specifics.createMultivectorString(18));
-		expectedStrings.add(specifics.createMultivectorString(6));
+		for (ProgramRunner runner : runners) {
+			expectedStrings.add(runner.createMultivectorString(18));
+			expectedStrings.add(runner.createMultivectorString(6));
 		
-		runner.parseAndRun(code);
-		
-		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
-		
+			runner.parseAndRun(code);
+			
+			Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		}
 	}
 	
 	@Test
@@ -251,7 +248,9 @@ public class NestedLoopsTest {
 			}
 		""";
 		
-		Assertions.assertThrows(ValidationException.class, ()->runner.parseAndRun(code));
+		for (ProgramRunner runner : runners) {
+			Assertions.assertThrows(ValidationException.class, ()->runner.parseAndRun(code));
+		}
 	}
 	
 	@Test
@@ -271,6 +270,26 @@ public class NestedLoopsTest {
 			}
 		""";
 
-		Assertions.assertThrows(ValidationException.class, () -> runner.parseAndRun(code));
+		for (ProgramRunner runner : runners) {
+			Assertions.assertThrows(ValidationException.class, () -> runner.parseAndRun(code));
+		}
+	}
+	
+	@Test
+	void loopScopedVariablesOutsideNestedLoops(){
+		String code = """
+			fn main (){
+				for (i; 0; 3; 1) {
+					for (e; 0; 5; 1) {  
+						v2 = v + 2
+					}	
+				}
+				v2
+			}
+		""";
+		
+		for (ProgramRunner runner : runners) {
+			Assertions.assertThrows(ValidationException.class, ()->runner.parseAndRun(code));
+		}
 	}
 }

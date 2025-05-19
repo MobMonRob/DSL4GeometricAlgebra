@@ -28,5 +28,13 @@ public class ProgramRunner {
 
 	public List<String> getAnswerStrings() {
 		return answerStrings;
-	}	
+	}
+	
+	public String createMultivectorString(Object matrix) {
+		return specifics.createMultivectorString(matrix);
+	}
+	
+	public String createMultivectorString(int i) {
+		return specifics.createMultivectorString(i);
+	}
 }

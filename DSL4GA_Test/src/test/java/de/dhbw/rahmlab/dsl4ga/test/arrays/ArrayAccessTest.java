@@ -10,13 +10,11 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class ArrayAccessTest {
-	private final ImplementationSpecifics specifics = new FastImplSpecifics();
-	private final ProgramRunner runner = new ProgramRunner(specifics);
+	private final ImplementationSpecifics fastSpecifics = new FastImplSpecifics();
+	private final ProgramRunner fastRunner = new ProgramRunner(fastSpecifics);
+	private final List<ProgramRunner> runners = new ArrayList<>(List.of(fastRunner));
 	private final List<String> expectedStrings = new ArrayList<>();
-	
-	//Einfacher Return wird indirekt schon im Init getestet
-	
-	
+
 	@Test
 	void simpleAccess(){
 		String code = """
@@ -27,9 +25,13 @@ public class ArrayAccessTest {
 			}      
 		""";
 		
-		expectedStrings.add(specifics.createMultivectorString(1));
-		runner.parseAndRun(code);
-		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		for (ProgramRunner runner : runners) {
+			expectedStrings.add(runner.createMultivectorString(1));
+		
+			runner.parseAndRun(code);
+			
+			Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		}
 	}
 	
 	
@@ -42,11 +44,15 @@ public class ArrayAccessTest {
 			}      
 		""";
 		
-		expectedStrings.add(specifics.createMultivectorString(5));
-		expectedStrings.add(specifics.createMultivectorString(6));
-		expectedStrings.add(specifics.createMultivectorString(7));
-		runner.parseAndRun(code);
-		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		for (ProgramRunner runner : runners) {
+			expectedStrings.add(runner.createMultivectorString(5));
+			expectedStrings.add(runner.createMultivectorString(6));
+			expectedStrings.add(runner.createMultivectorString(7));
+			
+			runner.parseAndRun(code);
+			
+			Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		}
 	}
 	
 	
@@ -59,9 +65,13 @@ public class ArrayAccessTest {
 			}      
 		""";
 		
-		expectedStrings.add(specifics.createMultivectorString(11));
-		runner.parseAndRun(code);
-		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		for (ProgramRunner runner : runners) {
+			expectedStrings.add(runner.createMultivectorString(11));
+			
+			runner.parseAndRun(code);
+			
+			Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		}
 	}
 	
 	
@@ -75,11 +85,14 @@ public class ArrayAccessTest {
 			}      
 		""";
 		
-		expectedStrings.add(specifics.createMultivectorString(1));
-		expectedStrings.add(specifics.createMultivectorString(2));
-		expectedStrings.add(specifics.createMultivectorString(3));
-		runner.parseAndRun(code);
-		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		for (ProgramRunner runner : runners) {
+			expectedStrings.add(runner.createMultivectorString(1));
+			expectedStrings.add(runner.createMultivectorString(2));
+			expectedStrings.add(runner.createMultivectorString(3));
+			
+			runner.parseAndRun(code);
+			Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		}
 	}
 	
 	
@@ -93,9 +106,14 @@ public class ArrayAccessTest {
 				x
 			}      
 		""";
-		expectedStrings.add(specifics.createMultivectorString(2));
-		runner.parseAndRun(code);
-		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		
+		for (ProgramRunner runner : runners) {
+			expectedStrings.add(runner.createMultivectorString(2));
+		
+			runner.parseAndRun(code);
+		
+			Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		}
 	}
 	
 	
@@ -109,9 +127,14 @@ public class ArrayAccessTest {
 				x
 			}      
 		""";
-		expectedStrings.add(specifics.createMultivectorString(3));
-		runner.parseAndRun(code);
-		Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		
+		for (ProgramRunner runner : runners) {
+			expectedStrings.add(runner.createMultivectorString(3));
+			
+			runner.parseAndRun(code);
+			
+			Assertions.assertEquals(expectedStrings, runner.getAnswerStrings());
+		}
 	}
 	
 	@Test
@@ -124,7 +147,9 @@ public class ArrayAccessTest {
 			}      
 		""";
 		
-		Assertions.assertThrows(ValidationException.class, () -> runner.parseAndRun(code));
+		for (ProgramRunner runner : runners) {
+			Assertions.assertThrows(ValidationException.class, () -> runner.parseAndRun(code));
+		}
 	}
 	
 	
@@ -137,7 +162,9 @@ public class ArrayAccessTest {
 			}      
 		""";
 		
-		Assertions.assertThrows(ValidationException.class, () -> runner.parseAndRun(code));
+		for (ProgramRunner runner : runners) {
+			Assertions.assertThrows(ValidationException.class, () -> runner.parseAndRun(code));
+		}
 	}
 	
 	
@@ -150,7 +177,9 @@ public class ArrayAccessTest {
 			}      
 		""";
 		
-		Assertions.assertThrows(ValidationException.class, () -> runner.parseAndRun(code));
+		for (ProgramRunner runner : runners) {
+			Assertions.assertThrows(ValidationException.class, () -> runner.parseAndRun(code));
+		}
 	}
 	
 	
@@ -163,7 +192,9 @@ public class ArrayAccessTest {
 			}      
 		""";
 		
-		Assertions.assertThrows(ValidationException.class, () -> runner.parseAndRun(code));
+		for (ProgramRunner runner : runners) {
+			Assertions.assertThrows(ValidationException.class, () -> runner.parseAndRun(code));
+		}
 	}
 	
 	
@@ -176,7 +207,9 @@ public class ArrayAccessTest {
 			}      
 		""";
 		
-		Assertions.assertThrows(ValidationException.class, () -> runner.parseAndRun(code));
+		for (ProgramRunner runner : runners) {
+			Assertions.assertThrows(ValidationException.class, () -> runner.parseAndRun(code));
+		}
 	}
 	
 	
@@ -189,9 +222,8 @@ public class ArrayAccessTest {
 			}      
 		""";
 		
-		Assertions.assertThrows(ValidationException.class, () -> runner.parseAndRun(code));
+		for (ProgramRunner runner : runners) {
+			Assertions.assertThrows(ValidationException.class, () -> runner.parseAndRun(code));
+		}
 	}
-	
-	
-
 }
