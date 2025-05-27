@@ -299,7 +299,7 @@ There exist three types of involution operations: Space inversion, reversion and
 ### Useful equations between above symbols
 &#x03B5;&#x2080;&#x0045;&#x2080;=-&#x03B5;&#x2080;, &#x0045;&#x2080;&#x03B5;&#x2080;=&#x03B5;&#x2080;, &#x03B5;&#x1D62;&#x0045;&#x2080;=&#x03B5;&#x1D62;, &#x0045;&#x2080;&#x03B5;&#x1D62;=-&#x03B5;&#x1D62;, &#x0045;&#x2080;&#x00B2;=1, &#x03B5;&#x2080;&#x00B2;=&#x03B5;&#x1D62;&#x00B2;=0, &#x03B5;&#x208A;&#x00B2;=1, &#x03B5;&#x208B;&#x00B2;=-1, &#x03B5;&#x208A;&#x22C5;&#x03B5;&#x208B;=0
 
-## Next Steps ##
+## Next Steps
 - completing the experimentally and optimized PGA implementation
 - merging the experimentally generic geometric algebra implementation into the main branch
 - adding more smart-editing features based on the language-agnostic LSP from GraalVM, completion of the implementation of a language-specific LSP
