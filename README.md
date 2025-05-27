@@ -260,13 +260,13 @@ There exist three types of involution operations: Space inversion, reversion and
 ### Scalar functions
 | symbol      | description |
 | :---------- | ------------ |
-| atan2(x,y)  | arcus tansgens 2 (Converts the coordinates (x,y) to coordinates (r, theta) and returns the angle theta as the couterclockwise angle in radians between -pi and pi of the point (x,y) to the positive x-axis.)|
-| sin(x)      ||
-| cos(x)      ||
-| tan(x)      ||
-| atan(x)     ||
-| asin(x)     ||
-| acos(x)     ||
+| atan2(x,y)  | arctansgent 2 (Converts the coordinates (x,y) to coordinates (r, theta) and returns the angle theta as the couterclockwise angle in radians between -pi and pi of the point (x,y) to the positive x-axis.)|
+| sin(x)      | sine |
+| cos(x)      | cosine |
+| tan(x)      | tangent |
+| atan(x)     | arctangent |
+| asin(x)     | arcsine |
+| acos(x)     | arccosine |
 | abs()       | absolute value of a scalar only ||
 | sign(x)     | -1 if x<0 else 1 |
 
