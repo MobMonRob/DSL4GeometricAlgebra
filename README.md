@@ -302,6 +302,7 @@ There exist three types of involution operations: Space inversion, reversion and
 ## Next Steps
 - completing the experimentally and optimized PGA implementation
 - merging the experimentally generic geometric algebra implementation into the main branch
+- adding operators for symbolic derivation
 - adding more smart-editing features based on the language-agnostic LSP from GraalVM, completion of the implementation of a language-specific LSP
 - adding more debugging features e.g. step-in/step-out, showing the complete stacktrace polyglot till inside the native [CasADi](https://web.casadi.org/) libraries by building to LLVM
 - completing the design of a type-system and its implementation 
