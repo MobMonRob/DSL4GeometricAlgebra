@@ -1,5 +1,5 @@
 # DSL4GeometricAlgebra
-This repository contains code to work with multivector expressions of geometric algebra. The idea is to realise a complete toolchain with a geometric algebra specific domain specific language based on [truffle/graal](https://www.graalvm.org/latest/graalvm-as-a-platform/language-implementation-framework/) with state of the art smart editing features, debugging functionality and a fast implementation based on [JCasADi](https://web.casadi.org/).
+This repository contains code to work with multivector expressions of geometric algebra. The idea is to realise a complete toolchain with a geometric algebra specific domain specific language based on [truffle/graal](https://www.graalvm.org/latest/graalvm-as-a-platform/language-implementation-framework/) with state of the art smart editing features, debugging functionality and a fast implementation based on [JCasADi]([https://web.casadi.org/](https://github.com/MobMonRob/JCasADi)).
 
 
 ## Disclaimer
@@ -303,7 +303,7 @@ There exist three types of involution operations: Space inversion, reversion and
 - completing the experimentally and optimized PGA implementation
 - merging the experimentally generic geometric algebra implementation into the main branch
 - adding more smart-editing features based on the language-agnostic LSP from GraalVM, completion of the implementation of a language-specific LSP
-- adding more debugging features e.g. step-in/step-out, showing the complete stacktrace polyglot till inside the native CasADi libraries 
+- adding more debugging features e.g. step-in/step-out, showing the complete stacktrace polyglot till inside the native [CasADi](https://web.casadi.org/) libraries by building to LLVM
 - completing the design of a type-system and its implementation 
 - extending the syntax with multidimensional arrays, loops and if-statements (A student project with experimentally code is in the branch "loops")
 - Hyperwedge product implementation following [DeKeninck2020] to speed up program execution 
