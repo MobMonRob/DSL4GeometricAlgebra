@@ -303,7 +303,7 @@ There exist three types of involution operations: Space inversion, reversion and
 - completing the experimentally and optimized PGA implementation
 - merging the experimentally generic geometric algebra implementation into the main branch
 - adding more smart-editing features based on the language-agnostic LSP from GraalVM, completion of the implementation of a language-specific LSP
-- adding more debugging features e.g. step-in/step-out, showing the complete stacktrace polyglot till inside the native \textit{CasADi} libraries 
+- adding more debugging features e.g. step-in/step-out, showing the complete stacktrace polyglot till inside the native CasADi libraries 
 - completing the design of a type-system and its implementation 
 - extending the syntax with multidimensional arrays, loops and if-statements (A student project with experimentally code is in the branch "loops")
 - Hyperwedge product implementation following [DeKeninck2020] to speed up program execution 
