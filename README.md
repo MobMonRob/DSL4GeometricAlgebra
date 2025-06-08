@@ -1,9 +1,9 @@
 # DSL4GA
-This repository contains code to work with multivector expressions of geometric algebra. The idea is to realise a complete toolchain with a geometric algebra specific domain specific language based on [Truffle/Graal](https://www.graalvm.org/latest/graalvm-as-a-platform/language-implementation-framework/) with state of the art smart editing features, debugging functionality and a fast implementation based on [JCasADi](https://github.com/MobMonRob/JCasADi/).
+This repository contains code to work with multivector expressions of geometric algebra. The idea is to realise a complete toolchain with a geometric algebra specific domain specific language based on [Truffle/Graal](https://www.graalvm.org/latest/graalvm-as-a-platform/language-implementation-framework/) with state of the art smart editing features, debugging functionality and a fast implementation based on [JCasADi](https://github.com/MobMonRob/JCasADi/) focussed on bringing algorithmic differentation in the world of geometric algebra.
 
 
 ## Disclaimer
-The project is in an early state of development, so it is not advised to use it in real world applications. If you have feedback or feature suggestions, please create a new GitHub Issue.
+The current state of the project is a proof of concept, so it is not advised to use it in real world applications. If you have feedback or feature suggestions, please create a new GitHub Issue.
 
 Especially be cautious regarding:
 - the documentation may not be up to date.
