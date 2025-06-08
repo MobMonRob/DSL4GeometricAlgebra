@@ -284,14 +284,10 @@ There exist three types of involution operations: Space inversion, reversion and
 ### Further symbols
 | symbol           | latex      | Unicode      | description | implementation |
 | :--------------: | -----------| ------------ | ----------- | -------------- |
-| &#x03B5;&#x208A; | \epsilon_+ | \u03B5\u208A |  |  0.5&#x03B5;&#x1D62; - &#x03B5;&#x2080; |
+| &#x03B5;&#x208A; | \epsilon_+ | \u03B5\u208A |  | 0.5&#x03B5;&#x1D62; - &#x03B5;&#x2080; |
 | &#x03B5;&#x208B; | \epsilon_- | \u03B5\u208B |  | 0.5&#x03B5;&#x1D62; + &#x03B5;&#x2080; |
 | &#x03C0;         | \pi        | \u03C0       | Ludolphs- or circle constant | Math.PI |
-| &#x221E;         | \infty     | \u221E       | corresponding to infinity vector in Dorst, Fontijne & Mann 2007 | 2&#x03B5;&#8320;  |
-| &#x006F;         | o          | \u006F       | corresponding to origin vector in Dorst, Fontijne & Mann 2007 | 0.5&#x03B5;&#7522;  |
-| &#x006E;         | n          | \u006E       | corresponding to infinity vector in Doran & Lasenby | &#x03B5;&#7522;  |
-| &#x00F1;         | \tilde{n}  | \u00F1       | corresponding to origin vector in Doran & Lasenby | -2&#x03B5;&#8320; |
-| &#x0045;&#x2080; | E_0        | \u0045\u2080 | Minkovsky bi-vector (is its own inverse) | &#x03B5;&#7522; &#x2227; &#x03B5;&#8320;|
+| &#x0045;&#x2080; | E_0        | \u0045\u2080 | Minkowski bivector (is its own inverse) | &#x03B5;&#7522; &#x2227; &#x03B5;&#8320;|
 | &#x0045;&#x2083; | E_3        | \u0045\u2083 | Euclidean pseudoscalar | &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083;     |
 | &#x0045;         | E          | \u0045       | Pseudoscalar | &#x03B5;&#x1D62; &#x2227; &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083; &#x2227; &#x03B5;&#x2080;|
 
