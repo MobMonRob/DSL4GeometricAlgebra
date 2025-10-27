@@ -49,7 +49,7 @@ public class IkTest {
 
 	public void firstInvocation(double scalar) {
 		System.out.println("Create args:");
-		MatrixSparsity sparsity = new ColumnVectorSparsity(new double[]{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0});
+		MatrixSparsity sparsity = new ColumnVectorSparsity(new double[]{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, true);
 		double[] nonZeros = new double[]{scalar};
 
 		var a = new SparseDoubleMatrix(sparsity, nonZeros);
@@ -61,7 +61,7 @@ public class IkTest {
 	// For profiling. After all functions are cached.
 	public void secondInvocation(double scalar) {
 		System.out.println("secondInvocation");
-		MatrixSparsity sparsity = new ColumnVectorSparsity(new double[]{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0});
+		MatrixSparsity sparsity = new ColumnVectorSparsity(new double[]{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, true);
 		double[] nonZeros = new double[]{scalar};
 
 		var a = new SparseDoubleMatrix(sparsity, nonZeros);
