@@ -22,8 +22,11 @@ public final class GeomAlgeLangContext {
 	public final GeomAlgeLang truffleLanguage;
 	public final TruffleLanguage.Env env;
 	public ExprGraphFactory exprGraphFactory;
-	public CgaListTruffleBox lastListReturn = new CgaListTruffleBox(new ArrayList<>());
 	private Source source = null;
+
+	public CgaListTruffleBox lastListReturn = new CgaListTruffleBox(new ArrayList<>());
+	// Maybe better: use scoped values. (JDK 25)
+	public static ArgsMapper currentExternalArgs = null;
 
 	public GeomAlgeLangContext() {
 		this(null, null);

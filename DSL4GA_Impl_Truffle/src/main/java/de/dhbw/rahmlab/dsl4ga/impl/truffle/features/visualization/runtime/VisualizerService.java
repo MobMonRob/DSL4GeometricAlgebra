@@ -1,12 +1,15 @@
 package de.dhbw.rahmlab.dsl4ga.impl.truffle.features.visualization.runtime;
 
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.internal.InterpreterInternalException;
 import de.orat.math.cga.api.CGAKVector;
 import de.orat.math.cga.api.CGAMultivector;
 import de.orat.math.cga.api.CGAViewObject;
 import de.orat.math.cga.api.CGAViewer;
-import de.orat.math.gacalc.api.MultivectorNumeric;
+import de.orat.math.gacalc.api.MultivectorSymbolic;
 import de.orat.math.sparsematrix.SparseDoubleColumnVector;
+import de.orat.math.sparsematrix.SparseDoubleMatrix;
+import java.util.List;
 import java.util.Optional;
 
 public class VisualizerService {
@@ -30,8 +33,8 @@ public class VisualizerService {
 		return INSTANCE;
 	}
 
-	public void add(MultivectorNumeric mv, String name, VisualizerFunctionContext vizContext, boolean isIPNS) throws InterpreterInternalException {
-		var sparseDoubleMatrix = mv.elements();
+	public void add(MultivectorSymbolic mv, String name, VisualizerFunctionContext vizContext, boolean isIPNS) throws InterpreterInternalException {
+		SparseDoubleMatrix sparseDoubleMatrix = GeomAlgeLangContext.currentExternalArgs.evalToSDM(List.of(mv)).get(0);
 		var sparseDoubleColumnVector = new SparseDoubleColumnVector(sparseDoubleMatrix);
 		var doubleArray = sparseDoubleColumnVector.toArray();
 		//FIXME vermutlich erwartet der Konstruktor ein doubleArray Argument in einer anderen Representation
@@ -40,10 +43,10 @@ public class VisualizerService {
 		CGAKVector mv2 = CGAKVector.specialize(cgaMultivector, isIPNS);
 		if (mv2 instanceof CGAKVector cgakVector) {
 			CGAViewObject cgaViewObject = this.viewer.addCGAObject(cgakVector, name);
-			if (cgaViewObject != null){
+			if (cgaViewObject != null) {
 				vizContext.addViewObject(cgaViewObject);
 			} else {
-				throw new InterpreterInternalException("Visualization of \""+name+"\" failed!");
+				throw new InterpreterInternalException("Visualization of \"" + name + "\" failed!");
 			}
 		} else {
 			throw new InterpreterInternalException(

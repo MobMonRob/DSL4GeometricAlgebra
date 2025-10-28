@@ -35,7 +35,7 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOp
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOps.Undual;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.nodes.expr.LocalVariableReference;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.nodes.expr.LocalVariableReferenceNodeGen;
-import de.orat.math.gacalc.api.MultivectorNumeric;
+import de.orat.math.gacalc.api.MultivectorSymbolic;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
@@ -300,7 +300,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 	private static class EnterCallMarker extends ExpressionBaseNode {
 
 		@Override
-		public MultivectorNumeric executeGeneric(VirtualFrame frame) {
+		public MultivectorSymbolic executeGeneric(VirtualFrame frame) {
 			throw new AssertionError();
 		}
 	}

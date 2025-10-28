@@ -17,9 +17,11 @@ import com.oracle.truffle.api.nodes.NodeVisitor;
 import com.oracle.truffle.api.source.SourceSection;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.stmtSuperClasses.NonReturningStatementBaseNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLang;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.truffleBox.CgaTruffleBox;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.FunctionDefinitionRootNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.nodes.stmt.LocalVariableAssignment;
+import de.orat.math.gacalc.api.MultivectorNumeric;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -130,12 +132,20 @@ public class DebuggerLocalVariablesScope implements TruffleObject {
 		return this.namesToVarNodes.containsKey(memberName);
 	}
 
+	/**
+	 * <pre>
+	 * This method is responsible for the value in the "value" column of the variables view while debugging.
+	 * If instead of a string, an object is returned, the object should habe an @ExportMessage toDisplayString.
+	 * </pre>
+	 */
 	@ExportMessage
 	@TruffleBoundary
-	CgaTruffleBox readMember(String member) {
+	String readMember(String member) {
 		LocalVariableAssignment varNode = this.namesToVarNodes.get(member);
 		CgaTruffleBox varValue = (CgaTruffleBox) this.frame.getObjectStatic(varNode.getFrameSlot());
-		return varValue;
+		MultivectorNumeric mv = GeomAlgeLangContext.currentExternalArgs.evalToMV(List.of(varValue.getInner())).get(0);
+		var mvString = mv.toString();
+		return mvString;
 	}
 
 	@ExportMessage
