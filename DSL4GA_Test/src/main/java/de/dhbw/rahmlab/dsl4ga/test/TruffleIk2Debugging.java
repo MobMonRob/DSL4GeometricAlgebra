@@ -33,9 +33,9 @@ public class TruffleIk2Debugging {
 		var prog = fac.parse(uri);
 		
 		List<SparseDoubleMatrix> args = new ArrayList<>();
-		SparseCGAColumnVector p = SparseCGAColumnVector.createEuclid(new double[]{0.5, 0.5, 10d});
+		SparseCGAColumnVector p = SparseCGAColumnVector.createEuclid(new double[]{0.5, 0.5, 0d});
 		args.add(p);
-		SparseCGAColumnVector ae = SparseCGAColumnVector.createEuclid(new double[]{10d, 1d, 10d});
+		SparseCGAColumnVector ae = SparseCGAColumnVector.createEuclid(new double[]{0d, 1d, 0d});
 		args.add(ae);
 		var res = prog.invoke(/*Collections.emptyList()*/ args);
 
