@@ -6,7 +6,7 @@ import de.orat.math.cga.api.CGAKVector;
 import de.orat.math.cga.api.CGAMultivector;
 import de.orat.math.cga.api.CGAViewObject;
 import de.orat.math.cga.api.CGAViewer;
-import de.orat.math.gacalc.api.MultivectorSymbolic;
+import de.orat.math.gacalc.api.MultivectorExpression;
 import de.orat.math.sparsematrix.SparseDoubleColumnVector;
 import de.orat.math.sparsematrix.SparseDoubleMatrix;
 import java.util.List;
@@ -33,7 +33,7 @@ public class VisualizerService {
 		return INSTANCE;
 	}
 
-	public void add(MultivectorSymbolic mv, String name, VisualizerFunctionContext vizContext, boolean isIPNS) throws InterpreterInternalException {
+	public void add(MultivectorExpression mv, String name, VisualizerFunctionContext vizContext, boolean isIPNS) throws InterpreterInternalException {
 		SparseDoubleMatrix sparseDoubleMatrix = GeomAlgeLangContext.currentExternalArgs.evalToSDM(List.of(mv)).get(0);
 		var sparseDoubleColumnVector = new SparseDoubleColumnVector(sparseDoubleMatrix);
 		var doubleArray = sparseDoubleColumnVector.toArray();

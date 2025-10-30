@@ -2,12 +2,12 @@ package de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.
 
 import com.oracle.truffle.api.dsl.Specialization;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.builtinsSuperClasses.BuiltinFunctionBody;
-import de.orat.math.gacalc.api.MultivectorSymbolic;
+import de.orat.math.gacalc.api.MultivectorExpression;
 
 public abstract class Asin extends BuiltinFunctionBody {
 
 	@Specialization
-	protected MultivectorSymbolic doExecute(MultivectorSymbolic input) {
+	protected MultivectorExpression doExecute(MultivectorExpression input) {
 		return input.scalarAsin();
 	}
 }

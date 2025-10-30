@@ -3,7 +3,7 @@ package de.dhbw.rahmlab.dsl4ga.launcher;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.api.TruffleProgram;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.api.TruffleProgramFactory;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLang;
-import de.orat.math.gacalc.api.GAExprGraphFactoryService;
+import de.orat.math.gacalc.api.GAServiceLoader;
 import de.orat.math.sparsematrix.SparseDoubleMatrix;
 import java.io.File;
 import java.io.IOException;

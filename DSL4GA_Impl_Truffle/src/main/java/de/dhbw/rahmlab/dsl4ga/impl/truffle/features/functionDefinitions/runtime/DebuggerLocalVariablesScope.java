@@ -21,7 +21,7 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.truffleBox.CgaTruffleBox;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.FunctionDefinitionRootNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.nodes.stmt.LocalVariableAssignment;
-import de.orat.math.gacalc.api.MultivectorNumeric;
+import de.orat.math.gacalc.api.MultivectorValue;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -143,7 +143,7 @@ public class DebuggerLocalVariablesScope implements TruffleObject {
 	String readMember(String member) {
 		LocalVariableAssignment varNode = this.namesToVarNodes.get(member);
 		CgaTruffleBox varValue = (CgaTruffleBox) this.frame.getObjectStatic(varNode.getFrameSlot());
-		MultivectorNumeric mv = GeomAlgeLangContext.currentExternalArgs.evalToMV(List.of(varValue.getInner())).get(0);
+		MultivectorValue mv = GeomAlgeLangContext.currentExternalArgs.evalToMV(List.of(varValue.getInner())).get(0);
 		var mvString = mv.toString();
 		return mvString;
 	}

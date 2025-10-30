@@ -6,7 +6,7 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.truffleBox.CgaListTruffleBox;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.FunctionArgumentReader;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.superClasses.AbstractFunctionBody;
-import de.orat.math.gacalc.api.MultivectorSymbolic;
+import de.orat.math.gacalc.api.MultivectorExpression;
 import java.util.List;
 
 @GenerateNodeFactory
@@ -19,5 +19,5 @@ public abstract class BuiltinFunctionBody extends AbstractFunctionBody {
 		return new CgaListTruffleBox(List.of(mv));
 	}
 
-	public abstract MultivectorSymbolic executeGenericBuiltin(VirtualFrame frame);
+	public abstract MultivectorExpression executeGenericBuiltin(VirtualFrame frame);
 }

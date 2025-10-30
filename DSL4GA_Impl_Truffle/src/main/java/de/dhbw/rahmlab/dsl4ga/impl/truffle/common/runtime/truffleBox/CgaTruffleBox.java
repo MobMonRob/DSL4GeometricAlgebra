@@ -6,12 +6,12 @@ import com.oracle.truffle.api.interop.InteropLibrary;
 import com.oracle.truffle.api.library.ExportLibrary;
 import com.oracle.truffle.api.library.ExportMessage;
  */
-import de.orat.math.gacalc.api.MultivectorSymbolic;
+import de.orat.math.gacalc.api.MultivectorExpression;
 
 //@ExportLibrary(InteropLibrary.class)
-public class CgaTruffleBox extends TruffleBox<MultivectorSymbolic> {
+public class CgaTruffleBox extends TruffleBox<MultivectorExpression> {
 
-	public CgaTruffleBox(MultivectorSymbolic mvec) {
+	public CgaTruffleBox(MultivectorExpression mvec) {
 		super(mvec);
 	}
 

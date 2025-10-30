@@ -1,39 +1,39 @@
 package de.dhbw.rahmlab.dsl4ga.impl.fast;
 
-import de.orat.math.gacalc.api.GAExprGraphFactoryService;
-import de.orat.math.gacalc.api.MultivectorPurelySymbolic;
-import de.orat.math.gacalc.api.MultivectorSymbolic;
-import de.orat.math.gacalc.api.MultivectorSymbolicArray;
+import de.orat.math.gacalc.api.GAServiceLoader;
+import de.orat.math.gacalc.api.MultivectorVariable;
+import de.orat.math.gacalc.api.MultivectorExpression;
+import de.orat.math.gacalc.api.MultivectorExpressionArray;
 import java.util.List;
 
 public class Case2_1To1 {
 
 	public static void main(String[] args) {
-		var fac = GAExprGraphFactoryService.getExprGraphFactoryThrowing("cga", "cgacasadisx");
+		var fac = GAServiceLoader.getGAFactoryThrowing("cga", "cgacasadisx");
 
 		// Lokale Variablen vor dem Loop
-		var x = new MultivectorSymbolicArray(List.of(1, 2, 3, 4).stream().map(v -> fac.createScalarLiteral("", v)).toList());
-		var a = new MultivectorSymbolicArray(List.of(4, 5, 6, 7, 9).stream().map(v -> fac.createScalarLiteral("", v)).toList());
-		var y = new MultivectorSymbolicArray(List.of());
+		var x = new MultivectorExpressionArray(List.of(1, 2, 3, 4).stream().map(v -> fac.createExpr("", v)).toList());
+		var a = new MultivectorExpressionArray(List.of(4, 5, 6, 7, 9).stream().map(v -> fac.createExpr("", v)).toList());
+		var y = new MultivectorExpressionArray(List.of());
 
 		// Loops API Argumente.
 		int iterations = x.size() - 1;
 		// // Params
-		var paramsAccum_x = fac.createMultivectorPurelySymbolicFrom("x", x.get(0));
-		var paramsArray_a = fac.createMultivectorPurelySymbolicFrom("a", a.get(0));
+		var paramsAccum_x = fac.createVariable("x", x.get(0));
+		var paramsArray_a = fac.createVariable("a", a.get(0));
 		// // Returns mittels ExprTransform machen.
-		var returnsArray_y_i = paramsAccum_x.addition(fac.createScalarLiteral("2", 2));
-		var returnsAccum_x_i1 = paramsArray_a.addition(fac.createScalarLiteral("1", 1));
+		var returnsArray_y_i = paramsAccum_x.addition(fac.createExpr("2", 2));
+		var returnsAccum_x_i1 = paramsArray_a.addition(fac.createExpr("1", 1));
 		// // Korrektur für: argsArray_a.size() == iterations
-		var argsArray_a = new MultivectorSymbolicArray(a.subList(0, iterations));
+		var argsArray_a = new MultivectorExpressionArray(a.subList(0, iterations));
 
 		var paramsAccum = List.of(paramsAccum_x);
-		var paramsSimple = List.<MultivectorPurelySymbolic>of();
+		var paramsSimple = List.<MultivectorVariable>of();
 		var paramsArray = List.of(paramsArray_a);
 		var returnsAccum = List.of(returnsAccum_x_i1);
 		var returnsArray = List.of(returnsArray_y_i);
 		var argsAccumInital = List.of(x.get(0));
-		var argsSimple = List.<MultivectorSymbolic>of();
+		var argsSimple = List.<MultivectorExpression>of();
 		var argsArray = List.of(argsArray_a);
 
 		// Loops API Aufruf

@@ -2,7 +2,7 @@ package de.dhbw.rahmlab.dsl4ga.test.gafiles;
 
 import de.dhbw.rahmlab.dsl4ga.test.gafiles.common.Util;
 import de.dhbw.rahmlab.dsl4ga.test.gafiles.common.gen.fastwrapper.IkProgram;
-import de.orat.math.cgacasadi.impl.gen.CachedSparseCGASymbolicMultivector;
+import de.orat.math.cgacasadi.impl.gen.CachedCgaMvExpr;
 import de.orat.math.sparsematrix.ColumnVectorSparsity;
 import de.orat.math.sparsematrix.MatrixSparsity;
 import de.orat.math.sparsematrix.SparseDoubleMatrix;
@@ -27,11 +27,13 @@ public class IkTest {
 		// Profiler: Truffle 803 ms, Fast 20 ms
 		ikTest.firstInvocation(2.7);
 		// Profiler: Truffle 20 ms, Fast 6 ms
-		ikTest.secondInvocation(3.14);
+		for (int i = 0; i < 20; ++i) {
+			ikTest.secondInvocation(3.14);
+		}
 		//
-		System.out.println("Cache size: " + CachedSparseCGASymbolicMultivector.getCache().getCacheSize());
+		System.out.println("Cache size: " + CachedCgaMvExpr.getCache().getCacheSize());
 		System.out.println("......CachedFunctionUsage");
-		System.out.println(CachedSparseCGASymbolicMultivector.getCache().cachedFunctionUsageToString());
+		System.out.println(CachedCgaMvExpr.getCache().cachedFunctionUsageToString());
 		System.out.println("....../CachedFunctionUsage");
 	}
 

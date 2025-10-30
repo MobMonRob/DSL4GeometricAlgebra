@@ -10,14 +10,14 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.ValidationException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.Function;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.astConstruction.SourceUnitTransform;
-import de.orat.math.gacalc.api.ExprGraphFactory;
+import de.orat.math.gacalc.api.GAFactory;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.atn.PredictionMode;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 
 public final class ParsingService {
 
-	public static record FactoryAndMain(ExprGraphFactory fac, Function main) {
+	public static record FactoryAndMain(GAFactory fac, Function main) {
 
 	}
 

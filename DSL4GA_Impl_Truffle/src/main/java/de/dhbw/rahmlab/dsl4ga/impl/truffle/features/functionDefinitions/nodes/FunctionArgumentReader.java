@@ -5,7 +5,7 @@ import com.oracle.truffle.api.dsl.Specialization;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.truffleBox.CgaListTruffleBox;
-import de.orat.math.gacalc.api.MultivectorSymbolic;
+import de.orat.math.gacalc.api.MultivectorExpression;
 import java.util.stream.IntStream;
 
 @NodeField(name = "index", type = int.class)
@@ -14,7 +14,7 @@ public abstract class FunctionArgumentReader extends ExpressionBaseNode {
 	protected abstract int getIndex();
 
 	@Specialization
-	public MultivectorSymbolic readFunctionArgument(VirtualFrame frame) {
+	public MultivectorExpression readFunctionArgument(VirtualFrame frame) {
 		return ((CgaListTruffleBox) frame.getArguments()[0]).getInner().get(this.getIndex());
 	}
 

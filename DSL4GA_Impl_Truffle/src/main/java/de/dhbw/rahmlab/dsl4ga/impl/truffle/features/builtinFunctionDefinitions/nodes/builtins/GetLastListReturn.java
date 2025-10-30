@@ -2,7 +2,7 @@ package de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.
 
 import com.oracle.truffle.api.frame.VirtualFrame;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.builtinsSuperClasses.BuiltinFunctionBody;
-import de.orat.math.gacalc.api.MultivectorSymbolic;
+import de.orat.math.gacalc.api.MultivectorExpression;
 
 /**
  * Only for internal use.
@@ -21,7 +21,7 @@ public class GetLastListReturn extends BuiltinFunctionBody {
 	}
 
 	@Override
-	public MultivectorSymbolic executeGenericBuiltin(VirtualFrame frame) {
+	public MultivectorExpression executeGenericBuiltin(VirtualFrame frame) {
 		return super.currentLanguageContext().lastListReturn.getInner().get(this.getIndex());
 	}
 
