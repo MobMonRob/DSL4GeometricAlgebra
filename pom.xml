@@ -20,10 +20,9 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<maven.compiler.source>21</maven.compiler.source>
-		<maven.compiler.target>21</maven.compiler.target>
 		<!--graalvm.version>23.1.2</graalvm.version-->
 		<graalvm.version>24.1.1</graalvm.version>
 		<!--graalvm.version>24.0.0</graalvm.version-->
+		<maven.compiler.release>21</maven.compiler.release>
 	</properties>
 </project>

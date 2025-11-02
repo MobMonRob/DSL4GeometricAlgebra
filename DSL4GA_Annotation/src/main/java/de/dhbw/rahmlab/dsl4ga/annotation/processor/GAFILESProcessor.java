@@ -41,7 +41,7 @@ public final class GAFILESProcessor extends AbstractProcessor {
 
 	@Override
 	public SourceVersion getSupportedSourceVersion() {
-		return SourceVersion.RELEASE_17;
+		return SourceVersion.latest();
 	}
 
 	@Override
