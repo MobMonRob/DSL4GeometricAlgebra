@@ -278,7 +278,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 			String decimalLiteral = ctx.value.getText();
 			double value = decimalFormat.parse(decimalLiteral).doubleValue();
 			// ScalarLiteral node = ScalarLiteralNodeGen.create(value);
-			var node = this.exprGraphFactory.createExpr(decimalLiteral, value);
+			var node = this.exprGraphFactory.createExpr(value);
 			nodeStack.push(node);
 		} catch (ParseException ex) {
 			// Should never occur because of the DECIMAL_LITERAL lexer token definition.

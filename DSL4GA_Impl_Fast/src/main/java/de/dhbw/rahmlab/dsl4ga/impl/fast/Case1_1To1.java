@@ -12,14 +12,14 @@ public class Case1_1To1 {
 		var fac = GAServiceLoader.getGAFactoryThrowing("cga", "cgacasadisx");
 
 		// Lokale Variablen vor dem Loop
-		var x = new MultivectorExpressionArray(List.of(1, 2, 3, 4).stream().map(v -> fac.createExpr("", v)).toList());
+		var x = new MultivectorExpressionArray(List.of(1, 2, 3, 4).stream().map(v -> fac.createExpr(v)).toList());
 		var y = new MultivectorExpressionArray(List.of());
 
 		// Loops API Argumente.
 		var paramsAccum_x = fac.createVariable("x", x.get(0));
 		// // Returns mittels ExprTransform machen.
-		var returnsArray_y_i = paramsAccum_x.addition(fac.createExpr("2", 2));
-		var returnsAccum_x_i1 = returnsArray_y_i.addition(fac.createExpr("1", 1));
+		var returnsArray_y_i = paramsAccum_x.addition(fac.createExpr(2));
+		var returnsAccum_x_i1 = returnsArray_y_i.addition(fac.createExpr(1));
 
 		var paramsAccum = List.of(paramsAccum_x);
 		var paramsSimple = List.<MultivectorVariable>of();
