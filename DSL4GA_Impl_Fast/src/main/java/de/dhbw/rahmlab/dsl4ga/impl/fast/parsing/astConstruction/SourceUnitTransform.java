@@ -5,9 +5,9 @@ import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParser.FunctionContext;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParserBaseListener;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationException;
 import de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.ParsingService.FactoryAndMain;
-import de.orat.math.gacalc.api.ExprGraphFactory;
-import de.orat.math.gacalc.api.FunctionSymbolic;
-import de.orat.math.gacalc.api.GAExprGraphFactoryService;
+import de.orat.math.gacalc.api.GAFactory;
+import de.orat.math.gacalc.api.GAFunction;
+import de.orat.math.gacalc.api.GAServiceLoader;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,8 +19,8 @@ public class SourceUnitTransform extends GeomAlgeParserBaseListener {
 	}
 
 	public static FactoryAndMain generate(GeomAlgeParser parser, GeomAlgeParser.SourceUnitContext ctx) {
-		Map<String, FunctionSymbolic> functions = new HashMap<>();
-		Map<String, FunctionSymbolic> functionsView = Collections.unmodifiableMap(functions);
+		Map<String, GAFunction> functions = new HashMap<>();
+		Map<String, GAFunction> functionsView = Collections.unmodifiableMap(functions);
 
 		// SourceUnitTransform transform = new SourceUnitTransform(geomAlgeLangContext);
 		// SkippingParseTreeWalker.walk(transform, ctx, GeomAlgeParser.FunctionBodyContext.class);
@@ -28,15 +28,15 @@ public class SourceUnitTransform extends GeomAlgeParserBaseListener {
 		String algebraID = algebraContext.algebraID.getText();
 		Token implID = algebraContext.implID;
 
-		ExprGraphFactory fac;
+		GAFactory fac;
 		if (implID != null) {
-			fac = GAExprGraphFactoryService.getExprGraphFactoryThrowing(algebraID, implID.getText());
+			fac = GAServiceLoader.getGAFactoryThrowing(algebraID, implID.getText());
 		} else {
-			fac = GAExprGraphFactoryService.getExprGraphFactoryThrowing(algebraID);
+			fac = GAServiceLoader.getGAFactoryThrowing(algebraID);
 		}
 
 		for (FunctionContext functionCtx : ctx.functions) {
-			FunctionSymbolic function = FuncTransform.generate(fac, parser, functionCtx, functionsView);
+			GAFunction function = FuncTransform.generate(fac, parser, functionCtx, functionsView);
 			String functionName = function.getName();
 			if (functions.containsKey(functionName)) {
 				int line = functionCtx.start.getLine();
@@ -45,7 +45,7 @@ public class SourceUnitTransform extends GeomAlgeParserBaseListener {
 			functions.put(functionName, function);
 		}
 
-		FunctionSymbolic main = functions.get("main");
+		GAFunction main = functions.get("main");
 		if (main == null) {
 			throw new ValidationException("No main function has been defined.");
 		}

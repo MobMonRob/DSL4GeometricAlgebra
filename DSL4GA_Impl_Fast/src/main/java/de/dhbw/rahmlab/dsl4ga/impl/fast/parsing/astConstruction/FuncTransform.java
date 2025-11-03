@@ -4,10 +4,14 @@ import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParser;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParserBaseListener;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.SkippingParseTreeWalker;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationException;
-import de.orat.math.gacalc.api.ExprGraphFactory;
-import de.orat.math.gacalc.api.FunctionSymbolic;
-import de.orat.math.gacalc.api.MultivectorPurelySymbolic;
-import de.orat.math.gacalc.api.MultivectorSymbolic;
+import de.orat.math.gacalc.api.GAFactory;
+import de.orat.math.gacalc.api.GAFunction;
+import de.orat.math.gacalc.api.MultivectorExpression;
+import de.orat.math.gacalc.api.MultivectorVariable;
+//import de.orat.math.gacalc.api.GAFactory;
+//import de.orat.math.gacalc.api.GAFunction;
+//import de.orat.math.gacalc.api.MultivectorVariable;
+//import de.orat.math.gacalc.api.MultivectorExpression;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -16,30 +20,30 @@ import java.util.Map;
 
 public class FuncTransform extends GeomAlgeParserBaseListener {
 
-	protected final ExprGraphFactory exprGraphFactory;
+	protected final GAFactory exprGraphFactory;
 	// Momentan ist jedes Stmt eine Zuweisung, die am Ende eine Variable ergibt.
 	// Wenn anderes unterstützt werden soll, muss man sich überlegen, wie man das macht.
-	protected final List<MultivectorSymbolic> retExprs = new ArrayList<>();
-	protected final List<MultivectorPurelySymbolic> formalParameterList = new ArrayList<>();
+	protected final List<MultivectorExpression> retExprs = new ArrayList<>();
+	protected final List<MultivectorVariable> formalParameterList = new ArrayList<>();
 	protected String functionName;
-	protected final Map<String, FunctionSymbolic> functionsView;
+	protected final Map<String, GAFunction> functionsView;
 
-	protected final Map<String, MultivectorSymbolic> localVariables = new HashMap<>();
-	protected final Map<String, MultivectorSymbolic> localVariablesView = Collections.unmodifiableMap(localVariables);
+	protected final Map<String, MultivectorExpression> localVariables = new HashMap<>();
+	protected final Map<String, MultivectorExpression> localVariablesView = Collections.unmodifiableMap(localVariables);
 
 	protected final GeomAlgeParser parser;
 
-	protected FuncTransform(ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, Map<String, FunctionSymbolic> functionsView) {
+	protected FuncTransform(GAFactory exprGraphFactory, GeomAlgeParser parser, Map<String, GAFunction> functionsView) {
 		this.exprGraphFactory = exprGraphFactory;
 		this.functionsView = functionsView;
 		this.parser = parser;
 	}
 
-	public static FunctionSymbolic generate(ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.FunctionContext ctx, Map<String, FunctionSymbolic> functionsView) {
+	public static GAFunction generate(GAFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.FunctionContext ctx, Map<String, GAFunction> functionsView) {
 		FuncTransform transform = new FuncTransform(exprGraphFactory, parser, functionsView);
 		SkippingParseTreeWalker.walk(parser, transform, ctx, GeomAlgeParser.ExprContext.class);
 
-		FunctionSymbolic function = exprGraphFactory.createFunctionSymbolic(transform.functionName, transform.formalParameterList, transform.retExprs);
+		GAFunction function = exprGraphFactory.createFunction(transform.functionName, transform.formalParameterList, transform.retExprs);
 		// System.out.println("function: " + function);
 
 		return function;
@@ -57,7 +61,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 	public void exitFormalParameter_(GeomAlgeParser.FormalParameter_Context ctx) {
 		String name = ctx.name.getText();
 
-		var param = exprGraphFactory.createMultivectorPurelySymbolicDense(name);
+		var param = exprGraphFactory.createVariableDense(name); //createMultivectorVariableDense(name);
 
 		this.formalParameterList.add(param);
 		this.localVariables.put(name, param);
@@ -65,7 +69,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 	@Override
 	public void enterAssgnStmt(GeomAlgeParser.AssgnStmtContext ctx) {
-		MultivectorSymbolic expr = ExprTransform.generateExprAST(this.exprGraphFactory, this.parser, ctx.exprCtx, this.functionsView, this.localVariablesView);
+		MultivectorExpression expr = ExprTransform.generateExprAST(this.exprGraphFactory, this.parser, ctx.exprCtx, this.functionsView, this.localVariablesView);
 
 		// Assignment
 		String name = ctx.vizAssigned.assigned.getText();
@@ -82,7 +86,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 	@Override
 	public void enterTupleAssgnStmt(GeomAlgeParser.TupleAssgnStmtContext ctx) {
-		List<MultivectorSymbolic> results = ExprTransform.generateCallAST(this.exprGraphFactory, this.parser, ctx.callCtx, this.functionsView, this.localVariablesView);
+		List<MultivectorExpression> results = ExprTransform.generateCallAST(this.exprGraphFactory, this.parser, ctx.callCtx, this.functionsView, this.localVariablesView);
 
 		final int size = ctx.vizAssigned.size();
 
@@ -112,7 +116,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 	@Override
 	public void enterRetExprStmtExpr(GeomAlgeParser.RetExprStmtExprContext ctx) {
-		MultivectorSymbolic retExpr = ExprTransform.generateExprAST(this.exprGraphFactory, this.parser, ctx.exprContext, this.functionsView, this.localVariablesView);
+		MultivectorExpression retExpr = ExprTransform.generateExprAST(this.exprGraphFactory, this.parser, ctx.exprContext, this.functionsView, this.localVariablesView);
 		// System.out.println("retExpr: " + retExpr);
 		this.retExprs.add(retExpr);
 	}

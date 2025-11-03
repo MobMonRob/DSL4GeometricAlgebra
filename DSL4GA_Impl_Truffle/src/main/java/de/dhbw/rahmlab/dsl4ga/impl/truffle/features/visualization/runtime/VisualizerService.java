@@ -37,6 +37,9 @@ public class VisualizerService {
 		//FIXME vermutlich erwartet der Konstruktor ein doubleArray Argument in einer anderen Representation
 		var cgaMultivector = new CGAMultivector(doubleArray);
 
+		//TODO
+		// statt specialize hier den mv weiterreichen und dann im viewer statt specialize
+		// eine eigene Methode zur Beschaffung des Types also PLANE, LINE etc. aufruen
 		CGAKVector mv2 = CGAKVector.specialize(cgaMultivector, isIPNS);
 		if (mv2 instanceof CGAKVector cgakVector) {
 			CGAViewObject cgaViewObject = this.viewer.addCGAObject(cgakVector, name);

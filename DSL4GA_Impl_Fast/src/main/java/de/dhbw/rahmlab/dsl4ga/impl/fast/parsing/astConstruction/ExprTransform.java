@@ -4,10 +4,11 @@ import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParser;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParserBaseListener;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.SkippingParseTreeWalker;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationException;
-import de.orat.math.gacalc.api.ConstantsFactorySymbolic;
-import de.orat.math.gacalc.api.ExprGraphFactory;
-import de.orat.math.gacalc.api.FunctionSymbolic;
-import de.orat.math.gacalc.api.MultivectorSymbolic;
+import de.orat.math.gacalc.api.ConstantsExpression;
+//import de.orat.math.gacalc.api.ConstantsFactorySymbolic;
+import de.orat.math.gacalc.api.GAFactory;
+import de.orat.math.gacalc.api.GAFunction;
+import de.orat.math.gacalc.api.MultivectorExpression;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
@@ -28,30 +29,30 @@ import java.util.List;
  */
 public class ExprTransform extends GeomAlgeParserBaseListener {
 
-	protected final ExprGraphFactory exprGraphFactory;
-	protected final ConstantsFactorySymbolic constants;
-	protected final Deque<MultivectorSymbolic> nodeStack = new ArrayDeque<>();
-	protected final Map<String, FunctionSymbolic> functionsView;
-	protected final Map<String, MultivectorSymbolic> localVariablesView;
-	protected List<MultivectorSymbolic> lastCallResults = null;
+	protected final GAFactory exprGraphFactory;
+	protected final ConstantsExpression constants;
+	protected final Deque<MultivectorExpression> nodeStack = new ArrayDeque<>();
+	protected final Map<String, GAFunction> functionsView;
+	protected final Map<String, MultivectorExpression> localVariablesView;
+	protected List<MultivectorExpression> lastCallResults = null;
 
-	protected ExprTransform(ExprGraphFactory exprGraphFactory, Map<String, FunctionSymbolic> functionsView, Map<String, MultivectorSymbolic> localVariablesView) {
+	protected ExprTransform(GAFactory exprGraphFactory, Map<String, GAFunction> functionsView, Map<String, MultivectorExpression> localVariablesView) {
 		this.exprGraphFactory = exprGraphFactory;
-		this.constants = exprGraphFactory.constantsSymbolic();
+		this.constants = exprGraphFactory.constantsExpr(); //constantsSymbolic();
 		this.functionsView = functionsView;
 		this.localVariablesView = localVariablesView;
 	}
 
-	public static MultivectorSymbolic generateExprAST(ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.ExprContext exprCtx, Map<String, FunctionSymbolic> functionsView, Map<String, MultivectorSymbolic> localVariablesView) {
+	public static MultivectorExpression generateExprAST(GAFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.ExprContext exprCtx, Map<String, GAFunction> functionsView, Map<String, MultivectorExpression> localVariablesView) {
 		ExprTransform exprTransform = new ExprTransform(exprGraphFactory, functionsView, localVariablesView);
 
 		SkippingParseTreeWalker.walk(parser, exprTransform, exprCtx);
 
-		MultivectorSymbolic rootNode = exprTransform.nodeStack.getFirst();
+		MultivectorExpression rootNode = exprTransform.nodeStack.getFirst();
 		return rootNode;
 	}
 
-	public static List<MultivectorSymbolic> generateCallAST(ExprGraphFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.CallExprContext callExprCtx, Map<String, FunctionSymbolic> functionsView, Map<String, MultivectorSymbolic> localVariablesView) {
+	public static List<MultivectorExpression> generateCallAST(GAFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.CallExprContext callExprCtx, Map<String, GAFunction> functionsView, Map<String, MultivectorExpression> localVariablesView) {
 		ExprTransform exprTransform = new ExprTransform(exprGraphFactory, functionsView, localVariablesView);
 
 		SkippingParseTreeWalker.walk(parser, exprTransform, callExprCtx);
@@ -62,11 +63,11 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 	@Override
 	public void exitGP(GeomAlgeParser.GPContext ctx) {
 		// Sequence matters here!
-		MultivectorSymbolic right = nodeStack.pop();
-		MultivectorSymbolic left = nodeStack.pop();
+		MultivectorExpression right = nodeStack.pop();
+		MultivectorExpression left = nodeStack.pop();
 
 		// ExpressionBaseNode result = new GeometricProduct(left, right);
-		MultivectorSymbolic result = left.geometricProduct(right);
+		MultivectorExpression result = left.geometricProduct(right);
 
 		nodeStack.push(result);
 	}
@@ -74,10 +75,10 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 	@Override
 	public void exitBinOp(GeomAlgeParser.BinOpContext ctx) {
 		// Sequence matters here!
-		MultivectorSymbolic right = nodeStack.pop();
-		MultivectorSymbolic left = nodeStack.pop();
+		MultivectorExpression right = nodeStack.pop();
+		MultivectorExpression left = nodeStack.pop();
 
-		MultivectorSymbolic result = switch (ctx.op.getType()) {
+		MultivectorExpression result = switch (ctx.op.getType()) {
 			case GeomAlgeParser.LOGICAL_AND ->
 				// new OuterProduct(left, right);
 				left.outerProduct(right);
@@ -254,7 +255,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 			throw new ValidationException(line, String.format("Variable \"%s\" has not been declared before.", name));
 		}
 
-		MultivectorSymbolic node = this.localVariablesView.get(name);
+		MultivectorExpression node = this.localVariablesView.get(name);
 
 		nodeStack.push(node);
 	}
@@ -286,14 +287,14 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		}
 	}
 
-	private static class EnterCallMarker extends MultivectorSymbolic {
+	private static class EnterCallMarker extends MultivectorExpression {
 
 		private EnterCallMarker() {
 			super(null);
 		}
 	}
 
-	private static final MultivectorSymbolic enterCallMarker = new EnterCallMarker();
+	private static final MultivectorExpression enterCallMarker = new EnterCallMarker();
 
 	@Override
 	public void enterCall(GeomAlgeParser.CallContext ctx) {
@@ -303,11 +304,11 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 	@Override
 	public void exitCall(GeomAlgeParser.CallContext ctx) {
 
-		ArrayList<MultivectorSymbolic> arguments;
+		ArrayList<MultivectorExpression> arguments;
 		{
-			Deque<MultivectorSymbolic> argumentsDeque = new ArrayDeque<>();
+			Deque<MultivectorExpression> argumentsDeque = new ArrayDeque<>();
 
-			for (MultivectorSymbolic currentArgument = this.nodeStack.pop();
+			for (MultivectorExpression currentArgument = this.nodeStack.pop();
 				currentArgument != enterCallMarker;
 				currentArgument = this.nodeStack.pop()) {
 				// rightmost argument will be pushed first
@@ -321,8 +322,8 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		String functionName = ctx.name.getText();
 
 		if (this.functionsView.containsKey(functionName)) {
-			FunctionSymbolic function = this.functionsView.get(functionName);
-			List<MultivectorSymbolic> returns = function.callSymbolic(arguments);
+			GAFunction function = this.functionsView.get(functionName);
+			List<MultivectorExpression> returns = function.callExpr(arguments);//.callSymbolic(arguments);
 
 			if (!(ctx.parent instanceof GeomAlgeParser.TupleAssgnStmtContext) && (returns.size() != 1)) {
 				int line = ctx.start.getLine();
@@ -341,7 +342,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 					case 1 -> {
 						var arg = arguments.get(0);
 
-						MultivectorSymbolic result = switch (functionName) {
+						MultivectorExpression result = switch (functionName) {
 							case "exp" ->
 								arg.exp();
 							case "log" ->
@@ -385,7 +386,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 						var arg0 = arguments.get(0);
 						var arg1 = arguments.get(1);
 
-						MultivectorSymbolic result = switch (functionName) {
+						MultivectorExpression result = switch (functionName) {
 							case "atan2" ->
 								arg0.scalarAtan2(arg1);
 							case "dot" ->
