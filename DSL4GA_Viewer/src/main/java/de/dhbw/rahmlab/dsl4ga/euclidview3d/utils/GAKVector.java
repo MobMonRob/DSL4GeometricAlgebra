@@ -1,7 +1,7 @@
 package de.dhbw.rahmlab.dsl4ga.euclidview3d.utils;
 
 import de.orat.math.cga.spi.iCGAMultivector;
-import de.orat.math.gacalc.api.MultivectorNumeric;
+import de.orat.math.gacalc.api.MultivectorValue; /*Numeric*/
 import org.jogamp.vecmath.Point3d;
 
 /**
@@ -33,7 +33,7 @@ public class GAKVector extends CGAMultivector implements iCGAkVector {
      * @return null, if the given Multivector is not recognized as a specialization
  of GAKVector
      */
-    public static GAKVector specialize(/*CGAMultivector m*/ MultivectorNumeric mv, boolean isIPNS){
+    public static GAKVector specialize(/*CGAMultivector m*/ MultivectorValue mv, boolean isIPNS){
         
         //TODO
         // wie kann ich herausfinden ob m eine subclass von GAKVector ist und damit

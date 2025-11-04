@@ -1,7 +1,7 @@
 package de.dhbw.rahmlab.dsl4ga.euclidview3d.utils;
 
 //import de.orat.math.cga.api.CGAScrew.MotorParameters;
-import de.orat.math.gacalc.api.MultivectorNumeric;
+import de.orat.math.gacalc.api.MultivectorValue; /*Numeric;*/
 import de.orat.math.sparsematrix.SparseDoubleColumnVector;
 import de.orat.view3d.euclid3dviewapi.api.ViewerService;
 import de.orat.view3d.euclid3dviewapi.spi.iAABB;
@@ -64,7 +64,7 @@ public class GAViewer extends GAViewObject {
      * TODO
      * was ist mit einer Schraubachse? Ist die auch ein k-vector? vermutlich nein!
      */
-    public GAViewObject addCGAObject(GAViewObject parent, MultivectorNumeric mv, 
+    public GAViewObject addCGAObject(GAViewObject parent, MultivectorValue mv, 
 		                             String label, boolean isIPNS){
         
 		var sparseDoubleMatrix = mv.elements();
@@ -82,7 +82,7 @@ public class GAViewer extends GAViewObject {
     }
 
     @Override
-    public GAViewObject addCGAObject(MultivectorNumeric mv, String label) {
+    public GAViewObject addCGAObject(MultivectorValue mv, String label) {
         return addCGAObject(this, mv, label);
     }
     
@@ -95,11 +95,11 @@ public class GAViewer extends GAViewObject {
      * the axis-aligned bounding box and this box is not extended for the given object
      * @throws IllegalArgumentException if multivector is no visualizable type
      */
-    GAViewObject addCGAObject(GAViewObject parent, MultivectorNumeric mv, String label){
+    GAViewObject addCGAObject(GAViewObject parent, MultivectorValue mv, String label){
          return addCGAObject(parent, mv, label, null);
     }
     // returns null if the given GAKVector m has unknown type
-    GAViewObject addCGAObject(GAViewObject parent, MultivectorNumeric mv, String label, Color color){
+    GAViewObject addCGAObject(GAViewObject parent, MultivectorValue mv, String label, Color color){
         
         long id = -1;
         long[] ids;
