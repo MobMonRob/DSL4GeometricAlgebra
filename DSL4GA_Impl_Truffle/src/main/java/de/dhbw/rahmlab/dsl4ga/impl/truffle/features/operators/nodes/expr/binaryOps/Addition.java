@@ -2,7 +2,7 @@ package de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binary
 
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.exprSuperClasses.BinaryOp;
-import de.orat.math.gacalc.api.MultivectorNumeric;
+import de.orat.math.gacalc.api.MultivectorExpression;
 
 public final class Addition extends BinaryOp {
 
@@ -11,7 +11,7 @@ public final class Addition extends BinaryOp {
 	}
 
 	@Override
-	protected MultivectorNumeric execute(MultivectorNumeric left, MultivectorNumeric right) {
+	protected MultivectorExpression execute(MultivectorExpression left, MultivectorExpression right) {
 		return left.addition(right);
 	}
 }

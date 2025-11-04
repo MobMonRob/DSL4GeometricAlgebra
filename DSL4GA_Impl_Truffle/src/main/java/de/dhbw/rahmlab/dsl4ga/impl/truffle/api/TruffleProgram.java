@@ -6,9 +6,7 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLang;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.AbstractExternalException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.LanguageRuntimeException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.ValidationException;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.truffleBox.CgaListTruffleBox;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.truffleBox.TruffleBox;
-import de.orat.math.gacalc.api.MultivectorNumeric;
 import de.orat.math.sparsematrix.SparseDoubleMatrix;
 import java.io.IOException;
 import java.io.Reader;
@@ -56,9 +54,8 @@ public class TruffleProgram implements iProgram {
 		try {
 			TruffleBox<List<SparseDoubleMatrix>> truffleArgs = new TruffleBox<>(arguments);
 			Value result = this.parsedProgram.execute(truffleArgs);
-			CgaListTruffleBox truffleResults = result.as(CgaListTruffleBox.class);
-			List<MultivectorNumeric> mVecResults = truffleResults.getInner();
-			List<SparseDoubleMatrix> results = mVecResults.stream().map(mvec -> mvec.elements()).toList();
+			TruffleBox<List<SparseDoubleMatrix>> truffleResults = (TruffleBox<List<SparseDoubleMatrix>>) result.as(TruffleBox.class);
+			List<SparseDoubleMatrix> results = truffleResults.getInner();
 			return results;
 		} catch (PolyglotException ex) {
 			throw enrichException(ex);

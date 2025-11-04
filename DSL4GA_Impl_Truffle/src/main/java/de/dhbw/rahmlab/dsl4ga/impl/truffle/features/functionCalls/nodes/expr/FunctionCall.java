@@ -17,7 +17,7 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.internal.In
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.truffleBox.CgaListTruffleBox;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.truffleBox.CgaTruffleBox;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.Function;
-import de.orat.math.gacalc.api.MultivectorNumeric;
+import de.orat.math.gacalc.api.MultivectorExpression;
 import java.util.Arrays;
 import java.util.List;
 
@@ -34,7 +34,7 @@ public abstract class FunctionCall extends ExpressionBaseNode {
 	}
 
 	@Specialization
-	protected MultivectorNumeric call(VirtualFrame frame, @CachedLibrary(limit = "2") InteropLibrary library) {
+	protected MultivectorExpression call(VirtualFrame frame, @CachedLibrary(limit = "2") InteropLibrary library) {
 		CgaListTruffleBox argumentValueBoxed = doExecuteArguments(frame);
 
 		return catchAndRethrow(this, () -> {
@@ -45,14 +45,14 @@ public abstract class FunctionCall extends ExpressionBaseNode {
 	@ExplodeLoop
 	protected CgaListTruffleBox doExecuteArguments(VirtualFrame frame) {
 		// CompilerAsserts.compilationConstant(this.arguments.length);
-		MultivectorNumeric[] argumentValues = new MultivectorNumeric[this.arguments.length];
+		MultivectorExpression[] argumentValues = new MultivectorExpression[this.arguments.length];
 		for (int i = 0; i < this.arguments.length; ++i) {
 			argumentValues[i] = this.arguments[i].executeGeneric(frame);
 		}
 		return new CgaListTruffleBox(Arrays.asList(argumentValues));
 	}
 
-	protected MultivectorNumeric doExecuteFunction(Function function, CgaListTruffleBox argumentValueBoxed, InteropLibrary library) throws InterpreterInternalException {
+	protected MultivectorExpression doExecuteFunction(Function function, CgaListTruffleBox argumentValueBoxed, InteropLibrary library) throws InterpreterInternalException {
 		try {
 			// Indirect execution in order to utilize graal optimizations.
 			// invokes FunctionRootNode::execute
@@ -60,7 +60,7 @@ public abstract class FunctionCall extends ExpressionBaseNode {
 			if (returnValue instanceof CgaTruffleBox) {
 				return ((CgaTruffleBox) returnValue).getInner();
 			} else if (returnValue instanceof CgaListTruffleBox) {
-				List<MultivectorNumeric> mvecs = ((CgaListTruffleBox) returnValue).getInner();
+				List<MultivectorExpression> mvecs = ((CgaListTruffleBox) returnValue).getInner();
 				super.currentLanguageContext().lastListReturn = (CgaListTruffleBox) returnValue;
 				return mvecs.get(0);
 			} else {

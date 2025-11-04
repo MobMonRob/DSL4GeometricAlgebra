@@ -2,12 +2,12 @@ package de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.
 
 import com.oracle.truffle.api.dsl.Specialization;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.builtinsSuperClasses.BuiltinFunctionBody;
-import de.orat.math.gacalc.api.MultivectorNumeric;
+import de.orat.math.gacalc.api.MultivectorExpression;
 
 public abstract class Tan extends BuiltinFunctionBody {
 
 	@Specialization
-	protected MultivectorNumeric doExecute(MultivectorNumeric input) {
+	protected MultivectorExpression doExecute(MultivectorExpression input) {
 		return input.scalarTan();
 	}
 }

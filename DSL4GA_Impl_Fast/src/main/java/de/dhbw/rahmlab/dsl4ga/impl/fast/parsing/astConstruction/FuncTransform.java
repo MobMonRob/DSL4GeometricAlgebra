@@ -6,12 +6,8 @@ import de.dhbw.rahmlab.dsl4ga.common.parsing.SkippingParseTreeWalker;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationException;
 import de.orat.math.gacalc.api.GAFactory;
 import de.orat.math.gacalc.api.GAFunction;
-import de.orat.math.gacalc.api.MultivectorExpression;
 import de.orat.math.gacalc.api.MultivectorVariable;
-//import de.orat.math.gacalc.api.GAFactory;
-//import de.orat.math.gacalc.api.GAFunction;
-//import de.orat.math.gacalc.api.MultivectorVariable;
-//import de.orat.math.gacalc.api.MultivectorExpression;
+import de.orat.math.gacalc.api.MultivectorExpression;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -61,7 +57,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 	public void exitFormalParameter_(GeomAlgeParser.FormalParameter_Context ctx) {
 		String name = ctx.name.getText();
 
-		var param = exprGraphFactory.createVariableDense(name); //createMultivectorVariableDense(name);
+		var param = exprGraphFactory.createVariableDense(name);
 
 		this.formalParameterList.add(param);
 		this.localVariables.put(name, param);

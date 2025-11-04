@@ -12,7 +12,7 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.Fu
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.nodes.expr.LocalVariableReference;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.visualization.runtime.VisualizerFunctionContext;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.visualization.runtime.VisualizerService;
-import de.orat.math.gacalc.api.MultivectorNumeric;
+import de.orat.math.gacalc.api.MultivectorExpression;
 
 @NodeChild(value = "varRef", type = LocalVariableReference.class)
 @NodeField(name = "vizContext", type = VisualizerFunctionContext.class)
@@ -26,7 +26,7 @@ public abstract class VisualizeMultivector extends NonReturningStatementBaseNode
 	protected abstract Boolean getIsIPNS();
 
 	@Specialization
-	protected void doExecute(VirtualFrame frame, MultivectorNumeric varRefValue) {
+	protected void doExecute(VirtualFrame frame, MultivectorExpression varRefValue) {
 		String varName = this.getVarRef().getName();
 		String funcName = ((FunctionDefinitionRootNode) super.getRootNode()).getName();
 		String fullName = String.format("%s::%s", funcName, varName);

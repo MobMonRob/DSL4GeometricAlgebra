@@ -60,8 +60,8 @@ public class App {
 
 		var a = new CGARoundPointIPNS(new Point3d(1, 0.3, -0.7)).extractCoordinates();
 		var b = new CGARoundPointOPNS(new Point3d(0.5, 0.5, 0.5)).extractCoordinates();
-		var aMatrix = new SparseDoubleMatrix(new DenseDoubleColumnVector(a).toMatrix());
-		var bMatrix = new SparseDoubleMatrix(new DenseDoubleColumnVector(b).toMatrix());
+		var aMatrix = new SparseDoubleMatrix(new DenseDoubleColumnVector(a).toMatrix(), true);
+		var bMatrix = new SparseDoubleMatrix(new DenseDoubleColumnVector(b).toMatrix(), true);
 		var args = List.of(aMatrix, bMatrix);
 
 		var fac = new TruffleProgramFactory();

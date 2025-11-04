@@ -38,7 +38,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 
 	protected ExprTransform(GAFactory exprGraphFactory, Map<String, GAFunction> functionsView, Map<String, MultivectorExpression> localVariablesView) {
 		this.exprGraphFactory = exprGraphFactory;
-		this.constants = exprGraphFactory.constantsExpr(); //constantsSymbolic();
+		this.constants = exprGraphFactory.constantsExpr();
 		this.functionsView = functionsView;
 		this.localVariablesView = localVariablesView;
 	}
@@ -279,7 +279,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 			String decimalLiteral = ctx.value.getText();
 			double value = decimalFormat.parse(decimalLiteral).doubleValue();
 			// ScalarLiteral node = ScalarLiteralNodeGen.create(value);
-			var node = this.exprGraphFactory.createScalarLiteral(decimalLiteral, value);
+			var node = this.exprGraphFactory.createExpr(value);
 			nodeStack.push(node);
 		} catch (ParseException ex) {
 			// Should never occur because of the DECIMAL_LITERAL lexer token definition.
@@ -323,7 +323,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 
 		if (this.functionsView.containsKey(functionName)) {
 			GAFunction function = this.functionsView.get(functionName);
-			List<MultivectorExpression> returns = function.callExpr(arguments);//.callSymbolic(arguments);
+			List<MultivectorExpression> returns = function.callExpr(arguments);
 
 			if (!(ctx.parent instanceof GeomAlgeParser.TupleAssgnStmtContext) && (returns.size() != 1)) {
 				int line = ctx.start.getLine();

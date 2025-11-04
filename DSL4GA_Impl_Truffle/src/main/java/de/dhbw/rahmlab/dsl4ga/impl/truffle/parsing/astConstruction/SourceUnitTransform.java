@@ -7,8 +7,8 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.ValidationException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.Function;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.ParsingService.FactoryAndMain;
-import de.orat.math.gacalc.api.ExprGraphFactory;
-import de.orat.math.gacalc.api.GAExprGraphFactoryService;
+import de.orat.math.gacalc.api.GAFactory;
+import de.orat.math.gacalc.api.GAServiceLoader;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,11 +32,11 @@ public class SourceUnitTransform extends GeomAlgeParserBaseListener {
 		String algebraID = algebraContext.algebraID.getText();
 		Token implID = algebraContext.implID;
 
-		ExprGraphFactory fac;
+		GAFactory fac;
 		if (implID != null) {
-			fac = GAExprGraphFactoryService.getExprGraphFactoryThrowing(algebraID, implID.getText());
+			fac = GAServiceLoader.getGAFactoryThrowing(algebraID, implID.getText());
 		} else {
-			fac = GAExprGraphFactoryService.getExprGraphFactoryThrowing(algebraID);
+			fac = GAServiceLoader.getGAFactoryThrowing(algebraID);
 		}
 
 		for (FunctionContext functionCtx : ctx.functions) {

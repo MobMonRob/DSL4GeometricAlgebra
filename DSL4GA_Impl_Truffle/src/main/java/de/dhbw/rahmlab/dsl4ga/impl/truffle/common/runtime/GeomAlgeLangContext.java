@@ -7,7 +7,7 @@ import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.source.Source;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.truffleBox.CgaListTruffleBox;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.runtime.BuiltinRegistry;
-import de.orat.math.gacalc.api.ExprGraphFactory;
+import de.orat.math.gacalc.api.GAFactory;
 import java.util.ArrayList;
 
 public final class GeomAlgeLangContext {
@@ -21,9 +21,12 @@ public final class GeomAlgeLangContext {
 	public final BuiltinRegistry builtinRegistry;
 	public final GeomAlgeLang truffleLanguage;
 	public final TruffleLanguage.Env env;
-	public ExprGraphFactory exprGraphFactory;
-	public CgaListTruffleBox lastListReturn = new CgaListTruffleBox(new ArrayList<>());
+	public GAFactory exprGraphFactory;
 	private Source source = null;
+
+	public CgaListTruffleBox lastListReturn = new CgaListTruffleBox(new ArrayList<>());
+	// Maybe better: use scoped values. (JDK 25)
+	public static ArgsMapper currentExternalArgs = null;
 
 	public GeomAlgeLangContext() {
 		this(null, null);

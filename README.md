@@ -1,9 +1,9 @@
-# DSL4GeometricAlgebra
-This repository contains code to work with multivector expressions of geometric algebra. The idea is to realise a complete toolchain with a geometric algebra specific domain specific language based on [truffle/graal](https://www.graalvm.org/latest/graalvm-as-a-platform/language-implementation-framework/) with state of the art smart editing features, debugging functionality and a fast implementation based on [JCasADi](https://web.casadi.org/).
+# DSL4GA
+This repository contains code to work with multivector expressions of geometric algebra. The idea is to realise a complete toolchain with a geometric algebra specific domain specific language based on [Truffle/Graal](https://www.graalvm.org/latest/graalvm-as-a-platform/language-implementation-framework/) with state of the art smart editing features, debugging functionality and a fast implementation based on [JCasADi](https://github.com/MobMonRob/JCasADi/) focussed on bringing algorithmic differentation in the world of geometric algebra.
 
 
 ## Disclaimer
-The project is in an early state of development, so it is not advised to use it in real world applications. If you have feedback or feature suggestions, please create a new GitHub Issue.
+The current state of the project is a proof of concept, so it is not advised to use it in real world applications. If you have feedback or feature suggestions, please create a new GitHub Issue.
 
 Especially be cautious regarding:
 - the documentation may not be up to date.
@@ -260,13 +260,13 @@ There exist three types of involution operations: Space inversion, reversion and
 ### Scalar functions
 | symbol      | description |
 | :---------- | ------------ |
-| atan2(x,y)  | arcus tansgens 2 (Converts the coordinates (x,y) to coordinates (r, theta) and returns the angle theta as the couterclockwise angle in radians between -pi and pi of the point (x,y) to the positive x-axis.)|
-| sin(x)      ||
-| cos(x)      ||
-| tan(x)      ||
-| atan(x)     ||
-| asin(x)     ||
-| acos(x)     ||
+| atan2(x,y)  | arctansgent 2 (Converts the coordinates (x,y) to coordinates (r, theta) and returns the angle theta as the couterclockwise angle in radians between -pi and pi of the point (x,y) to the positive x-axis.)|
+| sin(x)      | sine |
+| cos(x)      | cosine |
+| tan(x)      | tangent |
+| atan(x)     | arctangent |
+| asin(x)     | arcsine |
+| acos(x)     | arccosine |
 | abs()       | absolute value of a scalar only ||
 | sign(x)     | -1 if x<0 else 1 |
 
@@ -284,19 +284,28 @@ There exist three types of involution operations: Space inversion, reversion and
 ### Further symbols
 | symbol           | latex      | Unicode      | description | implementation |
 | :--------------: | -----------| ------------ | ----------- | -------------- |
-| &#x03B5;&#x208A; | \epsilon_+ | \u03B5\u208A |  |  0.5&#x03B5;&#x1D62; - &#x03B5;&#x2080; |
+| &#x03B5;&#x208A; | \epsilon_+ | \u03B5\u208A |  | 0.5&#x03B5;&#x1D62; - &#x03B5;&#x2080; |
 | &#x03B5;&#x208B; | \epsilon_- | \u03B5\u208B |  | 0.5&#x03B5;&#x1D62; + &#x03B5;&#x2080; |
 | &#x03C0;         | \pi        | \u03C0       | Ludolphs- or circle constant | Math.PI |
-| &#x221E;         | \infty     | \u221E       | corresponding to infinity vector in Dorst, Fontijne & Mann 2007 | 2&#x03B5;&#8320;  |
-| &#x006F;         | o          | \u006F       | corresponding to origin vector in Dorst, Fontijne & Mann 2007 | 0.5&#x03B5;&#7522;  |
-| &#x006E;         | n          | \u006E       | corresponding to infinity vector in Doran & Lasenby | &#x03B5;&#7522;  |
-| &#x00F1;         | \tilde{n}  | \u00F1       | corresponding to origin vector in Doran & Lasenby | -2&#x03B5;&#8320; |
-| &#x0045;&#x2080; | E_0        | \u0045\u2080 | Minkovsky bi-vector (is its own inverse) | &#x03B5;&#7522; &#x2227; &#x03B5;&#8320;|
+| &#x0045;&#x2080; | E_0        | \u0045\u2080 | Minkowski bivector (is its own inverse) | &#x03B5;&#7522; &#x2227; &#x03B5;&#8320;|
 | &#x0045;&#x2083; | E_3        | \u0045\u2083 | Euclidean pseudoscalar | &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083;     |
 | &#x0045;         | E          | \u0045       | Pseudoscalar | &#x03B5;&#x1D62; &#x2227; &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083; &#x2227; &#x03B5;&#x2080;|
 
 
 ### Useful equations between above symbols
 &#x03B5;&#x2080;&#x0045;&#x2080;=-&#x03B5;&#x2080;, &#x0045;&#x2080;&#x03B5;&#x2080;=&#x03B5;&#x2080;, &#x03B5;&#x1D62;&#x0045;&#x2080;=&#x03B5;&#x1D62;, &#x0045;&#x2080;&#x03B5;&#x1D62;=-&#x03B5;&#x1D62;, &#x0045;&#x2080;&#x00B2;=1, &#x03B5;&#x2080;&#x00B2;=&#x03B5;&#x1D62;&#x00B2;=0, &#x03B5;&#x208A;&#x00B2;=1, &#x03B5;&#x208B;&#x00B2;=-1, &#x03B5;&#x208A;&#x22C5;&#x03B5;&#x208B;=0
+
+## Next Steps
+- completing the experimentally and optimized PGA implementation
+- merging the experimentally generic geometric algebra implementation into the main branch
+- adding operators and built-ins for symbolic derivation and algorithmic differentiation
+- adding more smart-editing features based on the language-agnostic LSP from GraalVM, completion of the implementation of a language-specific LSP
+- adding more debugging features e.g. step-in/step-out, showing the complete stacktrace polyglot till inside the native [CasADi](https://web.casadi.org/) libraries by building to LLVM
+- completing the design of a type-system and its implementation 
+- extending the syntax with multidimensional arrays, loops and if-statements (A student project is already in the branch "loops")
+- Hyperwedge product implementation following [DeKeninck2020] to speed up program execution 
+- Symbolic optimization with [Maxima](https://maxima.sourceforge.io/) - automated symbolical optimization of functions
+- C-code export and parallelization with CasADi
+- execution speed benchmarks, espcially to compare FAST- and TRUFFLE-implementation, autogenerated C-Code, ...
 
 
