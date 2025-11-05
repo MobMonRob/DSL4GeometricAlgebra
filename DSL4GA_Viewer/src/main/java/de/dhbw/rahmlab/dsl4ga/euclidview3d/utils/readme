@@ -1,6 +1,5 @@
-- alle benötigten Klassen erst mal aus ConformalGeometricAlgebra package hier herkopieren und anpassen
-- alles CGA-spezifisches auslagern in die CGACasadi-Implementierung
-- hier nur das belassen was nicht von der Algebra abhängt
+Was tun mit 2d, 3d, 4d?
+Was mit der grade-Abhängigkeit der Farben, je nach Algebra haben die geometrischen Objekte ja unterschiedliche grades.
 
 - Fabian erweitert GACalcAPI um eine Methode Algebra getAlgebra(), die gleichnamige alte Methode wird umbenannt
   in String getAlgebraAsString()

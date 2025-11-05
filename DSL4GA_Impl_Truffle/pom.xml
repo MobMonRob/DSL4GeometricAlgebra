@@ -114,7 +114,12 @@
 			<!-- warum pom und nicht jar -->
 			<type>pom</type>
 		</dependency>
-
+	 <dependency>
+	  <groupId>de.dhbw.rahmlab</groupId>
+	  <artifactId>DSL4GA_Viewer</artifactId>
+	  <version>1.0-SNAPSHOT</version>
+	  <type>jar</type>
+	 </dependency>
 	</dependencies>
 	<build>
 		<pluginManagement>

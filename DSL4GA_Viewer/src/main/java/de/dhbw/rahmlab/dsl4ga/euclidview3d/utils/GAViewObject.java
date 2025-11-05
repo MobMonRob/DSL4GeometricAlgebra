@@ -1,5 +1,6 @@
 package de.dhbw.rahmlab.dsl4ga.euclidview3d.utils;
 
+import de.orat.math.gacalc.util.GeometricObject;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,17 +15,19 @@ public class GAViewObject {
     //TODO soll verwendet werden, wenn später einmal animationen ermöglicht werden
     // sollen bei denen der mv in der DSL geändert wird
     // unklar ob sich das so überhaupt implementieren läßt
-    private CGAMultivector mv;
+	// Es gibt CGAMvValue und CGAMvExpr, beides auf einmal ist nicht zu haben, daher besser
+	//GeometricObject Object übergeben? das ist dann auch unabhängig von der Algebra
+    private GeometricObject geometricObject;
     
     private String label;
     private GAViewObject parent;
     private List<GAViewObject> children;
     
-    GAViewObject(CGAMultivector mv, String label, GAViewObject parent, long id){
+    GAViewObject(GeometricObject geometricObject, String label, GAViewObject parent, long id){
         this.children = new ArrayList<>();
         setParent(parent);
         this.label = label;
-        this.mv = mv;
+        this.geometricObject = geometricObject;
         this.id = id;
     }
     final void setParent(GAViewObject parent){
@@ -36,38 +39,39 @@ public class GAViewObject {
     long getId(){
         return id;
     }
-    GAViewObject addCGAObject(GAViewObject parent, GAKVector m, String label){
-        throw new RuntimeException("Invocation only of the overwritten method in CGAAviewer allowed!");
+    GAViewObject addGAObject(GAViewObject parent, GeometricObject geometricObject/*GAKVector m,*/, String label){
+        throw new RuntimeException("Invocation only by the overwritten method in GAAviewer allowed!");
     }
-    public GAViewObject addCGAObject(GAKVector m, String label){
+    public GAViewObject addGAObject(GeometricObject geometricObject, String label){
         if (parent != null){
-            return parent.addCGAObject(this, m, label);
+            return parent.addGAObject(this, geometricObject, label);
         } else {
-            return addCGAObject(this, m, label);
+            return addGAObject(this, geometricObject, label);
         }
     }
     
-    GAViewer getCGAViewer(){
+    /*public GAViewObject addGAObject(GeometricObject geometricObject, String label, Color color){
+        return getGAViewer().addGAObject(this, geometricObject, label, color);
+    }*/
+
+	
+    GAViewer getGAViewer(){
         if (parent != null){
-            return parent.getCGAViewer();
+            return parent.getGAViewer();
         } else return (GAViewer) this;
     }
     
-    public GAViewObject addCGAObject(GAKVector m, String label, Color color){
-        return getCGAViewer().addCGAObject(this, m, label, color);
-    }
-
-    public void transform(CGAScrew motor){
+    /*public void transform(CGAScrew motor){
         GAViewer viewer = getCGAViewer();
         if (id != -1) viewer.transform(this, motor);
         for (GAViewObject obj: children){
             viewer.transform(obj, motor);
         }
-    }
+    }*/
     
     public void remove() {
         System.out.println("remove \""+this.label+"\"!");
-        GAViewer viewer = getCGAViewer();
+        GAViewer viewer = getGAViewer();
         if (id != -1) viewer.remove(id);
         for (GAViewObject obj: children){
             viewer.remove(obj.getId());

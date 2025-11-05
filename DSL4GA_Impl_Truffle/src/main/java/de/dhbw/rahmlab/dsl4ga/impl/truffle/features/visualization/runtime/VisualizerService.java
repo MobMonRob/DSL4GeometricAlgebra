@@ -1,22 +1,20 @@
 package de.dhbw.rahmlab.dsl4ga.impl.truffle.features.visualization.runtime;
 
+import de.dhbw.rahmlab.dsl4ga.euclidview3d.utils.GAViewObject;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.internal.InterpreterInternalException;
-import de.orat.math.cga.api.CGAKVector;
-import de.orat.math.cga.api.CGAMultivector;
-import de.orat.math.cga.api.CGAViewObject;
-import de.orat.math.cga.api.CGAViewer;
+import de.dhbw.rahmlab.dsl4ga.euclidview3d.utils.GAViewer;
 import de.orat.math.gacalc.api.MultivectorExpression;
-import de.orat.math.sparsematrix.SparseDoubleColumnVector;
-import de.orat.math.sparsematrix.SparseDoubleMatrix;
+import de.orat.math.gacalc.api.MultivectorValue;
+import de.orat.math.gacalc.util.GeometricObject;
 import java.util.List;
 import java.util.Optional;
 
 public class VisualizerService {
 
-	private final CGAViewer viewer;
+	private final GAViewer viewer;
 
-	private VisualizerService(CGAViewer viewer) {
+	private VisualizerService(GAViewer viewer) {
 		this.viewer = viewer;
 	}
 
@@ -24,7 +22,7 @@ public class VisualizerService {
 
 	public static VisualizerService instance() throws InterpreterInternalException {
 		if (INSTANCE == null) {
-			Optional<CGAViewer> viewerOptional = CGAViewer.getInstance();
+			Optional<GAViewer> viewerOptional = GAViewer.getInstance();
 			if (viewerOptional.isEmpty()) {
 				throw new InterpreterInternalException("Could get no CGAViewer instance.");
 			}
@@ -33,27 +31,21 @@ public class VisualizerService {
 		return INSTANCE;
 	}
 
-	public void add(MultivectorExpression mv, String name, VisualizerFunctionContext vizContext, boolean isIPNS) throws InterpreterInternalException {
-		SparseDoubleMatrix sparseDoubleMatrix = GeomAlgeLangContext.currentExternalArgs.evalToSDM(List.of(mv)).get(0);
-		var sparseDoubleColumnVector = new SparseDoubleColumnVector(sparseDoubleMatrix);
-		var doubleArray = sparseDoubleColumnVector.toArray();
-		//FIXME vermutlich erwartet der Konstruktor ein doubleArray Argument in einer anderen Representation
-		var cgaMultivector = new CGAMultivector(doubleArray);
-
-		//TODO
-		// statt specialize hier den mv weiterreichen und dann im viewer statt specialize
-		// eine eigene Methode zur Beschaffung des Types also PLANE, LINE etc. aufruen
-		CGAKVector mv2 = CGAKVector.specialize(cgaMultivector, isIPNS);
-		if (mv2 instanceof CGAKVector cgakVector) {
-			CGAViewObject cgaViewObject = this.viewer.addCGAObject(cgakVector, name);
-			if (cgaViewObject != null) {
-				vizContext.addViewObject(cgaViewObject);
+	public void add(MultivectorExpression mv, String name, VisualizerFunctionContext vizContext, 
+		                 boolean isIPNS) throws InterpreterInternalException {
+		
+		MultivectorValue mvValue = GeomAlgeLangContext.currentExternalArgs.evalToMV(List.of(mv)).get(0);
+		GeometricObject geometricObject = mvValue.decompose(isIPNS);
+        if (geometricObject != null){
+			GAViewObject gaViewObject = this.viewer.addGeometricObject(geometricObject, name/*, isIPNS*/);
+			if (gaViewObject != null) {
+				vizContext.addViewObject(gaViewObject);
 			} else {
 				throw new InterpreterInternalException("Visualization of \"" + name + "\" failed!");
 			}
 		} else {
 			throw new InterpreterInternalException(
-				String.format("Variable \"%s\" is no k-vector!", cgaMultivector.toString(name)));
+				String.format("Variable \"%s\" is no k-vector!", mvValue.toString(/*name*/)));
 		}
 	}
 }

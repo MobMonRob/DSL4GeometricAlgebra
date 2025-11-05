@@ -55,7 +55,7 @@ public class EuclidViewer3DRPCClient implements iEuclidViewer3D {
 
 	@Override
 	public long addSphere(Point3d location, double radius, Color color, String label, boolean transparency) {
-		throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+		return viewerRPCService.addSphere(location, radius, color, label, transparency);
 	}
 
 	@Override

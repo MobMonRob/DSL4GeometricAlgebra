@@ -1,19 +1,20 @@
 package de.dhbw.rahmlab.dsl4ga.impl.truffle.features.visualization.runtime;
 
-import de.orat.math.cga.api.CGAViewObject;
+//import de.orat.math.cga.api.CGAViewObject;
+import de.dhbw.rahmlab.dsl4ga.euclidview3d.utils.GAViewObject;
 import java.util.ArrayList;
 import java.util.List;
 
 public class VisualizerFunctionContext {
 
-	private final List<CGAViewObject> viewObjects = new ArrayList<>();
+	private final List<GAViewObject> viewObjects = new ArrayList<>();
 
-	protected void addViewObject(CGAViewObject viewObject) {
+	protected void addViewObject(GAViewObject viewObject) {
 		this.viewObjects.add(viewObject);
 	}
 
 	public void removeAll() {
-		for (CGAViewObject viewObject : this.viewObjects) {
+		for (GAViewObject viewObject : this.viewObjects) {
 			viewObject.remove();
 		}
 		this.viewObjects.clear();

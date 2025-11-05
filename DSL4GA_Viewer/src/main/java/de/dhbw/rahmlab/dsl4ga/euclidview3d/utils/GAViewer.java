@@ -2,6 +2,8 @@ package de.dhbw.rahmlab.dsl4ga.euclidview3d.utils;
 
 //import de.orat.math.cga.api.CGAScrew.MotorParameters;
 import de.orat.math.gacalc.api.MultivectorValue; /*Numeric;*/
+import de.orat.math.gacalc.util.GeometricObject;
+import de.orat.math.gacalc.util.Tuple;
 import de.orat.math.sparsematrix.SparseDoubleColumnVector;
 import de.orat.view3d.euclid3dviewapi.api.ViewerService;
 import de.orat.view3d.euclid3dviewapi.spi.iAABB;
@@ -64,7 +66,7 @@ public class GAViewer extends GAViewObject {
      * TODO
      * was ist mit einer Schraubachse? Ist die auch ein k-vector? vermutlich nein!
      */
-    public GAViewObject addCGAObject(GAViewObject parent, MultivectorValue mv, 
+    /*public GAViewObject addCGAObject(GAViewObject parent, MultivectorValue mv, 
 		                             String label, boolean isIPNS){
         
 		var sparseDoubleMatrix = mv.elements();
@@ -79,15 +81,15 @@ public class GAViewer extends GAViewObject {
             result = addCGAObject(parent, mv, label);
         } 
         return result;
-    }
+    }*/
 
-    @Override
-    public GAViewObject addCGAObject(MultivectorValue mv, String label) {
-        return addCGAObject(this, mv, label);
+	// das ist die Methode, die der VisualizerService von außen aufruft
+	public GAViewObject addGeometricObject(GeometricObject geometricObject, String label) {
+		return addGeometricObject(this, geometricObject, label);
     }
     
     /**
-     * Add cga object into the visualization.
+     * Add geometric object into the visualization.
      *
      * @param m cga multivector
      * @param label label
@@ -95,200 +97,121 @@ public class GAViewer extends GAViewObject {
      * the axis-aligned bounding box and this box is not extended for the given object
      * @throws IllegalArgumentException if multivector is no visualizable type
      */
-    GAViewObject addCGAObject(GAViewObject parent, MultivectorValue mv, String label){
-         return addCGAObject(parent, mv, label, null);
+    GAViewObject addGeometricObject(GAViewObject parent, GeometricObject geometricObject, String label){
+         return addGeometricObject(parent, geometricObject, label, null);
     }
     // returns null if the given GAKVector m has unknown type
-    GAViewObject addCGAObject(GAViewObject parent, MultivectorValue mv, String label, Color color){
+	// brauchts vermutlich nicht mehr, da in diesem Fall GeometricObject bereits nicht bestimmt werden konnte
+	/**
+	 * 
+	 * @param parent
+	 * @param mv
+	 * @param label
+	 * @param color if == null, color is determined automatically for the geometric object type
+	 * @return 
+	 */
+    GAViewObject addGeometricObject(GAViewObject parent, GeometricObject geometricObject, String label, 
+		                        /*boolean isIPNS,*/ Color color){
         
         long id = -1;
         long[] ids;
             
-        // cga ipns objects
-        if (m instanceof CGARoundPointIPNS roundPointIPNS){
-            //TODO decompose bestimmt auch eine Attitude, was bedeutet das für einen round-point?
-            // brauche ich das überhaupt?
-            // decompose bestimmt zuerst auch einen round-point, aber den hab ich ja bereits
-            //FIXME
-            if (color == null){
-               id = addRoundPoint(roundPointIPNS.decompose(), label, true);
-            } else {
-               id = addRoundPoint(roundPointIPNS.decompose(), label, color);
-            }
-            return new GAViewObject(m,label, parent, id);
-        
-        } else if (m instanceof CGALineIPNS lineIPNS){
-            if (color == null){
-                id = addLine(lineIPNS.decomposeFlat(), label, true);
-            } else {
-                id = addLine(lineIPNS.decomposeFlat(), label, color);
-            }
-            return new GAViewObject(m,label, parent, id);
-            
-        } else if (m instanceof CGAPointPairIPNS pointPairIPNS){
-            //addPointPair(m.decomposeTangentOrRound(), label, true);
-            
-            iCGATangentOrRound.EuclideanParameters parameters = pointPairIPNS.decompose();
-            double r2 = parameters.squaredSize();
-            //double r2 = pointPairIPNS.squaredSize();
-            if (r2 < 0){
-                //FIXME
-                // decomposition schlägt fehl
-                // show imaginary point pairs as circles
-                //CGACircleIPNS circle = new CGACircleIPNS(pointPairIPNS);
-                //addCircle(pointPairIPNS.decomposeTangentOrRound(), label, true);
-                //return true;
-                System.out.println("Visualize imaginary point pair \""+label+"\" failed!");
-                return null;
-                
-            // tangent vector
-            } else if (r2 == 0){
-                System.out.println("CGA-Object \""+label+"\" is a tangent vector - not yet supported!");
-                return null;
-
-            // real point pair only?
-            //FIXME
-            } else {
-                //ddPointPair(cGAPointPairIPNS.decomposePoints(), label, true);
-                //iCGATangentOrRound.EuclideanParameters parameters = pointPairIPNS.decompose();
-                Point3d loc = parameters.location();
-                System.out.println("pp \""+label+"\" loc=("+String.valueOf(loc.x)+", "+String.valueOf(loc.y)+", "+String.valueOf(loc.z)+
-                        " r2="+String.valueOf(parameters.squaredSize()));
-                
-                if (color == null){
-                    ids = addPointPair(parameters, label, true);
-                } else {
-                    ids = addPointPair(parameters, label, color);
-                }  
-                // scheint zum gleichen Ergebnis zu führen
-                //iCGAPointPair.PointPair pp = pointPairIPNS.decomposePoints();
-                //addPointPair(pp, label, true);
-                //double r_ = pp.p1().distance(pp.p2())/2;
-                //System.out.println("Visualize real point pair \""+label+"\"with r="+String.valueOf(r_));
-                //TODO vgl. impl für plane, da wird eine Methode addComplexType verwendet
-                // sollte ich das hier nicht auch so machen?
-                //CGAViewObject parent2 = new GAViewObject(m, label, parent, -1);
-                //CGAViewObject p1 = new GAViewObject(null,label+"_1",parent2, ids[0]);
-                //parent.addChild(p1);
-                //CGAViewObject p2 = new GAViewObject(null,label+"_2",parent2, ids[1]);
-                //parent.addChild(p2);
-                //return parent2;
-                return addComplexViewObject(m, label, parent, ids);
-            }
-            
-        } else if (m instanceof CGASphereIPNS sphereIPNS){
-            if (color == null){
-                id = addSphere(sphereIPNS.decompose(), label, true);
-            } else {
-                id = addSphere(sphereIPNS.decompose(), label, color, true);
-            }
-            return new GAViewObject(m,label, parent, id);
-            
-        } else if (m instanceof CGAPlaneIPNS planeIPNS){
-            if (color == null){
-                ids = addPlane(planeIPNS.decomposeFlat(), label, true, true, true, false);
-            } else {
-                ids = addPlane(planeIPNS.decomposeFlat(), label, color, true, true, false);
-            }
-            return addComplexViewObject(m, label, parent, ids);
-            
-        } else if (m instanceof CGAOrientedPointIPNS orientedPointIPNS){
-            if (color == null){
-                ids = addOrientedPoint(orientedPointIPNS.decompose(), label, true);
-            } else {
-                ids = addOrientedPoint(orientedPointIPNS.decompose(), label, color);
-            }
-            return addComplexViewObject(m, label, parent, ids);
-            
-        } else if (m instanceof CGAFlatPointIPNS flatPointIPNS){
-            if (color == null){
-                id = addFlatPoint(flatPointIPNS.decomposeFlat(), label, true);
-            } else {
-                id = addFlatPoint(flatPointIPNS.decomposeFlat(), label, color);
-            }      
-            return new GAViewObject(m,label, parent, id);
-            
-        } else if (m instanceof CGACircleIPNS circleIPNS){
-            if (color == null){
-                id = addCircle(circleIPNS.decompose(), label, true);
-            } else {
-                id = addCircle(circleIPNS.decompose(), label, color);
-            }
-            return new GAViewObject(m,label, parent, id);
-            
-        }
+		switch (geometricObject.geometricType){
+			case GeometricObject.GeometricType.ROUND_POINT:
+				if (color == null){
+					id = addRoundPoint(geometricObject, label);
+				} else {
+					id = addRoundPoint(geometricObject, label, color);
+				}
+				return new GAViewObject(geometricObject, label, parent, id);
+				
+			case GeometricObject.GeometricType.LINE:
+				if (color == null){
+					id = addLine(geometricObject, label);
+				} else {
+					id = addLine(geometricObject, label, color);
+				}
+				return new GAViewObject(geometricObject, label, parent, id);
+				
+			case GeometricObject.GeometricType.DIPOLE:
+				double r2 = geometricObject.getSignedSquaredSize(); 
+				//double r2 = parameters.squaredSize();
+				//double r2 = pointPairIPNS.squaredSize();
+				// r2<0 imaginary dipole == circle
+				// r2==0 tangent not yet supported
+				// tangent vector
+				
+				Point3d loc = toPoint3d(geometricObject.location[0]);
+			    System.out.println("pp \""+label+"\" loc=("+String.valueOf(loc.x)+", "+
+					            String.valueOf(loc.y)+", "+String.valueOf(loc.z)+
+							" r2="+String.valueOf(geometricObject.getSignedSquaredSize()));
+				if (color == null){
+					ids = addPointPair(geometricObject, label);
+				} else {
+					ids = addPointPair(geometricObject, label, color);
+				}  
+				// scheint zum gleichen Ergebnis zu führen
+				//iCGAPointPair.PointPair pp = pointPairIPNS.decomposePoints();
+				//addPointPair(pp, label, true);
+				//double r_ = pp.p1().distance(pp.p2())/2;
+				//System.out.println("Visualize real point pair \""+label+"\"with r="+String.valueOf(r_));
+				//TODO vgl. impl für plane, da wird eine Methode addComplexType verwendet
+				// sollte ich das hier nicht auch so machen?
+				//CGAViewObject parent2 = new GAViewObject(m, label, parent, -1);
+				//CGAViewObject p1 = new GAViewObject(null,label+"_1",parent2, ids[0]);
+				//parent.addChild(p1);
+				//CGAViewObject p2 = new GAViewObject(null,label+"_2",parent2, ids[1]);
+				//parent.addChild(p2);
+				//return parent2;
+				return addComplexViewObject(geometricObject, label, parent, ids);
+				
+			case GeometricObject.GeometricType.SPHERE:
+				if (color == null){
+					id = addSphere(geometricObject, label);
+				} else {
+					id = addSphere(geometricObject, label, color, true);
+				}
+				return new GAViewObject(geometricObject, label, parent, id);
+				
+			case GeometricObject.GeometricType.PLANE:
+				if (color == null){
+					ids = addPlane(geometricObject, label,  true, true, false);
+				} else {
+					ids = addPlane(geometricObject, label, color, true, true, false);
+				}
+				return addComplexViewObject(geometricObject, label, parent, ids);
+				
+			case GeometricObject.GeometricType.ORIENTED_POINT:
+				if (color == null){
+					ids = addOrientedPoint(geometricObject, label);
+				} else {
+					ids = addOrientedPoint(geometricObject, label, color);
+				}
+				return addComplexViewObject(geometricObject, label, parent, ids);
+				
+			case GeometricObject.GeometricType.FLAT_POINT:
+				if (color == null){
+					id = addFlatPoint(geometricObject, label);
+				} else {
+					id = addFlatPoint(geometricObject, label, color);
+				}      
+				return new GAViewObject(geometricObject, label, parent, id);
+				
+			case GeometricObject.GeometricType.CIRCLE:
+				if (color == null){
+					id = addCircle(geometricObject, label);
+				} else {
+					id = addCircle(geometricObject, label, color);
+				}
+				return new GAViewObject(geometricObject, label, parent, id);
+		}
+		
+		
         //TODO
         // attitude/free vector dashed/stripled arrow at origin
         // tangent vector solid arrow at origin?
         
         
-        // cga opns objects
-        
-        if (m instanceof CGARoundPointOPNS roundPointOPNS){
-            if (color == null){
-                id = addRoundPoint(roundPointOPNS.decompose(), label, false);
-            } else {
-                id = addRoundPoint(roundPointOPNS.decompose(), label, color);
-            }
-            return new GAViewObject(m,label, parent, id);
-            
-        } else if (m instanceof CGALineOPNS lineOPNS){
-            if (color == null){
-                id = addLine(lineOPNS.decomposeFlat(), label, false);
-            } else {
-                id = addLine(lineOPNS.decomposeFlat(), label, color);
-            }
-            return new GAViewObject(m,label, parent, id);
-            
-        } else if (m instanceof CGAPointPairOPNS pointPairOPNS){
-            iCGATangentOrRound.EuclideanParameters parameters = pointPairOPNS.decompose();
-            
-            if (color == null){
-                ids = addPointPair(parameters, label, false);
-            } else {
-                ids = addPointPair(parameters, label, color);
-            }
-            //iCGAPointPair.PointPair pp = pointPairOPNS.decomposePoints();
-            //addPointPair(pp, label, false);
-            GAViewObject parent2 = new GAViewObject(m, label,  parent, -1);
-            GAViewObject p1 = new GAViewObject(null,label+"_1",parent2, ids[0]);
-            parent.addChild(p1);
-            GAViewObject p2 = new GAViewObject(null,label+"_2",parent2, ids[1]);
-            parent.addChild(p2);
-            return parent2;
-            
-        } else if (m instanceof CGASphereOPNS sphereOPNS){
-            if (color == null){
-                id = addSphere(sphereOPNS.decompose(), label, false);
-            } else {
-                id = addSphere(sphereOPNS.decompose(), label, color, false);
-            }
-            return new GAViewObject(m,label, parent, id);
-            
-        } else if (m instanceof CGAPlaneOPNS planeOPNS){
-            if (color == null){
-                ids = addPlane(planeOPNS.decomposeFlat(), label, false, true, true, false);
-            } else {
-                ids = addPlane(planeOPNS.decomposeFlat(), label, color, true, true, false);
-            }
-            return addComplexViewObject(m, label, parent, ids);
-            
-        } else if (m instanceof CGACircleOPNS circleOPNS){
-            if (color == null){
-                id = addCircle(circleOPNS.decompose(), label, false);
-            } else {
-                id = addCircle(circleOPNS.decompose(), label, color);
-            }
-            return new GAViewObject(m,label, parent, id);
-            
-        } else if (m instanceof CGAOrientedPointOPNS orientedPointOPNS){
-            if (color == null){
-                ids = addOrientedPoint(orientedPointOPNS.decompose(), label, false);
-            } else {
-                ids = addOrientedPoint(orientedPointOPNS.decompose(), label, color);
-            }
-            return addComplexViewObject(m, label, parent, ids);
-        }
         //TODO
         // flat-point als Würfel darstellen
 
@@ -296,9 +219,14 @@ public class GAViewer extends GAViewObject {
         return null;
     }
     
+	
+	//----------
+	
+	
     // der parent ist momentan immer der viewer selbst also root, das könnte sich aber ändern
-    private GAViewObject addComplexViewObject(CGAMultivector m, String label, GAViewObject parent, long[] ids){
-        GAViewObject parent2 = new GAViewObject(m, label,  parent, -1);
+    private GAViewObject addComplexViewObject(GeometricObject geometricObject, String label, 
+												GAViewObject parent, long[] ids){
+        GAViewObject parent2 = new GAViewObject(geometricObject, label,  parent, -1);
         for (int i=0;i<ids.length;i++){
             GAViewObject p = new GAViewObject(null,label+"_"+String.valueOf(i+1),parent2, ids[i]);
             parent2.addChild(p);
@@ -306,19 +234,28 @@ public class GAViewer extends GAViewObject {
         return parent2;
     }
     
-    void transform(GAViewObject obj, CGAScrew motor){
+    /*void transform(GAViewObject obj, CGAScrew motor){
         impl.transform(obj.getId(), convert(motor));
-    }
+    }*/
     
     // TODO kann ich eine Screw überhaupt in eine 4x4-Matrix überführen?
-    private Matrix4d convert(CGAScrew motor){
+    /*private Matrix4d convert(CGAScrew motor){
         //TODO
         //MotorParameters motorParameters = motor.decomposeMotor();
         
         return null;
-    }
+    }*/
     
     
+	//-------------
+	
+	private static Point3d toPoint3d(Tuple tuple){
+		return new Point3d(tuple.values[0], tuple.values[1], tuple.values[2]);  //parameters.location();
+	}
+	private static Vector3d toVector3d(Tuple tuple){
+		return new Vector3d(tuple.values[0], tuple.values[1], tuple.values[3]);
+	}
+	
     /**
      * Add a point to the 3d view.
      *
@@ -326,17 +263,18 @@ public class GAViewer extends GAViewObject {
      * @param isIPNS
      * @param label label or null if no label needed
      */
-    long addRoundPoint(iCGATangentOrRound.EuclideanParameters parameters, String label, boolean isIPNS){
+    long addRoundPoint(GeometricObject geometricObject, String label){
         Color color = COLOR_GRADE_1;
-        if (!isIPNS) color = COLOR_GRADE_4;
-        return addRoundPoint(parameters, label, color);
+        if (geometricObject.isOPNS()) color = COLOR_GRADE_4;
+        return addRoundPoint(geometricObject, label, color);
     }
     
-    long addRoundPoint(iCGATangentOrRound.EuclideanParameters parameters, String label, Color color){
+    long addRoundPoint(GeometricObject geometricObject, String label, Color color){
         
-        if (color == null) throw new IllegalArgumentException("color==null not allowed, use method with argument ipns instead!");
+        if (color == null) throw 
+			new IllegalArgumentException("color==null not allowed, use method with argument ipns instead!");
         
-        Point3d location = parameters.location();
+		Point3d location = toPoint3d(geometricObject.location[0]);
         System.out.println("Add point \""+label+"\" at ("+String.valueOf(location.x)+","+
                         String.valueOf(location.y)+", "+String.valueOf(location.z)+")!");
         location.scale(1000d);
@@ -351,26 +289,25 @@ public class GAViewer extends GAViewObject {
      * @param label
      * @param isIPNS
      */
-    long addSphere(iCGATangentOrRound.EuclideanParameters parameters,
-                                              String label, boolean isIPNS){
+    long addSphere(GeometricObject geometricObject, String label){
             Color color = COLOR_GRADE_1;
-            if (!isIPNS) color = COLOR_GRADE_4;
-            return addSphere(parameters, label, color, true);
+            if (geometricObject.isOPNS()) color = COLOR_GRADE_4;
+            return addSphere(geometricObject, label, color, true);
     }
-    long addSphere(iCGATangentOrRound.EuclideanParameters parameters,
-                                              String label, Color color, boolean transparency){
+    long addSphere(GeometricObject geometricObject, String label, Color color, boolean transparency){
+        if (color == null) throw 
+			new IllegalArgumentException("color==null not allowed, use method with argument ipns instead!");
         
-        if (color == null) throw new IllegalArgumentException("color==null not allowed, use method with argument ipns instead!");
-        
-        Point3d location = parameters.location();
+        //Point3d location = parameters.location();
+		Point3d location = toPoint3d(geometricObject.location[0]);
         location.scale(1000d);
         boolean imaginary = false;
-        if (parameters.squaredSize() < 0){
+        if (geometricObject.getSignedSquaredSize() < 0){
             imaginary = true;
         }
         //TODO
         // Farbe ändern für imaginäre Kugeln
-        double radius = Math.sqrt(Math.abs(parameters.squaredSize()));
+        double radius = Math.sqrt(Math.abs(geometricObject.getSignedSquaredSize()));
         radius *= 1000;
         System.out.println("Add sphere \""+label+"\" at ("+String.valueOf(location.x)+"mm,"+
                         String.valueOf(location.y)+"mm, "+String.valueOf(location.z)+"mm) with radius "+
@@ -389,20 +326,23 @@ public class GAViewer extends GAViewObject {
      * @param showNormal 
      * @return true, if the plane is visible in the current bounding box
      */
-    long[] addPlane(iCGAFlat.EuclideanParameters parameters, String label,
-                     boolean isIPNS, boolean showPolygon, boolean showNormal, boolean transparency){
+    long[] addPlane(GeometricObject geometricObject, String label,
+                     boolean showPolygon, boolean showNormal, boolean transparency){
         Color color = COLOR_GRADE_1;
-        if (!isIPNS) color = COLOR_GRADE_4;
-        return addPlane(parameters, label, color, showPolygon, showNormal, transparency);
+        if (geometricObject.isOPNS()) color = COLOR_GRADE_4;
+        return addPlane(geometricObject, label, color, showPolygon, showNormal, transparency);
     }
-    long[] addPlane(iCGAFlat.EuclideanParameters parameters, String label,
+    long[] addPlane(GeometricObject geometricObject, String label,
                      Color color, boolean showPolygon, boolean showNormal, boolean transparency){
         
-        if (color == null) throw new IllegalArgumentException("color==null not allowed, use method with argument ipns instead!");
+        if (color == null) throw 
+			new IllegalArgumentException("color==null not allowed, use method with argument ipns instead!");
         
-        Point3d location = parameters.location();
+        //Point3d location = parameters.location();
+		Point3d location = toPoint3d(geometricObject.location[0]);
         location.scale(1000d);
-        Vector3d a = parameters.attitude();
+        //Vector3d a = parameters.attitude();
+		Vector3d a = toVector3d(geometricObject.attitude);
         System.out.println("Add plane "+label+" a=("+String.valueOf(a.x)+", "+String.valueOf(a.y)+", "+String.valueOf(a.z)+
                 "), o=("+String.valueOf(location.x)+", "+String.valueOf(location.y)+", "+String.valueOf(location.z)+")");
         long[] result = null;
@@ -483,10 +423,10 @@ public class GAViewer extends GAViewObject {
      * @param label
      * @return true if the line is inside the bounding box and therefore visible
      */
-    long addLine(iCGAFlat.EuclideanParameters parameters, String label, boolean isIPNS){
+    long addLine(GeometricObject geometricObject, String label){
         Color color = COLOR_GRADE_2;
-        if (!isIPNS) color = COLOR_GRADE_3;
-        return addLine(parameters, label, color);
+        if (geometricObject.isOPNS()) color = COLOR_GRADE_3;
+        return addLine(geometricObject, label, color);
     }
     /**
      * Add line based on euclidean parameters location and direction. 
@@ -496,13 +436,15 @@ public class GAViewer extends GAViewObject {
      * @param color
      * @return null, if failed e.g. clipping failed
      */
-    long addLine(iCGAFlat.EuclideanParameters parameters, String label, Color color){
+    long addLine(GeometricObject geometricObject, String label, Color color){
+        if (color == null) 
+			throw new IllegalArgumentException("color==null not allowed, use method with argument ipns instead!");
         
-        if (color == null) throw new IllegalArgumentException("color==null not allowed, use method with argument ipns instead!");
-        
-        Point3d p1 = parameters.location();
+        Point3d p1 = toPoint3d(geometricObject.location[0]);
         p1.scale(1000d);
-        Vector3d a = parameters.attitude();
+		Vector3d a = toVector3d(geometricObject.attitude);
+		
+        //Vector3d a = parameters.attitude();
         System.out.println("Add line \""+label+"\" at ("+String.valueOf(p1.x)+", "+String.valueOf(p1.y)+
                         ", "+String.valueOf(p1.z)+") with a=("+String.valueOf(a.x)+", "+String.valueOf(a.y)+", "+
                         String.valueOf(a.z)+")");
@@ -534,22 +476,21 @@ public class GAViewer extends GAViewObject {
      * @param label
      * @param isIPNS 
      */
-    long[] addOrientedPoint(iCGATangentOrRound.EuclideanParameters parameters, 
-                                                String label, boolean isIPNS){
+    long[] addOrientedPoint(GeometricObject geometricObject, String label){
        Color color = COLOR_GRADE_2;
-       if (!isIPNS) color = COLOR_GRADE_3;
-       return addOrientedPoint(parameters, label, color);
+       if (geometricObject.isOPNS()) color = COLOR_GRADE_3;
+       return addOrientedPoint(geometricObject, label, color);
     }
-    long[] addOrientedPoint(iCGATangentOrRound.EuclideanParameters parameters, 
-                                                String label, Color color){
-       if (color == null) throw new IllegalArgumentException("color==null not allowed, use method with argument ipns instead!");
+    long[] addOrientedPoint(GeometricObject geometricObject, String label, Color color){
+       if (color == null) 
+		    throw new IllegalArgumentException("color==null not allowed, use method with argument ipns instead!");
        
-       // p1
-       Point3d location = parameters.location();
-       location.scale(1000d);
+       // location
+	   Point3d location = toPoint3d(geometricObject.location[0]);
+	   location.scale(1000d);
        
        // orientation
-       Vector3d direction = parameters.attitude();
+       Vector3d direction = toVector3d(geometricObject.attitude);
        //FIXME soll die length von direction der length der attitude, also dem weight
        // des cga-Objekts entsprechen?
        direction.normalize();
@@ -574,20 +515,24 @@ public class GAViewer extends GAViewObject {
        //TODO oder besser als Kreis darstellen?
     }
 
-    long addFlatPoint(iCGAFlat.EuclideanParameters parameters, String label, boolean isIPNS){
+    long addFlatPoint(GeometricObject geometricObject, String label){
         Color color = COLOR_GRADE_2;
-        if (!isIPNS) color = COLOR_GRADE_3;
-        return addFlatPoint(parameters, label, color);
+        if (geometricObject.isOPNS()) color = COLOR_GRADE_3;
+        return addFlatPoint(geometricObject, label, color);
     }
-    long addFlatPoint(iCGAFlat.EuclideanParameters parameters, String label, Color color){
-        if (color == null) throw new IllegalArgumentException("color==null not allowed, use method with argument ipns instead!");
+    long addFlatPoint(GeometricObject geometricObject, String label, Color color){
+        if (color == null) 
+			throw new IllegalArgumentException("color==null not allowed, use method with argument ipns instead!");
         
-        Point3d location = parameters.location();
+        Point3d location = toPoint3d(geometricObject.location[0]);
+	    //location.scale(1000d);
         
         System.out.println("Add flat point \""+label+"\" at ("+String.valueOf(location.x)+","+
                         String.valueOf(location.y)+", "+String.valueOf(location.z)+")!");
       
-        return impl.addCube(location, parameters.attitude(),
+		Vector3d direction = toVector3d(geometricObject.attitude);
+       
+        return impl.addCube(location, direction /*parameters.attitude()*/,
                 POINT_RADIUS*2*1000, color, label, true);
     }
     
@@ -598,28 +543,28 @@ public class GAViewer extends GAViewObject {
      * @param label name of the circle shown in the visualisation
      * @param isIPNS true, if circle is given in inner-product-null-space representation
      */
-    long addCircle(iCGATangentOrRound.EuclideanParameters parameters,
-                                              String label, boolean isIPNS){
+    long addCircle(GeometricObject geometricObject, String label){
         Color color = COLOR_GRADE_2;
-        if (!isIPNS) color = COLOR_GRADE_3;
-        return addCircle(parameters, label, color);
+        if (geometricObject.isOPNS()) color = COLOR_GRADE_3;
+        return addCircle(geometricObject, label, color);
     }
-    long addCircle(iCGATangentOrRound.EuclideanParameters parameters,
-                                              String label, Color color){
-        
-        if (color == null) throw new IllegalArgumentException("color==null not allowed, use method with argument ipns instead!");
+    long addCircle(GeometricObject geometricObject, String label, Color color){
+        if (color == null) 
+			throw new IllegalArgumentException("color==null not allowed, use method with argument ipns instead!");
         
         boolean isImaginary = false;
-        double r2 = parameters.squaredSize();
+        double r2 = geometricObject.getSignedSquaredSize();
         if (r2 <0) {
             isImaginary = true;
             System.out.println("Circle \""+label+"\" is imaginary!");
             r2 = -r2;
         }
         double r = Math.sqrt(r2)*1000;
-        Point3d location = parameters.location();
+        //Point3d location = parameters.location();
+		Point3d location = toPoint3d(geometricObject.location[0]);
         location.scale(1000d);
-        Vector3d direction = parameters.attitude();
+        //Vector3d direction = parameters.attitude();
+		Vector3d direction = toVector3d(geometricObject.attitude);
         
         System.out.println("Add circle \""+label+"\" at ("+String.valueOf(location.x)+"mm,"+
                         String.valueOf(location.y)+"mm, "+String.valueOf(location.z)+"mm) with radius "+
@@ -640,10 +585,11 @@ public class GAViewer extends GAViewObject {
      * @param label
      * @param isIPNS true, if ipns representation
      */
-    long[] addPointPair(iCGAPointPair.PointPair pp, String label, boolean isIPNS){
+    long[] addPointPair(GeometricObject geometricObject, String label){
         Color color = COLOR_GRADE_3;
-        if (!isIPNS) color = COLOR_GRADE_2;
-        Point3d[] points = new Point3d[]{pp.p1(), pp.p2()};
+        if (geometricObject.isOPNS()) color = COLOR_GRADE_2;
+        Point3d[] points = new Point3d[]{toPoint3d(geometricObject.location[0]),
+			                        toPoint3d(geometricObject.location[1])}; //new Point3d[]{pp.p1(), pp.p2()};
         points[0].scale(1000d);
         points[1].scale(1000d);
         return new long[]{
@@ -661,23 +607,24 @@ public class GAViewer extends GAViewObject {
      * @param label
      * @param isIPNS true, if ipns represenation
      */
-    long[] addPointPair(iCGATangentOrRound.EuclideanParameters parameters,
+    /*long[] addPointPair(iCGATangentOrRound.EuclideanParameters parameters,
                                                      String label, boolean isIPNS){
         Color color = COLOR_GRADE_3;
         if (!isIPNS) color = COLOR_GRADE_2;
         return addPointPair(parameters, label, color);
-    }
-    long[] addPointPair(iCGATangentOrRound.EuclideanParameters parameters,
-                                                     String label, Color color){    
+    }*/
+    long[] addPointPair(GeometricObject geometricObject, String label, Color color){    
+        if (color == null) throw 
+			new IllegalArgumentException("color==null not allowed, use method with argument ipns instead!");
         
-        if (color == null) throw new IllegalArgumentException("color==null not allowed, use method with argument ipns instead!");
-        
-        Point3d location = parameters.location();
-        Vector3d att = parameters.attitude();
+        //Point3d location = parameters.location();
+		Point3d location = toPoint3d(geometricObject.location[0]);
+        //Vector3d att = parameters.attitude();
+		Vector3d att = toVector3d(geometricObject.attitude);
         System.out.println("Add point pair \""+label+"\" loc=("+String.valueOf(location.x)+", "+String.valueOf(location.y)+", "+String.valueOf(location.z)+
                   ", att=("+String.valueOf(att.x)+", "+String.valueOf(att.y)+", "+String.valueOf(att.z)+
-                "), r2="+String.valueOf(parameters.squaredSize()));
-        Point3d[] points = decomposePointPair(parameters);
+                "), r2="+String.valueOf(geometricObject.getSignedSquaredSize()));
+        Point3d[] points = decomposePointPair(geometricObject);
         System.out.println("p1=("+String.valueOf(points[0].x)+", "+String.valueOf(points[0].y)+", "+String.valueOf(points[0].z)+
                     ", p2=("+String.valueOf(points[1].x)+", "+String.valueOf(points[1].y)+", "+String.valueOf(points[1].z)+")");
 
@@ -694,18 +641,15 @@ public class GAViewer extends GAViewObject {
      * Decompose euclidean parameters of a point-pair into two points.
      *
      * Implementation based on determination of location and squared-size.<p>
-     *
-     * TODO sollte das nicht in CGAPointPair... verschoeben werden?
-     * Nein, ich brauche das ja ausserhalb der CGAAPI, aber wohin dann damit?<p>
      * 
      * @param parameters
      * @return the two decomposed points in Point3d[2]
      */
-    private static Point3d[] decomposePointPair(iCGATangentOrRound.EuclideanParameters parameters){
-        Point3d c = parameters.location();
-        double r = Math.sqrt(Math.abs(parameters.squaredSize()));
-        Vector3d v = parameters.attitude();
-        v.normalize();
+    private static Point3d[] decomposePointPair(GeometricObject geometricObject){
+		Point3d c = toPoint3d(geometricObject.location[0]);
+		double r = Math.sqrt(Math.abs(geometricObject.getSignedSquaredSize()));
+        Vector3d v = toVector3d(geometricObject.attitude);
+		v.normalize();
         v.scale(r); 
         Point3d[] result = new Point3d[2];
         result[0] = new Point3d(c);
@@ -723,17 +667,23 @@ public class GAViewer extends GAViewObject {
      * @param label
      * @param isIPNS
      */
-    void addTangentVector(iCGATangentOrRound.EuclideanParameters parameters,
-                                                             String label, boolean isIPNS){
-            Color color = COLOR_GRADE_3;
-            if (!isIPNS) color = COLOR_GRADE_2;
-            Vector3d dir = new Vector3d(parameters.attitude());
-            dir.normalize();
-            dir.scale(TANGENT_LENGTH);
-            impl.addArrow(parameters.location(), dir,
-                            LINE_RADIUS*1000, color, label);
+    void addTangentVector(GeometricObject geometricObject, String label){
+		Color color = COLOR_GRADE_3;
+		if (geometricObject.isOPNS()) color = COLOR_GRADE_2;
+		//Vector3d dir = new Vector3d(parameters.attitude());
+		Vector3d dir = toVector3d(geometricObject.attitude);
+		
+		dir.normalize();
+		dir.scale(TANGENT_LENGTH);
+		Point3d location = toPoint3d(geometricObject.location[0]);
+        
+		impl.addArrow(location, dir, LINE_RADIUS*1000, color, label);
     }
     
+	
+	
+	//---------
+	
     private static boolean isValid(Tuple3d tuple3d){
         if (!Double.isFinite(tuple3d.x)) return false;
         if (!Double.isFinite(tuple3d.y)) return false;
