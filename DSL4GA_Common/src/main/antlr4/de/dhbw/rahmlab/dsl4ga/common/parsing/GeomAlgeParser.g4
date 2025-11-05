@@ -46,7 +46,7 @@ formalParameterList
 	;
 
 formalParameter
-	:	name=IDENTIFIER	#FormalParameter_
+	:	name=IDENTIFIER arrInd=arrIndicator?	#FormalParameter_
 	;
 
 functionBody
@@ -56,6 +56,10 @@ functionBody
 		WHITE_LINE*
 	;
 
+arrIndicator
+	:	L_SQUARE_BRACKET R_SQUARE_BRACKET
+	;
+
 ///////////////////////////////////////////////////////////////////////////
 // Stmt
 ///////////////////////////////////////////////////////////////////////////
@@ -63,10 +67,15 @@ functionBody
 stmt
 	:	SPACE* vizAssigned=vizAssignedR SPACE* ASSIGNMENT SPACE* exprCtx=expr SPACE*		#AssgnStmt
 	|	SPACE* vizAssigned+=vizAssignedR SPACE* (COMMA SPACE* vizAssigned+=vizAssignedR SPACE*)* ASSIGNMENT SPACE* callCtx=callExpr SPACE*		#TupleAssgnStmt
+	|	SPACE* vizAssigned=vizAssignedR SPACE* ASSIGNMENT SPACE* arrayInitCtx=arrayInitExpr SPACE*	#ArrayInitStmt
 	;
 
 vizAssignedR
-	: viz+=COLON? viz+=COLON? assigned=(IDENTIFIER|LOW_LINE)
+	: viz+=COLON? viz+=COLON? assigned=(IDENTIFIER|LOW_LINE) arrInd=arrIndicator?
+	;
+
+arrayInitExpr
+	: L_CURLY_BRACKET SPACE* (arrayElemExpr+=expr SPACE* (COMMA SPACE* arrayElemExpr+=expr SPACE*)* SPACE*)? R_CURLY_BRACKET
 	;
 
 // The list-form (1) needs iteration in the transformer while the tree-form (2) don't.

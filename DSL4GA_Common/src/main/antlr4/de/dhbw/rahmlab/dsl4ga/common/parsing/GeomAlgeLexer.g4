@@ -342,6 +342,14 @@ R_CURLY_BRACKET
 	: '}'
 	;
 
+L_SQUARE_BRACKET
+	: '['
+	;
+
+R_SQUARE_BRACKET
+	: ']'
+	;
+
 ALGEBRA_INDICATOR
 	: '#algebra'
 	;
