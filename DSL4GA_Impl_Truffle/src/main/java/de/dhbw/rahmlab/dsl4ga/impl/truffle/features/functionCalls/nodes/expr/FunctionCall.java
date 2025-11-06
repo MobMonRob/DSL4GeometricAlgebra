@@ -12,14 +12,8 @@ import com.oracle.truffle.api.library.CachedLibrary;
 import com.oracle.truffle.api.nodes.ExplodeLoop;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import static de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.CatchAndRethrow.catchAndRethrow;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.LanguageRuntimeException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.internal.InterpreterInternalException;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.truffleBox.CgaListTruffleBox;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.truffleBox.CgaTruffleBox;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.Function;
-import de.orat.math.gacalc.api.MultivectorExpression;
-import java.util.Arrays;
-import java.util.List;
 
 public abstract class FunctionCall extends ExpressionBaseNode {
 
@@ -31,43 +25,34 @@ public abstract class FunctionCall extends ExpressionBaseNode {
 	protected FunctionCall(Function function, ExpressionBaseNode[] arguments) {
 		this.function = function;
 		this.arguments = arguments;
+		assert function.getArity() == arguments.length;
 	}
 
 	@Specialization
-	protected MultivectorExpression call(VirtualFrame frame, @CachedLibrary(limit = "2") InteropLibrary library) {
-		CgaListTruffleBox argumentValueBoxed = doExecuteArguments(frame);
+	protected Object call(VirtualFrame frame, @CachedLibrary(limit = "2") InteropLibrary library) {
+		Object[] argumentsValue = doExecuteArguments(frame);
 
 		return catchAndRethrow(this, () -> {
-			return doExecuteFunction(this.function, argumentValueBoxed, library);
+			return doExecuteFunction(this.function, argumentsValue, library);
 		});
 	}
 
 	@ExplodeLoop
-	protected CgaListTruffleBox doExecuteArguments(VirtualFrame frame) {
+	protected Object[] doExecuteArguments(VirtualFrame frame) {
 		// CompilerAsserts.compilationConstant(this.arguments.length);
-		MultivectorExpression[] argumentValues = new MultivectorExpression[this.arguments.length];
+		Object[] argumentValues = new Object[this.arguments.length];
 		for (int i = 0; i < this.arguments.length; ++i) {
 			argumentValues[i] = this.arguments[i].executeGeneric(frame);
 		}
-		return new CgaListTruffleBox(Arrays.asList(argumentValues));
+		return argumentValues;
 	}
 
-	protected MultivectorExpression doExecuteFunction(Function function, CgaListTruffleBox argumentValueBoxed, InteropLibrary library) throws InterpreterInternalException {
+	protected Object doExecuteFunction(Function function, Object[] arguments, InteropLibrary library) throws InterpreterInternalException {
 		try {
 			// Indirect execution in order to utilize graal optimizations.
 			// invokes FunctionRootNode::execute
-			Object returnValue = library.execute(function, argumentValueBoxed);
-			if (returnValue instanceof CgaTruffleBox) {
-				return ((CgaTruffleBox) returnValue).getInner();
-			} else if (returnValue instanceof CgaListTruffleBox) {
-				List<MultivectorExpression> mvecs = ((CgaListTruffleBox) returnValue).getInner();
-				super.currentLanguageContext().lastListReturn = (CgaListTruffleBox) returnValue;
-				return mvecs.get(0);
-			} else {
-				throw new LanguageRuntimeException(
-					String.format("Function \"%s\" returned object of unknonw type: ", function.getName(), returnValue.getClass().getSimpleName()),
-					this);
-			}
+			Object returnValue = library.execute(function, arguments);
+			return returnValue;
 		} catch (ArityException e) {
 			String message = "Wrong argument count in functionCall of: " + function.getName() + "\n" + e.toString();
 			throw new InterpreterInternalException(message);

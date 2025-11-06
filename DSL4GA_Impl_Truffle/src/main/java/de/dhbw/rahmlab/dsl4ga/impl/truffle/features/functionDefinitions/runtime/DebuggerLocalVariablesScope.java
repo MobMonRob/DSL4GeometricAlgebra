@@ -18,7 +18,7 @@ import com.oracle.truffle.api.source.SourceSection;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.stmtSuperClasses.NonReturningStatementBaseNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLang;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.truffleBox.CgaTruffleBox;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.builtinTypes.truffleBox.CgaTruffleBox;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.FunctionDefinitionRootNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.nodes.stmt.LocalVariableAssignment;
 import de.orat.math.gacalc.api.MultivectorValue;
@@ -57,17 +57,22 @@ public class DebuggerLocalVariablesScope implements TruffleObject {
 					return true;
 				}
 				if (stmt instanceof LocalVariableAssignment varAssign) {
-					if (varAssign.getScopeVisibleVariablesIndex() < scopeVisibleVariablesIndex) {
-						String name = varAssign.getName();
-
-						visibleVarsNames.add(name);
-
-						Object prev = namesToVarNodes.put(name, varAssign);
-						if (prev != null) {
-							throw new AssertionError(
-								"Validation implemented incorrectly: Each variable should only be assignable once.");
-						}
+					if (varAssign.isPseudoStatement()) {
+						return true;
 					}
+					if (varAssign.getScopeVisibleVariablesIndex() < scopeVisibleVariablesIndex) {
+						return true;
+					}
+					String name = varAssign.getName();
+
+					visibleVarsNames.add(name);
+
+					Object prev = namesToVarNodes.put(name, varAssign);
+					if (prev != null) {
+						throw new AssertionError(
+							"Validation implemented incorrectly: Each variable should only be assignable once.");
+					}
+					return true;
 				}
 				return true;
 			}

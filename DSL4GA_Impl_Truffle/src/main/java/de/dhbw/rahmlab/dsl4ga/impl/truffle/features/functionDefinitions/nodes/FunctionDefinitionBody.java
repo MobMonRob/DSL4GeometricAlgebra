@@ -2,12 +2,13 @@ package de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.BlockNode;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.MVExpressionBaseNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.stmtSuperClasses.NonReturningStatementBaseNode;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.truffleBox.CgaListTruffleBox;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.builtinTypes.truffleBox.TruffleBox;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.stmt.RetExprStmt;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.superClasses.AbstractFunctionBody;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.visualization.nodes.stmt.CleanupVisualizer;
+import java.util.List;
 
 public class FunctionDefinitionBody extends AbstractFunctionBody implements BlockNode.ElementExecutor<NonReturningStatementBaseNode> {
 
@@ -24,8 +25,11 @@ public class FunctionDefinitionBody extends AbstractFunctionBody implements Bloc
 	@Child
 	protected CleanupVisualizer nulleableCleanupVizualizer;
 
-	public ExpressionBaseNode getFirstRetExpr() {
-		return this.retExprStmt.getFirstRetExpr();
+	/**
+	 * This can fail. Use only, if correct.
+	 */
+	public MVExpressionBaseNode getFirstRetExpr() {
+		return (MVExpressionBaseNode) this.retExprStmt.getFirstRetExpr();
 	}
 
 	public BlockNode<NonReturningStatementBaseNode> getStmts() {
@@ -48,16 +52,16 @@ public class FunctionDefinitionBody extends AbstractFunctionBody implements Bloc
 	}
 
 	@Override
-	public CgaListTruffleBox executeGeneric(VirtualFrame frame) {
+	public TruffleBox<List<Object>> executeGeneric(VirtualFrame frame) {
 		return directCall(frame);
 	}
 
-	public CgaListTruffleBox directCall(VirtualFrame frame) {
+	public TruffleBox<List<Object>> directCall(VirtualFrame frame) {
 		if (this.stmts != null) {
 			stmts.executeVoid(frame, BlockNode.NO_ARGUMENT);
 		}
 
-		CgaListTruffleBox rets = this.retExprStmt.execute(frame);
+		TruffleBox<List<Object>> rets = this.retExprStmt.execute(frame);
 
 		if (this.nulleableCleanupVizualizer != null) {
 			this.nulleableCleanupVizualizer.executeGeneric(frame);

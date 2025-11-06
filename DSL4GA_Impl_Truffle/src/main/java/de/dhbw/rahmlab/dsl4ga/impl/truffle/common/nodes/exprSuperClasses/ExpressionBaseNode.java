@@ -7,12 +7,11 @@ import com.oracle.truffle.api.instrumentation.ProbeNode;
 import com.oracle.truffle.api.instrumentation.StandardTags;
 import com.oracle.truffle.api.instrumentation.Tag;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.superClasses.GeomAlgeLangBaseNode;
-import de.orat.math.gacalc.api.MultivectorExpression;
 
 @GenerateWrapper
 public abstract class ExpressionBaseNode extends GeomAlgeLangBaseNode implements InstrumentableNode {
 
-	public abstract MultivectorExpression executeGeneric(VirtualFrame frame);
+	public abstract Object executeGeneric(VirtualFrame frame);
 
 	@Override
 	public WrapperNode createWrapper(ProbeNode probeNode) {
@@ -21,9 +20,6 @@ public abstract class ExpressionBaseNode extends GeomAlgeLangBaseNode implements
 
 	@Override
 	public boolean hasTag(Class<? extends Tag> tag) {
-		if (tag == StandardTags.ExpressionTag.class) {
-			return true;
-		}
-		return false;
+		return tag == StandardTags.ExpressionTag.class;
 	}
 }

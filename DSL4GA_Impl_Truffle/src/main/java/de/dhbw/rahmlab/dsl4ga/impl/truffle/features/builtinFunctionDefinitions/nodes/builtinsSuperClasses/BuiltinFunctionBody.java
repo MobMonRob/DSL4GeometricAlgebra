@@ -3,7 +3,7 @@ package de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.
 import com.oracle.truffle.api.dsl.GenerateNodeFactory;
 import com.oracle.truffle.api.dsl.NodeChild;
 import com.oracle.truffle.api.frame.VirtualFrame;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.truffleBox.CgaListTruffleBox;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.builtinTypes.truffleBox.TruffleBox;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.FunctionArgumentReader;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.superClasses.AbstractFunctionBody;
 import de.orat.math.gacalc.api.MultivectorExpression;
@@ -14,9 +14,9 @@ import java.util.List;
 public abstract class BuiltinFunctionBody extends AbstractFunctionBody {
 
 	@Override
-	public CgaListTruffleBox executeGeneric(VirtualFrame frame) {
-		var mv = executeGenericBuiltin(frame);
-		return new CgaListTruffleBox(List.of(mv));
+	public TruffleBox<List<Object>> executeGeneric(VirtualFrame frame) {
+		MultivectorExpression mv = executeGenericBuiltin(frame);
+		return new TruffleBox(List.of(mv));
 	}
 
 	public abstract MultivectorExpression executeGenericBuiltin(VirtualFrame frame);

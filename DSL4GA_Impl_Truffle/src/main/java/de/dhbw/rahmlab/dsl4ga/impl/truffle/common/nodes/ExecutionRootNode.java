@@ -9,8 +9,8 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.ArgsMapper;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLang;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.LanguageRuntimeException;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.truffleBox.CgaListTruffleBox;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.truffleBox.TruffleBox;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.builtinTypes.truffleBox.CgaListTruffleBox;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.builtinTypes.truffleBox.TruffleBox;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.superClasses.AbstractFunctionRootNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.Function;
 import de.orat.math.gacalc.api.GAFactory;
@@ -19,12 +19,11 @@ import de.orat.math.sparsematrix.SparseDoubleMatrix;
 import java.util.Collections;
 import java.util.List;
 
-public class ExecutionRootNode extends AbstractFunctionRootNode {
+public final class ExecutionRootNode extends AbstractFunctionRootNode {
 
 	private final Function function;
 	private final GAFactory fac;
-	@Child
-	private DirectCallNode mainCallNode;
+	private final DirectCallNode mainCallNode;
 
 	private static FrameDescriptor frameDescriptor() {
 		FrameDescriptor.Builder frameDescriptorBuilder = FrameDescriptor.newBuilder();
@@ -58,9 +57,8 @@ public class ExecutionRootNode extends AbstractFunctionRootNode {
 		} catch (ArityException ex) {
 			throw new LanguageRuntimeException("main called with wrong argument count.", ex, null);
 		}
-		this.mainCallNode.call(symArgsBoxed);
-		var lastListReturn = GeomAlgeLangContext.get(null).lastListReturn;
-		List<? extends MultivectorExpression> symRes = lastListReturn.getInner();
+		CgaListTruffleBox callRetVal = (CgaListTruffleBox) this.mainCallNode.call(symArgsBoxed);
+		List<MultivectorExpression> symRes = callRetVal.getInner();
 
 		List<SparseDoubleMatrix> numRes = GeomAlgeLangContext.currentExternalArgs.evalToSDM(symRes);
 		return new TruffleBox<>(numRes);

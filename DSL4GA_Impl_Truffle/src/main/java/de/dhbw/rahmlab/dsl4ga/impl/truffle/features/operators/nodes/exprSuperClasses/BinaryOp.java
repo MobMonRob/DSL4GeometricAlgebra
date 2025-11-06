@@ -1,19 +1,18 @@
 package de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.exprSuperClasses;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
-import com.oracle.truffle.api.nodes.NodeCost;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.MVExpressionBaseNode;
 import static de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.CatchAndRethrow.catchAndRethrow;
 import de.orat.math.gacalc.api.MultivectorExpression;
 
-public abstract class BinaryOp extends ExpressionBaseNode {
+public abstract class BinaryOp extends MVExpressionBaseNode {
 
 	@Child
-	private ExpressionBaseNode argumentLeft;
+	private MVExpressionBaseNode argumentLeft;
 	@Child
-	private ExpressionBaseNode argumentRight;
+	private MVExpressionBaseNode argumentRight;
 
-	public BinaryOp(ExpressionBaseNode argumentLeft, ExpressionBaseNode argumentRight) {
+	public BinaryOp(MVExpressionBaseNode argumentLeft, MVExpressionBaseNode argumentRight) {
 		this.argumentLeft = argumentLeft;
 		this.argumentRight = argumentRight;
 	}
@@ -29,9 +28,4 @@ public abstract class BinaryOp extends ExpressionBaseNode {
 	}
 
 	protected abstract MultivectorExpression execute(MultivectorExpression left, MultivectorExpression right);
-
-	@Override
-	public NodeCost getCost() {
-		return NodeCost.MONOMORPHIC;
-	}
 }

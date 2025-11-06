@@ -1,4 +1,4 @@
-package de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.truffleBox;
+package de.dhbw.rahmlab.dsl4ga.impl.truffle.common.builtinTypes.truffleBox;
 
 /*
 import com.oracle.truffle.api.CompilerDirectives;

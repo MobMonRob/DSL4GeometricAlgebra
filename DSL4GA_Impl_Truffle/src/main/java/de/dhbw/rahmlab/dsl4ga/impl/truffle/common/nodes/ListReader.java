@@ -3,14 +3,14 @@ package de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes;
 import com.oracle.truffle.api.dsl.NodeField;
 import com.oracle.truffle.api.dsl.Specialization;
 import com.oracle.truffle.api.frame.VirtualFrame;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.truffleBox.CgaListTruffleBox;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.MVExpressionBaseNode;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.builtinTypes.truffleBox.CgaListTruffleBox;
 import de.orat.math.gacalc.api.MultivectorExpression;
 import java.util.stream.IntStream;
 
 @NodeField(name = "index", type = int.class)
 @NodeField(name = "arguments", type = CgaListTruffleBox.class)
-public abstract class ListReader extends ExpressionBaseNode {
+public abstract class ListReader extends MVExpressionBaseNode {
 
 	protected abstract int getIndex();
 

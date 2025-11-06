@@ -3,13 +3,13 @@ package de.dhbw.rahmlab.dsl4ga.impl.truffle.features.literals.nodes.expr;
 import com.oracle.truffle.api.dsl.Cached;
 import com.oracle.truffle.api.dsl.NodeField;
 import com.oracle.truffle.api.dsl.Specialization;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.MVExpressionBaseNode;
 import de.orat.math.gacalc.api.ConstantsExpression;
 import de.orat.math.gacalc.api.MultivectorExpression;
 import java.util.function.Function;
 
 @NodeField(name = "innerKind", type = Constant.Kind.class)
-public abstract class Constant extends ExpressionBaseNode {
+public abstract class Constant extends MVExpressionBaseNode {
 
 	public static enum Kind {
 		base_vector_origin(ConstantsExpression::getBaseVectorOrigin),

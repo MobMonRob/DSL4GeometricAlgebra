@@ -6,7 +6,7 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLang;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.AbstractExternalException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.LanguageRuntimeException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.ValidationException;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.truffleBox.TruffleBox;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.builtinTypes.truffleBox.TruffleBox;
 import de.orat.math.sparsematrix.SparseDoubleMatrix;
 import java.io.IOException;
 import java.io.Reader;

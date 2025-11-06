@@ -3,7 +3,7 @@ package de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.astConstruction;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParser;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParserBaseListener;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.MVExpressionBaseNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
 import static de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.CatchAndRethrow.catchAndRethrow;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.ValidationException;
@@ -55,7 +55,7 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
  */
 public class ExprTransform extends GeomAlgeParserBaseListener {
 
-	protected final Deque<ExpressionBaseNode> nodeStack = new ArrayDeque<>();
+	protected final Deque<MVExpressionBaseNode> nodeStack = new ArrayDeque<>();
 	protected final GeomAlgeLangContext geomAlgeLangContext;
 	protected final Map<String, Function> functionsView;
 	protected final Map<String, Integer> localVariablesView;
@@ -66,12 +66,12 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		this.localVariablesView = localVariablesView;
 	}
 
-	public static ExpressionBaseNode generateExprAST(GeomAlgeParser.ExprContext exprCtx, GeomAlgeLangContext geomAlgeLangContext, Map<String, Function> functionsView, Map<String, Integer> localVariablesView) {
+	public static MVExpressionBaseNode generateExprAST(GeomAlgeParser.ExprContext exprCtx, GeomAlgeLangContext geomAlgeLangContext, Map<String, Function> functionsView, Map<String, Integer> localVariablesView) {
 		ExprTransform exprTransform = new ExprTransform(geomAlgeLangContext, functionsView, localVariablesView);
 
 		ParseTreeWalker.DEFAULT.walk(exprTransform, exprCtx);
 
-		ExpressionBaseNode rootNode = exprTransform.nodeStack.getFirst();
+		MVExpressionBaseNode rootNode = exprTransform.nodeStack.getFirst();
 		return rootNode;
 	}
 
@@ -87,10 +87,10 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 	@Override
 	public void exitGP(GeomAlgeParser.GPContext ctx) {
 		// Sequence matters here!
-		ExpressionBaseNode right = nodeStack.pop();
-		ExpressionBaseNode left = nodeStack.pop();
+		MVExpressionBaseNode right = nodeStack.pop();
+		MVExpressionBaseNode left = nodeStack.pop();
 
-		ExpressionBaseNode result = new GeometricProduct(left, right);
+		MVExpressionBaseNode result = new GeometricProduct(left, right);
 
 		int start;
 		int stop;
@@ -110,10 +110,10 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 	@Override
 	public void exitBinOp(GeomAlgeParser.BinOpContext ctx) {
 		// Sequence matters here!
-		ExpressionBaseNode right = nodeStack.pop();
-		ExpressionBaseNode left = nodeStack.pop();
+		MVExpressionBaseNode right = nodeStack.pop();
+		MVExpressionBaseNode left = nodeStack.pop();
 
-		ExpressionBaseNode result = switch (ctx.op.getType()) {
+		MVExpressionBaseNode result = switch (ctx.op.getType()) {
 			case GeomAlgeParser.LOGICAL_AND ->
 				new OuterProduct(left, right);
 			case GeomAlgeParser.PLUS_SIGN ->
@@ -145,9 +145,9 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 
 	@Override
 	public void exitUnOpL(GeomAlgeParser.UnOpLContext ctx) {
-		ExpressionBaseNode right = nodeStack.pop();
+		MVExpressionBaseNode right = nodeStack.pop();
 
-		ExpressionBaseNode result = switch (ctx.op.getType()) {
+		MVExpressionBaseNode result = switch (ctx.op.getType()) {
 			case GeomAlgeParser.HYPHEN_MINUS ->
 				new Negate(right);
 			default ->
@@ -161,9 +161,9 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 
 	@Override
 	public void exitUnOpR(GeomAlgeParser.UnOpRContext ctx) {
-		ExpressionBaseNode left = nodeStack.pop();
+		MVExpressionBaseNode left = nodeStack.pop();
 
-		ExpressionBaseNode result = switch (ctx.op.getType()) {
+		MVExpressionBaseNode result = switch (ctx.op.getType()) {
 			case GeomAlgeParser.SUPERSCRIPT_MINUS__SUPERSCRIPT_ONE ->
 				new GeneralInverse(left);
 			case GeomAlgeParser.ASTERISK ->
@@ -189,7 +189,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 
 	@Override
 	public void exitGradeExtraction(GeomAlgeParser.GradeExtractionContext ctx) {
-		ExpressionBaseNode inner = nodeStack.pop();
+		MVExpressionBaseNode inner = nodeStack.pop();
 
 		int grade = switch (ctx.grade.getType()) {
 			case GeomAlgeParser.SUBSCRIPT_ZERO ->
@@ -208,7 +208,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 				throw new AssertionError();
 		};
 
-		ExpressionBaseNode result = new GradeExtraction(inner, grade);
+		MVExpressionBaseNode result = new GradeExtraction(inner, grade);
 
 		result.setSourceSection(ctx.getStart().getStartIndex(), ctx.getStop().getStopIndex());
 
@@ -217,7 +217,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 
 	@Override
 	public void exitLiteralConstant(GeomAlgeParser.LiteralConstantContext ctx) {
-		ExpressionBaseNode node = switch (ctx.type.getType()) {
+		MVExpressionBaseNode node = switch (ctx.type.getType()) {
 			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_ZERO ->
 				ConstantNodeGen.create(Constant.Kind.base_vector_origin);
 			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_SMALL_I ->
@@ -297,7 +297,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		}
 	}
 
-	private static class EnterCallMarker extends ExpressionBaseNode {
+	private static class EnterCallMarker extends MVExpressionBaseNode {
 
 		@Override
 		public MultivectorExpression executeGeneric(VirtualFrame frame) {
@@ -314,9 +314,9 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 
 	@Override
 	public void exitCall(GeomAlgeParser.CallContext ctx) {
-		Deque<ExpressionBaseNode> arguments = new ArrayDeque<>();
+		Deque<MVExpressionBaseNode> arguments = new ArrayDeque<>();
 
-		for (ExpressionBaseNode currentArgument = this.nodeStack.pop();
+		for (MVExpressionBaseNode currentArgument = this.nodeStack.pop();
 			currentArgument != enterCallMarker;
 			currentArgument = this.nodeStack.pop()) {
 			// rightmost argument will be pushed first
@@ -324,7 +324,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 			arguments.push(currentArgument);
 		}
 
-		ExpressionBaseNode[] argumentsArray = arguments.toArray(ExpressionBaseNode[]::new);
+		MVExpressionBaseNode[] argumentsArray = arguments.toArray(MVExpressionBaseNode[]::new);
 
 		String functionName = ctx.name.getText();
 
