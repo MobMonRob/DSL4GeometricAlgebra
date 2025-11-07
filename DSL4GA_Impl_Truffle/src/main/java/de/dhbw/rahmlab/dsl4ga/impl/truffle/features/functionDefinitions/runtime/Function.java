@@ -61,13 +61,20 @@ public class Function implements TruffleObject {
 	@ExportMessage
 	abstract static class Execute {
 
+		private static boolean ensureArity(Function function, Object[] arguments) throws ArityException {
+			int size = ((ListTruffleBox) arguments[0]).getInner().size();
+			function.ensureArity(size);
+			return true;
+		}
+
 		@Specialization(limit = "2", guards = "function.getCallTarget() == cachedTarget")
 		protected static Object doDirect(Function function, Object[] arguments,
 			@Cached("function.getCallTarget()") RootCallTarget cachedTarget,
 			@Cached("create(cachedTarget)") DirectCallNode callNode) throws ArityException {
 
-			int size = ((ListTruffleBox) arguments[0]).getInner().size();
-			function.ensureArity(size);
+			// Type system will ensure correct arity.
+			// This is to find programming errors.
+			assert ensureArity(function, arguments);
 
 			return callNode.call(arguments);
 		}
@@ -76,8 +83,9 @@ public class Function implements TruffleObject {
 		protected static Object doIndirect(Function function, Object[] arguments,
 			@Cached IndirectCallNode callNode) throws ArityException {
 
-			int size = ((ListTruffleBox) arguments[0]).getInner().size();
-			function.ensureArity(size);
+			// Type system will ensure correct arity.
+			// This is to find programming errors.
+			assert ensureArity(function, arguments);
 
 			return callNode.call(function.getCallTarget(), arguments);
 		}

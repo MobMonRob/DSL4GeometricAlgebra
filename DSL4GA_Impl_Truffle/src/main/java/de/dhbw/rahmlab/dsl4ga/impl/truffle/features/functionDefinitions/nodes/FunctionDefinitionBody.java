@@ -23,11 +23,8 @@ public class FunctionDefinitionBody extends AbstractFunctionBody implements Bloc
 	@Child
 	protected CleanupVisualizer nulleableCleanupVizualizer;
 
-	/**
-	 * This can fail. Use only, if correct.
-	 */
 	public ExpressionBaseNode getFirstRetExpr() {
-		return (ExpressionBaseNode) this.retExprStmt.getFirstRetExpr();
+		return this.retExprStmt.getFirstRetExpr();
 	}
 
 	public BlockNode<NonReturningStatementBaseNode> getStmts() {

@@ -5,6 +5,6 @@ import java.util.List;
 public class ListTruffleBox extends TruffleBox<List<? extends Object>> {
 
 	public ListTruffleBox(List<? extends Object> mvecs) {
-		super((List<Object>) mvecs);
+		super(mvecs);
 	}
 }
