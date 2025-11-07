@@ -9,7 +9,6 @@ import org.jogamp.vecmath.Point3d;
 import org.jogamp.vecmath.Vector3d;
 
 /**
- *
  * @author Oliver Rettig (Oliver.Rettig@orat.de)
  */
 public class EuclidViewer3DRPCClient implements iEuclidViewer3D {
@@ -34,10 +33,9 @@ public class EuclidViewer3DRPCClient implements iEuclidViewer3D {
 	// iEuclidViewer3D&pid=915910&register.ip=10.172.28.211&revision=1.0-
 	// SNAPSHOT&side=consumer&sticky=false&unloadClusterRelated=false, cause: Timeout after 1000ms waiting 
     // for result.
-
 	@Override
 	public void open() throws Exception {
-		throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+		viewerRPCService.open();
 		// TODO soll eine Ex feuern, wenn der Server nicht verfügbar ist. Dann soll
 		// die Default-Impl des Viewers verwendet werden die ein eigenes Fenster 
 		// aufmacht
@@ -45,12 +43,12 @@ public class EuclidViewer3DRPCClient implements iEuclidViewer3D {
 
 	@Override
 	public boolean close() {
-		throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+		return viewerRPCService.close();
 	}
 
 	@Override
 	public iAABB getAABB() {
-		throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+		return viewerRPCService.getAABB();
 	}
 
 	@Override
@@ -60,42 +58,45 @@ public class EuclidViewer3DRPCClient implements iEuclidViewer3D {
 
 	@Override
 	public long addLine(Point3d p1, Point3d p2, Color color, double radius, String label) {
-		throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+		return viewerRPCService.addLine(p1, p2, color, radius, label);
 	}
 
 	@Override
 	public long addArrow(Point3d location, Vector3d direction, double radius, Color color, String label) {
-		throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+		return viewerRPCService.addArrow(location, direction, radius, color, label);
 	}
 
 	@Override
-	public long addCircle(Point3d location, Vector3d normal, double radius, Color color, String label, boolean isDashed, boolean isFilled) {
-		throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+	public long addCircle(Point3d location, Vector3d normal, double radius, Color color, String label, 
+																boolean isDashed, boolean isFilled) {
+		return viewerRPCService.addCircle(location, normal, radius, color, label, isDashed, isFilled);
 	}
 
 	@Override
-	public long addPolygone(Point3d location, Point3d[] corners, Color color, String label, boolean showNormal, boolean tranparency) {
-		throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+	public long addPolygone(Point3d location, Point3d[] corners, Color color, String label, 
+											boolean showNormal, boolean tranparency) {
+		return viewerRPCService.addPolygone(location, corners, color, label, showNormal, tranparency);
 	}
 
 	@Override
-	public long addCube(Point3d location, Vector3d dir, double width, Color color, String label, boolean tranparency) {
-		throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+	public long addCube(Point3d location, Vector3d dir, double width, Color color, 
+									String label, boolean tranparency) {
+		return viewerRPCService.addCube(location, dir, width, color, label, tranparency);
 	}
 
 	@Override
 	public long addMesh(String path, Matrix4d transform) {
-		throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+		return viewerRPCService.addMesh(path, transform);
 	}
 
 	@Override
 	public boolean removeNode(long handle) {
-		throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+		return viewerRPCService.removeNode(handle);
 	}
 
 	@Override
 	public void transform(long handle, Matrix4d transform) {
-		throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+	    viewerRPCService.transform(handle, transform);
 	}
 	
 }
