@@ -18,9 +18,9 @@ import com.oracle.truffle.api.source.SourceSection;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.stmtSuperClasses.NonReturningStatementBaseNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLang;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.builtinTypes.truffleBox.CgaTruffleBox;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.FunctionDefinitionRootNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.nodes.stmt.LocalVariableAssignment;
+import de.orat.math.gacalc.api.MultivectorExpression;
 import de.orat.math.gacalc.api.MultivectorValue;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,7 +60,7 @@ public class DebuggerLocalVariablesScope implements TruffleObject {
 					if (varAssign.isPseudoStatement()) {
 						return true;
 					}
-					if (varAssign.getScopeVisibleVariablesIndex() < scopeVisibleVariablesIndex) {
+					if (varAssign.getScopeVisibleVariablesIndex() >= scopeVisibleVariablesIndex) {
 						return true;
 					}
 					String name = varAssign.getName();
@@ -147,8 +147,8 @@ public class DebuggerLocalVariablesScope implements TruffleObject {
 	@TruffleBoundary
 	String readMember(String member) {
 		LocalVariableAssignment varNode = this.namesToVarNodes.get(member);
-		CgaTruffleBox varValue = (CgaTruffleBox) this.frame.getObjectStatic(varNode.getFrameSlot());
-		MultivectorValue mv = GeomAlgeLangContext.currentExternalArgs.evalToMV(List.of(varValue.getInner())).get(0);
+		MultivectorExpression varValue = (MultivectorExpression) this.frame.getObjectStatic(varNode.getFrameSlot());
+		MultivectorValue mv = GeomAlgeLangContext.currentExternalArgs.evalToMV(List.of(varValue)).get(0);
 		var mvString = mv.toString();
 		return mvString;
 	}

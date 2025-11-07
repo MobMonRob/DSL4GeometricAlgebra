@@ -11,7 +11,7 @@ import com.oracle.truffle.api.library.ExportLibrary;
 import com.oracle.truffle.api.library.ExportMessage;
 import com.oracle.truffle.api.nodes.DirectCallNode;
 import com.oracle.truffle.api.nodes.IndirectCallNode;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.builtinTypes.truffleBox.CgaListTruffleBox;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.builtinTypes.truffleBox.ListTruffleBox;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.superClasses.AbstractFunctionRootNode;
 
 /**
@@ -66,7 +66,7 @@ public class Function implements TruffleObject {
 			@Cached("function.getCallTarget()") RootCallTarget cachedTarget,
 			@Cached("create(cachedTarget)") DirectCallNode callNode) throws ArityException {
 
-			int size = ((CgaListTruffleBox) arguments[0]).getInner().size();
+			int size = ((ListTruffleBox) arguments[0]).getInner().size();
 			function.ensureArity(size);
 
 			return callNode.call(arguments);
@@ -76,7 +76,7 @@ public class Function implements TruffleObject {
 		protected static Object doIndirect(Function function, Object[] arguments,
 			@Cached IndirectCallNode callNode) throws ArityException {
 
-			int size = ((CgaListTruffleBox) arguments[0]).getInner().size();
+			int size = ((ListTruffleBox) arguments[0]).getInner().size();
 			function.ensureArity(size);
 
 			return callNode.call(function.getCallTarget(), arguments);

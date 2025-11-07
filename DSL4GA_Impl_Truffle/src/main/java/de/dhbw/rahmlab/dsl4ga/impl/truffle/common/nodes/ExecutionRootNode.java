@@ -5,12 +5,14 @@ import com.oracle.truffle.api.frame.FrameSlotKind;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.interop.ArityException;
 import com.oracle.truffle.api.nodes.DirectCallNode;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.builtinTypes.Tuple;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.builtinTypes.truffleBox.ListTruffleBox;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.builtinTypes.truffleBox.TruffleBox;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.ArgsMapper;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLang;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.LanguageRuntimeException;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.builtinTypes.truffleBox.CgaListTruffleBox;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.builtinTypes.truffleBox.TruffleBox;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.ValidationException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.superClasses.AbstractFunctionRootNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.Function;
 import de.orat.math.gacalc.api.GAFactory;
@@ -18,6 +20,7 @@ import de.orat.math.gacalc.api.MultivectorExpression;
 import de.orat.math.sparsematrix.SparseDoubleMatrix;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
 public final class ExecutionRootNode extends AbstractFunctionRootNode {
 
@@ -51,14 +54,21 @@ public final class ExecutionRootNode extends AbstractFunctionRootNode {
 		}
 		GeomAlgeLangContext.currentExternalArgs = new ArgsMapper(fac, argsList);
 
-		CgaListTruffleBox symArgsBoxed = new CgaListTruffleBox(GeomAlgeLangContext.currentExternalArgs.params);
+		ListTruffleBox symArgsBoxed = new ListTruffleBox(GeomAlgeLangContext.currentExternalArgs.params);
 		try {
 			function.ensureArity(symArgsBoxed.getInner().size());
 		} catch (ArityException ex) {
 			throw new LanguageRuntimeException("main called with wrong argument count.", ex, null);
 		}
-		CgaListTruffleBox callRetVal = (CgaListTruffleBox) this.mainCallNode.call(symArgsBoxed);
-		List<MultivectorExpression> symRes = callRetVal.getInner();
+		Object callRetVal = this.mainCallNode.call(symArgsBoxed);
+		List<MultivectorExpression> symRes = switch (callRetVal) {
+			case Tuple callRetValTuple -> // Contraint: main returns only MultivectorExpression.
+				Stream.of(callRetValTuple.getValues()).map(v -> (MultivectorExpression) v).toList();
+			case MultivectorExpression callRetValMV ->
+				List.of(callRetValMV);
+			default ->
+				throw new ValidationException("main returned invalid object.");
+		};
 
 		List<SparseDoubleMatrix> numRes = GeomAlgeLangContext.currentExternalArgs.evalToSDM(symRes);
 		return new TruffleBox<>(numRes);

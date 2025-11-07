@@ -2,13 +2,11 @@ package de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.BlockNode;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.MVExpressionBaseNode;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.stmtSuperClasses.NonReturningStatementBaseNode;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.builtinTypes.truffleBox.TruffleBox;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.stmt.RetExprStmt;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.superClasses.AbstractFunctionBody;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.visualization.nodes.stmt.CleanupVisualizer;
-import java.util.List;
 
 public class FunctionDefinitionBody extends AbstractFunctionBody implements BlockNode.ElementExecutor<NonReturningStatementBaseNode> {
 
@@ -28,8 +26,8 @@ public class FunctionDefinitionBody extends AbstractFunctionBody implements Bloc
 	/**
 	 * This can fail. Use only, if correct.
 	 */
-	public MVExpressionBaseNode getFirstRetExpr() {
-		return (MVExpressionBaseNode) this.retExprStmt.getFirstRetExpr();
+	public ExpressionBaseNode getFirstRetExpr() {
+		return (ExpressionBaseNode) this.retExprStmt.getFirstRetExpr();
 	}
 
 	public BlockNode<NonReturningStatementBaseNode> getStmts() {
@@ -52,16 +50,16 @@ public class FunctionDefinitionBody extends AbstractFunctionBody implements Bloc
 	}
 
 	@Override
-	public TruffleBox<List<Object>> executeGeneric(VirtualFrame frame) {
+	public Object executeGeneric(VirtualFrame frame) {
 		return directCall(frame);
 	}
 
-	public TruffleBox<List<Object>> directCall(VirtualFrame frame) {
+	public Object directCall(VirtualFrame frame) {
 		if (this.stmts != null) {
 			stmts.executeVoid(frame, BlockNode.NO_ARGUMENT);
 		}
 
-		TruffleBox<List<Object>> rets = this.retExprStmt.execute(frame);
+		Object rets = this.retExprStmt.execute(frame);
 
 		if (this.nulleableCleanupVizualizer != null) {
 			this.nulleableCleanupVizualizer.executeGeneric(frame);

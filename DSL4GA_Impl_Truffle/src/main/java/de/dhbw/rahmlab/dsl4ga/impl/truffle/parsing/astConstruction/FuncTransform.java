@@ -6,13 +6,13 @@ import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParser;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParser.VizAssignedRContext;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParserBaseListener;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.SkippingParseTreeWalker;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.MVExpressionBaseNode;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.stmtSuperClasses.NonReturningStatementBaseNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.ValidationException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionCalls.nodes.expr.FunctionCall;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.FunctionArgumentReader;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.FunctionArgumentReaderNodeGen;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.MVFunctionArgumentReader;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.MVFunctionArgumentReaderNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.FunctionDefinitionBody;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.FunctionDefinitionRootNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.TupleReader;
@@ -42,7 +42,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 	protected VisualizerFunctionContext vizContext = null;
 	protected final GeomAlgeLangContext geomAlgeLangContext;
 	protected final List<NonReturningStatementBaseNode> stmts = new ArrayList<>();
-	protected final List<MVExpressionBaseNode> retExprs = new ArrayList<>();
+	protected final List<ExpressionBaseNode> retExprs = new ArrayList<>();
 	protected final List<String> formalParameterList = new ArrayList<>();
 	protected String functionName;
 	protected final Map<String, Function> functionsView;
@@ -64,7 +64,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 		FuncTransform transform = new FuncTransform(geomAlgeLangContext, functionsView);
 		SkippingParseTreeWalker.walk(parser, transform, ctx, GeomAlgeParser.ExprContext.class);
 
-		RetExprStmt retExprStmt = new RetExprStmt(transform.retExprs.toArray(MVExpressionBaseNode[]::new), transform.getNewScopeVisibleVariablesIndex());
+		RetExprStmt retExprStmt = new RetExprStmt(transform.retExprs.toArray(ExpressionBaseNode[]::new), transform.getNewScopeVisibleVariablesIndex());
 		if (!transform.retExprs.isEmpty()) {
 			int fromIndex = transform.retExprs.getFirst().getSourceSection().getCharIndex();
 			int toIndexInclusive = transform.retExprs.getLast().getSourceSection().getCharEndIndex() - 1;
@@ -105,7 +105,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 		// Valid, assuming that the TreeWalker encounters formalParameters before assignments.
 		int frameSlot = this.frameDescriptorBuilder.addSlot(FrameSlotKind.Static, null, null);
-		FunctionArgumentReader functionArgumentReader = FunctionArgumentReaderNodeGen.create(frameSlot);
+		MVFunctionArgumentReader functionArgumentReader = MVFunctionArgumentReaderNodeGen.create(frameSlot);
 
 		this.localVariables.put(name, frameSlot);
 
@@ -117,7 +117,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 	@Override
 	public void enterAssgnStmt(GeomAlgeParser.AssgnStmtContext ctx) {
-		MVExpressionBaseNode expr = ExprTransform.generateExprAST(ctx.exprCtx, this.geomAlgeLangContext, this.functionsView, this.localVariablesView);
+		ExpressionBaseNode expr = ExprTransform.generateExprAST(ctx.exprCtx, this.geomAlgeLangContext, this.functionsView, this.localVariablesView);
 
 		Token assigned = ctx.vizAssigned.assigned;
 
@@ -208,7 +208,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 	@Override
 	public void enterRetExprStmtExpr(GeomAlgeParser.RetExprStmtExprContext ctx) {
-		MVExpressionBaseNode retExpr = ExprTransform.generateExprAST(ctx.exprContext, this.geomAlgeLangContext, this.functionsView, this.localVariablesView);
+		ExpressionBaseNode retExpr = ExprTransform.generateExprAST(ctx.exprContext, this.geomAlgeLangContext, this.functionsView, this.localVariablesView);
 		retExpr.setSourceSection(ctx.getStart().getStartIndex(), ctx.getStop().getStopIndex());
 		this.retExprs.add(retExpr);
 	}

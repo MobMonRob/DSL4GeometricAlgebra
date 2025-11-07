@@ -14,7 +14,7 @@ public abstract class ExpressionBaseNode extends GeomAlgeLangBaseNode implements
 	public abstract Object executeGeneric(VirtualFrame frame);
 
 	@Override
-	public WrapperNode createWrapper(ProbeNode probeNode) {
+	public InstrumentableNode.WrapperNode createWrapper(ProbeNode probeNode) {
 		return new ExpressionBaseNodeWrapper(this, probeNode);
 	}
 

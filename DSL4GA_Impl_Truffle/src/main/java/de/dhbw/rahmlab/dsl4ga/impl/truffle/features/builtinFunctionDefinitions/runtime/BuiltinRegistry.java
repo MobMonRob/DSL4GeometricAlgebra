@@ -6,7 +6,7 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.internal.In
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.BuiltinFunctionRootNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.builtins.*;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.builtinsSuperClasses.BuiltinFunctionBody;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.FunctionArgumentReader;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.MVFunctionArgumentReader;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.Function;
 import java.util.HashMap;
 import java.util.Map;
@@ -64,7 +64,7 @@ public class BuiltinRegistry {
 	private void installBuiltin(String name, NodeFactory<? extends BuiltinFunctionBody> factory) {
 		final int arity = factory.getExecutionSignature().size();
 
-		FunctionArgumentReader[] functionArguments = FunctionArgumentReader.createArray(0, arity);
+		MVFunctionArgumentReader[] functionArguments = MVFunctionArgumentReader.createArray(0, arity);
 
 		BuiltinFunctionBody builtinFunctionBody = factory.createNode((Object) functionArguments);
 		BuiltinFunctionRootNode builtinFunctionRootNode = new BuiltinFunctionRootNode(truffleLanguage, builtinFunctionBody, name);

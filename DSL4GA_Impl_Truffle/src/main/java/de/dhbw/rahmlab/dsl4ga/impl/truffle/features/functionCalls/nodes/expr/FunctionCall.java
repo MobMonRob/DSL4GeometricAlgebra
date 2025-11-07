@@ -10,10 +10,12 @@ import com.oracle.truffle.api.interop.UnsupportedMessageException;
 import com.oracle.truffle.api.interop.UnsupportedTypeException;
 import com.oracle.truffle.api.library.CachedLibrary;
 import com.oracle.truffle.api.nodes.ExplodeLoop;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.builtinTypes.truffleBox.ListTruffleBox;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import static de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.CatchAndRethrow.catchAndRethrow;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.internal.InterpreterInternalException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.Function;
+import java.util.Arrays;
 
 public abstract class FunctionCall extends ExpressionBaseNode {
 
@@ -49,9 +51,10 @@ public abstract class FunctionCall extends ExpressionBaseNode {
 
 	protected Object doExecuteFunction(Function function, Object[] arguments, InteropLibrary library) throws InterpreterInternalException {
 		try {
+			ListTruffleBox argsBox = new ListTruffleBox(Arrays.asList(arguments));
 			// Indirect execution in order to utilize graal optimizations.
 			// invokes FunctionRootNode::execute
-			Object returnValue = library.execute(function, arguments);
+			Object returnValue = library.execute(function, argsBox);
 			return returnValue;
 		} catch (ArityException e) {
 			String message = "Wrong argument count in functionCall of: " + function.getName() + "\n" + e.toString();
