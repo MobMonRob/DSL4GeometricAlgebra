@@ -21,7 +21,6 @@
 	</properties>
 
 	<dependencies>
-		
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo</artifactId>
@@ -34,18 +33,19 @@
 			<version>5.14.0</version>
 			<scope>test</scope>
 		</dependency>
-	 <dependency>
-	  <groupId>de.orat.math.gacalc</groupId>
-	  <artifactId>GACalcAPI</artifactId>
-	  <version>1.0-SNAPSHOT</version>
-	  <type>jar</type>
-	 </dependency>
-	 <dependency>
-	  <groupId>de.orat.view3d</groupId>
-	  <artifactId>Euclid3DViewAPI</artifactId>
-	  <version>1.0-SNAPSHOT</version>
-	  <type>jar</type>
-	 </dependency>
+		
+		<dependency>
+			<groupId>de.orat.math.gacalc</groupId>
+			<artifactId>GACalcAPI</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>de.orat.view3d</groupId>
+			<artifactId>Euclid3DViewAPI</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<type>jar</type>
+		</dependency>
 	</dependencies>
 
 	<build>

@@ -84,6 +84,14 @@ public class GAViewer extends GAViewObject {
     }*/
 
 	// das ist die Methode, die der VisualizerService von außen aufruft
+	/**
+	 * 
+	 * @param geometricObject
+	 * @param label
+	 * @return 
+	 * @throws IllegalArgumentException if multivector is no visualizable type (no k-vector) or the arguments 
+	 * are illegal
+	 */
 	public GAViewObject addGeometricObject(GeometricObject geometricObject, String label) {
 		return addGeometricObject(this, geometricObject, label);
     }
@@ -95,7 +103,8 @@ public class GAViewer extends GAViewObject {
      * @param label label
      * @return true if the given object can be visualized, false if it is outside 
      * the axis-aligned bounding box and this box is not extended for the given object
-     * @throws IllegalArgumentException if multivector is no visualizable type
+     * @throws IllegalArgumentException if multivector is no visualizable type (no k-vector) or the arguments 
+	 * are illegal
      */
     GAViewObject addGeometricObject(GAViewObject parent, GeometricObject geometricObject, String label){
          return addGeometricObject(parent, geometricObject, label, null);
@@ -288,12 +297,23 @@ public class GAViewer extends GAViewObject {
      * @param parameters unit is [m]
      * @param label
      * @param isIPNS
+	 * @throws IllegalArgumentException
      */
     long addSphere(GeometricObject geometricObject, String label){
             Color color = COLOR_GRADE_1;
             if (geometricObject.isOPNS()) color = COLOR_GRADE_4;
             return addSphere(geometricObject, label, color, true);
     }
+	/**
+	 * Add sphere
+	 * 
+	 * @param geometricObject
+	 * @param label
+	 * @param color
+	 * @param transparency
+	 * @return 
+	 * @throws IllegalArgumentException
+	 */
     long addSphere(GeometricObject geometricObject, String label, Color color, boolean transparency){
         if (color == null) throw 
 			new IllegalArgumentException("color==null not allowed, use method with argument ipns instead!");

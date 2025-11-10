@@ -37,11 +37,15 @@ public class VisualizerService {
 		MultivectorValue mvValue = GeomAlgeLangContext.currentExternalArgs.evalToMV(List.of(mv)).get(0);
 		GeometricObject geometricObject = mvValue.decompose(isIPNS);
         if (geometricObject != null){
-			GAViewObject gaViewObject = this.viewer.addGeometricObject(geometricObject, name/*, isIPNS*/);
-			if (gaViewObject != null) {
-				vizContext.addViewObject(gaViewObject);
-			} else {
-				throw new InterpreterInternalException("Visualization of \"" + name + "\" failed!");
+			try {
+				GAViewObject gaViewObject = this.viewer.addGeometricObject(geometricObject, name/*, isIPNS*/);
+				if (gaViewObject != null) {
+					vizContext.addViewObject(gaViewObject);
+				} else {
+					throw new InterpreterInternalException("Visualization of \"" + name + "\" failed!");
+				}
+			} catch (RuntimeException ex) {
+				throw new InterpreterInternalException(ex.getMessage(), ex);
 			}
 		} else {
 			throw new InterpreterInternalException(
