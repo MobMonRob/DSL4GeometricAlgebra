@@ -11,13 +11,12 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.stmtSuperClasses.NonRetu
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.ValidationException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionCalls.nodes.expr.FunctionCall;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.MVFunctionArgumentReader;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.MVFunctionArgumentReaderNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.FunctionDefinitionBody;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.FunctionDefinitionRootNode;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.MVFunctionArgumentReader;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.MVFunctionArgumentReaderNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.TupleReader;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.TupleReaderNodeGen;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.stmt.DummyStmt;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.stmt.RetExprStmt;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.Function;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.nodes.expr.LocalVariableReference;
@@ -38,7 +37,16 @@ import org.antlr.v4.runtime.Token;
 
 public class FuncTransform extends GeomAlgeParserBaseListener {
 
-	protected int scopeVisibleVariablesIndex = 0;
+	protected static class ScopeVisibleVariableIndex {
+
+		private int scopeVisibleVariablesIndex = 0;
+
+		public int getNewScopeVisibleVariablesIndex() {
+			return this.scopeVisibleVariablesIndex++; // Postincrement
+		}
+	}
+
+	protected ScopeVisibleVariableIndex scopeVisibleVariablesIndex = new ScopeVisibleVariableIndex();
 	protected VisualizerFunctionContext vizContext = null;
 	protected final GeomAlgeLangContext geomAlgeLangContext;
 	protected final List<NonReturningStatementBaseNode> stmts = new ArrayList<>();
@@ -57,7 +65,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 	}
 
 	protected int getNewScopeVisibleVariablesIndex() {
-		return this.scopeVisibleVariablesIndex++;
+		return this.scopeVisibleVariablesIndex.getNewScopeVisibleVariablesIndex();
 	}
 
 	public static Function generate(GeomAlgeParser parser, GeomAlgeParser.FunctionContext ctx, GeomAlgeLangContext geomAlgeLangContext, Map<String, Function> functionsView) {
@@ -109,7 +117,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 		this.localVariables.put(name, frameSlot);
 
-		LocalVariableAssignment assignmentNode = LocalVariableAssignmentNodeGen.create(functionArgumentReader, getNewScopeVisibleVariablesIndex(), name, frameSlot, true);
+		LocalVariableAssignment assignmentNode = LocalVariableAssignmentNodeGen.create(functionArgumentReader, getNewScopeVisibleVariablesIndex(), name, frameSlot, false, true);
 		assignmentNode.setSourceSection(ctx.name.getStartIndex(), ctx.name.getStopIndex());
 
 		this.stmts.add(assignmentNode);
@@ -131,7 +139,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 		int frameSlot = this.frameDescriptorBuilder.addSlot(FrameSlotKind.Static, null, null);
 		this.localVariables.put(name, frameSlot);
 
-		LocalVariableAssignment assignmentNode = LocalVariableAssignmentNodeGen.create(expr, getNewScopeVisibleVariablesIndex(), name, frameSlot, false);
+		LocalVariableAssignment assignmentNode = LocalVariableAssignmentNodeGen.create(expr, getNewScopeVisibleVariablesIndex(), name, frameSlot, true, true);
 		assignmentNode.setSourceSection(assigned.getStartIndex(), assigned.getStopIndex());
 
 		this.stmts.add(assignmentNode);
@@ -160,18 +168,15 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 	public void enterTupleAssgnStmt(GeomAlgeParser.TupleAssgnStmtContext ctx) {
 		FunctionCall callExpr = ExprTransform.generateCallAST(ctx.callCtx, this.geomAlgeLangContext, this.functionsView, this.localVariablesView);
 
-		final int currenScopeVisibleVariablesIndex = getNewScopeVisibleVariablesIndex();
+		final int currentScopeVisibleVariablesIndex = getNewScopeVisibleVariablesIndex();
 
 		final String tupleAssign = "tupleAssign";
 		final int tupleFrameSlot = this.frameDescriptorBuilder.addSlot(FrameSlotKind.Static, null, null);
-		LocalVariableAssignment tupleAssignmentNode = LocalVariableAssignmentNodeGen.create(callExpr, getNewScopeVisibleVariablesIndex(), "tupleAssign", tupleFrameSlot, true);
+		LocalVariableAssignment tupleAssignmentNode = LocalVariableAssignmentNodeGen.create(callExpr, currentScopeVisibleVariablesIndex, "tupleAssign", tupleFrameSlot, true, false);
+		tupleAssignmentNode.setSourceSection(ctx.getStart().getStartIndex(), ctx.getStop().getStopIndex());
 		this.stmts.add(tupleAssignmentNode);
 
 		LocalVariableReference tupleRef = LocalVariableReferenceNodeGen.create(tupleAssign, tupleFrameSlot);
-
-		DummyStmt dummyStmt = new DummyStmt(scopeVisibleVariablesIndex);
-		dummyStmt.setSourceSection(ctx.getStart().getStartIndex(), ctx.getStop().getStopIndex());
-		this.stmts.add(dummyStmt);
 
 		List<VizAssignedRContext> allVizAssigned = ctx.vizAssigned;
 		final int size = allVizAssigned.size();
@@ -198,7 +203,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 			TupleReader tupleReader = TupleReaderNodeGen.create(tupleRef, i);
 
-			LocalVariableAssignment assignmentNode = LocalVariableAssignmentNodeGen.create(tupleReader, currenScopeVisibleVariablesIndex, name, frameSlot, true);
+			LocalVariableAssignment assignmentNode = LocalVariableAssignmentNodeGen.create(tupleReader, currentScopeVisibleVariablesIndex, name, frameSlot, false, true);
 
 			this.stmts.add(assignmentNode);
 

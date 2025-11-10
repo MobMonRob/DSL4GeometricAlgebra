@@ -16,7 +16,8 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
 @NodeChild(value = "expr", type = ExpressionBaseNode.class)
 @NodeField(name = "name", type = String.class)
 @NodeField(name = "frameSlot", type = int.class)
-@NodeField(name = "pseudoStatement", type = boolean.class)
+@NodeField(name = "step", type = boolean.class)
+@NodeField(name = "show", type = boolean.class)
 @ImportStatic(FrameSlotKind.class)
 public abstract class LocalVariableAssignment extends NonReturningStatementBaseNode {
 
@@ -24,7 +25,9 @@ public abstract class LocalVariableAssignment extends NonReturningStatementBaseN
 
 	public abstract int getFrameSlot();
 
-	public abstract boolean isPseudoStatement();
+	public abstract boolean isStep();
+
+	public abstract boolean isShow();
 
 	@Specialization
 	protected void doExecute(VirtualFrame frame, Object value, @Cached(value = "currentLanguageContext()", neverDefault = true) GeomAlgeLangContext context) {
@@ -35,7 +38,7 @@ public abstract class LocalVariableAssignment extends NonReturningStatementBaseN
 	@Override
 	public boolean hasTag(Class<? extends Tag> tag) {
 		// Prevents double stepping in the debugger.
-		if ((tag == StandardTags.StatementTag.class) && isPseudoStatement()) {
+		if (!isStep()) {
 			return false;
 		} else {
 			return tag == StandardTags.WriteVariableTag.class || super.hasTag(tag);

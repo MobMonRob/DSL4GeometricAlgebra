@@ -22,7 +22,7 @@ public abstract class CleanupVisualizer extends NonReturningStatementBaseNode {
 		} catch (InterruptedException ex) {
 			Thread.currentThread().interrupt();
 		}
-		 */
+		*/
 		catchAndRethrow(this, () -> {
 			getVizContext().removeAll();
 		});

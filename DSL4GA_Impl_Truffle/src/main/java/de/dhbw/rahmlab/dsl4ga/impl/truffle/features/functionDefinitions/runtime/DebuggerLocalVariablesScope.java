@@ -57,21 +57,19 @@ public class DebuggerLocalVariablesScope implements TruffleObject {
 					return true;
 				}
 				if (stmt instanceof LocalVariableAssignment varAssign) {
-					if (varAssign.isPseudoStatement()) {
+					if (!varAssign.isShow()) {
 						return true;
 					}
 					if (varAssign.getScopeVisibleVariablesIndex() >= scopeVisibleVariablesIndex) {
-						return true;
+						// Assuming they are sorted. Otherwise return true and visit others.
+						return false;
 					}
 					String name = varAssign.getName();
 
 					visibleVarsNames.add(name);
 
 					Object prev = namesToVarNodes.put(name, varAssign);
-					if (prev != null) {
-						throw new AssertionError(
-							"Validation implemented incorrectly: Each variable should only be assignable once.");
-					}
+					assert prev != null : "Validation implemented incorrectly: Each variable should only be assignable once.";
 					return true;
 				}
 				return true;
