@@ -1,6 +1,6 @@
 package de.dhbw.rahmlab.dsl4ga.impl.fast.parsing;
 
-import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationException;
+import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationParsingException;
 import de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction.SourceUnitTransform;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.CharStreamSupplier;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.CustomBailErrorStrategy;
@@ -8,6 +8,7 @@ import de.dhbw.rahmlab.dsl4ga.common.parsing.CustumDiagnosticErrorListener;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeLexer;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParser;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.SyntaxErrorListener;
+import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationParsingRuntimeException;
 import de.orat.math.gacalc.api.GAFactory;
 import de.orat.math.gacalc.api.GAFunction;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -26,7 +27,12 @@ public final class ParsingService {
 
 	protected static FactoryAndMain invoke(GeomAlgeParser parser) {
 		GeomAlgeParser.SourceUnitContext sourceUnit = parser.sourceUnit();
-		FactoryAndMain factoryAndMain = SourceUnitTransform.generate(parser, sourceUnit);
+		FactoryAndMain factoryAndMain;
+		try {
+			factoryAndMain = SourceUnitTransform.generate(parser, sourceUnit);
+		} catch (ValidationParsingException ex) {
+			throw new ValidationParsingRuntimeException(ex);
+		}
 		return factoryAndMain;
 	}
 
@@ -45,7 +51,7 @@ public final class ParsingService {
 			try {
 				return invoke(parser);
 			} catch (ParseCancellationException ex2) {
-				throw new ValidationException(ex2);
+				throw new ValidationParsingRuntimeException(ex2);
 			}
 		}
 	}

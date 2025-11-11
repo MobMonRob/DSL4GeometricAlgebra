@@ -2,8 +2,9 @@ package de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction;
 
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParser;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParserBaseListener;
-import de.dhbw.rahmlab.dsl4ga.common.parsing.SkippingParseTreeWalker;
-import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationException;
+import de.dhbw.rahmlab.dsl4ga.common.parsing.ParseTreeWalkerSkipping;
+import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationParsingException;
+import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationParsingRuntimeException;
 import de.orat.math.gacalc.api.ConstantsExpression;
 import de.orat.math.gacalc.api.GAFactory;
 import de.orat.math.gacalc.api.GAFunction;
@@ -42,19 +43,19 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		this.localVariablesView = localVariablesView;
 	}
 
-	public static MultivectorExpression generateExprAST(GAFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.ExprContext exprCtx, Map<String, GAFunction> functionsView, Map<String, MultivectorExpression> localVariablesView) {
+	public static MultivectorExpression generateExprAST(GAFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.ExprContext exprCtx, Map<String, GAFunction> functionsView, Map<String, MultivectorExpression> localVariablesView) throws ValidationParsingException {
 		ExprTransform exprTransform = new ExprTransform(exprGraphFactory, functionsView, localVariablesView);
 
-		SkippingParseTreeWalker.walk(parser, exprTransform, exprCtx);
+		ParseTreeWalkerSkipping.walk(parser, exprTransform, exprCtx);
 
 		MultivectorExpression rootNode = exprTransform.nodeStack.getFirst();
 		return rootNode;
 	}
 
-	public static List<MultivectorExpression> generateCallAST(GAFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.CallExprContext callExprCtx, Map<String, GAFunction> functionsView, Map<String, MultivectorExpression> localVariablesView) {
+	public static List<MultivectorExpression> generateCallAST(GAFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.CallExprContext callExprCtx, Map<String, GAFunction> functionsView, Map<String, MultivectorExpression> localVariablesView) throws ValidationParsingException {
 		ExprTransform exprTransform = new ExprTransform(exprGraphFactory, functionsView, localVariablesView);
 
-		SkippingParseTreeWalker.walk(parser, exprTransform, callExprCtx);
+		ParseTreeWalkerSkipping.walk(parser, exprTransform, callExprCtx);
 
 		return exprTransform.lastCallResults;
 	}
@@ -251,7 +252,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 
 		if (!this.localVariablesView.containsKey(name)) {
 			int line = ctx.name.getLine();
-			throw new ValidationException(line, String.format("Variable \"%s\" has not been declared before.", name));
+			throw new ValidationParsingRuntimeException(line, String.format("Variable \"%s\" has not been declared before.", name));
 		}
 
 		MultivectorExpression node = this.localVariablesView.get(name);
@@ -326,7 +327,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 
 			if (!(ctx.parent instanceof GeomAlgeParser.TupleAssgnStmtContext) && (returns.size() != 1)) {
 				int line = ctx.start.getLine();
-				throw new ValidationException(line, String.format("Only calls in Expr are allowed, which return exactly one result, but got %s from \"%s\".", returns.size(), functionName));
+				throw new ValidationParsingRuntimeException(line, String.format("Only calls in Expr are allowed, which return exactly one result, but got %s from \"%s\".", returns.size(), functionName));
 			}
 
 			this.lastCallResults = returns;
@@ -375,7 +376,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 							case "down" ->
 								arg.down();
 							default ->
-								throw new ValidationException(ctx.start.getLine(), String.format("Function \"%s\" to call not found.", functionName));
+								throw new ValidationParsingRuntimeException(ctx.start.getLine(), String.format("Function \"%s\" to call not found.", functionName));
 						};
 						this.lastCallResults = List.of(result);
 						this.nodeStack.push(result);
@@ -397,19 +398,19 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 							case "map" ->
 								arg0.mapProduct(arg1);
 							default ->
-								throw new ValidationException(ctx.start.getLine(), String.format("Function \"%s\" to call not found.", functionName));
+								throw new ValidationParsingRuntimeException(ctx.start.getLine(), String.format("Function \"%s\" to call not found.", functionName));
 						};
 						this.lastCallResults = List.of(result);
 						this.nodeStack.push(result);
 
 					}
 					default ->
-						throw new ValidationException(ctx.start.getLine(), String.format("Function \"%s\" to call not found.", functionName));
+						throw new ValidationParsingRuntimeException(ctx.start.getLine(), String.format("Function \"%s\" to call not found.", functionName));
 				}
-			} catch (ValidationException ex) {
+			} catch (ValidationParsingRuntimeException ex) {
 				throw ex;
 			} catch (Exception ex) {
-				throw new ValidationException(ex);
+				throw new ValidationParsingRuntimeException(ex);
 			}
 		}
 	}

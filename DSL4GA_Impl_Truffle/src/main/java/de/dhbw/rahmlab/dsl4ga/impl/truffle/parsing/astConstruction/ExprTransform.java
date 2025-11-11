@@ -3,10 +3,13 @@ package de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.astConstruction;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParser;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParserBaseListener;
+import de.dhbw.rahmlab.dsl4ga.common.parsing.ParseTreeWalker;
+import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationParsingException;
+import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationParsingRuntimeException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
-import static de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.CatchAndRethrow.catchAndRethrow;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.ValidationException;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.internal.InterpreterInternalException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionCalls.nodes.expr.FunctionCall;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionCalls.nodes.expr.FunctionCallNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.Function;
@@ -42,7 +45,6 @@ import java.text.ParseException;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Map;
-import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 /**
  * This class converts an expression subtree of an ANTLR parsetree into an expression AST in truffle.
@@ -66,19 +68,19 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		this.localVariablesView = localVariablesView;
 	}
 
-	public static ExpressionBaseNode generateExprAST(GeomAlgeParser.ExprContext exprCtx, GeomAlgeLangContext geomAlgeLangContext, Map<String, Function> functionsView, Map<String, Integer> localVariablesView) {
+	public static ExpressionBaseNode generateExprAST(GeomAlgeParser parser, GeomAlgeParser.ExprContext exprCtx, GeomAlgeLangContext geomAlgeLangContext, Map<String, Function> functionsView, Map<String, Integer> localVariablesView) throws ValidationParsingException {
 		ExprTransform exprTransform = new ExprTransform(geomAlgeLangContext, functionsView, localVariablesView);
 
-		ParseTreeWalker.DEFAULT.walk(exprTransform, exprCtx);
+		ParseTreeWalker.walk(parser, exprTransform, exprCtx);
 
 		ExpressionBaseNode rootNode = exprTransform.nodeStack.getFirst();
 		return rootNode;
 	}
 
-	public static FunctionCall generateCallAST(GeomAlgeParser.CallExprContext callExprCtx, GeomAlgeLangContext geomAlgeLangContext, Map<String, Function> functionsView, Map<String, Integer> localVariablesView) {
+	public static FunctionCall generateCallAST(GeomAlgeParser parser, GeomAlgeParser.CallExprContext callExprCtx, GeomAlgeLangContext geomAlgeLangContext, Map<String, Function> functionsView, Map<String, Integer> localVariablesView) throws ValidationParsingException {
 		ExprTransform exprTransform = new ExprTransform(geomAlgeLangContext, functionsView, localVariablesView);
 
-		ParseTreeWalker.DEFAULT.walk(exprTransform, callExprCtx);
+		ParseTreeWalker.walk(parser, exprTransform, callExprCtx);
 
 		FunctionCall rootNode = (FunctionCall) exprTransform.nodeStack.getFirst();
 		return rootNode;
@@ -332,10 +334,11 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		if (this.functionsView.containsKey(functionName)) {
 			function = this.functionsView.get(functionName);
 		} else {
-			// throw new ValidationException(String.format("Function \"%s\" to call not found.", functionName));
-			function = catchAndRethrow(null, () -> {
-				return this.geomAlgeLangContext.builtinRegistry.getBuiltinFunction(functionName);
-			});
+			try {
+				function = this.geomAlgeLangContext.builtinRegistry.getBuiltinFunction(functionName);
+			} catch (InterpreterInternalException ex) {
+				throw new ValidationParsingRuntimeException(String.format("Function \"%s\" to call not found.", functionName));
+			}
 		}
 		FunctionCall functionCall = FunctionCallNodeGen.create(function, argumentsArray);
 		functionCall.setSourceSection(ctx.getStart().getStartIndex(), ctx.getStop().getStopIndex());

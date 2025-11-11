@@ -6,6 +6,7 @@ import de.dhbw.rahmlab.dsl4ga.common.parsing.CustumDiagnosticErrorListener;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeLexer;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParser;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.SyntaxErrorListener;
+import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationParsingException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.ValidationException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.Function;
@@ -31,8 +32,12 @@ public final class ParsingService {
 
 	protected FactoryAndMain invoke(GeomAlgeParser parser, GeomAlgeLangContext geomAlgeLangContext) {
 		GeomAlgeParser.SourceUnitContext sourceUnit = parser.sourceUnit();
-		FactoryAndMain factoryAndMain = SourceUnitTransform.generate(parser, sourceUnit, geomAlgeLangContext);
-		return factoryAndMain;
+		try {
+			FactoryAndMain factoryAndMain = SourceUnitTransform.generate(parser, sourceUnit, geomAlgeLangContext);
+			return factoryAndMain;
+		} catch (ValidationParsingException ex) {
+			throw new ValidationException(null, ex);
+		}
 	}
 
 	public FactoryAndMain parse(CharStreamSupplier program, GeomAlgeLangContext geomAlgeLangContext) {

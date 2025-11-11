@@ -73,6 +73,10 @@ public class BuiltinRegistry {
 		this.builtins.put(function.getName(), function);
 	}
 
+	public boolean hasBuiltinFunction(String name) {
+		return this.builtins.containsKey(name);
+	}
+
 	public Function getBuiltinFunction(String name) throws InterpreterInternalException {
 		if (!this.builtins.containsKey(name)) {
 			throw new InterpreterInternalException("BuiltinFunction \"" + name + "\" does not exist.");

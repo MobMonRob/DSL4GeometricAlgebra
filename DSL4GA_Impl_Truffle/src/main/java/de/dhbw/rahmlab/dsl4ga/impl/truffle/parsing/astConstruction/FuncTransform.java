@@ -2,10 +2,12 @@ package de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.astConstruction;
 
 import com.oracle.truffle.api.frame.FrameDescriptor;
 import com.oracle.truffle.api.frame.FrameSlotKind;
+import static de.dhbw.rahmlab.dsl4ga.common.parsing.CatchAndRethrow.catchAndRethrow;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParser;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParser.VizAssignedRContext;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParserBaseListener;
-import de.dhbw.rahmlab.dsl4ga.common.parsing.SkippingParseTreeWalker;
+import de.dhbw.rahmlab.dsl4ga.common.parsing.ParseTreeWalkerSkipping;
+import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationParsingException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.stmtSuperClasses.NonReturningStatementBaseNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
@@ -54,12 +56,14 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 	protected final List<String> formalParameterList = new ArrayList<>();
 	protected String functionName;
 	protected final Map<String, Function> functionsView;
+	protected final GeomAlgeParser parser;
 
 	protected final Map<String, Integer> localVariables = new HashMap<>();
 	protected final Map<String, Integer> localVariablesView = Collections.unmodifiableMap(localVariables);
 	protected final FrameDescriptor.Builder frameDescriptorBuilder = FrameDescriptor.newBuilder();
 
-	protected FuncTransform(GeomAlgeLangContext geomAlgeLangContext, Map<String, Function> functionsView) {
+	protected FuncTransform(GeomAlgeParser parser, GeomAlgeLangContext geomAlgeLangContext, Map<String, Function> functionsView) {
+		this.parser = parser;
 		this.geomAlgeLangContext = geomAlgeLangContext;
 		this.functionsView = functionsView;
 	}
@@ -68,9 +72,9 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 		return this.scopeVisibleVariablesIndex.getNewScopeVisibleVariablesIndex();
 	}
 
-	public static Function generate(GeomAlgeParser parser, GeomAlgeParser.FunctionContext ctx, GeomAlgeLangContext geomAlgeLangContext, Map<String, Function> functionsView) {
-		FuncTransform transform = new FuncTransform(geomAlgeLangContext, functionsView);
-		SkippingParseTreeWalker.walk(parser, transform, ctx, GeomAlgeParser.ExprContext.class);
+	public static Function generate(GeomAlgeParser parser, GeomAlgeParser.FunctionContext ctx, GeomAlgeLangContext geomAlgeLangContext, Map<String, Function> functionsView) throws ValidationParsingException {
+		FuncTransform transform = new FuncTransform(parser, geomAlgeLangContext, functionsView);
+		ParseTreeWalkerSkipping.walk(parser, transform, ctx, GeomAlgeParser.ExprContext.class);
 
 		RetExprStmt retExprStmt = new RetExprStmt(transform.retExprs.toArray(ExpressionBaseNode[]::new), transform.getNewScopeVisibleVariablesIndex());
 		if (!transform.retExprs.isEmpty()) {
@@ -125,7 +129,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 	@Override
 	public void enterAssgnStmt(GeomAlgeParser.AssgnStmtContext ctx) {
-		ExpressionBaseNode expr = ExprTransform.generateExprAST(ctx.exprCtx, this.geomAlgeLangContext, this.functionsView, this.localVariablesView);
+		ExpressionBaseNode expr = catchAndRethrow(() -> ExprTransform.generateExprAST(this.parser, ctx.exprCtx, this.geomAlgeLangContext, this.functionsView, this.localVariablesView));
 
 		Token assigned = ctx.vizAssigned.assigned;
 
@@ -166,7 +170,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 	@Override
 	public void enterTupleAssgnStmt(GeomAlgeParser.TupleAssgnStmtContext ctx) {
-		FunctionCall callExpr = ExprTransform.generateCallAST(ctx.callCtx, this.geomAlgeLangContext, this.functionsView, this.localVariablesView);
+		FunctionCall callExpr = catchAndRethrow(() -> ExprTransform.generateCallAST(this.parser, ctx.callCtx, this.geomAlgeLangContext, this.functionsView, this.localVariablesView));
 
 		final int currentScopeVisibleVariablesIndex = getNewScopeVisibleVariablesIndex();
 
@@ -213,7 +217,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 	@Override
 	public void enterRetExprStmtExpr(GeomAlgeParser.RetExprStmtExprContext ctx) {
-		ExpressionBaseNode retExpr = ExprTransform.generateExprAST(ctx.exprContext, this.geomAlgeLangContext, this.functionsView, this.localVariablesView);
+		ExpressionBaseNode retExpr = catchAndRethrow(() -> ExprTransform.generateExprAST(this.parser, ctx.exprContext, this.geomAlgeLangContext, this.functionsView, this.localVariablesView));
 		retExpr.setSourceSection(ctx.getStart().getStartIndex(), ctx.getStop().getStopIndex());
 		this.retExprs.add(retExpr);
 	}
