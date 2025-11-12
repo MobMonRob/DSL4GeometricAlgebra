@@ -43,8 +43,10 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.util.ArrayDeque;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.Map;
+import java.util.SequencedCollection;
 
 /**
  * This class converts an expression subtree of an ANTLR parsetree into an expression AST in truffle.
@@ -83,6 +85,16 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		ParseTreeWalker.walk(parser, exprTransform, callExprCtx);
 
 		FunctionCall rootNode = (FunctionCall) exprTransform.nodeStack.getFirst();
+		return rootNode;
+	}
+
+	// Package-private
+	static ExprList generateExprListAST(GeomAlgeParser parser, GeomAlgeParser.ExprListContext callExprCtx, GeomAlgeLangContext geomAlgeLangContext, Map<String, Function> functionsView, Map<String, Integer> localVariablesView) throws ValidationParsingException {
+		ExprTransform exprTransform = new ExprTransform(geomAlgeLangContext, functionsView, localVariablesView);
+
+		ParseTreeWalker.walk(parser, exprTransform, callExprCtx);
+
+		ExprList rootNode = (ExprList) exprTransform.nodeStack.getFirst();
 		return rootNode;
 	}
 
@@ -299,7 +311,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		}
 	}
 
-	private static class EnterCallMarker extends ExpressionBaseNode {
+	private static final class EnterExprListMarker extends ExpressionBaseNode {
 
 		@Override
 		public MultivectorExpression executeGeneric(VirtualFrame frame) {
@@ -307,26 +319,50 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		}
 	}
 
-	private static final EnterCallMarker enterCallMarker = new EnterCallMarker();
+	private static final EnterExprListMarker exprListMarker = new EnterExprListMarker();
 
 	@Override
-	public void enterCall(GeomAlgeParser.CallContext ctx) {
-		this.nodeStack.push(enterCallMarker);
+	public void enterExprList(GeomAlgeParser.ExprListContext ctx) {
+		this.nodeStack.push(exprListMarker);
+	}
+
+	@Override
+	public void exitExprList(GeomAlgeParser.ExprListContext ctx) {
+		Deque<ExpressionBaseNode> exprs = new ArrayDeque<>();
+		for (ExpressionBaseNode currentArgument = this.nodeStack.pop();
+			currentArgument != exprListMarker;
+			currentArgument = this.nodeStack.pop()) {
+			// rightmost argument will be pushed first
+			// therefore ordered properly at the end
+			exprs.push(currentArgument);
+		}
+		ExprList exprList = new ExprList(Collections.unmodifiableSequencedCollection(exprs));
+		this.nodeStack.push(exprList);
+	}
+
+	// Package-private
+	static final class ExprList extends ExpressionBaseNode {
+
+		public final SequencedCollection<ExpressionBaseNode> exprs;
+
+		public ExprList(SequencedCollection<ExpressionBaseNode> exprs) {
+			this.exprs = exprs;
+		}
+
+		@Override
+		public MultivectorExpression executeGeneric(VirtualFrame frame) {
+			throw new AssertionError();
+		}
 	}
 
 	@Override
 	public void exitCall(GeomAlgeParser.CallContext ctx) {
-		Deque<ExpressionBaseNode> arguments = new ArrayDeque<>();
-
-		for (ExpressionBaseNode currentArgument = this.nodeStack.pop();
-			currentArgument != enterCallMarker;
-			currentArgument = this.nodeStack.pop()) {
-			// rightmost argument will be pushed first
-			// therefore ordered properly at the end
-			arguments.push(currentArgument);
+		ExpressionBaseNode[] argumentsArray;
+		if (ctx.exprListCtx != null) {
+			argumentsArray = ((ExprList) this.nodeStack.pop()).exprs.toArray(ExpressionBaseNode[]::new);
+		} else {
+			argumentsArray = new ExpressionBaseNode[0];
 		}
-
-		ExpressionBaseNode[] argumentsArray = arguments.toArray(ExpressionBaseNode[]::new);
 
 		String functionName = ctx.name.getText();
 

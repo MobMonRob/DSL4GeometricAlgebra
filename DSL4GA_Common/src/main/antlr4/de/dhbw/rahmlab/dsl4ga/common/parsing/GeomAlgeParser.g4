@@ -52,7 +52,7 @@ formalParameter
 functionBody
 	:	WHITE_LINE*
 		(stmt WHITE_LINE+)*
-		retExpr
+		retExprStmt
 		WHITE_LINE*
 	;
 
@@ -70,20 +70,16 @@ stmt
 	|	SPACE* vizAssigned=vizAssignedR SPACE* ASSIGNMENT SPACE* arrayInitCtx=arrayInitExpr SPACE*	#ArrayInitStmt
 	;
 
+retExprStmt
+	: exprListCtx=exprList
+	;
+
 vizAssignedR
 	: viz+=COLON? viz+=COLON? assigned=(IDENTIFIER|LOW_LINE) arrInd=arrIndicator?
 	;
 
 arrayInitExpr
-	: L_CURLY_BRACKET SPACE* (arrayElemExpr+=expr SPACE* (COMMA SPACE* arrayElemExpr+=expr SPACE*)* SPACE*)? R_CURLY_BRACKET
-	;
-
-// The list-form (1) needs iteration in the transformer while the tree-form (2) don't.
-// enterRetExprStmt inverses the order if retExpr is left-recursive.
-retExpr
-	//:	exprContext+=expr (COMMA exprContext+=expr)*	#RetExprStmt
-	:	exprContext=expr				#RetExprStmtExpr
-	|	exprContext=expr COMMA retExpr	#RetExprStmtExpr
+	: L_CURLY_BRACKET SPACE* exprListCtx=exprList? R_CURLY_BRACKET
 	;
 
 ///////////////////////////////////////////////////////////////////////////
@@ -184,8 +180,20 @@ binOpExpr
 ///////////////////////////////////////////////////////////////////////////
 
 callExpr
-	:	name=IDENTIFIER L_PARENTHESIS (expr (COMMA expr)*)? R_PARENTHESIS	#Call
+	:	name=IDENTIFIER L_PARENTHESIS exprListCtx=exprList? R_PARENTHESIS	#Call
 	;
+
+exprList
+	: expr (COMMA expr)*
+	;
+
+// The list-form (1) needs iteration in the transformer while the tree-form (2) don't.
+// enterRetExprStmt inverses the order if retExpr is left-recursive.
+//retExpr
+//	//:	exprContext+=expr (COMMA exprContext+=expr)*	#RetExprStmt
+//	:	exprContext=expr				#RetExprStmtExpr
+//	|	exprContext=expr COMMA retExpr	#RetExprStmtExpr
+//	;
 
 ///////////////////////////////////////////////////////////////////////////
 // composite / abstract / higherOrder / meta Expr

@@ -113,9 +113,10 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 	}
 
 	@Override
-	public void enterRetExprStmtExpr(GeomAlgeParser.RetExprStmtExprContext ctx) {
-		MultivectorExpression retExpr = catchAndRethrow(() -> ExprTransform.generateExprAST(this.exprGraphFactory, this.parser, ctx.exprContext, this.functionsView, this.localVariablesView));
+	public void enterRetExprStmt(GeomAlgeParser.RetExprStmtContext ctx) {
+		throw new UnsupportedOperationException("Changes with exprList and Array not implemented in Fast yet!");
+		// MultivectorExpression retExpr = catchAndRethrow(() -> ExprTransform.generateExprAST(this.exprGraphFactory, this.parser, ctx.exprListCtx, this.functionsView, this.localVariablesView));
 		// System.out.println("retExpr: " + retExpr);
-		this.retExprs.add(retExpr);
+		// this.retExprs.add(retExpr);
 	}
 }

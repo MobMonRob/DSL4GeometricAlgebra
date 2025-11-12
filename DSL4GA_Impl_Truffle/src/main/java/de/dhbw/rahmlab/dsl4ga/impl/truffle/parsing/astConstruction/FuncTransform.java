@@ -30,6 +30,7 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.visualization.nodes.stmt.Cle
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.visualization.nodes.stmt.VisualizeMultivector;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.visualization.nodes.stmt.VisualizeMultivectorNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.visualization.runtime.VisualizerFunctionContext;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.astConstruction.ExprTransform.ExprList;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -52,7 +53,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 	protected VisualizerFunctionContext vizContext = null;
 	protected final GeomAlgeLangContext geomAlgeLangContext;
 	protected final List<NonReturningStatementBaseNode> stmts = new ArrayList<>();
-	protected final List<ExpressionBaseNode> retExprs = new ArrayList<>();
+	protected ExprList retExprs;
 	protected final List<String> formalParameterList = new ArrayList<>();
 	protected String functionName;
 	protected final Map<String, Function> functionsView;
@@ -76,12 +77,11 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 		FuncTransform transform = new FuncTransform(parser, geomAlgeLangContext, functionsView);
 		ParseTreeWalkerSkipping.walk(parser, transform, ctx, GeomAlgeParser.ExprContext.class);
 
-		RetExprStmt retExprStmt = new RetExprStmt(transform.retExprs.toArray(ExpressionBaseNode[]::new), transform.getNewScopeVisibleVariablesIndex());
-		if (!transform.retExprs.isEmpty()) {
-			int fromIndex = transform.retExprs.getFirst().getSourceSection().getCharIndex();
-			int toIndexInclusive = transform.retExprs.getLast().getSourceSection().getCharEndIndex() - 1;
-			retExprStmt.setSourceSection(fromIndex, toIndexInclusive);
-		}
+		var exprs = transform.retExprs.exprs;
+		RetExprStmt retExprStmt = new RetExprStmt(exprs.toArray(ExpressionBaseNode[]::new), transform.getNewScopeVisibleVariablesIndex());
+		int fromIndex = transform.retExprs.getSourceSection().getCharIndex();
+		int toIndexInclusive = transform.retExprs.getSourceSection().getCharEndIndex() - 1;
+		retExprStmt.setSourceSection(fromIndex, toIndexInclusive);
 
 		CleanupVisualizer cleanupViz = null;
 		if (transform.vizContext != null) {
@@ -216,9 +216,19 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 	}
 
 	@Override
-	public void enterRetExprStmtExpr(GeomAlgeParser.RetExprStmtExprContext ctx) {
-		ExpressionBaseNode retExpr = catchAndRethrow(() -> ExprTransform.generateExprAST(this.parser, ctx.exprContext, this.geomAlgeLangContext, this.functionsView, this.localVariablesView));
-		retExpr.setSourceSection(ctx.getStart().getStartIndex(), ctx.getStop().getStopIndex());
-		this.retExprs.add(retExpr);
+	public void enterRetExprStmt(GeomAlgeParser.RetExprStmtContext ctx) {
+		ExprList retExprList = catchAndRethrow(() -> ExprTransform.generateExprListAST(this.parser, ctx.exprListCtx, this.geomAlgeLangContext, this.functionsView, this.localVariablesView));
+		retExprList.setSourceSection(ctx.getStart().getStartIndex(), ctx.getStop().getStopIndex());
+		this.retExprs = retExprList;
+	}
+
+	@Override
+	public void enterArrayInitStmt(GeomAlgeParser.ArrayInitStmtContext ctx) {
+		ExprList exprList;
+		if (ctx.arrayInitCtx.exprListCtx != null) {
+			exprList = catchAndRethrow(() -> ExprTransform.generateExprListAST(this.parser, ctx.arrayInitCtx.exprListCtx, this.geomAlgeLangContext, this.functionsView, this.localVariablesView));
+		} else {
+			exprList = new ExprList(Collections.emptyList());
+		}
 	}
 }
