@@ -18,11 +18,13 @@ import com.oracle.truffle.api.source.SourceSection;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.stmtSuperClasses.NonReturningStatementBaseNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLang;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.arrays.runtime.ArrayObject;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.FunctionDefinitionRootNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.nodes.stmt.LocalVariableAssignment;
 import de.orat.math.gacalc.api.MultivectorExpression;
 import de.orat.math.gacalc.api.MultivectorValue;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -145,10 +147,25 @@ public class DebuggerLocalVariablesScope implements TruffleObject {
 	@TruffleBoundary
 	String readMember(String member) {
 		LocalVariableAssignment varNode = this.namesToVarNodes.get(member);
-		MultivectorExpression varValue = (MultivectorExpression) this.frame.getObjectStatic(varNode.getFrameSlot());
-		MultivectorValue mv = GeomAlgeLangContext.currentExternalArgs.evalToMV(List.of(varValue)).get(0);
-		var mvString = mv.toString();
-		return mvString;
+		Object varValue = this.frame.getObjectStatic(varNode.getFrameSlot());
+		String str = "invalid";
+		if (varValue instanceof MultivectorExpression mvExpr) {
+			MultivectorValue mv = GeomAlgeLangContext.currentExternalArgs.evalToMV(List.of(mvExpr)).get(0);
+			str = mv.toString();
+		}
+		if (varValue instanceof ArrayObject arr) {
+			// Currently, only MultivectorExpression is allowed in Array.
+			List<MultivectorExpression> mvs = Arrays.stream(arr.getValues()).map(o -> (MultivectorExpression) o).toList();
+			List<MultivectorValue> mvValues = GeomAlgeLangContext.currentExternalArgs.evalToMV(mvs);
+			StringBuilder sb = new StringBuilder();
+			for (MultivectorValue mv : mvValues) {
+				sb.append(mv);
+				sb.append('\n');
+			}
+			str = sb.toString();
+		}
+ 
+		return str;
 	}
 
 	@ExportMessage

@@ -16,8 +16,8 @@ fn f1(a, b) {
 
 
 fn main(a, b) {
-	:c = a
+	c = {a, b}
 	g = f1(a, b)
 	::d = b
-	c, d
+	a, d
 }

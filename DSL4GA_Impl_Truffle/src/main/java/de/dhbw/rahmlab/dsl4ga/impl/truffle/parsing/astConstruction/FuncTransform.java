@@ -12,6 +12,7 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.Express
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.stmtSuperClasses.NonReturningStatementBaseNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.ValidationException;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.arrays.runtime.nodes.expr.ArrayInitExpr;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionCalls.nodes.expr.FunctionCall;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.FunctionDefinitionBody;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.FunctionDefinitionRootNode;
@@ -53,7 +54,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 	protected VisualizerFunctionContext vizContext = null;
 	protected final GeomAlgeLangContext geomAlgeLangContext;
 	protected final List<NonReturningStatementBaseNode> stmts = new ArrayList<>();
-	protected ExprList retExprs;
+	ExprList retExprs; // Package-private
 	protected final List<String> formalParameterList = new ArrayList<>();
 	protected String functionName;
 	protected final Map<String, Function> functionsView;
@@ -131,9 +132,11 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 	public void enterAssgnStmt(GeomAlgeParser.AssgnStmtContext ctx) {
 		ExpressionBaseNode expr = catchAndRethrow(() -> ExprTransform.generateExprAST(this.parser, ctx.exprCtx, this.geomAlgeLangContext, this.functionsView, this.localVariablesView));
 
-		Token assigned = ctx.vizAssigned.assigned;
+		addVariableAssignment(ctx.vizAssigned, expr, getNewScopeVisibleVariablesIndex(), true, true);
+	}
 
-		// Assignment
+	private void addVariableAssignment(VizAssignedRContext vizAssigned, ExpressionBaseNode expr, int scopeVisibleVariablesIndex, boolean step, boolean show) throws ValidationException, IllegalArgumentException {
+		Token assigned = vizAssigned.assigned;
 		String name = assigned.getText();
 
 		if (this.localVariables.containsKey(name)) {
@@ -143,12 +146,12 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 		int frameSlot = this.frameDescriptorBuilder.addSlot(FrameSlotKind.Static, null, null);
 		this.localVariables.put(name, frameSlot);
 
-		LocalVariableAssignment assignmentNode = LocalVariableAssignmentNodeGen.create(expr, getNewScopeVisibleVariablesIndex(), name, frameSlot, true, true);
+		LocalVariableAssignment assignmentNode = LocalVariableAssignmentNodeGen.create(expr, scopeVisibleVariablesIndex, name, frameSlot, step, show);
 		assignmentNode.setSourceSection(assigned.getStartIndex(), assigned.getStopIndex());
 
 		this.stmts.add(assignmentNode);
 
-		visualize(assigned, ctx.vizAssigned.viz, name, frameSlot);
+		visualize(assigned, vizAssigned.viz, name, frameSlot);
 	}
 
 	private void visualize(Token assigned, List<Token> viz, String name, int frameSlot) {
@@ -197,21 +200,9 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 				continue;
 			}
 
-			if (this.localVariables.containsKey(name)) {
-				int line = vizAssigned.assigned.getLine();
-				throw new ValidationException(line, String.format("\"%s\" cannot be assigned again.", name));
-			}
-
-			int frameSlot = this.frameDescriptorBuilder.addSlot(FrameSlotKind.Static, null, null);
-			this.localVariables.put(name, frameSlot);
-
 			TupleReader tupleReader = TupleReaderNodeGen.create(tupleRef, i);
 
-			LocalVariableAssignment assignmentNode = LocalVariableAssignmentNodeGen.create(tupleReader, currentScopeVisibleVariablesIndex, name, frameSlot, false, true);
-
-			this.stmts.add(assignmentNode);
-
-			visualize(vizAssigned.assigned, vizAssigned.viz, name, frameSlot);
+			addVariableAssignment(vizAssigned, tupleReader, currentScopeVisibleVariablesIndex, false, true);
 		}
 	}
 
@@ -230,5 +221,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 		} else {
 			exprList = new ExprList(Collections.emptyList());
 		}
+		ArrayInitExpr arrayInit = new ArrayInitExpr(exprList.exprs.toArray(ExpressionBaseNode[]::new));
+		addVariableAssignment(ctx.vizAssigned, arrayInit, getNewScopeVisibleVariablesIndex(), true, true);
 	}
 }
