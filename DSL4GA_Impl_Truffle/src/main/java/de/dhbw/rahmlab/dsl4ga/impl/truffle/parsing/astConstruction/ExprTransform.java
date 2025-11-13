@@ -269,6 +269,9 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		nodeStack.push(node);
 	}
 
+	/**
+	 * Implicit precondition: function name and variable name and reference are all IDENTIFIER in the grammar.
+	 */
 	@Override
 	public void exitReference(GeomAlgeParser.ReferenceContext ctx) {
 		String name = ctx.name.getText();
