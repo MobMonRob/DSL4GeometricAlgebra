@@ -8,10 +8,10 @@ import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationParsingException;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationParsingRuntimeException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.ValidationException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.internal.InterpreterInternalException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionCalls.nodes.expr.FunctionCall;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionCalls.nodes.expr.FunctionCallNodeGen;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.expr.FunctionReference;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.Function;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.literals.nodes.expr.Constant;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.literals.nodes.expr.ConstantNodeGen;
@@ -270,19 +270,21 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 	}
 
 	@Override
-	public void exitVariableReference(GeomAlgeParser.VariableReferenceContext ctx) {
+	public void exitReference(GeomAlgeParser.ReferenceContext ctx) {
 		String name = ctx.name.getText();
 
-		if (!this.localVariablesView.containsKey(name)) {
-			int line = ctx.name.getLine();
-			throw new ValidationException(line, String.format("Variable \"%s\" has not been declared before.", name));
+		if (this.localVariablesView.containsKey(name)) {
+			int frameSlot = this.localVariablesView.get(name);
+			LocalVariableReference varRef = LocalVariableReferenceNodeGen.create(name, frameSlot);
+			varRef.setSourceSection(ctx.name.getStartIndex(), ctx.name.getStopIndex());
+			nodeStack.push(varRef);
+		} else if (this.functionsView.containsKey(name)) {
+			Function function = findFunction(name);
+			FunctionReference funcRef = new FunctionReference(function);
+			nodeStack.push(funcRef);
+		} else {
+			throw new ValidationParsingRuntimeException(String.format("Variable or function \"%s\" has not been declared before.", name));
 		}
-
-		int frameSlot = this.localVariablesView.get(name);
-		LocalVariableReference node = LocalVariableReferenceNodeGen.create(name, frameSlot);
-		node.setSourceSection(ctx.name.getStartIndex(), ctx.name.getStopIndex());
-
-		nodeStack.push(node);
 	}
 
 	// https://stackoverflow.com/questions/4323599/best-way-to-parsedouble-with-comma-as-decimal-separator/4323627#4323627
@@ -366,18 +368,22 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 
 		String functionName = ctx.name.getText();
 
-		Function function;
+		Function function = findFunction(functionName);
+
+		FunctionCall functionCall = FunctionCallNodeGen.create(function, argumentsArray);
+		functionCall.setSourceSection(ctx.getStart().getStartIndex(), ctx.getStop().getStopIndex());
+		this.nodeStack.push(functionCall);
+	}
+
+	private Function findFunction(String functionName) {
 		if (this.functionsView.containsKey(functionName)) {
-			function = this.functionsView.get(functionName);
+			return this.functionsView.get(functionName);
 		} else {
 			try {
-				function = this.geomAlgeLangContext.builtinRegistry.getBuiltinFunction(functionName);
+				return this.geomAlgeLangContext.builtinRegistry.getBuiltinFunction(functionName);
 			} catch (InterpreterInternalException ex) {
 				throw new ValidationParsingRuntimeException(String.format("Function \"%s\" to call not found.", functionName));
 			}
 		}
-		FunctionCall functionCall = FunctionCallNodeGen.create(function, argumentsArray);
-		functionCall.setSourceSection(ctx.getStart().getStartIndex(), ctx.getStop().getStopIndex());
-		this.nodeStack.push(functionCall);
 	}
 }

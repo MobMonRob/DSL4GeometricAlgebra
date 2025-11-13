@@ -247,7 +247,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 	}
 
 	@Override
-	public void exitVariableReference(GeomAlgeParser.VariableReferenceContext ctx) {
+	public void exitReference(GeomAlgeParser.ReferenceContext ctx) {
 		String name = ctx.name.getText();
 
 		if (!this.localVariablesView.containsKey(name)) {

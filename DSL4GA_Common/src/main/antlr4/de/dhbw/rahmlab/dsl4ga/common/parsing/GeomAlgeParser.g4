@@ -233,7 +233,7 @@ literalExpr
 				|CAPITAL_E
 				)					#LiteralConstant
 	|	value=	DECIMAL_LITERAL		#LiteralDecimal
-	|	name=	IDENTIFIER			#VariableReference
+	|	name=	IDENTIFIER			#Reference
 	;
 
 parenExpr

@@ -226,7 +226,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 		// Workaround for missing type system.
 		if (ctx.vizAssigned.arrInd == null) {
-			throw new ValidationParsingRuntimeException("Variable deklaration needs to be array.");
+			throw new ValidationParsingRuntimeException("Variable declaration needs to be an array.");
 		}
 
 		addVariableAssignment(ctx.vizAssigned, arrayInit, getNewScopeVisibleVariablesIndex(), true, true);
