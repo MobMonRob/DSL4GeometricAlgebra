@@ -274,6 +274,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		String name = ctx.name.getText();
 
 		ExpressionBaseNode ref;
+		// Local variable hides function with same name.
 		if (this.localVariablesView.containsKey(name)) {
 			int frameSlot = this.localVariablesView.get(name);
 			ref = LocalVariableReferenceNodeGen.create(name, frameSlot);
