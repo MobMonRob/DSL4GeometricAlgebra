@@ -273,18 +273,19 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 	public void exitReference(GeomAlgeParser.ReferenceContext ctx) {
 		String name = ctx.name.getText();
 
+		ExpressionBaseNode ref;
 		if (this.localVariablesView.containsKey(name)) {
 			int frameSlot = this.localVariablesView.get(name);
-			LocalVariableReference varRef = LocalVariableReferenceNodeGen.create(name, frameSlot);
-			varRef.setSourceSection(ctx.name.getStartIndex(), ctx.name.getStopIndex());
-			nodeStack.push(varRef);
+			ref = LocalVariableReferenceNodeGen.create(name, frameSlot);
 		} else if (this.functionsView.containsKey(name)) {
 			Function function = findFunction(name);
-			FunctionReference funcRef = new FunctionReference(function);
-			nodeStack.push(funcRef);
+			ref = new FunctionReference(function);
 		} else {
 			throw new ValidationParsingRuntimeException(String.format("Variable or function \"%s\" has not been declared before.", name));
 		}
+
+		ref.setSourceSection(ctx.name.getStartIndex(), ctx.name.getStopIndex());
+		nodeStack.push(ref);
 	}
 
 	// https://stackoverflow.com/questions/4323599/best-way-to-parsedouble-with-comma-as-decimal-separator/4323627#4323627
