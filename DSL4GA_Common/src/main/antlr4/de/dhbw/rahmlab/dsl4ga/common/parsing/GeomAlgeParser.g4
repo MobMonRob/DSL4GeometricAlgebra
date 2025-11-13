@@ -9,6 +9,11 @@ options { tokenVocab=GeomAlgeLexer; }
 
 - If there is a choice of a sequence of subexpressions "(a|b) vs (b|a)"", always the sequence is chosen such that the precedence will be preseved. This prevents inconsistent precedences throughout the parser.
 
+- Tip:
+Move as much contextual validation as possible into the static analysis stage.
+And reuse as much non-terminals as possible in the grammar.
+This simplifies grammar development a lot and improves readability.
+
 */
 ///////////////////////////////////////////////////////////////////////////
 // sourceUnit
