@@ -9,6 +9,11 @@ options { tokenVocab=GeomAlgeLexer; }
 
 - If there is a choice of a sequence of subexpressions "(a|b) vs (b|a)"", always the sequence is chosen such that the precedence will be preseved. This prevents inconsistent precedences throughout the parser.
 
+- Tip:
+Move as much contextual validation as possible into the static analysis stage.
+And reuse as much non-terminals as possible in the grammar.
+This simplifies grammar development a lot and improves readability.
+
 */
 ///////////////////////////////////////////////////////////////////////////
 // sourceUnit
@@ -16,8 +21,8 @@ options { tokenVocab=GeomAlgeLexer; }
 
 sourceUnit
 	:	WHITE_LINE* algebra WHITE_LINE*
-		(WHITE_LINE* functions+=function WHITE_LINE*)+
-		EOF // https://stackoverflow.com/a/61402548
+	(WHITE_LINE* functions+=function WHITE_LINE*)+
+	EOF // https://stackoverflow.com/a/61402548
 	;
 
 algebra
@@ -30,33 +35,33 @@ algebra
 
 function
 	:	functionHead
-		SPACE* L_CURLY_BRACKET functionBody R_CURLY_BRACKET
-		#Function_
+	SPACE* L_CURLY_BRACKET functionBody R_CURLY_BRACKET
+	#Function_
 	;
 
 functionHead
 	:	SPACE* FUNCTION_INDICATOR
-		SPACE+ name=IDENTIFIER
-		SPACE* L_PARENTHESIS formalParameterList R_PARENTHESIS
-		#FunctionHead_
-	;
+	SPACE+ name=IDENTIFIER
+	SPACE* L_PARENTHESIS formalParameterList R_PARENTHESIS
+	#FunctionHead_
+;
 
 formalParameterList
-	:	SPACE* (params+=formalParameter (SPACE* COMMA SPACE* params+=formalParameter SPACE*)*)? SPACE*
+:	SPACE* (params+=formalParameter (SPACE* COMMA SPACE* params+=formalParameter SPACE*)*)? SPACE*
 	;
 
 formalParameter
-	:	name=IDENTIFIER arrInd=arrIndicator?	#FormalParameter_
+:	name=IDENTIFIER arrInd=arrIndicator?	#FormalParameter_
 	;
 
 functionBody
 	:	WHITE_LINE*
-		(stmt WHITE_LINE+)*
-		retExprStmt
+	(stmt WHITE_LINE+)*
+retExprStmt
 		WHITE_LINE*
 	;
 
-arrIndicator
+	arrIndicator
 	:	L_SQUARE_BRACKET R_SQUARE_BRACKET
 	;
 
@@ -67,15 +72,15 @@ arrIndicator
 stmt
 	:	SPACE* vizAssigned=vizAssignedR SPACE* ASSIGNMENT SPACE* exprCtx=expr SPACE*		#AssgnStmt
 	|	SPACE* vizAssigned+=vizAssignedR SPACE* (COMMA SPACE* vizAssigned+=vizAssignedR SPACE*)* ASSIGNMENT SPACE* callCtx=callExpr SPACE*		#TupleAssgnStmt
-	|	SPACE* vizAssigned=vizAssignedR SPACE* ASSIGNMENT SPACE* arrayInitCtx=arrayInitExpr SPACE*	#ArrayInitStmt
+|	SPACE* vizAssigned=vizAssignedR SPACE* ASSIGNMENT SPACE* arrayInitCtx=arrayInitExpr SPACE*	#ArrayInitStmt
 	;
-
+	
 retExprStmt
-	: exprListCtx=exprList
+: exprListCtx=exprList
 	;
 
 vizAssignedR
-	: viz+=COLON? viz+=COLON? assigned=(IDENTIFIER|LOW_LINE) arrInd=arrIndicator?
+: viz+=COLON? viz+=COLON? assigned=(IDENTIFIER|LOW_LINE) arrInd=arrIndicator?
 	;
 
 arrayInitExpr
@@ -84,7 +89,7 @@ arrayInitExpr
 
 ///////////////////////////////////////////////////////////////////////////
 // Expr
-///////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////
 
 expr
 	:	SPACE+ expr
@@ -96,39 +101,39 @@ expr
 
 ///////////////////////////////////////////////////////////////////////////
 // UnOp | singleSideRecursive
-///////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////
 
 unOpExpr
 	:	unOpRExpr //Precedence 6
 	|	unOpLExpr //Precedence 5
 	;
 
-// rightSideRecursive (sic)
+	// rightSideRecursive (sic)
 unOpLExpr
 	:	<assoc=right>
 		op=	HYPHEN_MINUS
-		SPACE*
-		(
-			nonOuterRecursiveExpr
+	SPACE*
+	(
+	nonOuterRecursiveExpr
 			|unOpExpr
 		)
-		#UnOpL
+#UnOpL
 	;
 
-// leftSideRecursive (sic)
+	// leftSideRecursive (sic)
 unOpRExpr
 	:	nonOuterRecursiveExpr
-		unOpRSymbolExpr //Without this seemingly redundant line occurs ambiguity
+unOpRSymbolExpr //Without this seemingly redundant line occurs ambiguity
 	|	unOpRExpr
 		unOpRSymbolExpr
 	;
 
-unOpRSymbolExpr
+	unOpRSymbolExpr
 	:	op=	(SUPERSCRIPT_MINUS__SUPERSCRIPT_ONE
 			|ASTERISK
-			|SMALL_TILDE
-			|DAGGER
-			|SUPERSCRIPT_MINUS__ASTERISK
+	|SMALL_TILDE
+	|DAGGER
+	|SUPERSCRIPT_MINUS__ASTERISK
 			|SUPERSCRIPT_TWO
 			|CIRCUMFLEX_ACCENT
 			)
@@ -137,7 +142,7 @@ unOpRSymbolExpr
 
 ///////////////////////////////////////////////////////////////////////////
 // BinOp | doubleSideRecursive
-///////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////
 
 binOpExpr
 	:	nonOuterRecursiveExpr	#BinOpExprDummy //Closure
@@ -146,25 +151,25 @@ binOpExpr
 		spaces+=SPACE*
 		(
 			nonOuterRecursiveExpr
-			|unOpRExpr	// "a-b" evaluates to subtraction(a, b) instead of gp(a, negate(b))
-		)					#GP		//Precedence 4
+	|unOpRExpr	// "a-b" evaluates to subtraction(a, b) instead of gp(a, negate(b))
+	)					#GP		//Precedence 4
 	|	binOpExpr
 		SPACE*
-		op=	(DOT_OPERATOR
-			|LOGICAL_AND
-			|INTERSECTION
+	op=	(DOT_OPERATOR
+	|LOGICAL_AND
+	|INTERSECTION
 			|UNION
-			|R_CONTRACTION
-			|L_CONTRACTION
-			|LOGICAL_OR
+	|R_CONTRACTION
+	|L_CONTRACTION
+	|LOGICAL_OR
 			)
 		SPACE*
-		binOpExpr			#BinOp	//Precedence 3
+	binOpExpr			#BinOp	//Precedence 3
 	|	binOpExpr
 		SPACE*
-		op=	SOLIDUS
-		SPACE*
-		binOpExpr			#BinOp	//Precedence 2
+	op=	SOLIDUS
+	SPACE*
+	binOpExpr			#BinOp	//Precedence 2
 	|	binOpExpr
 		SPACE*
 		op=	(PLUS_SIGN
@@ -177,9 +182,9 @@ binOpExpr
 
 ///////////////////////////////////////////////////////////////////////////
 // Various
-///////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////
 
-callExpr
+	callExpr
 	:	name=IDENTIFIER L_PARENTHESIS exprListCtx=exprList? R_PARENTHESIS	#Call
 	;
 
@@ -196,12 +201,12 @@ exprList
 //	;
 
 ///////////////////////////////////////////////////////////////////////////
-// composite / abstract / higherOrder / meta Expr
-///////////////////////////////////////////////////////////////////////////
+	// composite / abstract / higherOrder / meta Expr
+	///////////////////////////////////////////////////////////////////////////
 
-// literalExpr are the only nonRecursive Expr
-nonOuterRecursiveExpr
+	nonOuterRecursiveExpr
 	:	callExpr
+	|	arrayAccessExpr
 	|	literalExpr
 	|	innerRecursiveExpr
 	;
@@ -213,43 +218,47 @@ innerRecursiveExpr
 
 ///////////////////////////////////////////////////////////////////////////
 // atomic / terminal / firstOrder Expr
-///////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////
 
 literalExpr
 	:	type=	(SMALL_EPSILON__SUBSCRIPT_ZERO
-				|SMALL_EPSILON__SUBSCRIPT_SMALL_I
-				|SMALL_EPSILON__SUBSCRIPT_ONE
-				|SMALL_EPSILON__SUBSCRIPT_TWO
-				|SMALL_EPSILON__SUBSCRIPT_THREE
-				|SMALL_EPSILON__SUBSCRIPT_PLUS
-				|SMALL_EPSILON__SUBSCRIPT_MINUS
+	|SMALL_EPSILON__SUBSCRIPT_SMALL_I
+	|SMALL_EPSILON__SUBSCRIPT_ONE
+	|SMALL_EPSILON__SUBSCRIPT_TWO
+	|SMALL_EPSILON__SUBSCRIPT_THREE
+	|SMALL_EPSILON__SUBSCRIPT_PLUS
+	|SMALL_EPSILON__SUBSCRIPT_MINUS
 				|SMALL_PI
-				|INFINITY
+	|INFINITY
 				|SMALL_O
 				|SMALL_N
-				|SMALL_N_TILDE
-				|CAPITAL_E__SUBSCRIPT_ZERO
-				|CAPITAL_E__SUBSCRIPT_THREE
-				|CAPITAL_E
-				)					#LiteralConstant
+	|SMALL_N_TILDE
+|CAPITAL_E__SUBSCRIPT_ZERO
+|CAPITAL_E__SUBSCRIPT_THREE
+	|CAPITAL_E
+	)					#LiteralConstant
 	|	value=	DECIMAL_LITERAL		#LiteralDecimal
 	|	name=	IDENTIFIER			#Reference
 	;
 
-parenExpr
+	parenExpr
 	:	L_PARENTHESIS expr R_PARENTHESIS
 	;
 
-gradeExtractionExpr
-	:	LESS_THAN_SIGN
+	gradeExtractionExpr
+:	LESS_THAN_SIGN
 		expr
 		GREATER_THAN_SIGN
 		grade=	(SUBSCRIPT_ZERO
-				|SUBSCRIPT_ONE
-				|SUBSCRIPT_TWO
+	|SUBSCRIPT_ONE
+	|SUBSCRIPT_TWO
 				|SUBSCRIPT_THREE
 				|SUBSCRIPT_FOUR
 				|SUBSCRIPT_FIVE
 				)
 		#gradeExtraction
+	;
+
+arrayAccessExpr
+	:	name=IDENTIFIER SPACE* L_SQUARE_BRACKET SPACE* index=DECIMAL_LITERAL SPACE* R_SQUARE_BRACKET
 	;

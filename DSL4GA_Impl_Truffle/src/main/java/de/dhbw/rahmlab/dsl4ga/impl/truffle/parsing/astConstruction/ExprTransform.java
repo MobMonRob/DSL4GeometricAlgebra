@@ -9,6 +9,7 @@ import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationParsingRuntimeException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.internal.InterpreterInternalException;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.arrays.runtime.nodes.expr.ArrayReaderNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionCalls.nodes.expr.FunctionCall;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionCalls.nodes.expr.FunctionCallNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.expr.FunctionReference;
@@ -36,7 +37,6 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOp
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOps.Negate;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOps.Reverse;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOps.Undual;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.nodes.expr.LocalVariableReference;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.nodes.expr.LocalVariableReferenceNodeGen;
 import de.orat.math.gacalc.api.MultivectorExpression;
 import java.text.DecimalFormat;
@@ -290,6 +290,23 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 
 		ref.setSourceSection(ctx.name.getStartIndex(), ctx.name.getStopIndex());
 		nodeStack.push(ref);
+	}
+
+	@Override
+	public void exitArrayAccessExpr(GeomAlgeParser.ArrayAccessExprContext ctx) {
+		String name = ctx.name.getText();
+		if (!this.localVariablesView.containsKey(name)) {
+			throw new ValidationParsingRuntimeException(String.format("Array \"%s\" has not been declared before.", name));
+		}
+		String indexString = ctx.index.getText();
+		final int index = Integer.parseInt(indexString);
+
+		final int frameSlot = this.localVariablesView.get(name);
+		var ref = LocalVariableReferenceNodeGen.create(name, frameSlot);
+		var arrayReader = ArrayReaderNodeGen.create(ref, index);
+
+		arrayReader.setSourceSection(ctx.name.getStartIndex(), ctx.name.getStopIndex());
+		this.nodeStack.push(arrayReader);
 	}
 
 	// https://stackoverflow.com/questions/4323599/best-way-to-parsedouble-with-comma-as-decimal-separator/4323627#4323627

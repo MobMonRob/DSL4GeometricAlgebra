@@ -10,6 +10,6 @@ fn f1(a, b) {
 fn main(a, b) {
 	c[] = {abs(-5), b}
 	g = f1(c, b)
-	d = b
+	d = c[0]
 	a, d
 }
