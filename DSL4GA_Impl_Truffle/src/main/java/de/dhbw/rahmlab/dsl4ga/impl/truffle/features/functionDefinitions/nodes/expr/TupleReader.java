@@ -1,4 +1,4 @@
-package de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes;
+package de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.expr;
 
 import com.oracle.truffle.api.dsl.NodeChild;
 import com.oracle.truffle.api.dsl.NodeField;

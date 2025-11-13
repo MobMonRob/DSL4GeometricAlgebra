@@ -8,6 +8,7 @@ import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParser.VizAssignedRContext;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParserBaseListener;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.ParseTreeWalkerSkipping;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationParsingException;
+import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationParsingRuntimeException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.stmtSuperClasses.NonReturningStatementBaseNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
@@ -16,10 +17,10 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.arrays.runtime.nodes.expr.Ar
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionCalls.nodes.expr.FunctionCall;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.FunctionDefinitionBody;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.FunctionDefinitionRootNode;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.MVFunctionArgumentReader;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.MVFunctionArgumentReaderNodeGen;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.TupleReader;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.TupleReaderNodeGen;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.expr.FunctionArgumentReader;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.expr.FunctionArgumentReaderNodeGen;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.expr.TupleReader;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.expr.TupleReaderNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.stmt.RetExprStmt;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.Function;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.nodes.expr.LocalVariableReference;
@@ -118,7 +119,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 		// Valid, assuming that the TreeWalker encounters formalParameters before assignments.
 		int frameSlot = this.frameDescriptorBuilder.addSlot(FrameSlotKind.Static, null, null);
-		MVFunctionArgumentReader functionArgumentReader = MVFunctionArgumentReaderNodeGen.create(frameSlot);
+		FunctionArgumentReader functionArgumentReader = FunctionArgumentReaderNodeGen.create(frameSlot);
 
 		this.localVariables.put(name, frameSlot);
 
@@ -222,6 +223,12 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 			exprList = new ExprList(Collections.emptyList());
 		}
 		ArrayInitExpr arrayInit = new ArrayInitExpr(exprList.exprs.toArray(ExpressionBaseNode[]::new));
+
+		// Workaround for missing type system.
+		if (ctx.vizAssigned.arrInd == null) {
+			throw new ValidationParsingRuntimeException("Variable deklaration needs to be array.");
+		}
+
 		addVariableAssignment(ctx.vizAssigned, arrayInit, getNewScopeVisibleVariablesIndex(), true, true);
 	}
 }
