@@ -1,0 +1,202 @@
+#algebra cga
+
+// generic cga specific functions
+
+// up-down projection
+
+// up-projection of a vector into a cga multivector, results in a round point
+fn up2(vec) {
+	vec + 0.5 vec² εᵢ + ε₀ 
+}
+// down projection of a multivector into an euclidean vector
+// euclidean location of a round point
+fn down2(vec) {
+	// normalize vec
+	nvec = -vec/(vec⋅εᵢ) // Vgl. Clifford lib: anderes Vorzeichen
+	// bivector input: (e1+e2+0.5e4+1.5e5)/((e1+e2+0.5e4+1.5e5)|(e4+e5))
+    // bivector output: (e1​+e2​+0.5e4​+1.5e5​)/((e1​+e2​+0.5e4​+1.5e5​)⋅(e4​+e5​))=−e1​−e2​−0.5e4​−1.5e5 // stimmt überein
+	// bestätigt dass "/" richtig implementiert ist, dann muss wohl das Vorzeichen in der Clifford-lib Doku falsch sein
+	 
+	// extracts the pure euclidean part of the given multivector
+	// ((-vec/(vec⋅εᵢ))∧E₀) E₀⁻¹ // funktioniert auch
+	// ((-vec/(vec⋅εᵢ))∧E₀)/E₀
+    (nvec∧E₀)/E₀
+}
+
+// get e1 component from the given multivector vec as a scalar
+fn x(vec){
+	-(vec∧ε₂∧ε₃)E₃
+}
+// get e2 component from the given multivector vec as a scalar
+fn y(vec){
+	(vec∧ε₁∧ε₃)E₃
+}
+// get e3 component from the given multivector vec as a scalar
+fn z(vec){
+	-(vec∧ε₁∧ε₂)E₃
+}
+
+fn sign2(scalar){
+	scalar/abs(scalar)
+}
+
+
+// creates points
+
+// round point from 3 euclidean coordinates
+fn getPoint(x,y,z){
+	//p = xε₁+yε₂+zε₃
+    //p + 0.5p²εᵢ+ε₀
+	up(xε₁+yε₂+zε₃)
+}
+
+
+// creates spheres
+
+// ipns sphere from ipns midpoint and radius
+// m round point
+fn getIPNSSphere(p,r){
+	// up(center)-(0.5*einf*radius**2)
+	p - 0.5r²εᵢ
+}
+
+
+// create planes
+
+// returns an ipns plane from euclidean normal vec und scalar dist to the origin
+fn getIPNSPlane(v, d){
+	v + d εᵢ
+}
+
+// opns plane from ipns points
+fn getOPNSPlane(p1, p2, p3){
+	p1∧p2∧p3∧εᵢ
+}
+
+
+// create lines
+
+// opns line from ipns point
+fn getOPNSLine(p1, p2){
+	p1∧p2∧εᵢ
+}
+
+// ipns line from point and direction
+fn getIPNSLine(p, v){
+	(v+(p∧v)εᵢ)E₃
+}
+
+
+// get the points from an opns point pair, works fine
+//TODO test for structural zeros, corresponding to getPoints2()
+fn getPoints(pp){
+    F = pp/sqrt(abs(<pp²>₀))
+	P = 0.5 (1+F)
+	P_inv = 0.5 (1-F) 
+	p1 = -P_inv (pp⋅εᵢ) P
+	p2 = P (pp⋅εᵢ) P_inv
+	p1, p2
+}
+// get the points from an opns point pair [Kleppe2016], works fine
+fn getPoints2(pp){
+	<(pp - sqrt(abs(<pp²>₀)))/(-εᵢ⋅pp)>₁, <(pp + sqrt(abs(<pp²>₀)))/(-εᵢ⋅pp)>₁
+}
+
+
+
+
+// transformations
+
+// round point and rotor as arguments, round point as result values
+fn transform(p, rot){
+	//TODO test
+	// p [00, 00, 00, 00, -0.5, 0.5, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00] sparsityok == (0,0,0)
+	// rot [1, 00, 00, 00, 00, 00, 0, 0, 0, 0, 0, 0, 0, -0.08125, -0.08125, 0, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00] grade0,2 ok
+	test = rot˜ // [1, 00, 00, 00, 00, 00, 0, 0, 0, 0, 0, 0, 0, 0.08125, 0.08125, 0, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00] sparsity ok
+	result = rot p rot˜
+	//WORKAROUND für geometric product sparsity bug
+	<result>₁ // [00, 0, 0, 0.1625, -0.486797, 0.513203, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 00, 00, 00, 00, 00, 0] sparsity problem
+}
+
+// euclidean vec representing a point, cga rotor as argument
+// returns the transformed vectur as an euclidean point
+// TODO test
+fn transform_vec(vec, rot){
+	// ist up/down hier nötig oder kann ich euclidian vec nicht auch direkt transformieren, da dies ja auch ein k-blade d.h. eine Ebene ist?
+	down(transform(up(vec), rot))
+}
+
+// argument vec of euclidean type
+// if vec==0 returns scalar 1
+// returns scalar, grade-2
+fn getTranslationRotor(vec){
+	// e**(-0.5*vec*einf)
+	result = exp(-0.5 vec εᵢ) // grade 0,2,4 FIXME
+	// [1, 00, 00, 00, 00, 00, 0, 0, 0, 0, 0, 0, 0, -0.08125, -0.08125, 0, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 0, 00, 00, 00]
+	<result>₀ + <result>₂
+}
+
+// normalized euclidian axis, theta in [rad]
+// returns scalar, grade-2
+fn getRotationRotor(theta, axis){
+	//e**(-0.5*theta*axis*I_base)
+	result = exp(-0.5 theta axis E₃) // grade 0,2,4 FIXME
+	// [0.707107, 00, 00, 00, 00, 00, 0, 0.707107, 0, 0, 0, 0, 0, 0, 0, 0, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 0, 0, 0, 0, 0, 00]
+	<result>₀ + <result>₂
+}
+
+// angles in [rad]
+//fn getRotationRotorFromCardanangles(alpha, beta, gamma){
+//	getRotationRotor(alpha, ε₁)
+//	getRotationRotor(alpha, ε₂)
+//	getRotationRotor(alpha, ε₃)
+//}
+
+
+// arguments as cga multivector types, represented as sparse matrices
+// result: all 8 tuples (solutions) with points p1-p6
+fn main(p, ae){
+	
+	// robots origin as ipns round point
+    :p0 = ε₀ // equivalent to rp(0.0, 0.0, 0.0)
+
+	//:p1 = up(p) 
+	:p1 = up(ε₁+ε₂+ε₃)
+	
+	// position of joint 5
+
+	// p5 is the translation of p6 along the (minus) z-axis
+	// about a distance d6, which is the length of the last link
+	//T56 = 1 - 0.5d6ε₃εᵢ //FIX e3 und einf tauschen?
+	//p5 = T56 p6 T56˜
+    //T65 = getTranslationRotor(d6 ae)
+    //:p5 = transform(p6, T65) 
+
+    // Illegal ipns object of grade 3 found:0.5*e145 + 0.5*e245
+	// Line 168, viz failure: Variable "main::line = (0.5*e145 + 0.5*e245)" is no k-vector!Illegal ipns object 
+    // of grade 3 found:0.5*e145 + 0.5*e245
+    // Line 168, viz failure: Variable "main::line = (0.5*e145 + 0.5*e245)" is no k-vector!
+	// test code für Visualisierung
+    :sphere = getIPNSSphere(p1, 0.5) // ipns sphere radius 500mm
+    //:line = getIPNSLine(p0, ε₁+ε₂+ε₃) // failure: Variable "main::line = (2.0*e12 - 2.0*e13 + 2.0*e23 + 1.0*e1245 - 1.0*e1345 + 1.0*e2345)" is no k-vector!
+    ::line = getOPNSLine(p0, p1)
+	:plane = getIPNSPlane(ε₁, 0) // ipns plane, wird nicht richtig visualisiert
+	//:circle = sphere∧plane // ipns circle, ergibt aber einen oriented point, da die beiden objekte sich nicht schneiden
+	//pp = circle∧plane // ipns point pair
+	
+	:pp0 = (p1⌋plane)⌋(plane⁻¹) 
+	:pp0a = (p1⌋plane⁻¹)⌋(plane) 
+	:pp0b = (p1⌋plane*)⌋(plane*⁻¹) // Add sphere "main::pp0b" at (0.0mm,1000.0mm, 1000.0mm) with radius 1000.0mm!
+	:pp0c = (p1⌋plane*⁻¹)⌋(plane*) // dito
+
+    :pp0d = (p1⌋plane)/
+	:pp1 = (p1⌋sphere)⌋(sphere⁻¹) // Add sphere "main::pp1" at (1000.0mm,1000.0mm, 1000.0mm) with radius 500.0mm!
+	:pp1a = (p1⌋sphere⁻¹)⌋(sphere) // Add sphere "main::pp1a" at (1000.0mm,1000.0mm, 1000.0mm) with radius 500.0mm!
+	:pp1b = (p1⌋sphere*)⌋(sphere*⁻¹) //= sphere
+	:pp1c = (p1⌋sphere*⁻¹)⌋(sphere*)
+
+	:pp2 = (p1⌊plane)⌊(plane⁻¹) // = null
+	:pp2a = (p1⌊plane⁻¹)⌊(plane) // null
+
+	p0, p1
+}

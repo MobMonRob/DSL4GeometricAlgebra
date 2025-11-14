@@ -265,6 +265,10 @@ public class GAViewer extends GAViewObject {
 		return new Vector3d(tuple.values[0], tuple.values[1], tuple.values[3]);
 	}
 	
+	
+	
+	//-------------
+	
     /**
      * Add a point to the 3d view.
      *
@@ -273,9 +277,9 @@ public class GAViewer extends GAViewObject {
      * @param label label or null if no label needed
      */
     long addRoundPoint(GeometricObject geometricObject, String label){
-        Color color = COLOR_GRADE_1;
-        if (geometricObject.isOPNS()) color = COLOR_GRADE_4;
-        return addRoundPoint(geometricObject, label, color);
+        //Color color = COLOR_GRADE_1;
+        //if (geometricObject.isOPNS()) color = COLOR_GRADE_4;
+        return addRoundPoint(geometricObject, label, getColor(geometricObject));
     }
     
     long addRoundPoint(GeometricObject geometricObject, String label, Color color){
@@ -290,7 +294,6 @@ public class GAViewer extends GAViewObject {
         return impl.addSphere(location, POINT_RADIUS*2*1000, color, label, false);
     }
     
-    
     /**
      * Add a sphere to the 3d view.
      *
@@ -300,9 +303,9 @@ public class GAViewer extends GAViewObject {
 	 * @throws IllegalArgumentException
      */
     long addSphere(GeometricObject geometricObject, String label){
-            Color color = COLOR_GRADE_1;
-            if (geometricObject.isOPNS()) color = COLOR_GRADE_4;
-            return addSphere(geometricObject, label, color, true);
+            //Color color = COLOR_GRADE_1;
+            //if (geometricObject.isOPNS()) color = COLOR_GRADE_4;
+            return addSphere(geometricObject, label, getColor(geometricObject), true);
     }
 	/**
 	 * Add sphere
@@ -348,9 +351,9 @@ public class GAViewer extends GAViewObject {
      */
     long[] addPlane(GeometricObject geometricObject, String label,
                      boolean showPolygon, boolean showNormal, boolean transparency){
-        Color color = COLOR_GRADE_1;
-        if (geometricObject.isOPNS()) color = COLOR_GRADE_4;
-        return addPlane(geometricObject, label, color, showPolygon, showNormal, transparency);
+        //Color color = COLOR_GRADE_1;
+        //if (geometricObject.isOPNS()) color = COLOR_GRADE_4;
+        return addPlane(geometricObject, label, getColor(geometricObject), showPolygon, showNormal, transparency);
     }
     long[] addPlane(GeometricObject geometricObject, String label,
                      Color color, boolean showPolygon, boolean showNormal, boolean transparency){
@@ -444,9 +447,9 @@ public class GAViewer extends GAViewObject {
      * @return true if the line is inside the bounding box and therefore visible
      */
     long addLine(GeometricObject geometricObject, String label){
-        Color color = COLOR_GRADE_2;
-        if (geometricObject.isOPNS()) color = COLOR_GRADE_3;
-        return addLine(geometricObject, label, color);
+        //Color color = COLOR_GRADE_2;
+        //if (geometricObject.isOPNS()) color = COLOR_GRADE_3;
+        return addLine(geometricObject, label, getColor(geometricObject));
     }
     /**
      * Add line based on euclidean parameters location and direction. 
@@ -497,9 +500,9 @@ public class GAViewer extends GAViewObject {
      * @param isIPNS 
      */
     long[] addOrientedPoint(GeometricObject geometricObject, String label){
-       Color color = COLOR_GRADE_2;
-       if (geometricObject.isOPNS()) color = COLOR_GRADE_3;
-       return addOrientedPoint(geometricObject, label, color);
+       //Color color = COLOR_GRADE_2;
+       //if (geometricObject.isOPNS()) color = COLOR_GRADE_3;
+       return addOrientedPoint(geometricObject, label, getColor(geometricObject));
     }
     long[] addOrientedPoint(GeometricObject geometricObject, String label, Color color){
        if (color == null) 
@@ -536,9 +539,9 @@ public class GAViewer extends GAViewObject {
     }
 
     long addFlatPoint(GeometricObject geometricObject, String label){
-        Color color = COLOR_GRADE_2;
-        if (geometricObject.isOPNS()) color = COLOR_GRADE_3;
-        return addFlatPoint(geometricObject, label, color);
+        //Color color = COLOR_GRADE_2;
+        //if (geometricObject.isOPNS()) color = COLOR_GRADE_3;
+        return addFlatPoint(geometricObject, label, getColor(geometricObject));
     }
     long addFlatPoint(GeometricObject geometricObject, String label, Color color){
         if (color == null) 
@@ -564,9 +567,9 @@ public class GAViewer extends GAViewObject {
      * @param isIPNS true, if circle is given in inner-product-null-space representation
      */
     long addCircle(GeometricObject geometricObject, String label){
-        Color color = COLOR_GRADE_2;
-        if (geometricObject.isOPNS()) color = COLOR_GRADE_3;
-        return addCircle(geometricObject, label, color);
+        //Color color = COLOR_GRADE_2;
+        //if (geometricObject.isOPNS()) color = COLOR_GRADE_3;
+        return addCircle(geometricObject, label, getColor(geometricObject));
     }
     long addCircle(GeometricObject geometricObject, String label, Color color){
         if (color == null) 
@@ -606,8 +609,10 @@ public class GAViewer extends GAViewObject {
      * @param isIPNS true, if ipns representation
      */
     long[] addPointPair(GeometricObject geometricObject, String label){
-        Color color = COLOR_GRADE_3;
-        if (geometricObject.isOPNS()) color = COLOR_GRADE_2;
+        //Color color = COLOR_GRADE_3;
+        //if (geometricObject.isOPNS()) color = COLOR_GRADE_2;
+		
+		Color color = getColor(geometricObject);
         Point3d[] points = new Point3d[]{toPoint3d(geometricObject.location[0]),
 			                        toPoint3d(geometricObject.location[1])}; //new Point3d[]{pp.p1(), pp.p2()};
         points[0].scale(1000d);
@@ -679,28 +684,87 @@ public class GAViewer extends GAViewObject {
         return result;
     }
 
+	Color getColor(GeometricObject geometricObject){
+		return getColor(geometricObject.grade());
+	}
+	/**
+	 * @param geometricObject
+	 * @return null for unknown grade
+	 */
+	Color getColor(int grade){
+		Color result = null;
+		switch (grade){
+			case 1:
+				result = COLOR_GRADE_1;
+				break;
+			case 2:
+				result = COLOR_GRADE_2;
+				break;
+			case 3:
+				result = COLOR_GRADE_3;
+				break;
+			case 4:
+				result = COLOR_GRADE_4;
+				break;
+			default:
+		}
+		return result;
+	}
     
     /**
-     * Add a tangent to the 3d view.
+     * Add a real tangent to the 3d view.
      *
-     * @param parameters
+	 * In the case of a tangent at a point on a round the length of the tangend is the radius of the round,
+	 * 
+	 * Keep in mind: Imaginary rounds do not have real points on its surface, therefor they have no real
+	 * tangents.
+	 * 
+	 * TODO
+	 * This is a visualization for tangents on lines and circles only, these tangents are bivectors and 
+	 * visualized by a round point and an arrow.
+	 * Tangents at points on planes and spheres are trivectors and show be visualized as a bivector, that means 
+	 * as a point and a circle with arrows showing the direction of the circle. Maybe the circle should be
+	 * filled.
+	 * 
+     * @param geometricObject with grade 2,3 or 4
      * @param label
      * @param isIPNS
      */
-    void addTangentVector(GeometricObject geometricObject, String label){
-		Color color = COLOR_GRADE_3;
-		if (geometricObject.isOPNS()) color = COLOR_GRADE_2;
+    long[] addTangent(GeometricObject geometricObject, String label){
+		int grade = geometricObject.grade();
+		if (grade < 2 || grade > 4) 
+			throw new IllegalArgumentException("Tangents must have grades in {2,3,4}]allowed!");
+		return addTangent(geometricObject, label,  getColor(grade));
+	}
+     
+	long[] addTangent(GeometricObject geometricObject, String label, Color color){
+        if (color == null) 
+		    throw new IllegalArgumentException("color==null not allowed!");
+    
+		long[] result = new long[2];
+		
+		//TODO
+		// unterscheide visualisations for grade 2,3,4
+		
+		// add arrow at localisation
+		
 		//Vector3d dir = new Vector3d(parameters.attitude());
 		Vector3d dir = toVector3d(geometricObject.attitude);
-		
 		dir.normalize();
 		dir.scale(TANGENT_LENGTH);
+		
 		Point3d location = toPoint3d(geometricObject.location[0]);
         
-		impl.addArrow(location, dir, LINE_RADIUS*1000, color, label);
+		
+        // point
+        result[0] = impl.addSphere(location, POINT_RADIUS*2*1000, color, label, false);
+       
+		// arrow
+		result[1] = impl.addArrow(location, dir, LINE_RADIUS*1000, color, label);
+		
+		return result;
     }
     
-	
 	
 	//---------
 	
