@@ -6,7 +6,9 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.internal.In
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.BuiltinFunctionRootNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.builtins.*;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.builtinsSuperClasses.BuiltinFunctionBody;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.hofBuiltins.MapNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.expr.FunctionArgumentReader;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.superClasses.AbstractFunctionBody;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.Function;
 import java.util.HashMap;
 import java.util.Map;
@@ -50,6 +52,15 @@ public class BuiltinRegistry {
 		this.installBuiltin(DotFactory.getInstance());
 		this.installBuiltin(IpFactory.getInstance());
 		this.installBuiltin(ScpFactory.getInstance());
+
+		// HOF
+		this.installBuiltin("map", MapNodeGen.create());
+	}
+
+	private void installBuiltin(String name, AbstractFunctionBody funcBody) {
+		BuiltinFunctionRootNode builtinFunctionRootNode = new BuiltinFunctionRootNode(truffleLanguage, funcBody, name);
+		Function function = new Function(builtinFunctionRootNode, Function.UNKNOWN_ARITY);
+		this.builtins.put(function.getName(), function);
 	}
 
 	private void installBuiltin(NodeFactory<? extends BuiltinFunctionBody> factory) {

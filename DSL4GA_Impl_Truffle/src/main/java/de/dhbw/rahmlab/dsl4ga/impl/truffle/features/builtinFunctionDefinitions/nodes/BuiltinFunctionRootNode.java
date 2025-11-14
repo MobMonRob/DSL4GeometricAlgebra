@@ -4,15 +4,17 @@ import com.oracle.truffle.api.frame.FrameDescriptor;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLang;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.builtinsSuperClasses.BuiltinFunctionBody;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.superClasses.AbstractFunctionBody;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.superClasses.AbstractFunctionRootNode;
 
 public final class BuiltinFunctionRootNode extends AbstractFunctionRootNode {
 
 	@SuppressWarnings("FieldMayBeFinal")
 	@Child
-	private BuiltinFunctionBody builtinFuncBody;
+	private AbstractFunctionBody builtinFuncBody;
 
-	public BuiltinFunctionRootNode(GeomAlgeLang language, BuiltinFunctionBody builtinFuncBody, String name) {
+	// BuiltinFunctionBody
+	public BuiltinFunctionRootNode(GeomAlgeLang language, AbstractFunctionBody builtinFuncBody, String name) {
 		super(language, new FrameDescriptor(), name);
 		this.builtinFuncBody = builtinFuncBody;
 	}

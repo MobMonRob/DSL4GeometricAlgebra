@@ -23,6 +23,8 @@ public class Function implements TruffleObject {
 
 	protected final AbstractFunctionRootNode functionRootNode;
 
+	public static final int UNKNOWN_ARITY = -1;
+
 	protected final int arity;
 
 	public Function(AbstractFunctionRootNode functionRootNode, int arity) {
@@ -38,12 +40,16 @@ public class Function implements TruffleObject {
 		return this.functionRootNode;
 	}
 
+	public boolean isArityKnown() {
+		return this.arity != UNKNOWN_ARITY;
+	}
+
 	public int getArity() {
 		return this.arity;
 	}
 
 	public void ensureArity(int presumedArity) throws ArityException {
-		if (this.arity != presumedArity) {
+		if (isArityKnown() && (this.arity != presumedArity)) {
 			throw ArityException.create(this.arity, this.arity, presumedArity);
 		}
 	}

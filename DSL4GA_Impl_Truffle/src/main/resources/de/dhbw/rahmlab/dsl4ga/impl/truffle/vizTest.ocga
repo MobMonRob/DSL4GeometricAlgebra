@@ -1,15 +1,13 @@
 #algebra cga
 
-fn f1(a, b) {
-	c = a
-	d = b
-	c, d
+fn add(a, b) {
+	a, a+b
 }
 
-
 fn main(a, b) {
-	c[] = {abs(-5), b}
-	g = f1(c, b)
-	d = c[0]
-	a, d
+	c[] = {3, 5, 1}
+	d[] = {7, 9, 1}
+	e[], f[] = map(add, c, 3)
+
+	a, b
 }

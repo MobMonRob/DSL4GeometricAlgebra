@@ -12,7 +12,7 @@ public abstract class CatchAndRethrow {
 
 	public static interface ReturningExecutable<E> {
 
-		E execute() throws InterpreterInternalException, LanguageRuntimeException, RuntimeException;
+		E execute() throws InterpreterInternalException, LanguageRuntimeException, RuntimeException, Exception;
 	}
 
 	public static <T> T catchAndRethrow(GeomAlgeLangBaseNode location, ReturningExecutable<T> executable) {
@@ -24,12 +24,14 @@ public abstract class CatchAndRethrow {
 			throw ex;
 		} catch (RuntimeException ex) {
 			throw new LanguageRuntimeException(ex, location);
+		} catch (Exception ex) {
+			throw new LanguageRuntimeException(ex, location);
 		}
 	}
 
 	public static interface Executable {
 
-		void execute() throws InterpreterInternalException, LanguageRuntimeException, RuntimeException;
+		void execute() throws InterpreterInternalException, LanguageRuntimeException, RuntimeException, Exception;
 	}
 
 	public static void catchAndRethrow(GeomAlgeLangBaseNode location, Executable executable) {
@@ -40,6 +42,8 @@ public abstract class CatchAndRethrow {
 		} catch (LanguageRuntimeException ex) {
 			throw ex;
 		} catch (RuntimeException ex) {
+			throw new LanguageRuntimeException(ex, location);
+		} catch (Exception ex) {
 			throw new LanguageRuntimeException(ex, location);
 		}
 	}
