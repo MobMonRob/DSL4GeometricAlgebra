@@ -5,7 +5,6 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLang;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.builtinsSuperClasses.BuiltinFunctionBody;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.superClasses.AbstractFunctionRootNode;
-import de.orat.math.gacalc.api.MultivectorExpression;
 
 public final class BuiltinFunctionRootNode extends AbstractFunctionRootNode {
 
@@ -19,7 +18,7 @@ public final class BuiltinFunctionRootNode extends AbstractFunctionRootNode {
 	}
 
 	@Override
-	public MultivectorExpression execute(VirtualFrame frame) {
-		return this.builtinFuncBody.executeGenericBuiltin(frame);
+	public Object execute(VirtualFrame frame) {
+		return this.builtinFuncBody.executeGeneric(frame);
 	}
 }

@@ -4,10 +4,10 @@ import com.oracle.truffle.api.dsl.Specialization;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.builtinsSuperClasses.BuiltinFunctionBody;
 import de.orat.math.gacalc.api.MultivectorExpression;
 
-public abstract class Map extends BuiltinFunctionBody {
+public abstract class Times extends BuiltinFunctionBody {
 
 	@Specialization
 	protected MultivectorExpression doExecute(MultivectorExpression x, MultivectorExpression y) {
-		return x.mapProduct(y);
+		return x.timesProduct(y);
 	}
 }
