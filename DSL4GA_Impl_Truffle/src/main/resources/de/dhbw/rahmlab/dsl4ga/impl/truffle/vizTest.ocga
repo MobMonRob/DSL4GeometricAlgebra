@@ -1,23 +1,15 @@
 #algebra cga
 
-fn f2(a, b) {
-	:c = a
-	::d = b
-	c, d
-}
-
-
 fn f1(a, b) {
-	g = f2(a, b)
-	:c = a
-	::d = b
+	c = a
+	d = b
 	c, d
 }
 
 
 fn main(a, b) {
-	:c = a
-	g = f1(a, b)
-	::d = b
-	c, d
+	c[] = {abs(-5), b}
+	g = f1(c, b)
+	d = c[0]
+	a, d
 }

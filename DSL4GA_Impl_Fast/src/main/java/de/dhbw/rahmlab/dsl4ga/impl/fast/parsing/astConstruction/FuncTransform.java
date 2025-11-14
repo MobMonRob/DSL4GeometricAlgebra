@@ -1,9 +1,11 @@
 package de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction;
 
+import static de.dhbw.rahmlab.dsl4ga.common.parsing.CatchAndRethrow.catchAndRethrow;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParser;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParserBaseListener;
-import de.dhbw.rahmlab.dsl4ga.common.parsing.SkippingParseTreeWalker;
-import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationException;
+import de.dhbw.rahmlab.dsl4ga.common.parsing.ParseTreeWalkerSkipping;
+import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationParsingException;
+import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationParsingRuntimeException;
 import de.orat.math.gacalc.api.GAFactory;
 import de.orat.math.gacalc.api.GAFunction;
 import de.orat.math.gacalc.api.MultivectorVariable;
@@ -35,9 +37,9 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 		this.parser = parser;
 	}
 
-	public static GAFunction generate(GAFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.FunctionContext ctx, Map<String, GAFunction> functionsView) {
+	public static GAFunction generate(GAFactory exprGraphFactory, GeomAlgeParser parser, GeomAlgeParser.FunctionContext ctx, Map<String, GAFunction> functionsView) throws ValidationParsingException {
 		FuncTransform transform = new FuncTransform(exprGraphFactory, parser, functionsView);
-		SkippingParseTreeWalker.walk(parser, transform, ctx, GeomAlgeParser.ExprContext.class);
+		ParseTreeWalkerSkipping.walk(parser, transform, ctx, GeomAlgeParser.ExprContext.class);
 
 		GAFunction function = exprGraphFactory.createFunction(transform.functionName, transform.formalParameterList, transform.retExprs);
 		// System.out.println("function: " + function);
@@ -65,14 +67,14 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 	@Override
 	public void enterAssgnStmt(GeomAlgeParser.AssgnStmtContext ctx) {
-		MultivectorExpression expr = ExprTransform.generateExprAST(this.exprGraphFactory, this.parser, ctx.exprCtx, this.functionsView, this.localVariablesView);
+		MultivectorExpression expr = catchAndRethrow(() -> ExprTransform.generateExprAST(this.exprGraphFactory, this.parser, ctx.exprCtx, this.functionsView, this.localVariablesView));
 
 		// Assignment
 		String name = ctx.vizAssigned.assigned.getText();
 
 		if (this.localVariables.containsKey(name)) {
 			int line = ctx.vizAssigned.assigned.getLine();
-			throw new ValidationException(line, String.format("\"%s\" cannot be assigned again.", name));
+			throw new ValidationParsingRuntimeException(line, String.format("\"%s\" cannot be assigned again.", name));
 		}
 
 		this.localVariables.put(name, expr);
@@ -82,13 +84,13 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 	@Override
 	public void enterTupleAssgnStmt(GeomAlgeParser.TupleAssgnStmtContext ctx) {
-		List<MultivectorExpression> results = ExprTransform.generateCallAST(this.exprGraphFactory, this.parser, ctx.callCtx, this.functionsView, this.localVariablesView);
+		List<MultivectorExpression> results = catchAndRethrow(() -> ExprTransform.generateCallAST(this.exprGraphFactory, this.parser, ctx.callCtx, this.functionsView, this.localVariablesView));
 
 		final int size = ctx.vizAssigned.size();
 
 		if (size != results.size()) {
 			int line = ctx.start.getLine();
-			throw new ValidationException(line, String.format("Count of assignees (%s) does not match count of results (%s).", size, results.size()));
+			throw new ValidationParsingRuntimeException(line, String.format("Count of assignees (%s) does not match count of results (%s).", size, results.size()));
 		}
 
 		for (int i = 0; i < size; ++i) {
@@ -101,7 +103,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 
 			if (this.localVariables.containsKey(name)) {
 				int line = ctx.vizAssigned.get(i).assigned.getLine();
-				throw new ValidationException(line, String.format("\"%s\" cannot be assigned again.", name));
+				throw new ValidationParsingRuntimeException(line, String.format("\"%s\" cannot be assigned again.", name));
 			}
 
 			this.localVariables.put(name, results.get(i));
@@ -111,9 +113,10 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 	}
 
 	@Override
-	public void enterRetExprStmtExpr(GeomAlgeParser.RetExprStmtExprContext ctx) {
-		MultivectorExpression retExpr = ExprTransform.generateExprAST(this.exprGraphFactory, this.parser, ctx.exprContext, this.functionsView, this.localVariablesView);
+	public void enterRetExprStmt(GeomAlgeParser.RetExprStmtContext ctx) {
+		throw new UnsupportedOperationException("Changes with exprList and Array not implemented in Fast yet!");
+		// MultivectorExpression retExpr = catchAndRethrow(() -> ExprTransform.generateExprAST(this.exprGraphFactory, this.parser, ctx.exprListCtx, this.functionsView, this.localVariablesView));
 		// System.out.println("retExpr: " + retExpr);
-		this.retExprs.add(retExpr);
+		// this.retExprs.add(retExpr);
 	}
 }

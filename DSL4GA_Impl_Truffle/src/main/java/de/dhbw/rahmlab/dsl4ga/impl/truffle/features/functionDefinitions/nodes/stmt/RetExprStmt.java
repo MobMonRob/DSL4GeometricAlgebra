@@ -6,10 +6,9 @@ import com.oracle.truffle.api.instrumentation.InstrumentableNode;
 import com.oracle.truffle.api.instrumentation.ProbeNode;
 import com.oracle.truffle.api.nodes.ExplodeLoop;
 import com.oracle.truffle.api.nodes.Node.Children;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.builtinTypes.Tuple;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.stmtSuperClasses.StatementBaseNode;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.truffleBox.CgaListTruffleBox;
-import de.orat.math.gacalc.api.MultivectorExpression;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,13 +45,17 @@ public class RetExprStmt extends StatementBaseNode {
 	}
 
 	@ExplodeLoop
-	public CgaListTruffleBox execute(VirtualFrame frame) {
-		List<MultivectorExpression> rets = new ArrayList<>(retExprs.length);
-		for (ExpressionBaseNode retExpr : this.retExprs) {
-			MultivectorExpression ret = retExpr.executeGeneric(frame);
-			rets.add(ret);
+	public Object execute(VirtualFrame frame) {
+		if (retExprs.length == 1) {
+			return retExprs[0].executeGeneric(frame);
+		} else {
+			List<Object> rets = new ArrayList<>(retExprs.length);
+			for (ExpressionBaseNode retExpr : this.retExprs) {
+				Object ret = retExpr.executeGeneric(frame);
+				rets.add(ret);
+			}
+			return new Tuple(rets.toArray());
 		}
-		return new CgaListTruffleBox(rets);
 	}
 
 	@Override

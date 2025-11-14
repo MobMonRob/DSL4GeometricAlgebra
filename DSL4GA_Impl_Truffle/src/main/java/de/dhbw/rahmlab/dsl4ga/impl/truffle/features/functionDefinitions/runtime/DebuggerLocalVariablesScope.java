@@ -18,11 +18,13 @@ import com.oracle.truffle.api.source.SourceSection;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.stmtSuperClasses.NonReturningStatementBaseNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLang;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.truffleBox.CgaTruffleBox;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.arrays.runtime.ArrayObject;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.FunctionDefinitionRootNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.nodes.stmt.LocalVariableAssignment;
+import de.orat.math.gacalc.api.MultivectorExpression;
 import de.orat.math.gacalc.api.MultivectorValue;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,17 +59,20 @@ public class DebuggerLocalVariablesScope implements TruffleObject {
 					return true;
 				}
 				if (stmt instanceof LocalVariableAssignment varAssign) {
-					if (varAssign.getScopeVisibleVariablesIndex() < scopeVisibleVariablesIndex) {
-						String name = varAssign.getName();
-
-						visibleVarsNames.add(name);
-
-						Object prev = namesToVarNodes.put(name, varAssign);
-						if (prev != null) {
-							throw new AssertionError(
-								"Validation implemented incorrectly: Each variable should only be assignable once.");
-						}
+					if (!varAssign.isShow()) {
+						return true;
 					}
+					if (varAssign.getScopeVisibleVariablesIndex() >= scopeVisibleVariablesIndex) {
+						// Assuming they are sorted. Otherwise return true and visit others.
+						return false;
+					}
+					String name = varAssign.getName();
+
+					visibleVarsNames.add(name);
+
+					Object prev = namesToVarNodes.put(name, varAssign);
+					assert prev != null : "Validation implemented incorrectly: Each variable should only be assignable once.";
+					return true;
 				}
 				return true;
 			}
@@ -142,10 +147,25 @@ public class DebuggerLocalVariablesScope implements TruffleObject {
 	@TruffleBoundary
 	String readMember(String member) {
 		LocalVariableAssignment varNode = this.namesToVarNodes.get(member);
-		CgaTruffleBox varValue = (CgaTruffleBox) this.frame.getObjectStatic(varNode.getFrameSlot());
-		MultivectorValue mv = GeomAlgeLangContext.currentExternalArgs.evalToMV(List.of(varValue.getInner())).get(0);
-		var mvString = mv.toString();
-		return mvString;
+		Object varValue = this.frame.getObjectStatic(varNode.getFrameSlot());
+		String str = "invalid";
+		if (varValue instanceof MultivectorExpression mvExpr) {
+			MultivectorValue mv = GeomAlgeLangContext.currentExternalArgs.evalToMV(List.of(mvExpr)).get(0);
+			str = mv.toString();
+		}
+		if (varValue instanceof ArrayObject arr) {
+			// Currently, only MultivectorExpression is allowed in Array.
+			List<MultivectorExpression> mvs = Arrays.stream(arr.getValues()).map(o -> (MultivectorExpression) o).toList();
+			List<MultivectorValue> mvValues = GeomAlgeLangContext.currentExternalArgs.evalToMV(mvs);
+			StringBuilder sb = new StringBuilder();
+			for (MultivectorValue mv : mvValues) {
+				sb.append(mv);
+				sb.append('\n');
+			}
+			str = sb.toString();
+		}
+ 
+		return str;
 	}
 
 	@ExportMessage

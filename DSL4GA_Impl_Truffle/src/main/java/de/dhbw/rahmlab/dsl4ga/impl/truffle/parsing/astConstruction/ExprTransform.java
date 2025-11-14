@@ -3,12 +3,16 @@ package de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.astConstruction;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParser;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParserBaseListener;
+import de.dhbw.rahmlab.dsl4ga.common.parsing.ParseTreeWalker;
+import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationParsingException;
+import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationParsingRuntimeException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
-import static de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.CatchAndRethrow.catchAndRethrow;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.ValidationException;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.internal.InterpreterInternalException;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.arrays.runtime.nodes.expr.ArrayReaderNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionCalls.nodes.expr.FunctionCall;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionCalls.nodes.expr.FunctionCallNodeGen;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.expr.FunctionReference;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.Function;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.literals.nodes.expr.Constant;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.literals.nodes.expr.ConstantNodeGen;
@@ -33,16 +37,16 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOp
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOps.Negate;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOps.Reverse;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOps.Undual;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.nodes.expr.LocalVariableReference;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.nodes.expr.LocalVariableReferenceNodeGen;
 import de.orat.math.gacalc.api.MultivectorExpression;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.util.ArrayDeque;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.Map;
-import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import java.util.SequencedCollection;
 
 /**
  * This class converts an expression subtree of an ANTLR parsetree into an expression AST in truffle.
@@ -66,21 +70,31 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		this.localVariablesView = localVariablesView;
 	}
 
-	public static ExpressionBaseNode generateExprAST(GeomAlgeParser.ExprContext exprCtx, GeomAlgeLangContext geomAlgeLangContext, Map<String, Function> functionsView, Map<String, Integer> localVariablesView) {
+	public static ExpressionBaseNode generateExprAST(GeomAlgeParser parser, GeomAlgeParser.ExprContext exprCtx, GeomAlgeLangContext geomAlgeLangContext, Map<String, Function> functionsView, Map<String, Integer> localVariablesView) throws ValidationParsingException {
 		ExprTransform exprTransform = new ExprTransform(geomAlgeLangContext, functionsView, localVariablesView);
 
-		ParseTreeWalker.DEFAULT.walk(exprTransform, exprCtx);
+		ParseTreeWalker.walk(parser, exprTransform, exprCtx);
 
 		ExpressionBaseNode rootNode = exprTransform.nodeStack.getFirst();
 		return rootNode;
 	}
 
-	public static FunctionCall generateCallAST(GeomAlgeParser.CallExprContext callExprCtx, GeomAlgeLangContext geomAlgeLangContext, Map<String, Function> functionsView, Map<String, Integer> localVariablesView) {
+	public static FunctionCall generateCallAST(GeomAlgeParser parser, GeomAlgeParser.CallExprContext callExprCtx, GeomAlgeLangContext geomAlgeLangContext, Map<String, Function> functionsView, Map<String, Integer> localVariablesView) throws ValidationParsingException {
 		ExprTransform exprTransform = new ExprTransform(geomAlgeLangContext, functionsView, localVariablesView);
 
-		ParseTreeWalker.DEFAULT.walk(exprTransform, callExprCtx);
+		ParseTreeWalker.walk(parser, exprTransform, callExprCtx);
 
 		FunctionCall rootNode = (FunctionCall) exprTransform.nodeStack.getFirst();
+		return rootNode;
+	}
+
+	// Package-private
+	static ExprList generateExprListAST(GeomAlgeParser parser, GeomAlgeParser.ExprListContext callExprCtx, GeomAlgeLangContext geomAlgeLangContext, Map<String, Function> functionsView, Map<String, Integer> localVariablesView) throws ValidationParsingException {
+		ExprTransform exprTransform = new ExprTransform(geomAlgeLangContext, functionsView, localVariablesView);
+
+		ParseTreeWalker.walk(parser, exprTransform, callExprCtx);
+
+		ExprList rootNode = (ExprList) exprTransform.nodeStack.getFirst();
 		return rootNode;
 	}
 
@@ -255,20 +269,44 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		nodeStack.push(node);
 	}
 
+	/**
+	 * Implicit precondition: function name and variable name and reference are all IDENTIFIER in the grammar.
+	 */
 	@Override
-	public void exitVariableReference(GeomAlgeParser.VariableReferenceContext ctx) {
+	public void exitReference(GeomAlgeParser.ReferenceContext ctx) {
 		String name = ctx.name.getText();
 
-		if (!this.localVariablesView.containsKey(name)) {
-			int line = ctx.name.getLine();
-			throw new ValidationException(line, String.format("Variable \"%s\" has not been declared before.", name));
+		ExpressionBaseNode ref;
+		// Local variable hides function with same name.
+		if (this.localVariablesView.containsKey(name)) {
+			int frameSlot = this.localVariablesView.get(name);
+			ref = LocalVariableReferenceNodeGen.create(name, frameSlot);
+		} else if (this.functionsView.containsKey(name)) {
+			Function function = findFunction(name);
+			ref = new FunctionReference(function);
+		} else {
+			throw new ValidationParsingRuntimeException(String.format("Variable or function \"%s\" has not been declared before.", name));
 		}
 
-		int frameSlot = this.localVariablesView.get(name);
-		LocalVariableReference node = LocalVariableReferenceNodeGen.create(name, frameSlot);
-		node.setSourceSection(ctx.name.getStartIndex(), ctx.name.getStopIndex());
+		ref.setSourceSection(ctx.name.getStartIndex(), ctx.name.getStopIndex());
+		nodeStack.push(ref);
+	}
 
-		nodeStack.push(node);
+	@Override
+	public void exitArrayAccessExpr(GeomAlgeParser.ArrayAccessExprContext ctx) {
+		String name = ctx.name.getText();
+		if (!this.localVariablesView.containsKey(name)) {
+			throw new ValidationParsingRuntimeException(String.format("Array \"%s\" has not been declared before.", name));
+		}
+		String indexString = ctx.index.getText();
+		final int index = Integer.parseInt(indexString);
+
+		final int frameSlot = this.localVariablesView.get(name);
+		var ref = LocalVariableReferenceNodeGen.create(name, frameSlot);
+		var arrayReader = ArrayReaderNodeGen.create(ref, index);
+
+		arrayReader.setSourceSection(ctx.name.getStartIndex(), ctx.name.getStopIndex());
+		this.nodeStack.push(arrayReader);
 	}
 
 	// https://stackoverflow.com/questions/4323599/best-way-to-parsedouble-with-comma-as-decimal-separator/4323627#4323627
@@ -297,7 +335,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		}
 	}
 
-	private static class EnterCallMarker extends ExpressionBaseNode {
+	private static final class EnterExprListMarker extends ExpressionBaseNode {
 
 		@Override
 		public MultivectorExpression executeGeneric(VirtualFrame frame) {
@@ -305,40 +343,69 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		}
 	}
 
-	private static final EnterCallMarker enterCallMarker = new EnterCallMarker();
+	private static final EnterExprListMarker exprListMarker = new EnterExprListMarker();
 
 	@Override
-	public void enterCall(GeomAlgeParser.CallContext ctx) {
-		this.nodeStack.push(enterCallMarker);
+	public void enterExprList(GeomAlgeParser.ExprListContext ctx) {
+		this.nodeStack.push(exprListMarker);
+	}
+
+	@Override
+	public void exitExprList(GeomAlgeParser.ExprListContext ctx) {
+		Deque<ExpressionBaseNode> exprs = new ArrayDeque<>();
+		for (ExpressionBaseNode currentArgument = this.nodeStack.pop();
+			currentArgument != exprListMarker;
+			currentArgument = this.nodeStack.pop()) {
+			// rightmost argument will be pushed first
+			// therefore ordered properly at the end
+			exprs.push(currentArgument);
+		}
+		ExprList exprList = new ExprList(Collections.unmodifiableSequencedCollection(exprs));
+		this.nodeStack.push(exprList);
+	}
+
+	// Package-private
+	static final class ExprList extends ExpressionBaseNode {
+
+		public final SequencedCollection<ExpressionBaseNode> exprs;
+
+		public ExprList(SequencedCollection<ExpressionBaseNode> exprs) {
+			this.exprs = exprs;
+		}
+
+		@Override
+		public MultivectorExpression executeGeneric(VirtualFrame frame) {
+			throw new AssertionError();
+		}
 	}
 
 	@Override
 	public void exitCall(GeomAlgeParser.CallContext ctx) {
-		Deque<ExpressionBaseNode> arguments = new ArrayDeque<>();
-
-		for (ExpressionBaseNode currentArgument = this.nodeStack.pop();
-			currentArgument != enterCallMarker;
-			currentArgument = this.nodeStack.pop()) {
-			// rightmost argument will be pushed first
-			// therefore ordered properly at the end
-			arguments.push(currentArgument);
+		ExpressionBaseNode[] argumentsArray;
+		if (ctx.exprListCtx != null) {
+			argumentsArray = ((ExprList) this.nodeStack.pop()).exprs.toArray(ExpressionBaseNode[]::new);
+		} else {
+			argumentsArray = new ExpressionBaseNode[0];
 		}
-
-		ExpressionBaseNode[] argumentsArray = arguments.toArray(ExpressionBaseNode[]::new);
 
 		String functionName = ctx.name.getText();
 
-		Function function;
-		if (this.functionsView.containsKey(functionName)) {
-			function = this.functionsView.get(functionName);
-		} else {
-			// throw new ValidationException(String.format("Function \"%s\" to call not found.", functionName));
-			function = catchAndRethrow(null, () -> {
-				return this.geomAlgeLangContext.builtinRegistry.getBuiltinFunction(functionName);
-			});
-		}
+		Function function = findFunction(functionName);
+
 		FunctionCall functionCall = FunctionCallNodeGen.create(function, argumentsArray);
 		functionCall.setSourceSection(ctx.getStart().getStartIndex(), ctx.getStop().getStopIndex());
 		this.nodeStack.push(functionCall);
+	}
+
+	private Function findFunction(String functionName) {
+		if (this.functionsView.containsKey(functionName)) {
+			return this.functionsView.get(functionName);
+		} else {
+			try {
+				return this.geomAlgeLangContext.builtinRegistry.getBuiltinFunction(functionName);
+			} catch (InterpreterInternalException ex) {
+				throw new ValidationParsingRuntimeException(String.format("Function \"%s\" to call not found.", functionName));
+			}
+		}
 	}
 }

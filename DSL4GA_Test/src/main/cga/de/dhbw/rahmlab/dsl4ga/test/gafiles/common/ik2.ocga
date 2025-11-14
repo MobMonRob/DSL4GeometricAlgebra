@@ -123,7 +123,8 @@ fn transform_vec(vec, rot){
 // returns scalar, grade-2
 fn getTranslationRotor(vec){
 	// e**(-0.5*vec*einf)
-	result = exp(-0.5 vec εᵢ) // grade 0,2,4 FIXME
+	expInput = -0.5 vec εᵢ
+	result = exp(expInput) // grade 0,2,4 FIXME
 	// [1, 00, 00, 00, 00, 00, 0, 0, 0, 0, 0, 0, 0, -0.08125, -0.08125, 0, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 0, 00, 00, 00]
 	<result>₀ + <result>₂
 }
@@ -240,7 +241,7 @@ fn main(p, ae){
 
 	// robots end-effector pose as ipns point
     //:p6 = getPoint(1.0, 1.0, 0.0) 
-	:p6 = up(p) 
+	:p6 = up(p)
 
 	
 	// position of joint 5

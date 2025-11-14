@@ -9,6 +9,11 @@ options { tokenVocab=GeomAlgeLexer; }
 
 - If there is a choice of a sequence of subexpressions "(a|b) vs (b|a)"", always the sequence is chosen such that the precedence will be preseved. This prevents inconsistent precedences throughout the parser.
 
+- Tip:
+Move as much contextual validation as possible into the static analysis stage.
+And reuse as much non-terminals as possible in the grammar.
+This simplifies grammar development a lot and improves readability.
+
 */
 ///////////////////////////////////////////////////////////////////////////
 // sourceUnit
@@ -46,14 +51,18 @@ formalParameterList
 	;
 
 formalParameter
-	:	name=IDENTIFIER	#FormalParameter_
+	:	name=IDENTIFIER arrInd=arrIndicator?	#FormalParameter_
 	;
 
 functionBody
 	:	WHITE_LINE*
 		(stmt WHITE_LINE+)*
-		retExpr
+		retExprStmt
 		WHITE_LINE*
+	;
+
+arrIndicator
+	:	L_SQUARE_BRACKET R_SQUARE_BRACKET
 	;
 
 ///////////////////////////////////////////////////////////////////////////
@@ -63,18 +72,19 @@ functionBody
 stmt
 	:	SPACE* vizAssigned=vizAssignedR SPACE* ASSIGNMENT SPACE* exprCtx=expr SPACE*		#AssgnStmt
 	|	SPACE* vizAssigned+=vizAssignedR SPACE* (COMMA SPACE* vizAssigned+=vizAssignedR SPACE*)* ASSIGNMENT SPACE* callCtx=callExpr SPACE*		#TupleAssgnStmt
+	|	SPACE* vizAssigned=vizAssignedR SPACE* ASSIGNMENT SPACE* arrayInitCtx=arrayInitExpr SPACE*	#ArrayInitStmt
+	;
+
+retExprStmt
+	: exprListCtx=exprList
 	;
 
 vizAssignedR
-	: viz+=COLON? viz+=COLON? assigned=(IDENTIFIER|LOW_LINE)
+	: viz+=COLON? viz+=COLON? assigned=(IDENTIFIER|LOW_LINE) arrInd=arrIndicator?
 	;
 
-// The list-form (1) needs iteration in the transformer while the tree-form (2) don't.
-// enterRetExprStmt inverses the order if retExpr is left-recursive.
-retExpr
-	//:	exprContext+=expr (COMMA exprContext+=expr)*	#RetExprStmt
-	:	exprContext=expr				#RetExprStmtExpr
-	|	exprContext=expr COMMA retExpr	#RetExprStmtExpr
+arrayInitExpr
+	: L_CURLY_BRACKET SPACE* exprListCtx=exprList? R_CURLY_BRACKET
 	;
 
 ///////////////////////////////////////////////////////////////////////////
@@ -175,8 +185,20 @@ binOpExpr
 ///////////////////////////////////////////////////////////////////////////
 
 callExpr
-	:	name=IDENTIFIER L_PARENTHESIS (expr (COMMA expr)*)? R_PARENTHESIS	#Call
+	:	name=IDENTIFIER L_PARENTHESIS exprListCtx=exprList? R_PARENTHESIS	#Call
 	;
+
+exprList
+	: expr (COMMA expr)*
+	;
+
+// The list-form (1) needs iteration in the transformer while the tree-form (2) don't.
+// enterRetExprStmt inverses the order if retExpr is left-recursive.
+//retExpr
+//	//:	exprContext+=expr (COMMA exprContext+=expr)*	#RetExprStmt
+//	:	exprContext=expr				#RetExprStmtExpr
+//	|	exprContext=expr COMMA retExpr	#RetExprStmtExpr
+//	;
 
 ///////////////////////////////////////////////////////////////////////////
 // composite / abstract / higherOrder / meta Expr
@@ -185,6 +207,7 @@ callExpr
 // literalExpr are the only nonRecursive Expr
 nonOuterRecursiveExpr
 	:	callExpr
+	|	arrayAccessExpr
 	|	literalExpr
 	|	innerRecursiveExpr
 	;
@@ -216,7 +239,7 @@ literalExpr
 				|CAPITAL_E
 				)					#LiteralConstant
 	|	value=	DECIMAL_LITERAL		#LiteralDecimal
-	|	name=	IDENTIFIER			#VariableReference
+	|	name=	IDENTIFIER			#Reference
 	;
 
 parenExpr
@@ -235,4 +258,8 @@ gradeExtractionExpr
 				|SUBSCRIPT_FIVE
 				)
 		#gradeExtraction
+	;
+
+arrayAccessExpr
+	:	name=IDENTIFIER SPACE* L_SQUARE_BRACKET SPACE* index=DECIMAL_LITERAL SPACE* R_SQUARE_BRACKET
 	;

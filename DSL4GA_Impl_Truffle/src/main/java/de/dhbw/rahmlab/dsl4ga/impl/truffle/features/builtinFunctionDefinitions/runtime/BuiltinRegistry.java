@@ -6,7 +6,7 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.internal.In
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.BuiltinFunctionRootNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.builtins.*;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.builtinsSuperClasses.BuiltinFunctionBody;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.FunctionArgumentReader;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.expr.FunctionArgumentReader;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.Function;
 import java.util.HashMap;
 import java.util.Map;
@@ -71,6 +71,10 @@ public class BuiltinRegistry {
 		Function function = new Function(builtinFunctionRootNode, arity);
 
 		this.builtins.put(function.getName(), function);
+	}
+
+	public boolean hasBuiltinFunction(String name) {
+		return this.builtins.containsKey(name);
 	}
 
 	public Function getBuiltinFunction(String name) throws InterpreterInternalException {

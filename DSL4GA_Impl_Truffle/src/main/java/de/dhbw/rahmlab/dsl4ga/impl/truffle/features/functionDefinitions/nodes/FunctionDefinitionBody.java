@@ -4,7 +4,6 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.BlockNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.stmtSuperClasses.NonReturningStatementBaseNode;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.truffleBox.CgaListTruffleBox;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.stmt.RetExprStmt;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.superClasses.AbstractFunctionBody;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.visualization.nodes.stmt.CleanupVisualizer;
@@ -48,16 +47,16 @@ public class FunctionDefinitionBody extends AbstractFunctionBody implements Bloc
 	}
 
 	@Override
-	public CgaListTruffleBox executeGeneric(VirtualFrame frame) {
+	public Object executeGeneric(VirtualFrame frame) {
 		return directCall(frame);
 	}
 
-	public CgaListTruffleBox directCall(VirtualFrame frame) {
+	public Object directCall(VirtualFrame frame) {
 		if (this.stmts != null) {
 			stmts.executeVoid(frame, BlockNode.NO_ARGUMENT);
 		}
 
-		CgaListTruffleBox rets = this.retExprStmt.execute(frame);
+		Object rets = this.retExprStmt.execute(frame);
 
 		if (this.nulleableCleanupVizualizer != null) {
 			this.nulleableCleanupVizualizer.executeGeneric(frame);
