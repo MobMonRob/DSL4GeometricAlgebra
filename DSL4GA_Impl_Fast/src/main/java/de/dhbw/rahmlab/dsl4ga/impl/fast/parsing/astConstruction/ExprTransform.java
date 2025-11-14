@@ -396,7 +396,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 							case "scp" ->
 								arg0.scalarProduct(arg1);
 							case "times" ->
-								arg0.timesProduct(arg1);
+								arg0.hadamardProduct(arg1);
 							default ->
 								throw new ValidationParsingRuntimeException(ctx.start.getLine(), String.format("Function \"%s\" to call not found.", functionName));
 						};

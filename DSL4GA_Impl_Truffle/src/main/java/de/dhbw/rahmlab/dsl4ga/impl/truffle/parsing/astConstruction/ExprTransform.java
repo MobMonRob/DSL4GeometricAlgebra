@@ -22,6 +22,7 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryO
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.Division;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.DotProduct;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.GeometricProduct;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.HadamardProduct;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.Join;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.LeftContraction;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.Meet;
@@ -148,6 +149,8 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 				new Meet(left, right);
 			case GeomAlgeParser.UNION ->
 				new Join(left, right);
+			case GeomAlgeParser.CIRCLED_DOT_OPERATOR ->
+				new HadamardProduct(left, right);
 			default ->
 				throw new AssertionError();
 		};

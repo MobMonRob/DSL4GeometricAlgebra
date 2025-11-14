@@ -50,7 +50,6 @@ public class BuiltinRegistry {
 		this.installBuiltin(DotFactory.getInstance());
 		this.installBuiltin(IpFactory.getInstance());
 		this.installBuiltin(ScpFactory.getInstance());
-		this.installBuiltin(TimesFactory.getInstance());
 	}
 
 	private void installBuiltin(NodeFactory<? extends BuiltinFunctionBody> factory) {

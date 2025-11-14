@@ -162,6 +162,7 @@ binOpExpr
 			|R_CONTRACTION
 			|L_CONTRACTION
 			|LOGICAL_OR
+			|CIRCLED_DOT_OPERATOR
 			)
 		SPACE*
 		binOpExpr			#BinOp	//Precedence 3

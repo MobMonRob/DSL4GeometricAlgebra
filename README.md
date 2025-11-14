@@ -202,6 +202,8 @@ $A\rfloor B = \langle A B\rangle_{|l-k|}$
 | 3          | &#x22C5; | \cdot | \u22C5  | dot product (inner product without scalar parts) $A\cdot B=\langle A B\rangle_{|k-l|,k\neq 0, l\neq 0}$|
 | 3          | &#x2229; | \cap  | \u2229  | meet (intersection) = largest common subspace |
 | 3          | &#x222A; | \cup  | \u222A  | join  (union) of two subspaces is there smallest superspace = smallest space containing them both |
+| 3          | &#x2299; | \odot | \u2299  | hadamard product (element-wise multiplication) |
+
 
 ##### Implementation
 $A\cdot B=\langle A B\rangle_{|k-l|,k\neq 0, l\neq 0}$
@@ -240,7 +242,6 @@ There exist three types of involution operations: Space inversion, reversion and
 ### Base functions
 | symbol      | description |
 | :---------- | ------------ |
-| times()     | linear map (element-wise multiplication) |
 | exp()       | exponential of a bivector or a scalar |
 | log()       | logarithm of general rotor/even multivector (should be normalized) |
 | normalize() | normalize of an even multivector (general rotor, scalars inclusive)|
