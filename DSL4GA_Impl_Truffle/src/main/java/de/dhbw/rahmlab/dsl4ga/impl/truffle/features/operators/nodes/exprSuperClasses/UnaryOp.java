@@ -16,9 +16,8 @@ public abstract class UnaryOp extends ExpressionBaseNode {
 
 	@Override
 	public MultivectorExpression executeGeneric(VirtualFrame frame) {
-		MultivectorExpression argumentValue = (MultivectorExpression) this.argument.executeGeneric(frame);
-
 		return catchAndRethrow(this, () -> {
+			MultivectorExpression argumentValue = (MultivectorExpression) this.argument.executeGeneric(frame);
 			return this.execute(argumentValue);
 		});
 	}

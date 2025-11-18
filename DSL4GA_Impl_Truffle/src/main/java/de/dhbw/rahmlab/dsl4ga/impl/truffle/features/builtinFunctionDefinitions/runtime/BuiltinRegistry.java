@@ -4,9 +4,11 @@ import com.oracle.truffle.api.dsl.NodeFactory;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLang;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.internal.InterpreterInternalException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.BuiltinFunctionRootNode;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.arrayBuiltins.ReversedFactory;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.builtins.*;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.builtinsSuperClasses.BuiltinFunctionBody;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.hofBuiltins.MapNodeGen;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.hofBuiltins.MapaccumNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.expr.FunctionArgumentReader;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.superClasses.AbstractFunctionBody;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.Function;
@@ -53,8 +55,12 @@ public class BuiltinRegistry {
 		this.installBuiltin(IpFactory.getInstance());
 		this.installBuiltin(ScpFactory.getInstance());
 
+		// Array
+		this.installBuiltin(ReversedFactory.getInstance());
+
 		// HOF
 		this.installBuiltin("map", MapNodeGen.create());
+		this.installBuiltin("mapaccum", MapaccumNodeGen.create());
 	}
 
 	private void installBuiltin(String name, AbstractFunctionBody funcBody) {

@@ -1,0 +1,49 @@
+#algebra cga
+
+fn motors(theta, a, d, alpha) {
+	T_d = 1 - 0.5 d (ε₃ ∧ εᵢ) // Tz // oder GP?
+	R_theta = cos(0.5 theta) - sin(0.5 theta) (ε₁ ∧ ε₂) // Rz // oder GP?
+	T_a = 1 - 0.5 a (ε₁ ∧ εᵢ) // Tx // oder GP?
+    R_alpha = cos(-0.5 alpha) + sin(-0.5 alpha) (ε₂ ∧ ε₃) // Rx // oder GP?
+	M = T_d R_theta T_a R_alpha
+	M
+}
+
+fn applyMotor(obj_prev, M) {
+	obj = M obj_prev M˜
+	obj
+}
+
+// Agut2017 5.3-3 S. 60
+// Zaplana2021 3. S. 10
+// Seybold2015 Diss 14.2 S. 136
+// TODO arrays als Funktionsargumente?
+fn dk(obj){
+	// WORKAROUND
+	theta[] = {1.5, 1.5, 1.5, 1.5, 1.5, 1.5}
+
+	// dh parameters UR5e
+	a[] = {0.0, -0.425, -0.3922, 0.0, 0.0, 0.0}
+	d[] = {0.1625, 0.0, 0.0, 0.1333, 0.0997, 0.0996}
+    alpha[] = {π/2, 0, 0, π/2, -π/2, 0}
+
+	M[] = map(motors, theta, a, d, alpha)
+
+	M_rev[] = reversed(M)
+	objs_rev[] = mapaccum(applyMotor, obj, M_rev)
+	objs[] = reversed(objs_rev)
+
+	objs[0]
+}
+
+fn main(p) {
+
+	position = dk(p)
+
+	// TODO
+	// orientation als bivector?
+    // als line durch position?
+	orientation = 0
+
+	position, orientation
+}

@@ -34,7 +34,7 @@ public class TruffleDKDebugging {
 	 * Wie Pose definieren?
 	 */
 	private static void invocationTest() throws Exception {
-		String path = "./gafiles/common/dk.ocga";
+		String path = "./gafiles/common/dk2.ocga";
 		var uri = TruffleDKDebugging.class.getResource(path);
 		if (uri == null) {
 			throw new RuntimeException(String.format("Path not found: %s", path));
@@ -46,8 +46,6 @@ public class TruffleDKDebugging {
 		List<SparseDoubleMatrix> args = new ArrayList<>();
 		SparseCGAColumnVector p = SparseCGAColumnVector.createEuclid(new double[]{0.5, 0.5, 0d});
 		args.add(p);
-		SparseCGAColumnVector ae = SparseCGAColumnVector.createEuclid(new double[]{0d, 1d, 0d});
-		args.add(ae);
 		var res = prog.invoke(args);
 
 		System.out.println("answer: ");

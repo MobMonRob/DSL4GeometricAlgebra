@@ -19,10 +19,9 @@ public abstract class BinaryOp extends ExpressionBaseNode {
 
 	@Override
 	public MultivectorExpression executeGeneric(VirtualFrame frame) {
-		MultivectorExpression argumentLeftValue = (MultivectorExpression) this.argumentLeft.executeGeneric(frame);
-		MultivectorExpression argumentRightValue = (MultivectorExpression) this.argumentRight.executeGeneric(frame);
-
 		return catchAndRethrow(this, () -> {
+			MultivectorExpression argumentLeftValue = (MultivectorExpression) this.argumentLeft.executeGeneric(frame);
+			MultivectorExpression argumentRightValue = (MultivectorExpression) this.argumentRight.executeGeneric(frame);
 			return this.execute(argumentLeftValue, argumentRightValue);
 		});
 	}
