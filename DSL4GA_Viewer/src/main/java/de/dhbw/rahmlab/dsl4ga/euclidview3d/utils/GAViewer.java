@@ -562,6 +562,9 @@ public class GAViewer extends GAViewObject {
     /**
      * Add a circle to the 3d view.
      *
+	 * TODO
+	 * show the direction of the circle with arrows on the circle
+	 * 
      * @param parameters units in [m]
      * @param label name of the circle shown in the visualisation
      * @param isIPNS true, if circle is given in inner-product-null-space representation
