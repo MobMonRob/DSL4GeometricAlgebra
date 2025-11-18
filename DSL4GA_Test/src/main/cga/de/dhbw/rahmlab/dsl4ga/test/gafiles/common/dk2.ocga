@@ -18,9 +18,9 @@ fn applyMotor(obj_prev, M) {
 // Zaplana2021 3. S. 10
 // Seybold2015 Diss 14.2 S. 136
 // TODO arrays als Funktionsargumente?
-fn dk(obj){
+fn dk(p){
 	// WORKAROUND
-	theta[] = {1.5, 1.5, 1.5, 1.5, 1.5, 1.5}
+	theta[] = {0, 0, 0, 0, 0, 0}
 
 	// dh parameters UR5e
 	a[] = {0.0, -0.425, -0.3922, 0.0, 0.0, 0.0}
@@ -30,20 +30,20 @@ fn dk(obj){
 	M[] = map(motors, theta, a, d, alpha)
 
 	M_rev[] = reversed(M)
-	objs_rev[] = mapaccum(applyMotor, obj, M_rev)
-	objs[] = reversed(objs_rev)
+	ps_rev[] = mapaccum(applyMotor, p, M_rev)
+	ps[] = reversed(ps_rev)
 
-	objs[0]
+	ps
 }
 
 fn main(p) {
 
-	position = dk(p)
+	:ps[] = dk(up(p))
 
 	// TODO
 	// orientation als bivector?
     // als line durch position?
 	orientation = 0
 
-	position, orientation
+	ps[0], orientation
 }

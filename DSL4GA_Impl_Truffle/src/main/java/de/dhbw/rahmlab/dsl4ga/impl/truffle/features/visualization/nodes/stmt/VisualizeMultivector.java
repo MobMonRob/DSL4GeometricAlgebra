@@ -43,7 +43,7 @@ public abstract class VisualizeMultivector extends NonReturningStatementBaseNode
 				for (int i = 0; i < arrLen; ++i) {
 					Object value = arrValues[i];
 					if (value instanceof MultivectorExpression mv) {
-						VisualizerService.instance().add(mv, fullName, getVizContext(), getIsIPNS());
+						VisualizerService.instance().add(mv, String.format("%s%s", fullName, i), getVizContext(), getIsIPNS());
 					} else {
 						throw new InterpreterInternalException(String.format("No MultivectorExpression: %s[%s]: %s", fullName, i, value));
 					}
