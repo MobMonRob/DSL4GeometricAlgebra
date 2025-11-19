@@ -4,17 +4,10 @@ fn add(a, b) {
 	a+b
 }
 
-fn test() {
-	a[] = {1, 2}
-	a
-}
-
 fn main(a, b) {
 	c[] = {3, 5, 1}
 	d[] = {7, 9, 1}
-	e[] = mapaccum(add, 3, c)
-	p1[] = test()
-	p2[] = reversed(p1)
+	e = mapfold(add, 3, c)
 
-	a, b
+	e
 }

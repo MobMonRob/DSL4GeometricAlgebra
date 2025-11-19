@@ -13,12 +13,11 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.La
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.arrays.runtime.ArrayObject;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.builtinsSuperClasses.HofFunctionBody;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.Function;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-// mapaccum(Func<SimpleAcc, SimpleCurrent... -> SimpleAcc, SimpleOut...>, SimpleAccInit, Array/Simple...) -> Tuple of Array of Simple
-public abstract class Mapaccum extends HofFunctionBody {
+// mapfold(Func<SimpleAcc, SimpleCurrent... -> SimpleAcc, SimpleOut...>, SimpleAccInit, Array/Simple...) -> Tuple
+public abstract class Mapfold extends HofFunctionBody {
 
 	@Specialization
 	protected Object doExecute(VirtualFrame frame, @CachedLibrary(limit = "2") InteropLibrary library) {
@@ -44,7 +43,7 @@ public abstract class Mapaccum extends HofFunctionBody {
 
 		// Execute calls
 		// Zip is included here.
-		List<Object> returns = new ArrayList<>(count);
+		Object ret = null; // Count>=1, thus ret will be set in for-loop.
 		Object[] currentArgs = new Object[funcArgsArity];
 
 		Object[] initialAccumArgs = hofArgs.subList(1, 1 + n_accum).toArray(Object[]::new);
@@ -71,12 +70,12 @@ public abstract class Mapaccum extends HofFunctionBody {
 				} else {
 					currentArgs[0] = currentReturn;
 				}
-				returns.add(currentReturn);
+				ret = currentReturn;
 			} catch (UnsupportedTypeException | ArityException | UnsupportedMessageException ex) {
 				throw new LanguageRuntimeException(ex, this);
 			}
 		}
 
-		return ArrayOfTuplesToTuplesOfArray(returns, count);
+		return ret;
 	}
 }

@@ -9,6 +9,7 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.n
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.builtinsSuperClasses.BuiltinFunctionBody;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.hofBuiltins.MapNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.hofBuiltins.MapaccumNodeGen;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.hofBuiltins.MapfoldNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.expr.FunctionArgumentReader;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.superClasses.AbstractFunctionBody;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.Function;
@@ -61,6 +62,7 @@ public class BuiltinRegistry {
 		// HOF
 		this.installBuiltin("map", MapNodeGen.create());
 		this.installBuiltin("mapaccum", MapaccumNodeGen.create());
+		this.installBuiltin("mapfold", MapfoldNodeGen.create());
 	}
 
 	private void installBuiltin(String name, AbstractFunctionBody funcBody) {
