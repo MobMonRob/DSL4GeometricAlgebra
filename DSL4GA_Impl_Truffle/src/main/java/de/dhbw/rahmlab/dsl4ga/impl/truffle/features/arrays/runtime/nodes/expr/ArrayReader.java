@@ -16,8 +16,16 @@ public abstract class ArrayReader extends ExpressionBaseNode {
 
 	protected abstract int getIndex();
 
+	protected int correctedIndex(ArrayObject arr) {
+		int index = this.getIndex();
+		if (index < 0) {
+			index = arr.getValues().length + index;
+		}
+		return index;
+	}
+
 	@Specialization
-	public Object read(VirtualFrame frame, ArrayObject arr, @Cached(value = "getIndex()", neverDefault = false) int index) {
+	public Object read(VirtualFrame frame, ArrayObject arr, @Cached(value = "correctedIndex(arr)", neverDefault = false) int index) {
 		return catchAndRethrow(this, () -> arr.at(index));
 	}
 }

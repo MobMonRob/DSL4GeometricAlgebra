@@ -262,5 +262,11 @@ gradeExtractionExpr
 	;
 
 arrayAccessExpr
-	:	name=IDENTIFIER SPACE* L_SQUARE_BRACKET SPACE* index=DECIMAL_LITERAL SPACE* R_SQUARE_BRACKET
+	:	name=IDENTIFIER SPACE* L_SQUARE_BRACKET SPACE* index=indexExpr SPACE* R_SQUARE_BRACKET	#ArrayAccessExprSimple
+	|	name=IDENTIFIER SPACE* L_SQUARE_BRACKET SPACE* from=indexExpr? COLON to=indexExpr? SPACE* R_SQUARE_BRACKET	#ArrayAccessExprSlice
 	;
+
+indexExpr
+	:	HYPHEN_MINUS? DECIMAL_LITERAL
+	;
+

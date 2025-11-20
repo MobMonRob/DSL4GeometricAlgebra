@@ -10,6 +10,7 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.Express
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.internal.InterpreterInternalException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.arrays.runtime.nodes.expr.ArrayReaderNodeGen;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.arrays.runtime.nodes.expr.ArraySlicerNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionCalls.nodes.expr.FunctionCall;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionCalls.nodes.expr.FunctionCallNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.expr.FunctionReference;
@@ -47,6 +48,7 @@ import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.Map;
+import java.util.Optional;
 import java.util.SequencedCollection;
 
 /**
@@ -296,7 +298,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 	}
 
 	@Override
-	public void exitArrayAccessExpr(GeomAlgeParser.ArrayAccessExprContext ctx) {
+	public void exitArrayAccessExprSimple(GeomAlgeParser.ArrayAccessExprSimpleContext ctx) {
 		String name = ctx.name.getText();
 		if (!this.localVariablesView.containsKey(name)) {
 			throw new ValidationParsingRuntimeException(String.format("Array \"%s\" has not been declared before.", name));
@@ -310,6 +312,22 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 
 		arrayReader.setSourceSection(ctx.name.getStartIndex(), ctx.name.getStopIndex());
 		this.nodeStack.push(arrayReader);
+	}
+
+	@Override
+	public void exitArrayAccessExprSlice(GeomAlgeParser.ArrayAccessExprSliceContext ctx) {
+		String name = ctx.name.getText();
+		if (!this.localVariablesView.containsKey(name)) {
+			throw new ValidationParsingRuntimeException(String.format("Array \"%s\" has not been declared before.", name));
+		}
+		Integer from = Optional.ofNullable(ctx.from).map(GeomAlgeParser.IndexExprContext::getText).map(Integer::valueOf).orElse(null);
+		Integer to = Optional.ofNullable(ctx.to).map(GeomAlgeParser.IndexExprContext::getText).map(Integer::valueOf).orElse(null);
+		final int frameSlot = this.localVariablesView.get(name);
+		var ref = LocalVariableReferenceNodeGen.create(name, frameSlot);
+		var arraySlicer = ArraySlicerNodeGen.create(ref, from, to);
+
+		arraySlicer.setSourceSection(ctx.name.getStartIndex(), ctx.name.getStopIndex());
+		this.nodeStack.push(arraySlicer);
 	}
 
 	// https://stackoverflow.com/questions/4323599/best-way-to-parsedouble-with-comma-as-decimal-separator/4323627#4323627
