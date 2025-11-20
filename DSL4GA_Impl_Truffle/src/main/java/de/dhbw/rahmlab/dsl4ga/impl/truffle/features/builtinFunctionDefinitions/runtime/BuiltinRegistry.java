@@ -4,6 +4,7 @@ import com.oracle.truffle.api.dsl.NodeFactory;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLang;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.internal.InterpreterInternalException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.BuiltinFunctionRootNode;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.arrayBuiltins.ConcatFactory;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.arrayBuiltins.ReversedFactory;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.builtins.*;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.builtinsSuperClasses.BuiltinFunctionBody;
@@ -58,6 +59,7 @@ public class BuiltinRegistry {
 
 		// Array
 		this.installBuiltin(ReversedFactory.getInstance());
+		this.installBuiltin(ConcatFactory.getInstance());
 
 		// HOF
 		this.installBuiltin("map", MapNodeGen.create());
