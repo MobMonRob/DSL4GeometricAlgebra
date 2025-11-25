@@ -83,7 +83,7 @@ There are two implementations of the [API](DSL4GA_API):
 
 Both implementations share that their initialization is time-consuming, but repeated invocations are executed fast. \
 Their syntax will be the same in the longrun. However, some features will never be implemented in Fast. These are: visualization, debugger. \
-Fast will be used to measure the runtime difference to truffle if certain casadi features are used which are incompatible with a smooth debugging experience.
+Fast will be used to measure the runtime difference to Truffle if certain CasADi features are used which are incompatible with a smooth debugging experience.
 
 **Fast is currently broken. Do not use it!**
 - Recent changes in the grammar are not handled properly.
