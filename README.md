@@ -201,13 +201,13 @@ fn main() {
 	// b[] = {1, 2, 3}
 	// c[] = {1, 1, 1}
 
-	e[], f[] = mapaccum(add, 1, a)
-	// e[] = {1, 2, 4}
-	// f[] = {1, 1, 2}
+	d[], e[] = mapaccum(add, 1, a)
+	// d[] = {1, 2, 4}
+	// e[] = {1, 1, 2}
 
-	g, h = mapfold(add, 1, a)
-	// g = 4
-	// h = 2
+	f, g = mapfold(add, 1, a)
+	// f = 4
+	// g = 2
 }
 ```
 
