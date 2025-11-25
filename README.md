@@ -128,6 +128,90 @@ fn main(a, b) {
 }
 ```
 
+## Arrays
+```
+// Parameter
+fn callee(a[]) {
+	// Return
+	a, a
+}
+
+fn caller() {
+	// Init
+	a[] = {0, 1, 2, 3}
+
+	// Argument
+	// Multiple assignment
+	b[], c[] = callee(a)
+
+	// Slicing
+	/// First index: Start inclusive
+	/// Second index: End exclusive
+	/// -1: last index of array
+	d[] = a[1:-2] // {1}
+	e[] = a[1:] // {1, 2, 3}
+
+	// Access
+	f = a[0] // 0
+	g = a[-1] // 3
+
+	// Reversal
+	h[] = reversed(a) // {3, 2, 1, 0}
+
+	// Concatenation
+	i[] = concat(a, a) // {0, 1, 2, 3, 0, 1, 2, 3}
+}
+```
+
+
+## Higher-order functions “HOF”
+HOF are currently primarily used to express iteration. \
+HOF currently cannot be defined in the language itself. Instead HOF builtins are provided.
+
+#### Available HOF builtins
+| HOF         | Explanation |
+| :---------- | :---------- |
+| map         | Execute its argument function and return all intermediate result values. |
+| mapaccum    | Same as map, but accumulate on the first argument and result value of its argument function. |
+| mapfold     | Same as mapaccum, but return only the last result values. |
+
+#### Pseudocode signatures
+- `map(Func<SimpleX... -> SimpleY...>, Array/Simple...) -> Tuple of Array of Simple`
+- `mapaccum(Func<SimpleAcc, SimpleCurrent... -> SimpleAcc, SimpleOut...>, SimpleAccInit, Array/Simple...) -> Tuple of Array of Simple`
+- `mapfold(Func<SimpleAcc, SimpleCurrent... -> SimpleAcc, SimpleOut...>, SimpleAccInit, Array/Simple...) -> Tuple`
+
+#### Rules
+- The first argument of the HOF builtins is always a function “the argument function” which receives values (not arrays) and returns values (not arrays).
+- All the array arguments need to have the same size, that is the count of the elements of the respective array.
+- The iteration count is equal to the size of all the arguments arrays.
+- Simple value (not array) arguments will be repeated for each iteration.
+- The HOF calls its argument function in each iteration with the array elements at the index equal to the iteration.
+- mapaccum and mapfold only: each iteration depends on the previous iteration. To achieve this, a single accumulator variable is used. It has to be the first argument and the first return value of the argument function. The first value of the accumulator variable is the second argument of the respective HOF.
+
+#### Examples
+```
+fn add(a, b) {
+	a+b, a
+}
+
+fn main() {
+	a[] = {0, 1, 2}
+
+	b[], c[] = map(add, 1, a)
+	// b[] = {1, 2, 3}
+	// c[] = {1, 1, 1}
+
+	e[], f[] = mapaccum(add, 1, a)
+	// e[] = {1, 2, 4}
+	// f[] = {1, 1, 2}
+
+	g, h = mapfold(add, 1, a)
+	// g = 4
+	// f = 2
+}
+```
+
+
 ## Visualization
 Variables can be visualized after assignment with one or two preceding colons.
 - `:a` will assume **IPNS** representation.
