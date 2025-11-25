@@ -76,34 +76,19 @@ A Syntax-Highlighting plugin for the Netbeans-IDE can be found [here](https://gi
 ### Insertion of special characters
 A Netbeans-IDE plugin which adds a submenu into the context-menu of the editor to insert CGA-specific symbols and operators can be found [here](https://github.com/orat/netbeans-cgasymbols).
 
-<!--
-## Types to use from outside the language
-CGA multivectors and objecs of its subtypes are completely hidden - not visible outside the DSL. Input data to and output data from the DSL is transfered by objects of the classes listed in the following table:
-| Name | implementation class | hints |
-| :-------- | :---- | ------|
-| double | Double |  |
-| Tuple3d | org.jogamp.vecmath.Tuple3d |  |
-| Quat4d | org.jogamp.vecmath.Quat4d |  |
-| DualQuat4d | de.orat.math.vecmath.ext.DualQuat4d | |
-| DualNumber | de.orat.math.vecmath.ext.DualNumber | |
-| ComplexNumber | de.orat.math.vecmath.ext.ComplexNumber | |
-
-Inside the DSL all of these types are automatically casted into CGA multivectors. No other operations are possible based on these types inside the DSL.
--->
-
-
 ## Implementations
 There are two implementations of the [API](DSL4GA_API):
+- [Truffle](DSL4GA_Impl_Truffle), which will be optimized for a good development experience. **Use truffle by default.**
 - [Fast](DSL4GA_Impl_Fast), which will be optimized for runtime -not parsing- performance.
-- [Truffle](DSL4GA_Impl_Truffle), which will be optimized for a good development experience.
 
-Their syntax will be the same in the longrun. However, during development of the language, some syntactical constructs will temporarily not supported by one or the other.
+Both implementations share that their initialization is time-consuming, but repeated invocations are executed fast. \
+Their syntax will be the same in the longrun. However, some features will never be implemented in Fast. These are: visualization, debugger. \
+Fast will be used to measure the runtime difference to truffle if certain casadi features are used which are incompatible with a smooth debugging experience.
 
-The following features are supported ("Y" is yes, "N" is not yet, "-" is will not):
-| F | T | Feature |
-| - | - | ------- |
-| - | Y | Visualization |
-| - | Y | Debugger |
+**Fast is currently broken. Do not use it!**
+- Recent changes in the grammar are not handled properly.
+- Builtins and operators can be missing or wrong.
+- Missing features: arrays, higher-order functions.
 
 
 ## Syntax
