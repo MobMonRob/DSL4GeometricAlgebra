@@ -102,9 +102,6 @@ With algebra being "cga" and implementation being "theImpl", the first line woul
 ```
 
 
-## Expressions
-- Numeric literals like "0.5" and scalar constants like "π" are in OPNS representation.
-
 ## Function definitions
 #### Rules
 - There needs to be at least one function defined with the name `main`. Invokations of the program will call this one first.
@@ -243,6 +240,11 @@ The following table shows which elements are visualized and in which colors. The
 | circle, oriented-point, line |   2   | green |
 | point pair, flat-point       |   3   | blue  |
 | point                        |   4   | yellow|
+
+
+## Expressions
+- Numeric literals like "0.5" and scalar constants like "π" are in OPNS representation.
+
 
 ## Operators
 Hint: Operator precedence determines how operators are parsed concerning each other. A higher precedence number
