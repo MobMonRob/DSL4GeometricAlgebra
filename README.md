@@ -207,7 +207,7 @@ fn main() {
 
 	g, h = mapfold(add, 1, a)
 	// g = 4
-	// f = 2
+	// h = 2
 }
 ```
 
