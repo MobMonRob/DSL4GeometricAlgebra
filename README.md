@@ -115,6 +115,9 @@ With algebra being "cga" and implementation being "theImpl", the first line woul
 - The count of the assigned variables must match the count of the result values of a call.
 - With an assignment to "_", a return value can be discarded. This is only possible for calls which return at least two values.
 - If the right side of an assignment is not only a call but a composed expression, within it are only calls allowed which return exactly one value.
+- Variable mutation is not possible. This means, that once assigned, its value cannot change until it scope ends. But if the same scope is entered multiple times, each time the variable can have a different value.
+- Functions are pure. This means they 1. are right-unique relations from their arguments to their returns und 2. have no side effects. Thus these "function" subroutines behave similar to mathematical functions.
+
 
 #### Example
 Custom functions can be defined like in the following example:
@@ -165,6 +168,7 @@ fn caller() {
 ```
 
 #### Rules
+- Arrays are static. Their size does cannot change.
 - The main Function shall not receive or return arrays.
 
 
