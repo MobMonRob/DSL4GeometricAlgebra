@@ -168,7 +168,7 @@ fn caller() {
 ```
 
 #### Rules
-- Arrays are static. Their size does cannot change.
+- Arrays are static. Their size cannot change.
 - The main Function shall not receive or return arrays.
 
 
