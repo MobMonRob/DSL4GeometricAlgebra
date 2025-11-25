@@ -6,8 +6,11 @@ This repository contains code to work with multivector expressions of geometric 
 The current state of the project is a proof of concept, so it is not advised to use it in real world applications. If you have feedback or feature suggestions, please create a new GitHub Issue.
 
 Especially be cautious regarding:
-- the documentation may not be up to date.
-- breaking changes can occur at any time.
+- The documentation may not be up to date.
+- Breaking changes can occur at any time.
+- There is still no static type system. Even trivial errors may only be noticed late while executing. Sometimes exceptions are raised later than the actual error or not at all. Thus erroneous code can lead to undefined behaviour.
+- Rules specified in the documentation may not be consistently enforced with an eager exception. But adherence to them will avoid undefined behaviour and increase intelligibility of raised exceptions.
+
 
 
 ## GraalVM Setup
@@ -106,6 +109,7 @@ With algebra being "cga" and implementation being "theImpl", the first line woul
 #### Rules
 - There needs to be at least one function defined with the name `main`. Invokations of the program will call this one first.
 - Currently, callees need to be defined above the callers.
+- Recursion is not possible.
 - In consequence, `main` needs to be the last function defined.
 - Function overloading is currently not supported and will lead to an exception.
 - A function will return only the list in the last line of its definition.
@@ -163,6 +167,9 @@ fn caller() {
 }
 ```
 
+#### Rules
+- The main Function shall not receive or return arrays.
+
 
 ## Higher-order functions “HOF”
 HOF are currently primarily used to express iteration. \
@@ -181,7 +188,8 @@ HOF currently cannot be defined in the language itself. Instead HOF builtins are
 - `mapfold(Func<SimpleAcc, SimpleCurrent... -> SimpleAcc, SimpleOut...>, SimpleAccInit, Array/Simple...) -> Tuple`
 
 #### Rules
-- The first argument of the HOF builtins is always a function “the argument function” which receives values (not arrays) and returns values (not arrays).
+- The first argument of the HOF builtins is always a function “the argument function”.
+- The argument function does not receive or return arrays.
 - All the array arguments need to have the same size, that is the count of the elements of the respective array.
 - The iteration count is equal to the size of all the arguments arrays.
 - Simple value (not array) arguments will be repeated for each iteration.
