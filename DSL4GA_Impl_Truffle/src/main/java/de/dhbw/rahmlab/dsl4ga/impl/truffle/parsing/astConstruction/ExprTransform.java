@@ -14,31 +14,32 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.arrays.runtime.nodes.expr.Ar
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionCalls.nodes.expr.FunctionCall;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionCalls.nodes.expr.FunctionCallNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.expr.FunctionReference;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.expr.FunctionReferenceNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.Function;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.literals.nodes.expr.Constant;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.literals.nodes.expr.ConstantNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.literals.nodes.expr.ScalarLiteral;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.literals.nodes.expr.ScalarLiteralNodeGen;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.Addition;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.Division;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.DotProduct;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.GeometricProduct;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.HadamardProduct;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.Join;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.LeftContraction;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.Meet;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.OuterProduct;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.RegressiveProduct;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.RightContraction;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.Subtraction;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOps.CliffordConjugate;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOps.Dual;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOps.GeneralInverse;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOps.GradeExtraction;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOps.GradeInversion;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOps.Negate;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOps.Reverse;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOps.Undual;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.AdditionNodeGen;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.DivisionNodeGen;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.DotProductNodeGen;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.GeometricProductNodeGen;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.HadamardProductNodeGen;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.JoinNodeGen;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.LeftContractionNodeGen;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.MeetNodeGen;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.OuterProductNodeGen;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.RegressiveProductNodeGen;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.RightContractionNodeGen;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.SubtractionNodeGen;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOps.CliffordConjugateNodeGen;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOps.DualNodeGen;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOps.GeneralInverseNodeGen;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOps.GradeExtractionNodeGen;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOps.GradeInversionNodeGen;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOps.NegateNodeGen;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOps.ReverseNodeGen;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOps.UndualNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.nodes.expr.LocalVariableReferenceNodeGen;
 import de.orat.math.gacalc.api.MultivectorExpression;
 import java.text.DecimalFormat;
@@ -107,7 +108,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		ExpressionBaseNode right = nodeStack.pop();
 		ExpressionBaseNode left = nodeStack.pop();
 
-		ExpressionBaseNode result = new GeometricProduct(left, right);
+		ExpressionBaseNode result = GeometricProductNodeGen.create(left, right);
 
 		int start;
 		int stop;
@@ -132,27 +133,27 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 
 		ExpressionBaseNode result = switch (ctx.op.getType()) {
 			case GeomAlgeParser.LOGICAL_AND ->
-				new OuterProduct(left, right);
+				OuterProductNodeGen.create(left, right);
 			case GeomAlgeParser.PLUS_SIGN ->
-				new Addition(left, right);
+				AdditionNodeGen.create(left, right);
 			case GeomAlgeParser.HYPHEN_MINUS ->
-				new Subtraction(left, right);
+				SubtractionNodeGen.create(left, right);
 			case GeomAlgeParser.L_CONTRACTION ->
-				new LeftContraction(left, right);
+				LeftContractionNodeGen.create(left, right);
 			case GeomAlgeParser.R_CONTRACTION ->
-				new RightContraction(left, right);
+				RightContractionNodeGen.create(left, right);
 			case GeomAlgeParser.LOGICAL_OR ->
-				new RegressiveProduct(left, right);
+				RegressiveProductNodeGen.create(left, right);
 			case GeomAlgeParser.SOLIDUS ->
-				new Division(left, right);
+				DivisionNodeGen.create(left, right);
 			case GeomAlgeParser.DOT_OPERATOR ->
-				new DotProduct(left, right);
+				DotProductNodeGen.create(left, right);
 			case GeomAlgeParser.INTERSECTION ->
-				new Meet(left, right);
+				MeetNodeGen.create(left, right);
 			case GeomAlgeParser.UNION ->
-				new Join(left, right);
+				JoinNodeGen.create(left, right);
 			case GeomAlgeParser.CIRCLED_DOT_OPERATOR ->
-				new HadamardProduct(left, right);
+				HadamardProductNodeGen.create(left, right);
 			default ->
 				throw new AssertionError();
 		};
@@ -168,7 +169,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 
 		ExpressionBaseNode result = switch (ctx.op.getType()) {
 			case GeomAlgeParser.HYPHEN_MINUS ->
-				new Negate(right);
+				NegateNodeGen.create(right);
 			default ->
 				throw new AssertionError();
 		};
@@ -184,19 +185,19 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 
 		ExpressionBaseNode result = switch (ctx.op.getType()) {
 			case GeomAlgeParser.SUPERSCRIPT_MINUS__SUPERSCRIPT_ONE ->
-				new GeneralInverse(left);
+				GeneralInverseNodeGen.create(left);
 			case GeomAlgeParser.ASTERISK ->
-				new Dual(left);
+				DualNodeGen.create(left);
 			case GeomAlgeParser.SMALL_TILDE ->
-				new Reverse(left);
+				ReverseNodeGen.create(left);
 			case GeomAlgeParser.DAGGER ->
-				new CliffordConjugate(left);
+				CliffordConjugateNodeGen.create(left);
 			case GeomAlgeParser.SUPERSCRIPT_MINUS__ASTERISK ->
-				new Undual(left);
+				UndualNodeGen.create(left);
 			case GeomAlgeParser.SUPERSCRIPT_TWO ->
-				new GeometricProduct(left, left);
+				GeometricProductNodeGen.create(left, left);
 			case GeomAlgeParser.CIRCUMFLEX_ACCENT ->
-				new GradeInversion(left);
+				GradeInversionNodeGen.create(left);
 			default ->
 				throw new AssertionError();
 		};
@@ -227,7 +228,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 				throw new AssertionError();
 		};
 
-		ExpressionBaseNode result = new GradeExtraction(inner, grade);
+		ExpressionBaseNode result = GradeExtractionNodeGen.create(inner, grade);
 
 		result.setSourceSection(ctx.getStart().getStartIndex(), ctx.getStop().getStopIndex());
 
@@ -288,7 +289,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 			ref = LocalVariableReferenceNodeGen.create(name, frameSlot);
 		} else if (this.functionsView.containsKey(name)) {
 			Function function = findFunction(name);
-			ref = new FunctionReference(function);
+			ref = FunctionReferenceNodeGen.create(function);
 		} else {
 			throw new ValidationParsingRuntimeException(String.format("Variable or function \"%s\" has not been declared before.", name));
 		}
@@ -359,7 +360,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 	private static final class EnterExprListMarker extends ExpressionBaseNode {
 
 		@Override
-		public MultivectorExpression executeGeneric(VirtualFrame frame) {
+		public MultivectorExpression execute(VirtualFrame frame) {
 			throw new AssertionError();
 		}
 	}
@@ -395,7 +396,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		}
 
 		@Override
-		public MultivectorExpression executeGeneric(VirtualFrame frame) {
+		public MultivectorExpression execute(VirtualFrame frame) {
 			throw new AssertionError();
 		}
 	}

@@ -1,8 +1,14 @@
 package de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external;
 
+import com.oracle.truffle.api.interop.ExceptionType;
+import com.oracle.truffle.api.interop.InteropLibrary;
+import com.oracle.truffle.api.library.ExportLibrary;
+import com.oracle.truffle.api.library.ExportMessage;
+
 /**
  * This exception indicates a syntactical error or an incorrect external invocation.
  */
+@ExportLibrary(InteropLibrary.class)
 public class ValidationException extends AbstractExternalException {
 
 	public ValidationException(Throwable cause) {
@@ -23,5 +29,11 @@ public class ValidationException extends AbstractExternalException {
 
 	public ValidationException(String message, Throwable cause) {
 		super(message, cause, null);
+	}
+
+	@ExportMessage
+	@Override
+	public ExceptionType getExceptionType() {
+		return ExceptionType.PARSE_ERROR;
 	}
 }

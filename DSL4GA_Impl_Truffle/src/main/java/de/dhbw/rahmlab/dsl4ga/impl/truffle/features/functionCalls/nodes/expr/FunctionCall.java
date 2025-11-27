@@ -27,7 +27,7 @@ public abstract class FunctionCall extends ExpressionBaseNode {
 	protected FunctionCall(Function function, ExpressionBaseNode[] arguments) {
 		this.function = function;
 		this.arguments = arguments;
-		assert function.getArity() == arguments.length;
+		catchAndRethrow(null, () -> function.ensureArity(arguments.length));
 	}
 
 	@Specialization

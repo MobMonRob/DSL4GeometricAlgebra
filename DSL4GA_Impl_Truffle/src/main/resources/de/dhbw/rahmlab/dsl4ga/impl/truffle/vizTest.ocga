@@ -10,6 +10,7 @@ fn main(a, b) {
 	// e = mapfold(add, 3, c)
 	// e[] = concat(c, d)
 	e[] = d[:-1]
+	// f[] = range(0, 100, 1)
 
 	a
 }

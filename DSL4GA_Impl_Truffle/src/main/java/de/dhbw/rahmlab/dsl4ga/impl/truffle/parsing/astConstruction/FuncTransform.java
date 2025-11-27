@@ -14,6 +14,7 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.stmtSuperClasses.NonRetu
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.ValidationException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.arrays.runtime.nodes.expr.ArrayInitExpr;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.arrays.runtime.nodes.expr.ArrayInitExprNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionCalls.nodes.expr.FunctionCall;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.FunctionDefinitionBody;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.FunctionDefinitionRootNode;
@@ -22,6 +23,7 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.ex
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.expr.TupleReader;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.expr.TupleReaderNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.stmt.RetExprStmt;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.stmt.RetExprStmtNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.Function;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.nodes.expr.LocalVariableReference;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.nodes.expr.LocalVariableReferenceNodeGen;
@@ -80,7 +82,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 		ParseTreeWalkerSkipping.walk(parser, transform, ctx, GeomAlgeParser.ExprContext.class);
 
 		var exprs = transform.retExprs.exprs;
-		RetExprStmt retExprStmt = new RetExprStmt(exprs.toArray(ExpressionBaseNode[]::new), transform.getNewScopeVisibleVariablesIndex());
+		RetExprStmt retExprStmt = RetExprStmtNodeGen.create(exprs.toArray(ExpressionBaseNode[]::new), transform.getNewScopeVisibleVariablesIndex());
 		int fromIndex = transform.retExprs.getSourceSection().getCharIndex();
 		int toIndexInclusive = transform.retExprs.getSourceSection().getCharEndIndex() - 1;
 		retExprStmt.setSourceSection(fromIndex, toIndexInclusive);
@@ -222,7 +224,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 		} else {
 			exprList = new ExprList(Collections.emptyList());
 		}
-		ArrayInitExpr arrayInit = new ArrayInitExpr(exprList.exprs.toArray(ExpressionBaseNode[]::new));
+		ArrayInitExpr arrayInit = ArrayInitExprNodeGen.create(exprList.exprs.toArray(ExpressionBaseNode[]::new));
 
 		// Workaround for missing type system.
 		if (ctx.vizAssigned.arrInd == null) {

@@ -9,7 +9,7 @@ import de.orat.math.gacalc.api.MultivectorExpression;
 @NodeField(name = "scalar", type = Double.class)
 public abstract class ScalarLiteral extends ExpressionBaseNode {
 
-	protected abstract double getScalar();
+	public abstract double getScalar();
 
 	protected MultivectorExpression createScalarMV() {
 		return currentLanguageContext().exprGraphFactory.createExpr(getScalar());

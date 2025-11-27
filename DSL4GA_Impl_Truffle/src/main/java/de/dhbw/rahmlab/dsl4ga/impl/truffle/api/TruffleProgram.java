@@ -1,5 +1,6 @@
 package de.dhbw.rahmlab.dsl4ga.impl.truffle.api;
 
+import com.oracle.truffle.api.interop.TruffleObject;
 import de.dhbw.rahmlab.dsl4ga.api.iProgram;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.builtinTypes.truffleBox.TruffleBox;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.superClasses.GeomAlgeLangBaseNode;
@@ -73,10 +74,12 @@ public class TruffleProgram implements iProgram {
 		try {
 			origin = ex.getGuestObject().as(AbstractExternalException.class);
 		} catch (Exception ex2) {
-			return ex;
+			RuntimeException fullEx = new RuntimeException(ex2);
+			fullEx.addSuppressed(ex);
+			return fullEx;
 		}
 		if (origin == null) {
-			return ex;
+			return new RuntimeException(ex);
 		}
 
 		if (origin instanceof LanguageRuntimeException langException) {
@@ -119,12 +122,14 @@ public class TruffleProgram implements iProgram {
 		);
 		String nodeType = location.getClass().getSimpleName();
 		String characters = sourceSection.getCharacters().toString();
+		String message = langException.getMessage();
 
 		String newMessage = String.format(
-			"\nLocation: %s\nCharacters: \"%s\"\nNodeType: %s",
+			"\nLocation: %s\nCharacters: \"%s\"\nNodeType: %s\nMessage: %s",
 			locationDescription,
 			characters,
-			nodeType
+			nodeType,
+			message
 		);
 
 		return new LanguageRuntimeException(newMessage, langException, location);

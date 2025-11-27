@@ -2,10 +2,8 @@ package de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external;
 
 import com.oracle.truffle.api.interop.ExceptionType;
 import com.oracle.truffle.api.interop.InteropLibrary;
-import com.oracle.truffle.api.interop.UnsupportedMessageException;
 import com.oracle.truffle.api.library.ExportLibrary;
 import com.oracle.truffle.api.library.ExportMessage;
-import com.oracle.truffle.api.source.SourceSection;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.superClasses.GeomAlgeLangBaseNode;
 
 /**
@@ -29,36 +27,9 @@ public class LanguageRuntimeException extends AbstractExternalException {
 		super(message, new RuntimeException(), location);
 	}
 
-	public GeomAlgeLangBaseNode location() {
-		return (GeomAlgeLangBaseNode) super.getLocation();
-	}
-
 	@ExportMessage
-	ExceptionType getExceptionType() {
+	@Override
+	public ExceptionType getExceptionType() {
 		return ExceptionType.RUNTIME_ERROR;
-	}
-
-	@ExportMessage
-	boolean isExceptionIncompleteSource() {
-		// return incompleteSource;
-		return false;
-	}
-
-	@ExportMessage
-	boolean hasSourceLocation() {
-		GeomAlgeLangBaseNode location = this.location();
-
-		if (location == null) {
-			return false;
-		}
-		if (location.getSourceSection() == null) {
-			return false;
-		}
-		return true;
-	}
-
-	@ExportMessage(name = "getSourceLocation")
-	SourceSection getSourceSection() throws UnsupportedMessageException {
-		return this.location().getSourceSection();
 	}
 }

@@ -92,7 +92,7 @@ public class ParseTreeWalker {
 		try {
 			this.listener.enterEveryRule(ctx);
 			ctx.enterRule(this.listener);
-		} catch (RuntimeException ex) {
+		} catch (Throwable ex) {
 			handleException(ex, this.parser, ctx);
 		}
 	}
@@ -102,7 +102,7 @@ public class ParseTreeWalker {
 		try {
 			ctx.exitRule(this.listener);
 			this.listener.exitEveryRule(ctx);
-		} catch (RuntimeException ex) {
+		} catch (Throwable ex) {
 			handleException(ex, this.parser, ctx);
 		}
 	}

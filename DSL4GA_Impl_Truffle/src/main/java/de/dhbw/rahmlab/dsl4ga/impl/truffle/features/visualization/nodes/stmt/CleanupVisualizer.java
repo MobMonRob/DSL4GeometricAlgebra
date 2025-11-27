@@ -31,10 +31,6 @@ public abstract class CleanupVisualizer extends NonReturningStatementBaseNode {
 	@Override
 	public boolean hasTag(Class<? extends Tag> tag) {
 		// Prevents double stepping in the debugger.
-		if (tag == StandardTags.StatementTag.class) {
-			return false;
-		} else {
-			return super.hasTag(tag);
-		}
+		return false;
 	}
 }

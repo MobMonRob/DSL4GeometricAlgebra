@@ -8,7 +8,7 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.st
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.superClasses.AbstractFunctionBody;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.visualization.nodes.stmt.CleanupVisualizer;
 
-public class FunctionDefinitionBody extends AbstractFunctionBody implements BlockNode.ElementExecutor<NonReturningStatementBaseNode> {
+public final class FunctionDefinitionBody extends AbstractFunctionBody implements BlockNode.ElementExecutor<NonReturningStatementBaseNode> {
 
 	protected FunctionDefinitionBody() {
 
@@ -47,8 +47,8 @@ public class FunctionDefinitionBody extends AbstractFunctionBody implements Bloc
 	}
 
 	@Override
-	public Object executeGeneric(VirtualFrame frame) {
-		return directCall(frame);
+	protected Object execute(VirtualFrame frame) {
+		return this.directCall(frame);
 	}
 
 	public Object directCall(VirtualFrame frame) {
@@ -56,7 +56,7 @@ public class FunctionDefinitionBody extends AbstractFunctionBody implements Bloc
 			stmts.executeVoid(frame, BlockNode.NO_ARGUMENT);
 		}
 
-		Object rets = this.retExprStmt.execute(frame);
+		Object rets = this.retExprStmt.executeReturningGeneric(frame);
 
 		if (this.nulleableCleanupVizualizer != null) {
 			this.nulleableCleanupVizualizer.executeGeneric(frame);
