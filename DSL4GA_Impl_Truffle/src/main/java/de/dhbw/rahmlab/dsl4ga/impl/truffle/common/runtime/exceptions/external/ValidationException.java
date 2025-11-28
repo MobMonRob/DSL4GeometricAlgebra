@@ -4,6 +4,7 @@ import com.oracle.truffle.api.interop.ExceptionType;
 import com.oracle.truffle.api.interop.InteropLibrary;
 import com.oracle.truffle.api.library.ExportLibrary;
 import com.oracle.truffle.api.library.ExportMessage;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.superClasses.GeomAlgeLangBaseNode;
 
 /**
  * This exception indicates a syntactical error.
@@ -12,7 +13,7 @@ import com.oracle.truffle.api.library.ExportMessage;
 public class ValidationException extends AbstractExternalException {
 
 	public ValidationException(Throwable cause) {
-		super(cause.getMessage(), cause, null);
+		super(null, cause, null);
 	}
 
 	public ValidationException(int line, String message) {
@@ -28,6 +29,10 @@ public class ValidationException extends AbstractExternalException {
 
 	public ValidationException(String message, Throwable cause) {
 		super(message, cause, null);
+	}
+
+	public ValidationException(String message, Throwable cause, GeomAlgeLangBaseNode location) {
+		super(message, cause, location);
 	}
 
 	@ExportMessage

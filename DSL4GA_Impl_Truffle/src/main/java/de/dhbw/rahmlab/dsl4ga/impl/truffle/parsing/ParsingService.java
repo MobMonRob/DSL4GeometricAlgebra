@@ -1,12 +1,18 @@
 package de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing;
 
+import com.oracle.truffle.api.instrumentation.InstrumentableNode;
+import com.oracle.truffle.api.instrumentation.ProbeNode;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.CharStreamSupplier;
+import de.dhbw.rahmlab.dsl4ga.common.parsing.ContextParseCancellationException;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.CustomBailErrorStrategy;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.CustumDiagnosticErrorListener;
+import de.dhbw.rahmlab.dsl4ga.common.parsing.ExceptionContext;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeLexer;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParser;
+import de.dhbw.rahmlab.dsl4ga.common.parsing.IGetExceptionContext;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.SyntaxErrorListener;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationParsingException;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.superClasses.GeomAlgeLangBaseNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.ValidationException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.Function;
@@ -14,7 +20,6 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.astConstruction.SourceUnitTra
 import de.orat.math.gacalc.api.GAFactory;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.atn.PredictionMode;
-import org.antlr.v4.runtime.misc.ParseCancellationException;
 
 public final class ParsingService {
 
@@ -30,13 +35,30 @@ public final class ParsingService {
 		return new ParsingService();
 	}
 
+	private static final class LocationCarrier extends GeomAlgeLangBaseNode {
+
+		@Override
+		public InstrumentableNode.WrapperNode createWrapper(ProbeNode probeNode) {
+			throw new AssertionError();
+		}
+	}
+
+	private static <E extends Exception & IGetExceptionContext> ValidationException decorateException(E ex) {
+		ExceptionContext exCtx = ex.getExceptionContext();
+
+		LocationCarrier loc = new LocationCarrier();
+		loc.setSourceSection(exCtx.fromIndex, exCtx.toIndexInclusive);
+
+		throw new ValidationException(null, ex, loc);
+	}
+
 	protected FactoryAndMain invoke(GeomAlgeParser parser, GeomAlgeLangContext geomAlgeLangContext) {
-		GeomAlgeParser.SourceUnitContext sourceUnit = parser.sourceUnit();
 		try {
+			GeomAlgeParser.SourceUnitContext sourceUnit = parser.sourceUnit();
 			FactoryAndMain factoryAndMain = SourceUnitTransform.generate(parser, sourceUnit, geomAlgeLangContext);
 			return factoryAndMain;
 		} catch (ValidationParsingException ex) {
-			throw new ValidationException(null, ex);
+			throw decorateException(ex);
 		}
 	}
 
@@ -47,7 +69,7 @@ public final class ParsingService {
 		// configureParserDiagnostic(parser); //DBG
 		try {
 			return invoke(parser, geomAlgeLangContext);
-		} catch (ParseCancellationException ex) {
+		} catch (ContextParseCancellationException ex) {
 			// System.out.println("PredictionMode.SLL failed.");
 
 			// Leads to incorrect error reporting in some cases.
@@ -61,8 +83,8 @@ public final class ParsingService {
 			configureParserDiagnostic(parser);
 			try {
 				return invoke(parser, geomAlgeLangContext);
-			} catch (ParseCancellationException ex2) {
-				throw new ValidationException(ex2);
+			} catch (ContextParseCancellationException ex2) {
+				throw decorateException(ex);
 			}
 		}
 	}

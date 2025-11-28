@@ -48,16 +48,16 @@ public final class CatchAndRethrow {
 			throw markerEx.cause;
 		} else {
 			// Create position info the first time at the lowest point.
-			String message = createExceptionMessage(parser, ctx, ex);
-			throw new ValidationParsingException(message, ex, true, false);
-		}
-	}
+			int fromIndex = ctx.getStart().getStartIndex();
+			int toIndexInclusive = ctx.getStop().getStopIndex();
 
-	private static String createExceptionMessage(Parser parser, ParserRuleContext ctx, Throwable ex) {
-		String infoString = parser.getInputStream().getText(ctx.start, ctx.stop);
-		int line = ctx.start.getLine();
-		int charPositionInLine = ctx.start.getCharPositionInLine();
-		String message = String.format("\nline: %s, position: %s, tokens: \'%s\', msg: \'%s\'", line, charPositionInLine, infoString, ex.getMessage());
-		return message;
+			String infoString = parser.getInputStream().getText(ctx.start, ctx.stop);
+			int line = ctx.start.getLine();
+			int charPositionInLine = ctx.start.getCharPositionInLine();
+			String message = String.format("\nline: %s, position: %s, tokens: \'%s\', msg: \'%s\'", line, charPositionInLine, infoString, ex.getMessage());
+
+			ExceptionContext exCtx = new ExceptionContext(fromIndex, toIndexInclusive);
+			throw new ValidationParsingException(exCtx, message, ex, true, false);
+		}
 	}
 }

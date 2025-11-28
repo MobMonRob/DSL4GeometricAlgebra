@@ -2,6 +2,7 @@ package de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions;
 
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.superClasses.GeomAlgeLangBaseNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.LanguageRuntimeException;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.AbstractExternalException;
 
 /**
  * Bundles commonly used catch-and-rethrow commands which in turn are needed to ensure that emitted exceptions
@@ -38,8 +39,8 @@ public abstract class CatchAndRethrow {
 
 	public static void handle(Throwable exc, GeomAlgeLangBaseNode location) {
 		switch (exc) {
-			case LanguageRuntimeException ex -> {
-				if (!ex.hasSourceLocation() && location.hasSourceSection()) {
+			case AbstractExternalException ex -> {
+				if (!ex.hasSourceLocation() && (location != null) && location.hasSourceSection()) {
 					System.out.flush();
 					System.out.print("case 1: ");
 					System.out.println(locationName(location));
@@ -52,6 +53,7 @@ public abstract class CatchAndRethrow {
 				}
 				System.out.flush();
 				System.out.print("case 2: ");
+				System.out.print("exLoc: " + locationName(ex.location()) + "; currentLoc: ");
 				System.out.println(locationName(location));
 				System.out.flush();
 				throw ex;
