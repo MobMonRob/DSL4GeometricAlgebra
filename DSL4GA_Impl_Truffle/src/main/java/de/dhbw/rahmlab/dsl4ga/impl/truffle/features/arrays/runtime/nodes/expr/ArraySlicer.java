@@ -6,7 +6,6 @@ import com.oracle.truffle.api.dsl.NodeField;
 import com.oracle.truffle.api.dsl.Specialization;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
-import static de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.CatchAndRethrow.catchAndRethrow;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.arrays.runtime.ArrayObject;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.nodes.expr.LocalVariableReference;
 import java.util.Arrays;
@@ -32,6 +31,11 @@ public abstract class ArraySlicer extends ExpressionBaseNode {
 		} else {
 			from = fromNullable;
 		}
+
+		if (from < 0 || from >= len) {
+			throw new IndexOutOfBoundsException(fromNullable);
+		}
+
 		return from;
 	}
 
@@ -48,17 +52,16 @@ public abstract class ArraySlicer extends ExpressionBaseNode {
 			to = toNullable;
 		}
 
+		if (to < 0 || to >= len) {
+			throw new IndexOutOfBoundsException(toNullable);
+		}
+
 		return to;
 	}
 
 	@Specialization
 	public ArrayObject read(VirtualFrame frame, ArrayObject arr, @Cached(value = "correctedFrom(arr)", neverDefault = false) int from, @Cached(value = "correctedTo(arr)", neverDefault = false) int to) {
-		/*
-		if (from >= to) {
-			return new ArrayObject(new Object[0]);
-		}
-		 */
-		Object[] newArr = catchAndRethrow(this, () -> Arrays.asList(arr.getValues()).subList(from, to).toArray(Object[]::new));
+		Object[] newArr = Arrays.asList(arr.getValues()).subList(from, to).toArray(Object[]::new);
 		return new ArrayObject(newArr);
 	}
 }

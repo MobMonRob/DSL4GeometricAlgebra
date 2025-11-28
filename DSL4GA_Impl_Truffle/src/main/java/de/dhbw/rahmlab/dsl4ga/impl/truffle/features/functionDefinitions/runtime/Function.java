@@ -48,9 +48,13 @@ public class Function implements TruffleObject {
 		return this.arity;
 	}
 
-	public void ensureArity(int presumedArity) throws ArityException {
-		if (isArityKnown() && (this.arity != presumedArity)) {
-			throw ArityException.create(this.arity, this.arity, presumedArity);
+	public boolean arityCorrect(int presumedArity) {
+		return !isArityKnown() || (this.arity == presumedArity);
+	}
+
+	public void ensureArity(int presumedArity) {
+		if (!arityCorrect(presumedArity)) {
+			throw new RuntimeException(ArityException.create(this.arity, this.arity, presumedArity));
 		}
 	}
 

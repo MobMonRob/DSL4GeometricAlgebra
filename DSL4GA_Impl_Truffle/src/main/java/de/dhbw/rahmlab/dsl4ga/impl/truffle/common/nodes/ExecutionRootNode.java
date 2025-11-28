@@ -55,10 +55,8 @@ public final class ExecutionRootNode extends AbstractFunctionRootNode {
 		GeomAlgeLangContext.currentExternalArgs = new ArgsMapper(fac, argsList);
 
 		ListTruffleBox symArgsBoxed = new ListTruffleBox(GeomAlgeLangContext.currentExternalArgs.params);
-		try {
-			function.ensureArity(symArgsBoxed.getInner().size());
-		} catch (ArityException ex) {
-			throw new LanguageRuntimeException("main called with wrong argument count.", ex, null);
+		if (!function.arityCorrect(symArgsBoxed.getInner().size())) {
+			throw new LanguageRuntimeException("main called with wrong argument count.", null);
 		}
 		Object callRetVal = this.mainCallNode.call(symArgsBoxed);
 		List<MultivectorExpression> symRes = switch (callRetVal) {

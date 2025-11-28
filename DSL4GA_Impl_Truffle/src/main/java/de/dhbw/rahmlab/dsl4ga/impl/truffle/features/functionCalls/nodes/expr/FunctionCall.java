@@ -12,8 +12,7 @@ import com.oracle.truffle.api.library.CachedLibrary;
 import com.oracle.truffle.api.nodes.ExplodeLoop;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.builtinTypes.truffleBox.ListTruffleBox;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
-import static de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.CatchAndRethrow.catchAndRethrow;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.internal.InterpreterInternalException;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.LanguageRuntimeException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.Function;
 import java.util.Arrays;
 
@@ -27,16 +26,13 @@ public abstract class FunctionCall extends ExpressionBaseNode {
 	protected FunctionCall(Function function, ExpressionBaseNode[] arguments) {
 		this.function = function;
 		this.arguments = arguments;
-		catchAndRethrow(null, () -> function.ensureArity(arguments.length));
+		function.ensureArity(arguments.length); // assert
 	}
 
 	@Specialization
 	protected Object call(VirtualFrame frame, @CachedLibrary(limit = "2") InteropLibrary library) {
 		Object[] argumentsValue = doExecuteArguments(frame);
-
-		return catchAndRethrow(this, () -> {
-			return doExecuteFunction(this.function, argumentsValue, library);
-		});
+		return doExecuteFunction(this.function, argumentsValue, library);
 	}
 
 	@ExplodeLoop
@@ -49,7 +45,7 @@ public abstract class FunctionCall extends ExpressionBaseNode {
 		return argumentValues;
 	}
 
-	protected Object doExecuteFunction(Function function, Object[] arguments, InteropLibrary library) throws InterpreterInternalException {
+	protected Object doExecuteFunction(Function function, Object[] arguments, InteropLibrary library) {
 		try {
 			ListTruffleBox argsBox = new ListTruffleBox(Arrays.asList(arguments));
 			// Indirect execution in order to utilize graal optimizations.
@@ -58,9 +54,9 @@ public abstract class FunctionCall extends ExpressionBaseNode {
 			return returnValue;
 		} catch (ArityException e) {
 			String message = "Wrong argument count in functionCall of: " + function.getName() + "\n" + e.toString();
-			throw new InterpreterInternalException(message);
+			throw new LanguageRuntimeException(message, this);
 		} catch (UnsupportedTypeException | UnsupportedMessageException e) {
-			throw new InterpreterInternalException(e.toString());
+			throw new LanguageRuntimeException(e.toString(), this);
 		}
 	}
 
