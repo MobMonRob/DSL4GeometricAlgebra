@@ -84,7 +84,7 @@ public class Function implements TruffleObject {
 
 			// Type system will ensure correct arity.
 			// This is to find programming errors.
-			assert ensureArity(function, arguments);
+			ensureArity(function, arguments); // assert
 
 			return callNode.call(arguments);
 		}
@@ -95,7 +95,7 @@ public class Function implements TruffleObject {
 
 			// Type system will ensure correct arity.
 			// This is to find programming errors.
-			assert ensureArity(function, arguments);
+			ensureArity(function, arguments); // assert
 
 			return callNode.call(function.getCallTarget(), arguments);
 		}

@@ -2,10 +2,9 @@ package de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.
 
 import com.oracle.truffle.api.dsl.NodeFactory;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLang;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.internal.InterpreterInternalException;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.ValidationException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.BuiltinFunctionRootNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.arrayBuiltins.ConcatFactory;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.arrayBuiltins.RangeNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.arrayBuiltins.ReversedFactory;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.builtins.*;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.builtinsSuperClasses.BuiltinFunctionBody;
@@ -99,9 +98,9 @@ public class BuiltinRegistry {
 		return this.builtins.containsKey(name);
 	}
 
-	public Function getBuiltinFunction(String name) throws InterpreterInternalException {
+	public Function getBuiltinFunction(String name) {
 		if (!this.builtins.containsKey(name)) {
-			throw new InterpreterInternalException("BuiltinFunction \"" + name + "\" does not exist.");
+			throw new ValidationException("BuiltinFunction \"" + name + "\" does not exist.");
 		}
 
 		return this.builtins.get(name);

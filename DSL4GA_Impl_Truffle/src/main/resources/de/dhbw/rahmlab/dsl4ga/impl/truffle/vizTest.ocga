@@ -12,5 +12,7 @@ fn main(a, b) {
 	e[] = d[:-1]
 	// f[] = range(0, 100, 1)
 
+	p = add(1)
+
 	a
 }

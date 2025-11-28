@@ -7,7 +7,6 @@ import com.oracle.truffle.api.source.Source;
 import com.oracle.truffle.api.source.SourceSection;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.types.runtime.TypeCasts;
-import java.util.Objects;
 
 @TypeSystemReference(TypeCasts.class)
 public abstract class GeomAlgeLangBaseNode extends Node implements InstrumentableNode {

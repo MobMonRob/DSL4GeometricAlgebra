@@ -6,7 +6,7 @@ import com.oracle.truffle.api.library.ExportLibrary;
 import com.oracle.truffle.api.library.ExportMessage;
 
 /**
- * This exception indicates a syntactical error or an incorrect external invocation.
+ * This exception indicates a syntactical error.
  */
 @ExportLibrary(InteropLibrary.class)
 public class ValidationException extends AbstractExternalException {
@@ -19,7 +19,6 @@ public class ValidationException extends AbstractExternalException {
 		this(String.format("Line %s: %s", line, message));
 	}
 
-	@Deprecated
 	public ValidationException(String message) {
 		// If the cause is omitted, then the stackTrace of Java functions will be empty.
 		// Later only the stackTrace of the cga functions will be of interest.

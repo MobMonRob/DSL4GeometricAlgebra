@@ -1,7 +1,7 @@
 package de.dhbw.rahmlab.dsl4ga.impl.truffle.features.visualization.runtime;
 
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.internal.InterpreterInternalException;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.ValidationException;
 import de.orat.math.cga.api.CGAKVector;
 import de.orat.math.cga.api.CGAMultivector;
 import de.orat.math.cga.api.CGAViewObject;
@@ -22,18 +22,18 @@ public class VisualizerService {
 
 	private static VisualizerService INSTANCE;
 
-	public static VisualizerService instance() throws InterpreterInternalException {
+	public static VisualizerService instance() {
 		if (INSTANCE == null) {
 			Optional<CGAViewer> viewerOptional = CGAViewer.getInstance();
 			if (viewerOptional.isEmpty()) {
-				throw new InterpreterInternalException("Could get no CGAViewer instance.");
+				throw new ValidationException("Could get no CGAViewer instance.");
 			}
 			INSTANCE = new VisualizerService(viewerOptional.get());
 		}
 		return INSTANCE;
 	}
 
-	public void add(MultivectorExpression mv, String name, VisualizerFunctionContext vizContext, boolean isIPNS) throws InterpreterInternalException {
+	public void add(MultivectorExpression mv, String name, VisualizerFunctionContext vizContext, boolean isIPNS) {
 		SparseDoubleMatrix sparseDoubleMatrix = GeomAlgeLangContext.currentExternalArgs.evalToSDM(List.of(mv)).get(0);
 		var sparseDoubleColumnVector = new SparseDoubleColumnVector(sparseDoubleMatrix);
 		var doubleArray = sparseDoubleColumnVector.toArray();
@@ -46,10 +46,10 @@ public class VisualizerService {
 			if (cgaViewObject != null) {
 				vizContext.addViewObject(cgaViewObject);
 			} else {
-				throw new InterpreterInternalException("Visualization of \"" + name + "\" failed!");
+				throw new ValidationException("Visualization of \"" + name + "\" failed!");
 			}
 		} else {
-			throw new InterpreterInternalException(
+			throw new ValidationException(
 				String.format("Variable \"%s\" is no k-vector!", cgaMultivector.toString(name)));
 		}
 	}

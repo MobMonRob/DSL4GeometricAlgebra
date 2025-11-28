@@ -3,7 +3,6 @@ package de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes;
 import com.oracle.truffle.api.frame.FrameDescriptor;
 import com.oracle.truffle.api.frame.FrameSlotKind;
 import com.oracle.truffle.api.frame.VirtualFrame;
-import com.oracle.truffle.api.interop.ArityException;
 import com.oracle.truffle.api.nodes.DirectCallNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.builtinTypes.Tuple;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.builtinTypes.truffleBox.ListTruffleBox;

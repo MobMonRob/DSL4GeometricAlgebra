@@ -1,6 +1,5 @@
 package de.dhbw.rahmlab.dsl4ga.impl.truffle.api;
 
-import com.oracle.truffle.api.interop.TruffleObject;
 import de.dhbw.rahmlab.dsl4ga.api.iProgram;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.builtinTypes.truffleBox.TruffleBox;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.superClasses.GeomAlgeLangBaseNode;
