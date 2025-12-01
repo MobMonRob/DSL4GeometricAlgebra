@@ -1,7 +1,6 @@
 package de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.superClasses;
 
 import com.oracle.truffle.api.dsl.TypeSystemReference;
-import com.oracle.truffle.api.instrumentation.InstrumentableNode;
 import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.source.Source;
 import com.oracle.truffle.api.source.SourceSection;
@@ -9,7 +8,7 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.types.runtime.TypeCasts;
 
 @TypeSystemReference(TypeCasts.class)
-public abstract class GeomAlgeLangBaseNode extends Node implements InstrumentableNode {
+public abstract class GeomAlgeLangBaseNode extends Node {
 
 	protected final GeomAlgeLangContext currentLanguageContext() {
 		return GeomAlgeLangContext.get(this);
@@ -60,7 +59,6 @@ public abstract class GeomAlgeLangBaseNode extends Node implements Instrumentabl
 	}
 
 	// Needed for Debugger.
-	@Override
 	public boolean isInstrumentable() {
 		return this.hasSourceSection();
 	}

@@ -1,7 +1,5 @@
 package de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing;
 
-import com.oracle.truffle.api.instrumentation.InstrumentableNode;
-import com.oracle.truffle.api.instrumentation.ProbeNode;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.CharStreamSupplier;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.ContextParseCancellationException;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.CustomBailErrorStrategy;
@@ -37,10 +35,6 @@ public final class ParsingService {
 
 	private static final class LocationCarrier extends GeomAlgeLangBaseNode {
 
-		@Override
-		public InstrumentableNode.WrapperNode createWrapper(ProbeNode probeNode) {
-			throw new AssertionError();
-		}
 	}
 
 	private static <E extends Exception & IGetExceptionContext> ValidationException decorateException(E ex) {

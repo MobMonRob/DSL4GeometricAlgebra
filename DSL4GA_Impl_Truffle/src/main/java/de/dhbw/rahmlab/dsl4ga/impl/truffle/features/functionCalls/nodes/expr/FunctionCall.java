@@ -60,6 +60,7 @@ public abstract class FunctionCall extends ExpressionBaseNode {
 		}
 	}
 
+	/*
 	@Override
 	public boolean hasTag(Class<? extends Tag> tag) {
 		if (tag == StandardTags.CallTag.class) {
@@ -67,4 +68,5 @@ public abstract class FunctionCall extends ExpressionBaseNode {
 		}
 		return super.hasTag(tag);
 	}
+	 */
 }

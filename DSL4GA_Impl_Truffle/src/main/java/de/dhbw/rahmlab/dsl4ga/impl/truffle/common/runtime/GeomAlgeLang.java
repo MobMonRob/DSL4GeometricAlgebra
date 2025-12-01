@@ -24,7 +24,7 @@ import java.io.IOException;
 @ProvidedTags({
 	StandardTags.CallTag.class,
 	StandardTags.StatementTag.class,
-	StandardTags.ExpressionTag.class,
+	// StandardTags.ExpressionTag.class,
 	StandardTags.ReadVariableTag.class,
 	StandardTags.WriteVariableTag.class,
 	StandardTags.RootBodyTag.class,
