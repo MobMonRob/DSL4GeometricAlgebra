@@ -2,6 +2,7 @@ package de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes;
 
 import com.oracle.truffle.api.frame.FrameDescriptor;
 import com.oracle.truffle.api.frame.VirtualFrame;
+import com.oracle.truffle.api.source.SourceSection;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLang;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.superClasses.AbstractFunctionRootNode;
 
@@ -22,6 +23,18 @@ public class FunctionDefinitionRootNode extends AbstractFunctionRootNode {
 
 	@Override
 	public Object execute(VirtualFrame frame) {
-		return this.funcDefBodyNode.directCall(frame);
+		return this.funcDefBodyNode.executeGeneric(frame);
+	}
+
+	// Needed for Debugger.
+	@Override
+	public SourceSection getSourceSection() {
+		return this.funcDefBodyNode.getSourceSection();
+	}
+
+	// Needed for Debugger.
+	@Override
+	public boolean isInstrumentable() {
+		return this.funcDefBodyNode.isInstrumentable();
 	}
 }

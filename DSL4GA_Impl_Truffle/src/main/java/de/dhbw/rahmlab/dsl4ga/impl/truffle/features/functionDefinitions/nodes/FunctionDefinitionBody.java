@@ -1,6 +1,10 @@
 package de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
+import com.oracle.truffle.api.instrumentation.GenerateWrapper;
+import com.oracle.truffle.api.instrumentation.ProbeNode;
+import com.oracle.truffle.api.instrumentation.StandardTags;
+import com.oracle.truffle.api.instrumentation.Tag;
 import com.oracle.truffle.api.nodes.BlockNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.stmtSuperClasses.NonReturningStatementBaseNode;
@@ -8,10 +12,19 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.st
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.superClasses.AbstractFunctionBody;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.visualization.nodes.stmt.CleanupVisualizer;
 
-public final class FunctionDefinitionBody extends AbstractFunctionBody implements BlockNode.ElementExecutor<NonReturningStatementBaseNode> {
+@GenerateWrapper
+public class FunctionDefinitionBody extends AbstractFunctionBody {
 
-	protected FunctionDefinitionBody() {
+	// Needed for Debugger.
+	@Override
+	public WrapperNode createWrapper(ProbeNode probeNode) {
+		return new FunctionDefinitionBodyWrapper(this, this, probeNode);
+	}
 
+	protected FunctionDefinitionBody(FunctionDefinitionBody other) {
+		this.stmts = other.stmts;
+		this.retExprStmt = other.retExprStmt;
+		this.nulleableCleanupVizualizer = other.nulleableCleanupVizualizer;
 	}
 
 	@Child
@@ -31,19 +44,23 @@ public final class FunctionDefinitionBody extends AbstractFunctionBody implement
 		return this.stmts;
 	}
 
+	private static final class BlockExecutor implements BlockNode.ElementExecutor<NonReturningStatementBaseNode> {
+
+		@Override
+		public void executeVoid(VirtualFrame frame, NonReturningStatementBaseNode node, int index, int argument) {
+			node.executeGeneric(frame);
+		}
+	}
+	private static final BlockExecutor blockExecutor = new BlockExecutor();
+
 	public FunctionDefinitionBody(NonReturningStatementBaseNode[] stmts, RetExprStmt retExprStmt, CleanupVisualizer nulleableCleanupVizualizer) {
 		this.retExprStmt = retExprStmt;
 		this.nulleableCleanupVizualizer = nulleableCleanupVizualizer;
 		if (stmts.length != 0) {
-			this.stmts = BlockNode.create(stmts, this);
+			this.stmts = BlockNode.create(stmts, blockExecutor);
 		} else {
 			this.stmts = null;
 		}
-	}
-
-	@Override
-	public void executeVoid(VirtualFrame frame, NonReturningStatementBaseNode node, int index, int argument) {
-		node.executeGeneric(frame);
 	}
 
 	@Override
@@ -51,7 +68,7 @@ public final class FunctionDefinitionBody extends AbstractFunctionBody implement
 		return this.directCall(frame);
 	}
 
-	public Object directCall(VirtualFrame frame) {
+	private Object directCall(VirtualFrame frame) {
 		if (this.stmts != null) {
 			stmts.executeVoid(frame, BlockNode.NO_ARGUMENT);
 		}
@@ -63,5 +80,11 @@ public final class FunctionDefinitionBody extends AbstractFunctionBody implement
 		}
 
 		return rets;
+	}
+
+	// Needed for Debugger.
+	@Override
+	public boolean hasTag(Class<? extends Tag> tag) {
+		return tag == StandardTags.RootTag.class;
 	}
 }

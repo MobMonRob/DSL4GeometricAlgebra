@@ -27,6 +27,8 @@ import java.io.IOException;
 	StandardTags.ExpressionTag.class,
 	StandardTags.ReadVariableTag.class,
 	StandardTags.WriteVariableTag.class,
+	StandardTags.RootBodyTag.class,
+	StandardTags.RootTag.class,
 	DebuggerTags.AlwaysHalt.class
 })
 public class GeomAlgeLang extends TruffleLanguage<GeomAlgeLangContext> {
