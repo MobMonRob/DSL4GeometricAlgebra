@@ -14,5 +14,7 @@ fn main(a, b) {
 
 	p[] = map(add, c, d)
 
+	r[] = range(0, 100, 1)
+
 	a
 }

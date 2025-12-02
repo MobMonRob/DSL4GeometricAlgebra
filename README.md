@@ -162,8 +162,14 @@ fn caller() {
 	// Reversal
 	h[] = reversed(a) // {3, 2, 1, 0}
 
-	// Concatenation
+	// Concatenation of 2 arrays
 	i[] = concat(a, a) // {0, 1, 2, 3, 0, 1, 2, 3}
+
+	// Range
+	//// Start inclusive
+	//// Stop exclusive
+	//// Step
+	j[] = range(1, 10, 1)
 }
 ```
 
