@@ -185,8 +185,15 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		ExpressionBaseNode result = switch (ctx.op.getType()) {
 			case GeomAlgeParser.SUPERSCRIPT_MINUS__SUPERSCRIPT_ONE ->
 				GeneralInverseNodeGen.create(left);
-			case GeomAlgeParser.ASTERISK ->
-				DualNodeGen.create(left);
+			case GeomAlgeParser.ASTERISK -> {
+				var func = this.functionsView.get("dual");
+				if (func == null) {
+					yield DualNodeGen.create(left);
+				} else {
+					// Operator overloading.
+					yield FunctionReferenceNodeGen.create(func);
+				}
+			}
 			case GeomAlgeParser.SMALL_TILDE ->
 				ReverseNodeGen.create(left);
 			case GeomAlgeParser.DAGGER ->
