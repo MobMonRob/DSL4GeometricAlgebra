@@ -7,7 +7,6 @@ import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationParsingException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.ValidationException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.Function;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.ParsingService.FactoryAndMain;
 import de.orat.math.gacalc.api.GAFactory;
 import de.orat.math.gacalc.api.GAServiceLoader;
 import java.util.Collections;
@@ -23,12 +22,7 @@ public class SourceUnitTransform extends GeomAlgeParserBaseListener {
 		this.geomAlgeLangContext = geomAlgeLangContext;
 	}
 
-	public static FactoryAndMain generate(GeomAlgeParser parser, GeomAlgeParser.SourceUnitContext ctx, GeomAlgeLangContext geomAlgeLangContext) throws ValidationParsingException {
-		Map<String, Function> functions = new HashMap<>();
-		Map<String, Function> functionsView = Collections.unmodifiableMap(functions);
-
-		// SourceUnitTransform transform = new SourceUnitTransform(geomAlgeLangContext);
-		// SkippingParseTreeWalker.walk(transform, ctx, GeomAlgeParser.FunctionBodyContext.class);
+	public static GAFactory getFactory(GeomAlgeParser parser, GeomAlgeParser.SourceUnitContext ctx) {
 		var algebraContext = ctx.algebra();
 		String algebraID = algebraContext.algebraID.getText();
 		Token implID = algebraContext.implID;
@@ -40,6 +34,15 @@ public class SourceUnitTransform extends GeomAlgeParserBaseListener {
 			fac = GAServiceLoader.getGAFactoryThrowing(algebraID);
 		}
 
+		return fac;
+	}
+
+	public static Map<String, Function> generate(Map<String, Function> initialFunctionsView, GeomAlgeParser parser, GeomAlgeParser.SourceUnitContext ctx, GeomAlgeLangContext geomAlgeLangContext) throws ValidationParsingException {
+		Map<String, Function> functions = new HashMap<>(initialFunctionsView);
+		Map<String, Function> functionsView = Collections.unmodifiableMap(functions);
+
+		// SourceUnitTransform transform = new SourceUnitTransform(geomAlgeLangContext);
+		// SkippingParseTreeWalker.walk(transform, ctx, GeomAlgeParser.FunctionBodyContext.class);
 		for (FunctionContext functionCtx : ctx.functions) {
 			Function function = FuncTransform.generate(parser, functionCtx, geomAlgeLangContext, functionsView);
 			String functionName = function.getName();
@@ -50,10 +53,6 @@ public class SourceUnitTransform extends GeomAlgeParserBaseListener {
 			functions.put(functionName, function);
 		}
 
-		Function main = functions.get("main");
-		if (main == null) {
-			throw new ValidationException("No main function has been defined.");
-		}
-		return new FactoryAndMain(fac, main);
+		return functionsView;
 	}
 }

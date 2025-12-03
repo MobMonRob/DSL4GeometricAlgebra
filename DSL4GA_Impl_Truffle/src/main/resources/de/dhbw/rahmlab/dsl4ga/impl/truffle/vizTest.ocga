@@ -4,6 +4,10 @@ fn add(a, b) {
 	a+b
 }
 
+fn dummy(a) {
+	a+1
+}
+
 fn main(a, b) {
 	c[] = {3, 5, 1}
 	d[] = {7, 9, 1}
@@ -12,9 +16,9 @@ fn main(a, b) {
 	e[] = d[:-1]
 	// f[] = range(0, 100, 1)
 
-	p[] = map(add, c, d)
+	g[] = map(add, c, d)
 
-	r[] = range(0, 100, 1)
+	// h = dummy(2)²+5
 
 	a
 }

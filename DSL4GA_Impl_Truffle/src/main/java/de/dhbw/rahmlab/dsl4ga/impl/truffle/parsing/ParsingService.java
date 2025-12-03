@@ -16,12 +16,26 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.Va
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.Function;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.astConstruction.SourceUnitTransform;
 import de.orat.math.gacalc.api.GAFactory;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Optional;
+import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.atn.PredictionMode;
 
 public final class ParsingService {
 
 	public static record FactoryAndMain(GAFactory fac, Function main) {
+
+	}
+
+	public static record FactoryAndFunctions(GAFactory fac, Map<String, Function> functions) {
+
+	}
+
+	public static record Pair<TA, TB>(TA a, TB b) {
 
 	}
 
@@ -46,23 +60,63 @@ public final class ParsingService {
 		throw new ValidationException(null, ex, loc);
 	}
 
-	protected FactoryAndMain invoke(GeomAlgeParser parser, GeomAlgeLangContext geomAlgeLangContext) {
+	protected FactoryAndFunctions invoke(Optional<GAFactory> optFac, Map<String, Function> functionsView, GeomAlgeParser parser, GeomAlgeLangContext geomAlgeLangContext) throws ValidationParsingException {
+		GeomAlgeParser.SourceUnitContext sourceUnit = parser.sourceUnit();
+		GAFactory fac = SourceUnitTransform.getFactory(parser, sourceUnit);
+		Map<String, Function> allFunctions = functionsView;
+
+		if (optFac.isEmpty()) {
+			// Get algebra import file.
+			Optional<Path> optLibFile = fac.getAlgebraLibFile();
+			if (optLibFile.isPresent()) {
+				// Exceptions hier liefern später nicht die Source Datei zurück.
+				CharStreamSupplier libFileSupplier;
+				try {
+					libFileSupplier = CharStreamSupplier.from(CharStreams.fromPath(optLibFile.get()));
+				} catch (IOException ex) {
+					throw new ValidationException(ex);
+				}
+				allFunctions = parse(Optional.of(fac), allFunctions, libFileSupplier, geomAlgeLangContext).functions();
+			}
+		} else {
+			GAFactory previousFac = optFac.get();
+			String algebraPrev = previousFac.getAlgebra();
+			String implPrev = previousFac.getImplementationName();
+			String algebra = fac.getAlgebra();
+			String impl = fac.getImplementationName();
+
+			if (!algebra.equals(algebraPrev)) {
+				throw new ValidationException(String.format("Different algebra in include is not allowed."));
+			}
+			if (!impl.equals(implPrev)) {
+				throw new ValidationException(String.format("Different implementation in include is not allowed."));
+			}
+		}
+
+		allFunctions = SourceUnitTransform.generate(allFunctions, parser, sourceUnit, geomAlgeLangContext);
+		return new FactoryAndFunctions(fac, allFunctions);
+	}
+
+	public FactoryAndMain parse(CharStreamSupplier program, GeomAlgeLangContext geomAlgeLangContext) {
 		try {
-			GeomAlgeParser.SourceUnitContext sourceUnit = parser.sourceUnit();
-			FactoryAndMain factoryAndMain = SourceUnitTransform.generate(parser, sourceUnit, geomAlgeLangContext);
-			return factoryAndMain;
+			FactoryAndFunctions factoryAndFunctions = parse(Optional.empty(), Collections.emptyMap(), program, geomAlgeLangContext);
+			Function main = factoryAndFunctions.functions().get("main");
+			if (main == null) {
+				throw new ValidationException("No main function has been defined.");
+			}
+			return new FactoryAndMain(factoryAndFunctions.fac(), main);
 		} catch (ValidationParsingException ex) {
 			throw decorateException(ex);
 		}
 	}
 
-	public FactoryAndMain parse(CharStreamSupplier program, GeomAlgeLangContext geomAlgeLangContext) {
+	protected FactoryAndFunctions parse(Optional<GAFactory> optFac, Map<String, Function> functionsView, CharStreamSupplier program, GeomAlgeLangContext geomAlgeLangContext) throws ValidationParsingException {
 		GeomAlgeLexer lexer = this.getLexer(program);
 		GeomAlgeParser parser = this.getParser(lexer);
 		configureParserDefault(parser);
 		// configureParserDiagnostic(parser); //DBG
 		try {
-			return invoke(parser, geomAlgeLangContext);
+			return invoke(optFac, functionsView, parser, geomAlgeLangContext);
 		} catch (ContextParseCancellationException ex) {
 			// System.out.println("PredictionMode.SLL failed.");
 
@@ -76,7 +130,7 @@ public final class ParsingService {
 
 			configureParserDiagnostic(parser);
 			try {
-				return invoke(parser, geomAlgeLangContext);
+				return invoke(optFac, functionsView, parser, geomAlgeLangContext);
 			} catch (ContextParseCancellationException ex2) {
 				throw decorateException(ex);
 			}
