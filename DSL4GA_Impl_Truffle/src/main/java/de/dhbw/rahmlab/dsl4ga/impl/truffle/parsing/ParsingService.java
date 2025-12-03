@@ -86,10 +86,10 @@ public final class ParsingService {
 			String impl = fac.getImplementationName();
 
 			if (!algebra.equals(algebraPrev)) {
-				throw new ValidationException(String.format("Different algebra in include is not allowed."));
+				throw new ValidationException(String.format("Different algebra in import is not allowed."));
 			}
 			if (!impl.equals(implPrev)) {
-				throw new ValidationException(String.format("Different implementation in include is not allowed."));
+				throw new ValidationException(String.format("Different implementation in import is not allowed."));
 			}
 		}
 
