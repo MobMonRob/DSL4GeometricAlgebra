@@ -1,24 +1,16 @@
 package de.dhbw.rahmlab.dsl4ga.common.parsing;
 
-public class ValidationParsingException extends Exception {
+public class ValidationParsingException extends Exception implements IGetExceptionContext {
 
-	public ValidationParsingException(Throwable cause) {
-		super(cause);
-	}
+	private final ExceptionContext ctx;
 
-	public ValidationParsingException(int line, String message) {
-		this(String.format("Line %s: %s", line, message));
-	}
-
-	public ValidationParsingException(String message) {
-		super(message);
-	}
-
-	public ValidationParsingException(String message, Throwable cause) {
-		super(message, cause);
-	}
-
-	public ValidationParsingException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+	public ValidationParsingException(ExceptionContext ctx, String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
 		super(message, cause, enableSuppression, writableStackTrace);
+		this.ctx = ctx;
+	}
+
+	@Override
+	public ExceptionContext getExceptionContext() {
+		return this.ctx;
 	}
 }

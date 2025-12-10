@@ -3,7 +3,6 @@ package de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes;
 import com.oracle.truffle.api.frame.FrameDescriptor;
 import com.oracle.truffle.api.frame.FrameSlotKind;
 import com.oracle.truffle.api.frame.VirtualFrame;
-import com.oracle.truffle.api.interop.ArityException;
 import com.oracle.truffle.api.nodes.DirectCallNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.builtinTypes.Tuple;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.builtinTypes.truffleBox.ListTruffleBox;
@@ -55,10 +54,8 @@ public final class ExecutionRootNode extends AbstractFunctionRootNode {
 		GeomAlgeLangContext.currentExternalArgs = new ArgsMapper(fac, argsList);
 
 		ListTruffleBox symArgsBoxed = new ListTruffleBox(GeomAlgeLangContext.currentExternalArgs.params);
-		try {
-			function.ensureArity(symArgsBoxed.getInner().size());
-		} catch (ArityException ex) {
-			throw new LanguageRuntimeException("main called with wrong argument count.", ex, null);
+		if (!function.arityCorrect(symArgsBoxed.getInner().size())) {
+			throw new LanguageRuntimeException("main called with wrong argument count.", null);
 		}
 		Object callRetVal = this.mainCallNode.call(symArgsBoxed);
 		List<MultivectorExpression> symRes = switch (callRetVal) {

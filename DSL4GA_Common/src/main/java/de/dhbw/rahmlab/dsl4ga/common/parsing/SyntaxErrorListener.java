@@ -12,7 +12,6 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 public class SyntaxErrorListener extends BaseErrorListener {
@@ -20,7 +19,7 @@ public class SyntaxErrorListener extends BaseErrorListener {
 	public static SyntaxErrorListener INSTANCE = new SyntaxErrorListener();
 
 	@Override
-	public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) throws ParseCancellationException {
+	public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
 		GeomAlgeParser parser = (GeomAlgeParser) recognizer;
 		Token token = (Token) offendingSymbol;
 
@@ -116,6 +115,9 @@ public class SyntaxErrorListener extends BaseErrorListener {
 			.append(stackString);
 		 */
 		String errorMessage = errorMessageBuilder.toString();
-		throw new ParseCancellationException(errorMessage, e);
+
+		ExceptionContext exCtx = new ExceptionContext(token.getStartIndex(), token.getStopIndex());
+
+		throw new ContextParseCancellationException(exCtx, errorMessage, e);
 	}
 }

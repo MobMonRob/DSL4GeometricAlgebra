@@ -1,6 +1,5 @@
 package de.dhbw.rahmlab.dsl4ga.impl.truffle.features.visualization.runtime;
 
-//import de.orat.math.cga.api.CGAViewObject;
 import de.dhbw.rahmlab.dsl4ga.euclidview3d.utils.GAViewObject;
 import java.util.ArrayList;
 import java.util.List;

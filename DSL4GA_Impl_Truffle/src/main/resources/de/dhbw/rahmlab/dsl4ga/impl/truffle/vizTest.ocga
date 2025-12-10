@@ -1,15 +1,24 @@
 #algebra cga
 
-fn f1(a, b) {
-	c = a
-	d = b
-	c, d
+fn add(a, b) {
+	a+b
 }
 
+fn dummy(a) {
+	a+1
+}
 
 fn main(a, b) {
-	c[] = {abs(-5), b}
-	g = f1(c, b)
-	d = c[0]
-	a, d
+	c[] = {3, 5, 1}
+	d[] = {7, 9, 1}
+	// e = mapfold(add, 3, c)
+	// e[] = concat(c, d)
+	e[] = d[:-1]
+	// f[] = range(0, 100, 1)
+
+	g[] = map(add, c, d)
+
+	// h = dummy(2)²+5
+
+	a
 }

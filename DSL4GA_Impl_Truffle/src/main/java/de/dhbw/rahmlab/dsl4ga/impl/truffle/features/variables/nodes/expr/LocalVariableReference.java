@@ -24,8 +24,10 @@ public abstract class LocalVariableReference extends ExpressionBaseNode {
 		return object;
 	}
 
+	/*
 	@Override
 	public boolean hasTag(Class<? extends Tag> tag) {
 		return tag == StandardTags.ReadVariableTag.class || super.hasTag(tag);
 	}
+	 */
 }

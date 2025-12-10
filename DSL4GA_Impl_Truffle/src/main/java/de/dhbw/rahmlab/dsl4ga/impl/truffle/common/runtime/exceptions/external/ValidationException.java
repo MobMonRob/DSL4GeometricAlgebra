@@ -1,19 +1,25 @@
 package de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external;
 
+import com.oracle.truffle.api.interop.ExceptionType;
+import com.oracle.truffle.api.interop.InteropLibrary;
+import com.oracle.truffle.api.library.ExportLibrary;
+import com.oracle.truffle.api.library.ExportMessage;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.superClasses.GeomAlgeLangBaseNode;
+
 /**
- * This exception indicates a syntactical error or an incorrect external invocation.
+ * This exception indicates a syntactical error.
  */
+@ExportLibrary(InteropLibrary.class)
 public class ValidationException extends AbstractExternalException {
 
 	public ValidationException(Throwable cause) {
-		super(cause.getMessage(), cause, null);
+		super(null, cause, null);
 	}
 
 	public ValidationException(int line, String message) {
 		this(String.format("Line %s: %s", line, message));
 	}
 
-	@Deprecated
 	public ValidationException(String message) {
 		// If the cause is omitted, then the stackTrace of Java functions will be empty.
 		// Later only the stackTrace of the cga functions will be of interest.
@@ -23,5 +29,15 @@ public class ValidationException extends AbstractExternalException {
 
 	public ValidationException(String message, Throwable cause) {
 		super(message, cause, null);
+	}
+
+	public ValidationException(String message, Throwable cause, GeomAlgeLangBaseNode location) {
+		super(message, cause, location);
+	}
+
+	@ExportMessage
+	@Override
+	public ExceptionType getExceptionType() {
+		return ExceptionType.PARSE_ERROR;
 	}
 }

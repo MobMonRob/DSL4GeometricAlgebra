@@ -1,20 +1,17 @@
 package de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOps;
 
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
+import com.oracle.truffle.api.dsl.NodeField;
+import com.oracle.truffle.api.dsl.Specialization;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.exprSuperClasses.UnaryOp;
 import de.orat.math.gacalc.api.MultivectorExpression;
 
-public final class GradeExtraction extends UnaryOp {
+@NodeField(name = "grade", type = int.class)
+public abstract class GradeExtraction extends UnaryOp {
 
-	private final int grade;
+	protected abstract int getGrade();
 
-	public GradeExtraction(ExpressionBaseNode argument, int grade) {
-		super(argument);
-		this.grade = grade;
-	}
-
-	@Override
-	protected MultivectorExpression execute(MultivectorExpression input) {
-		return input.gradeExtraction(this.grade);
+	@Specialization
+	protected MultivectorExpression doExecute(MultivectorExpression input) {
+		return input.gradeExtraction(this.getGrade());
 	}
 }

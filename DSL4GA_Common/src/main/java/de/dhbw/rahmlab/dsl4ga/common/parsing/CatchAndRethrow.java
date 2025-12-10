@@ -20,7 +20,7 @@ public final class CatchAndRethrow {
 			return executable.execute();
 		} catch (ValidationParsingException ex) {
 			// Position there. Wrap to non-checked.
-			throw new MarkerValidationParsingRuntimeException(null, ex, false, false);
+			throw new MarkerValidationParsingRuntimeException(null, ex, true, false);
 		} catch (MarkerValidationParsingRuntimeException ex) {
 			// Position there. Already non-checked.
 			throw ex;
@@ -43,21 +43,21 @@ public final class CatchAndRethrow {
 
 	// Used in ParseTreeWalker
 	// Package-private
-	static void handleException(RuntimeException ex, Parser parser, ParserRuleContext ctx) throws ValidationParsingException {
+	static void handleException(Throwable ex, Parser parser, ParserRuleContext ctx) throws ValidationParsingException {
 		if (ex instanceof MarkerValidationParsingRuntimeException markerEx) {
 			throw markerEx.cause;
 		} else {
 			// Create position info the first time at the lowest point.
-			String message = createExceptionMessage(parser, ctx, ex);
-			throw new ValidationParsingException(message, ex, false, false);
-		}
-	}
+			int fromIndex = ctx.getStart().getStartIndex();
+			int toIndexInclusive = ctx.getStop().getStopIndex();
 
-	private static String createExceptionMessage(Parser parser, ParserRuleContext ctx, Exception ex) {
-		String infoString = parser.getInputStream().getText(ctx.start, ctx.stop);
-		int line = ctx.start.getLine();
-		int charPositionInLine = ctx.start.getCharPositionInLine();
-		String message = String.format("\nline: %s, position: %s, tokens: \'%s\', msg: \'%s\'", line, charPositionInLine, infoString, ex.getMessage());
-		return message;
+			String infoString = parser.getInputStream().getText(ctx.start, ctx.stop);
+			int line = ctx.start.getLine();
+			int charPositionInLine = ctx.start.getCharPositionInLine();
+			String message = String.format("\nline: %s, position: %s, tokens: \'%s\', msg: \'%s\'", line, charPositionInLine, infoString, ex.getMessage());
+
+			ExceptionContext exCtx = new ExceptionContext(fromIndex, toIndexInclusive);
+			throw new ValidationParsingException(exCtx, message, ex, true, false);
+		}
 	}
 }

@@ -1,13 +1,14 @@
 package de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.superClasses;
 
-import com.oracle.truffle.api.instrumentation.InstrumentableNode;
+import com.oracle.truffle.api.dsl.TypeSystemReference;
 import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.source.Source;
 import com.oracle.truffle.api.source.SourceSection;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
-import java.util.Objects;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.types.runtime.TypeCasts;
 
-public abstract class GeomAlgeLangBaseNode extends Node implements InstrumentableNode {
+@TypeSystemReference(TypeCasts.class)
+public abstract class GeomAlgeLangBaseNode extends Node {
 
 	protected final GeomAlgeLangContext currentLanguageContext() {
 		return GeomAlgeLangContext.get(this);
@@ -35,16 +36,20 @@ public abstract class GeomAlgeLangBaseNode extends Node implements Instrumentabl
 		// commented out because multiple invocation of parse() is possible 
 		//assert sourceCharIndex != NO_SOURCE : "source should only be set once";
 		if (fromIndex > toIndexInclusive) {
-			throw new IllegalArgumentException("from Index "+
-				String.valueOf(fromIndex)+" > "+String.valueOf(toIndexInclusive));
+			throw new IllegalArgumentException("from Index "
+				+ String.valueOf(fromIndex) + " > " + String.valueOf(toIndexInclusive));
 		}
 		this.sourceCharIndex = fromIndex;
 		this.sourceLength = toIndexInclusive - fromIndex + 1;
 	}
 
+	public boolean hasSourceSection() {
+		return sourceCharIndex != NO_SOURCE;
+	}
+
 	@Override
 	public final SourceSection getSourceSection() {
-		if (sourceCharIndex == NO_SOURCE) {
+		if (!this.hasSourceSection()) {
 			// AST node without source
 			return null;
 		}
@@ -54,9 +59,7 @@ public abstract class GeomAlgeLangBaseNode extends Node implements Instrumentabl
 	}
 
 	// Needed for Debugger.
-	@Override
 	public boolean isInstrumentable() {
-		boolean is = Objects.nonNull(this.getSourceSection());
-		return is;
+		return this.hasSourceSection();
 	}
 }

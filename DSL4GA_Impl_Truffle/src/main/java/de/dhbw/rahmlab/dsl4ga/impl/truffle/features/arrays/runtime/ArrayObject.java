@@ -15,7 +15,7 @@ public class ArrayObject implements TruffleObject {
 		return this.values[index];
 	}
 
-	public ArrayObject(Object... values) {
+	public ArrayObject(Object[] values) {
 		this.values = values;
 	}
 

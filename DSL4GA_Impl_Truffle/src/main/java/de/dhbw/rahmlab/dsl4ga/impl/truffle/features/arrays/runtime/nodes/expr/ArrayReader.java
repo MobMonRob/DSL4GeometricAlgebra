@@ -6,7 +6,6 @@ import com.oracle.truffle.api.dsl.NodeField;
 import com.oracle.truffle.api.dsl.Specialization;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
-import static de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.CatchAndRethrow.catchAndRethrow;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.arrays.runtime.ArrayObject;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.nodes.expr.LocalVariableReference;
 
@@ -16,8 +15,16 @@ public abstract class ArrayReader extends ExpressionBaseNode {
 
 	protected abstract int getIndex();
 
+	protected int correctedIndex(ArrayObject arr) {
+		int index = this.getIndex();
+		if (index < 0) {
+			index = arr.getValues().length + index;
+		}
+		return index;
+	}
+
 	@Specialization
-	public Object read(VirtualFrame frame, ArrayObject arr, @Cached(value = "getIndex()", neverDefault = false) int index) {
-		return catchAndRethrow(this, () -> arr.at(index));
+	public Object read(VirtualFrame frame, ArrayObject arr, @Cached(value = "correctedIndex(arr)", neverDefault = false) int index) {
+		return arr.at(index);
 	}
 }

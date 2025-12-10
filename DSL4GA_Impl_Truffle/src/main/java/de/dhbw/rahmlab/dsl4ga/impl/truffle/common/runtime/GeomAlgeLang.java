@@ -8,6 +8,7 @@ import com.oracle.truffle.api.instrumentation.StandardTags;
 import com.oracle.truffle.api.source.Source;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.CharStreamSupplier;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.ExecutionRootNode;
+import static de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.CatchAndRethrow.catchAndRethrow;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.ParsingService;
 import java.io.IOException;
 
@@ -23,9 +24,11 @@ import java.io.IOException;
 @ProvidedTags({
 	StandardTags.CallTag.class,
 	StandardTags.StatementTag.class,
-	StandardTags.ExpressionTag.class,
+	// StandardTags.ExpressionTag.class,
 	StandardTags.ReadVariableTag.class,
 	StandardTags.WriteVariableTag.class,
+	StandardTags.RootBodyTag.class,
+	StandardTags.RootTag.class,
 	DebuggerTags.AlwaysHalt.class
 })
 public class GeomAlgeLang extends TruffleLanguage<GeomAlgeLangContext> {
@@ -46,6 +49,10 @@ public class GeomAlgeLang extends TruffleLanguage<GeomAlgeLangContext> {
 
 	@Override
 	protected CallTarget parse(ParsingRequest request) throws IOException {
+		return catchAndRethrow(null, () -> parseImpl(request));
+	}
+
+	private CallTarget parseImpl(ParsingRequest request) throws IOException {
 		Source source = request.getSource();
 		this.context.setSource(source);
 		ParsingService.FactoryAndMain factoryAndMain = ParsingService.instance().parse(CharStreamSupplier.from(source.getReader()), this.context);

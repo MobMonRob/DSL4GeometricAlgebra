@@ -2,10 +2,7 @@ package de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.stmtSuperClasses;
 
 import com.oracle.truffle.api.dsl.NodeField;
 import com.oracle.truffle.api.frame.Frame;
-import com.oracle.truffle.api.frame.VirtualFrame;
-import com.oracle.truffle.api.instrumentation.GenerateWrapper;
 import com.oracle.truffle.api.instrumentation.InstrumentableNode;
-import com.oracle.truffle.api.instrumentation.ProbeNode;
 import com.oracle.truffle.api.instrumentation.StandardTags;
 import com.oracle.truffle.api.instrumentation.Tag;
 import com.oracle.truffle.api.interop.NodeLibrary;
@@ -16,16 +13,26 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.Fu
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.DebuggerLocalVariablesScope;
 
 @ExportLibrary(value = NodeLibrary.class)
-@NodeField(name = "scopeVisibleVariablesIndex", type = int.class)
-@GenerateWrapper
+@NodeField(name = "scopeVisibleVariablesIndex", type = Integer.class)
+// @GenerateWrapper
 public abstract class StatementBaseNode extends GeomAlgeLangBaseNode implements InstrumentableNode {
 
+	/*
 	@Override
 	public WrapperNode createWrapper(ProbeNode probeNode) {
 		return new StatementBaseNodeWrapper(this, probeNode);
 	}
+	 */
 
-	public abstract void executeGeneric(VirtualFrame frame);
+ /*
+	// final important for NodeWrapper correctness.
+	public final void executeGeneric(VirtualFrame frame) {
+		catchAndRethrow(this, () -> execute(frame));
+	}
+
+	// protected important. Only executeGeneric shall be visible from outside.
+	protected abstract void execute(VirtualFrame frame);
+	 */
 
 	public abstract int getScopeVisibleVariablesIndex();
 

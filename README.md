@@ -6,8 +6,11 @@ This repository contains code to work with multivector expressions of geometric 
 The current state of the project is a proof of concept, so it is not advised to use it in real world applications. If you have feedback or feature suggestions, please create a new GitHub Issue.
 
 Especially be cautious regarding:
-- the documentation may not be up to date.
-- breaking changes can occur at any time.
+- The documentation may not be up to date.
+- Breaking changes can occur at any time.
+- There is still no static type system. Even trivial errors may only be noticed late while executing. Sometimes exceptions are raised later than the actual error or not at all. Thus erroneous code can lead to undefined behaviour.
+- Rules specified in the documentation may not be consistently enforced with an eager exception. But adherence to them will avoid undefined behaviour and increase intelligibility of raised exceptions.
+
 
 
 ## GraalVM Setup
@@ -76,34 +79,19 @@ A Syntax-Highlighting plugin for the Netbeans-IDE can be found [here](https://gi
 ### Insertion of special characters
 A Netbeans-IDE plugin which adds a submenu into the context-menu of the editor to insert CGA-specific symbols and operators can be found [here](https://github.com/orat/netbeans-cgasymbols).
 
-<!--
-## Types to use from outside the language
-CGA multivectors and objecs of its subtypes are completely hidden - not visible outside the DSL. Input data to and output data from the DSL is transfered by objects of the classes listed in the following table:
-| Name | implementation class | hints |
-| :-------- | :---- | ------|
-| double | Double |  |
-| Tuple3d | org.jogamp.vecmath.Tuple3d |  |
-| Quat4d | org.jogamp.vecmath.Quat4d |  |
-| DualQuat4d | de.orat.math.vecmath.ext.DualQuat4d | |
-| DualNumber | de.orat.math.vecmath.ext.DualNumber | |
-| ComplexNumber | de.orat.math.vecmath.ext.ComplexNumber | |
-
-Inside the DSL all of these types are automatically casted into CGA multivectors. No other operations are possible based on these types inside the DSL.
--->
-
-
 ## Implementations
 There are two implementations of the [API](DSL4GA_API):
+- [Truffle](DSL4GA_Impl_Truffle), which will be optimized for a good development experience. **Use truffle by default.**
 - [Fast](DSL4GA_Impl_Fast), which will be optimized for runtime -not parsing- performance.
-- [Truffle](DSL4GA_Impl_Truffle), which will be optimized for a good development experience.
 
-Their syntax will be the same in the longrun. However, during development of the language, some syntactical constructs will temporarily not supported by one or the other.
+Both implementations share that their initialization is time-consuming, but repeated invocations are executed fast. \
+Their syntax will be the same in the longrun. However, some features will never be implemented in Fast. These are: visualization, debugger. \
+Fast will be used to measure the runtime difference to Truffle if certain CasADi features are used which are incompatible with a smooth debugging experience.
 
-The following features are supported ("Y" is yes, "N" is not yet, "-" is will not):
-| F | T | Feature |
-| - | - | ------- |
-| - | Y | Visualization |
-| - | Y | Debugger |
+**Fast is currently broken. Do not use it!**
+- Recent changes in the grammar are not handled properly.
+- Builtins and operators can be missing or wrong.
+- Missing features: arrays, higher-order functions.
 
 
 ## Syntax
@@ -114,13 +102,11 @@ With algebra being "cga" and implementation being "theImpl", the first line woul
 ```
 
 
-## Expressions
-- Numeric literals like "0.5" and scalar constants like "π" are in OPNS representation.
-
 ## Function definitions
 #### Rules
 - There needs to be at least one function defined with the name `main`. Invokations of the program will call this one first.
 - Currently, callees need to be defined above the callers.
+- Recursion is not possible.
 - In consequence, `main` needs to be the last function defined.
 - Function overloading is currently not supported and will lead to an exception.
 - A function will return only the list in the last line of its definition.
@@ -129,6 +115,9 @@ With algebra being "cga" and implementation being "theImpl", the first line woul
 - The count of the assigned variables must match the count of the result values of a call.
 - With an assignment to "_", a return value can be discarded. This is only possible for calls which return at least two values.
 - If the right side of an assignment is not only a call but a composed expression, within it are only calls allowed which return exactly one value.
+- Variable mutation is not possible. This means, that once assigned, its value cannot change until it scope ends. But if the same scope is entered multiple times, each time the variable can have a different value.
+- Functions are pure. This means they 1. are right-unique relations from their arguments to their returns und 2. have no side effects. Thus these "function" subroutines behave similar to mathematical functions.
+
 
 #### Example
 Custom functions can be defined like in the following example:
@@ -142,6 +131,101 @@ fn main(a, b) {
 	a, b, c
 }
 ```
+
+## Arrays
+```
+// Parameter
+fn callee(a[]) {
+	// Return
+	a, a
+}
+
+fn caller() {
+	// Init
+	a[] = {0, 1, 2, 3}
+
+	// Argument
+	// Multiple assignment
+	b[], c[] = callee(a)
+
+	// Slicing
+	/// First index: Start inclusive
+	/// Second index: End exclusive
+	/// -1: last index of array
+	d[] = a[1:-2] // {1}
+	e[] = a[1:] // {1, 2, 3}
+
+	// Access
+	f = a[0] // 0
+	g = a[-1] // 3
+
+	// Reversal
+	h[] = reversed(a) // {3, 2, 1, 0}
+
+	// Concatenation of 2 arrays
+	i[] = concat(a, a) // {0, 1, 2, 3, 0, 1, 2, 3}
+
+	// Range
+	//// Start inclusive
+	//// Stop exclusive
+	//// Step
+	j[] = range(1, 10, 1)
+}
+```
+
+#### Rules
+- Arrays are static. Their size cannot change.
+- The main Function shall not receive or return arrays.
+
+
+## Higher-order functions “HOF”
+HOF are currently primarily used to express iteration. \
+HOF currently cannot be defined in the language itself. Instead HOF builtins are provided.
+
+#### Available HOF builtins
+| HOF         | Explanation |
+| :---------- | :---------- |
+| map         | Execute its argument function and return all intermediate result values. |
+| mapaccum    | Same as map, but accumulate on the first argument and result value of its argument function. |
+| mapfold     | Same as mapaccum, but return only the last result values. |
+
+#### Pseudocode signatures
+- `map(Func<SimpleX... -> SimpleY...>, Array/Simple...) -> Tuple of Array of Simple`
+- `mapaccum(Func<SimpleAcc, SimpleCurrent... -> SimpleAcc, SimpleOut...>, SimpleAccInit, Array/Simple...) -> Tuple of Array of Simple`
+- `mapfold(Func<SimpleAcc, SimpleCurrent... -> SimpleAcc, SimpleOut...>, SimpleAccInit, Array/Simple...) -> Tuple`
+
+#### Rules
+- The first argument of the HOF builtins is always a function “the argument function”.
+- The argument function does not receive or return arrays.
+- All the array arguments need to have the same size, that is the count of the elements of the respective array.
+- The iteration count is equal to the size of all the arguments arrays.
+- Simple value (not array) arguments will be repeated for each iteration.
+- The HOF calls its argument function in each iteration with the array elements at the index equal to the iteration.
+- mapaccum and mapfold only: each iteration depends on the previous iteration. To achieve this, a single accumulator variable is used. It has to be the first argument and the first return value of the argument function. The first value of the accumulator variable is the second argument of the respective HOF.
+
+#### Examples
+```
+fn add(a, b) {
+	a+b, a
+}
+
+fn main() {
+	a[] = {0, 1, 2}
+
+	b[], c[] = map(add, 1, a)
+	// b[] = {1, 2, 3}
+	// c[] = {1, 1, 1}
+
+	d[], e[] = mapaccum(add, 1, a)
+	// d[] = {1, 2, 4}
+	// e[] = {1, 1, 2}
+
+	f, g = mapfold(add, 1, a)
+	// f = 4
+	// g = 2
+}
+```
+
 
 ## Visualization
 Variables can be visualized after assignment with one or two preceding colons.
@@ -166,6 +250,11 @@ The following table shows which elements are visualized and in which colors. The
 | circle, oriented-point, line |   2   | green |
 | point pair, flat-point       |   3   | blue  |
 | point                        |   4   | yellow|
+
+
+## Expressions
+- Numeric literals like "0.5" and scalar constants like "π" are in OPNS representation.
+
 
 ## Operators
 Hint: Operator precedence determines how operators are parsed concerning each other. A higher precedence number
@@ -202,6 +291,8 @@ $A\rfloor B = \langle A B\rangle_{|l-k|}$
 | 3          | &#x22C5; | \cdot | \u22C5  | dot product (inner product without scalar parts) $A\cdot B=\langle A B\rangle_{|k-l|,k\neq 0, l\neq 0}$|
 | 3          | &#x2229; | \cap  | \u2229  | meet (intersection) = largest common subspace |
 | 3          | &#x222A; | \cup  | \u222A  | join  (union) of two subspaces is there smallest superspace = smallest space containing them both |
+| 3          | &#x2299; | \odot | \u2299  | hadamard product (element-wise multiplication) |
+
 
 ##### Implementation
 $A\cdot B=\langle A B\rangle_{|k-l|,k\neq 0, l\neq 0}$
@@ -240,7 +331,6 @@ There exist three types of involution operations: Space inversion, reversion and
 ### Base functions
 | symbol      | description |
 | :---------- | ------------ |
-| map()       | linear map (element-wise multiplication) |
 | exp()       | exponential of a bivector or a scalar |
 | log()       | logarithm of general rotor/even multivector (should be normalized) |
 | normalize() | normalize of an even multivector (general rotor, scalars inclusive)|
@@ -301,9 +391,9 @@ There exist three types of involution operations: Space inversion, reversion and
 - adding operators and built-ins for symbolic derivation and algorithmic differentiation
 - adding more smart-editing features based on the language-agnostic LSP from GraalVM, completion of the implementation of a language-specific LSP
 - adding more debugging features e.g. step-in/step-out, showing the complete stacktrace polyglot till inside the native [CasADi](https://web.casadi.org/) libraries by building to LLVM
-- completing the design of a type-system and its implementation 
+- completing the design of a type-system and its implementation
 - extending the syntax with multidimensional arrays, loops and if-statements (A student project is already in the branch "loops")
-- Hyperwedge product implementation following [DeKeninck2020] to speed up program execution 
+- Hyperwedge product implementation following [DeKeninck2020] to speed up program execution
 - Symbolic optimization with [Maxima](https://maxima.sourceforge.io/) - automated symbolical optimization of functions
 - C-code export and parallelization with CasADi
 - execution speed benchmarks, espcially to compare FAST- and TRUFFLE-implementation, autogenerated C-Code, ...

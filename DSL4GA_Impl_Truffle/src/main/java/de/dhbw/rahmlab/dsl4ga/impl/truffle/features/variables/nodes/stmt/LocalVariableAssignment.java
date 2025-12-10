@@ -44,4 +44,9 @@ public abstract class LocalVariableAssignment extends NonReturningStatementBaseN
 			return tag == StandardTags.WriteVariableTag.class || super.hasTag(tag);
 		}
 	}
+
+	@Override
+	public boolean hasSourceSection() {
+		return isStep() && super.hasSourceSection();
+	}
 }

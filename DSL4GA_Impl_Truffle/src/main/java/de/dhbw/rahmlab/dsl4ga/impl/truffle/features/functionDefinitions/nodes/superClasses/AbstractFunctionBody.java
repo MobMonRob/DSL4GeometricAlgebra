@@ -2,17 +2,23 @@ package de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.s
 
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.GenerateWrapper;
+import com.oracle.truffle.api.instrumentation.InstrumentableNode;
 import com.oracle.truffle.api.instrumentation.ProbeNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.superClasses.GeomAlgeLangBaseNode;
+import static de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.CatchAndRethrow.catchAndRethrow;
 
 @GenerateWrapper
-public abstract class AbstractFunctionBody extends GeomAlgeLangBaseNode {
+public abstract class AbstractFunctionBody extends GeomAlgeLangBaseNode implements InstrumentableNode {
 
 	@Override
 	public WrapperNode createWrapper(ProbeNode probeNode) {
 		return new AbstractFunctionBodyWrapper(this, probeNode);
 	}
 
-	public abstract Object executeGeneric(VirtualFrame frame);
+	public final Object executeGeneric(VirtualFrame frame) {
+		return catchAndRethrow(this, () -> execute(frame));
+	}
+
+	protected abstract Object execute(VirtualFrame frame);
 
 }

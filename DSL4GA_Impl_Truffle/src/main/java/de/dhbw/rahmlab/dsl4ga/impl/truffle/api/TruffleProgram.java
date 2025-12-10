@@ -6,7 +6,6 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.superClasses.GeomAlgeLan
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLang;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.AbstractExternalException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.LanguageRuntimeException;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.ValidationException;
 import de.orat.math.sparsematrix.SparseDoubleMatrix;
 import java.io.IOException;
 import java.io.Reader;
@@ -72,37 +71,31 @@ public class TruffleProgram implements iProgram {
 		AbstractExternalException origin = null;
 		try {
 			origin = ex.getGuestObject().as(AbstractExternalException.class);
-		} catch (Exception ex2) {
-			return ex;
+		} catch (Throwable ex2) {
+			RuntimeException fullEx = new RuntimeException(ex2);
+			fullEx.addSuppressed(ex);
+			return fullEx;
 		}
 		if (origin == null) {
-			return ex;
+			return new RuntimeException(ex);
 		}
 
-		if (origin instanceof LanguageRuntimeException langException) {
 //			// Hier würde noch der Ort im ocga Quelltext fehlen.
 //			// Und auch die Nachricht der geworfenen Exception.
 //			Iterable<PolyglotException.StackFrame> polyglotStackTrace = ex.getPolyglotStackTrace();
 //			String truffleStackFrames = StreamSupport.stream(polyglotStackTrace.spliterator(), false).filter(sf -> sf.isGuestFrame()).map(sf -> sf.getRootName()).collect(Collectors.joining("\n"));
 //			return new RuntimeException("\n->TruffleStackFrames:\n" + truffleStackFrames + "\n");
-			//
+		//
 //			List<TruffleStackTraceElement> stackTrace = TruffleStackTrace.getStackTrace(langException);
 //			String collect = stackTrace.stream().map(el -> el.getTarget().getRootNode().getName()).collect(Collectors.joining("\n"));
 //			return new LanguageRuntimeException("\nCollect: " + collect + "\n", langException.location());
-			//
-			return enrichLanguageRuntimeException(ex, langException);
-		} else if (origin instanceof ValidationException validationException) {
-			return enrichValidationException(ex, validationException);
-		}
-		throw new AssertionError(String.format(
-			"The given AbstractExternalException instance was of unexpected subtype: %s",
-			origin.getClass().getCanonicalName()
-		));
+		//
+		return enrichLanguageException(ex, origin);
 	}
 
-	private LanguageRuntimeException enrichLanguageRuntimeException(
+	private AbstractExternalException enrichLanguageException(
 		PolyglotException containingException,
-		LanguageRuntimeException langException
+		AbstractExternalException langException
 	) {
 
 		SourceSection sourceSection = containingException.getSourceLocation();
@@ -119,21 +112,25 @@ public class TruffleProgram implements iProgram {
 		);
 		String nodeType = location.getClass().getSimpleName();
 		String characters = sourceSection.getCharacters().toString();
+		String message = null;
+		for (Throwable currentMessager = langException;
+			currentMessager != null;
+			currentMessager = currentMessager.getCause()) {
+
+			message = currentMessager.getMessage();
+			if (message != null) {
+				break;
+			}
+		}
 
 		String newMessage = String.format(
-			"\nLocation: %s\nCharacters: \"%s\"\nNodeType: %s",
+			"\nLocation: %s\nCharacters: \"%s\"\nNodeType: %s\nMessage: %s\n\n\n",
 			locationDescription,
 			characters,
-			nodeType
+			nodeType,
+			message
 		);
 
 		return new LanguageRuntimeException(newMessage, langException, location);
-	}
-
-	private RuntimeException enrichValidationException(
-		PolyglotException containingException,
-		ValidationException validationException
-	) {
-		return validationException;
 	}
 }

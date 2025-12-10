@@ -14,7 +14,7 @@ public class Tuple implements TruffleObject {
 		return this.values[index];
 	}
 
-	public Tuple(Object... values) {
+	public Tuple(Object[] values) {
 		this.values = values;
 	}
 }
