@@ -191,7 +191,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 					yield DualNodeGen.create(left);
 				} else {
 					// Operator overloading.
-					yield FunctionReferenceNodeGen.create(func);
+					yield FunctionCallNodeGen.create(func, new ExpressionBaseNode[]{left});
 				}
 			}
 			case GeomAlgeParser.SMALL_TILDE ->
