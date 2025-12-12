@@ -22,13 +22,6 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>de.orat.math.cgacasadi</groupId>
-			<artifactId>CGACasADi</artifactId>
-			<version>1.0-SNAPSHOT</version>
-			<scope>runtime</scope>
-		</dependency>
-		
-		<dependency>
 			<groupId>de.dhbw.rahmlab</groupId>
 			<artifactId>DSL4GA_Annotation</artifactId>
 			<version>1.0-SNAPSHOT</version>
