@@ -11,7 +11,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 
 public class GrammarUtils {
 
-	public static final Set<String> constantsLiteralNames = Collections.unmodifiableSet(computeConstantsLiteralNames());
+	// public static final Set<String> constantsLiteralNames = Collections.unmodifiableSet(computeConstantsLiteralNames());
 
 	// Credits: https://stackoverflow.com/questions/11145681/how-to-convert-a-string-with-unicode-encoding-to-a-string-of-letters/63746515#63746515
 	protected static class UnicodeUtils {
@@ -23,6 +23,8 @@ public class GrammarUtils {
 		}
 	}
 
+	// Code correct. But not needed anymore. Constants are not set by the lexer anymore.
+	/*
 	protected static HashSet<String> computeConstantsLiteralNames() {
 		Vocabulary vocabulary = GeomAlgeParser.VOCABULARY;
 		int max = vocabulary.getMaxTokenType();
@@ -48,4 +50,5 @@ public class GrammarUtils {
 
 		return constantsLiteralNames_local;
 	}
+	 */
 }

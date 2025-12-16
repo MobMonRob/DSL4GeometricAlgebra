@@ -56,7 +56,8 @@ public class GeomAlgeLang extends TruffleLanguage<GeomAlgeLangContext> {
 		Source source = request.getSource();
 		this.context.setSource(source);
 		ParsingService.FactoryAndMain factoryAndMain = ParsingService.instance().parse(CharStreamSupplier.from(source.getReader()), this.context);
-		this.context.exprGraphFactory = factoryAndMain.fac();
+		// Will be set at ParsingService::invoke.
+		// this.context.exprGraphFactory = factoryAndMain.fac();
 		ExecutionRootNode rootNode = new ExecutionRootNode(this, factoryAndMain.main(), factoryAndMain.fac());
 		return rootNode.getCallTarget();
 	}

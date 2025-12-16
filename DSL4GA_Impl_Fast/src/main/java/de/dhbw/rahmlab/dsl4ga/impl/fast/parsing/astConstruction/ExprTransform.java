@@ -17,6 +17,8 @@ import java.util.Deque;
 import java.util.Map;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import org.antlr.v4.runtime.Token;
 
 /**
  * This class converts an expression subtree of an ANTLR parsetree into an expression AST in truffle.
@@ -192,66 +194,11 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 	}
 
 	@Override
-	public void exitLiteralConstant(GeomAlgeParser.LiteralConstantContext ctx) {
-		var node = switch (ctx.type.getType()) {
-			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_ZERO ->
-				// ConstantNodeGen.create(Constant.Kind.base_vector_origin);
-				constants.getBaseVectorOrigin();
-			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_SMALL_I ->
-				// ConstantNodeGen.create(Constant.Kind.base_vector_infinity);
-				constants.getBaseVectorInfinity();
-			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_ONE ->
-				// ConstantNodeGen.create(Constant.Kind.base_vector_x);
-				constants.getBaseVectorX();
-			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_TWO ->
-				// ConstantNodeGen.create(Constant.Kind.base_vector_y);
-				constants.getBaseVectorY();
-			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_THREE ->
-				// ConstantNodeGen.create(Constant.Kind.base_vector_z);
-				constants.getBaseVectorZ();
-			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_PLUS ->
-				// ConstantNodeGen.create(Constant.Kind.epsilon_plus);
-				constants.getEpsilonPlus();
-			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_MINUS ->
-				// ConstantNodeGen.create(Constant.Kind.epsilon_minus);
-				constants.getEpsilonMinus();
-			case GeomAlgeParser.SMALL_PI ->
-				// ConstantNodeGen.create(Constant.Kind.pi);
-				constants.getPi();
-			case GeomAlgeParser.INFINITY ->
-				// ConstantNodeGen.create(Constant.Kind.base_vector_infinity_dorst);
-				constants.getBaseVectorInfinityDorst();
-			case GeomAlgeParser.SMALL_O ->
-				// ConstantNodeGen.create(Constant.Kind.base_vector_origin_dorst);
-				constants.getBaseVectorOriginDorst();
-			case GeomAlgeParser.SMALL_N ->
-				// ConstantNodeGen.create(Constant.Kind.base_vector_infinity_doran);
-				constants.getBaseVectorInfinityDoran();
-			case GeomAlgeParser.SMALL_N_TILDE ->
-				// ConstantNodeGen.create(Constant.Kind.base_vector_origin_doran);
-				constants.getBaseVectorOriginDoran();
-			case GeomAlgeParser.CAPITAL_E__SUBSCRIPT_ZERO ->
-				// ConstantNodeGen.create(Constant.Kind.minkovsky_bi_vector);
-				constants.getMinkovskyBiVector();
-			case GeomAlgeParser.CAPITAL_E__SUBSCRIPT_THREE ->
-				// ConstantNodeGen.create(Constant.Kind.euclidean_pseudoscalar);
-				constants.getEuclideanPseudoscalar();
-			case GeomAlgeParser.CAPITAL_E ->
-				// ConstantNodeGen.create(Constant.Kind.pseudoscalar);
-				constants.getPseudoscalar();
-			default ->
-				throw new AssertionError();
-		};
-
-		nodeStack.push(node);
-	}
-
-	@Override
-	public void exitReference(GeomAlgeParser.ReferenceContext ctx) {
-		String name = ctx.name.getText();
+	public void exitLiteralOrReference(GeomAlgeParser.LiteralOrReferenceContext ctx) {
+		String name = ctx.name.stream().map(Token::getText).collect(Collectors.joining());
 
 		if (!this.localVariablesView.containsKey(name)) {
-			int line = ctx.name.getLine();
+			int line = ctx.name.getFirst().getLine();
 			throw new ValidationParsingRuntimeException(line, String.format("Variable \"%s\" has not been declared before.", name));
 		}
 
