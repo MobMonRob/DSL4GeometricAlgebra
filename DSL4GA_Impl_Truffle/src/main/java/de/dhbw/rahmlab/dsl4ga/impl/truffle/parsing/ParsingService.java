@@ -65,6 +65,10 @@ public final class ParsingService {
 		GAFactory fac = SourceUnitTransform.getFactory(parser, sourceUnit);
 		Map<String, Function> allFunctions = functionsView;
 
+		if (geomAlgeLangContext.exprGraphFactory == null) {
+			geomAlgeLangContext.exprGraphFactory = fac;
+		}
+
 		if (optFac.isEmpty()) {
 			// Get algebra import file.
 			Optional<Path> optLibFile = fac.getAlgebraLibFile();

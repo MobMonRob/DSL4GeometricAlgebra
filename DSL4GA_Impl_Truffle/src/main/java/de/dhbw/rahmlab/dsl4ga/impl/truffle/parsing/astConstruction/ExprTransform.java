@@ -45,11 +45,16 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.SequencedCollection;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.antlr.v4.runtime.Token;
 
 /**
  * This class converts an expression subtree of an ANTLR parsetree into an expression AST in truffle.
@@ -187,6 +192,9 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 				GeneralInverseNodeGen.create(left);
 			case GeomAlgeParser.ASTERISK -> {
 				var func = this.functionsView.get("dual");
+				if (!func.arityCorrect(1)) {
+					throw new ValidationParsingRuntimeException("Overloaded dual of arity != 1.");
+				}
 				if (func == null) {
 					yield DualNodeGen.create(left);
 				} else {
@@ -198,8 +206,18 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 				ReverseNodeGen.create(left);
 			case GeomAlgeParser.DAGGER ->
 				CliffordConjugateNodeGen.create(left);
-			case GeomAlgeParser.SUPERSCRIPT_MINUS__ASTERISK ->
-				UndualNodeGen.create(left);
+			case GeomAlgeParser.SUPERSCRIPT_MINUS__ASTERISK -> {
+				var func = this.functionsView.get("undual");
+				if (!func.arityCorrect(1)) {
+					throw new ValidationParsingRuntimeException("Overloaded undual of arity != 1.");
+				}
+				if (func == null) {
+					yield UndualNodeGen.create(left);
+				} else {
+					// Operator overloading.
+					yield FunctionCallNodeGen.create(func, new ExpressionBaseNode[]{left});
+				}
+			}
 			case GeomAlgeParser.SUPERSCRIPT_TWO ->
 				GeometricProductNodeGen.create(left, left);
 			case GeomAlgeParser.CIRCUMFLEX_ACCENT ->
@@ -241,52 +259,12 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		nodeStack.push(result);
 	}
 
-	@Override
-	public void exitLiteralConstant(GeomAlgeParser.LiteralConstantContext ctx) {
-		ExpressionBaseNode node = switch (ctx.type.getType()) {
-			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_ZERO ->
-				ConstantNodeGen.create(Constant.Kind.base_vector_origin);
-			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_SMALL_I ->
-				ConstantNodeGen.create(Constant.Kind.base_vector_infinity);
-			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_ONE ->
-				ConstantNodeGen.create(Constant.Kind.base_vector_x);
-			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_TWO ->
-				ConstantNodeGen.create(Constant.Kind.base_vector_y);
-			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_THREE ->
-				ConstantNodeGen.create(Constant.Kind.base_vector_z);
-			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_PLUS ->
-				ConstantNodeGen.create(Constant.Kind.epsilon_plus);
-			case GeomAlgeParser.SMALL_EPSILON__SUBSCRIPT_MINUS ->
-				ConstantNodeGen.create(Constant.Kind.epsilon_minus);
-			case GeomAlgeParser.SMALL_PI ->
-				ConstantNodeGen.create(Constant.Kind.pi);
-			case GeomAlgeParser.INFINITY ->
-				ConstantNodeGen.create(Constant.Kind.base_vector_infinity_dorst);
-			case GeomAlgeParser.SMALL_O ->
-				ConstantNodeGen.create(Constant.Kind.base_vector_origin_dorst);
-			case GeomAlgeParser.SMALL_N ->
-				ConstantNodeGen.create(Constant.Kind.base_vector_infinity_doran);
-			case GeomAlgeParser.SMALL_N_TILDE ->
-				ConstantNodeGen.create(Constant.Kind.base_vector_origin_doran);
-			case GeomAlgeParser.CAPITAL_E__SUBSCRIPT_ZERO ->
-				ConstantNodeGen.create(Constant.Kind.minkovsky_bi_vector);
-			case GeomAlgeParser.CAPITAL_E__SUBSCRIPT_THREE ->
-				ConstantNodeGen.create(Constant.Kind.euclidean_pseudoscalar);
-			case GeomAlgeParser.CAPITAL_E ->
-				ConstantNodeGen.create(Constant.Kind.pseudoscalar);
-			default ->
-				throw new AssertionError();
-		};
-
-		nodeStack.push(node);
-	}
-
 	/**
 	 * Implicit precondition: function name and variable name and reference are all IDENTIFIER in the grammar.
 	 */
 	@Override
-	public void exitReference(GeomAlgeParser.ReferenceContext ctx) {
-		String name = ctx.name.getText();
+	public void exitLiteralOrReference(GeomAlgeParser.LiteralOrReferenceContext ctx) {
+		String name = ctx.name.stream().map(Token::getText).collect(Collectors.joining());
 
 		ExpressionBaseNode ref;
 		// Local variable hides function with same name.
@@ -297,10 +275,55 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 			Function function = findFunction(name);
 			ref = FunctionReferenceNodeGen.create(function);
 		} else {
-			throw new ValidationParsingRuntimeException(String.format("Variable or function \"%s\" has not been declared before.", name));
+			Map<String, MultivectorExpression> constants = this.geomAlgeLangContext.exprGraphFactory.getConstants();
+
+			if (constants.isEmpty()) {
+				throw new ValidationParsingRuntimeException(String.format("Variable or function \"%s\" has not been declared before.", name));
+			}
+
+			// Simple case: name is one constant
+			MultivectorExpression mv = constants.get(name);
+			if (mv != null) {
+				ref = ConstantNodeGen.create(mv);
+			} else {
+				// Difficult case: name is multiple constants
+				List<Integer> sizesDescending = constants.keySet().stream().map(String::length).distinct().sorted().toList().reversed();
+				String remainingNamePart = name;
+				List<String> constantsNames = new ArrayList<>();
+				while (!remainingNamePart.isEmpty()) {
+					boolean reducedInLastRound = false;
+					for (int size : sizesDescending) {
+						if (size > remainingNamePart.length()) {
+							continue;
+						}
+						String currentName = remainingNamePart.substring(0, size);
+						if (constants.containsKey(currentName)) {
+							constantsNames.add(currentName);
+							remainingNamePart = remainingNamePart.substring(size);
+							reducedInLastRound = true;
+							break; // Inner loop.
+						}
+					}
+					if (!reducedInLastRound) {
+						throw new ValidationParsingRuntimeException(String.format("Variable or function \"%s\" has not been declared before.", name));
+					}
+				}
+				List<Constant> constantsTruffle = constantsNames.stream().map(cName -> ConstantNodeGen.create(constants.get(cName))).toList();
+				// Has at least 2 constants.
+				final int foundConstantsSize = constantsTruffle.size();
+				int foundConstantsIndex = 0;
+				ExpressionBaseNode currentRef = constantsTruffle.get(foundConstantsIndex);
+				++foundConstantsIndex;
+				for (; foundConstantsIndex < foundConstantsSize; ++foundConstantsIndex) {
+					Constant currentConstant = constantsTruffle.get(foundConstantsIndex);
+					// Left-associative
+					currentRef = GeometricProductNodeGen.create(currentRef, currentConstant);
+				}
+				ref = currentRef;
+			}
 		}
 
-		ref.setSourceSection(ctx.name.getStartIndex(), ctx.name.getStopIndex());
+		ref.setSourceSection(ctx.name.getFirst().getStartIndex(), ctx.name.getLast().getStopIndex());
 		nodeStack.push(ref);
 	}
 

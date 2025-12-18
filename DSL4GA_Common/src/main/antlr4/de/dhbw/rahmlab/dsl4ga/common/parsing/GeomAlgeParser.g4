@@ -223,24 +223,16 @@ innerRecursiveExpr
 ///////////////////////////////////////////////////////////////////////////
 
 literalExpr
-	:	type=	(SMALL_EPSILON__SUBSCRIPT_ZERO
-				|SMALL_EPSILON__SUBSCRIPT_SMALL_I
-				|SMALL_EPSILON__SUBSCRIPT_ONE
-				|SMALL_EPSILON__SUBSCRIPT_TWO
-				|SMALL_EPSILON__SUBSCRIPT_THREE
-				|SMALL_EPSILON__SUBSCRIPT_PLUS
-				|SMALL_EPSILON__SUBSCRIPT_MINUS
-				|SMALL_PI
-				|INFINITY
-				|SMALL_O
-				|SMALL_N
-				|SMALL_N_TILDE
-				|CAPITAL_E__SUBSCRIPT_ZERO
-				|CAPITAL_E__SUBSCRIPT_THREE
-				|CAPITAL_E
-				)					#LiteralConstant
-	|	value=	DECIMAL_LITERAL		#LiteralDecimal
-	|	name=	IDENTIFIER			#Reference
+	:	value=DECIMAL_LITERAL		#LiteralDecimal
+	|	(name+=IDENTIFIER
+		|name+=ANY+ name+=SUBSCRIPT_ZERO
+		|name+=ANY+ name+=SUBSCRIPT_ONE
+		|name+=ANY+ name+=SUBSCRIPT_TWO
+		|name+=ANY+ name+=SUBSCRIPT_THREE
+		|name+=ANY+ name+=SUBSCRIPT_FOUR
+		|name+=ANY+ name+=SUBSCRIPT_FIVE
+		|name+=ANY+
+		)					#LiteralOrReference
 	;
 
 parenExpr

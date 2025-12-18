@@ -39,8 +39,8 @@
 			<optional>true</optional>
 		</dependency>
 		<dependency>
-			<groupId>de.orat.math.cgacasadi</groupId>
-			<artifactId>CGACasADi</artifactId>
+			<groupId>de.orat.math.gacasadi</groupId>
+			<artifactId>GACasADi</artifactId>
 			<version>1.0-SNAPSHOT</version>
 			<scope>runtime</scope>
 			<optional>true</optional>
