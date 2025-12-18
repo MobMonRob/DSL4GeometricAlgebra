@@ -5,7 +5,6 @@ import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParserBaseListener;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.ParseTreeWalkerSkipping;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationParsingException;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationParsingRuntimeException;
-import de.orat.math.gacalc.api.ConstantsExpression;
 import de.orat.math.gacalc.api.GAFactory;
 import de.orat.math.gacalc.api.GAFunction;
 import de.orat.math.gacalc.api.MultivectorExpression;
@@ -32,7 +31,6 @@ import org.antlr.v4.runtime.Token;
 public class ExprTransform extends GeomAlgeParserBaseListener {
 
 	protected final GAFactory exprGraphFactory;
-	protected final ConstantsExpression constants;
 	protected final Deque<MultivectorExpression> nodeStack = new ArrayDeque<>();
 	protected final Map<String, GAFunction> functionsView;
 	protected final Map<String, MultivectorExpression> localVariablesView;
@@ -40,7 +38,6 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 
 	protected ExprTransform(GAFactory exprGraphFactory, Map<String, GAFunction> functionsView, Map<String, MultivectorExpression> localVariablesView) {
 		this.exprGraphFactory = exprGraphFactory;
-		this.constants = exprGraphFactory.constantsExpr();
 		this.functionsView = functionsView;
 		this.localVariablesView = localVariablesView;
 	}
