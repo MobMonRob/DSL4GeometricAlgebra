@@ -1,0 +1,21 @@
+#algebra pga
+
+fn createPoint(vec) {
+	(vec + ε₀)*
+}
+
+fn main(a,b,c,d, vec1, vec2) {
+
+	// plane
+	pl = aε₁ + bε₂ + cε₃ + dε₀
+
+	// points
+	p1 = createPoint(vec1)
+	p2 = createPoint(vec2)
+
+	// line
+	l = p1∨p2
+
+	// intersection
+	pl∧l
+}

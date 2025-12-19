@@ -192,12 +192,12 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 				GeneralInverseNodeGen.create(left);
 			case GeomAlgeParser.ASTERISK -> {
 				var func = this.functionsView.get("dual");
-				if (!func.arityCorrect(1)) {
-					throw new ValidationParsingRuntimeException("Overloaded dual of arity != 1.");
-				}
 				if (func == null) {
 					yield DualNodeGen.create(left);
 				} else {
+					if (!func.arityCorrect(1)) {
+						throw new ValidationParsingRuntimeException("Overloaded dual of arity != 1.");
+					}
 					// Operator overloading.
 					yield FunctionCallNodeGen.create(func, new ExpressionBaseNode[]{left});
 				}
@@ -208,12 +208,12 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 				CliffordConjugateNodeGen.create(left);
 			case GeomAlgeParser.SUPERSCRIPT_MINUS__ASTERISK -> {
 				var func = this.functionsView.get("undual");
-				if (!func.arityCorrect(1)) {
-					throw new ValidationParsingRuntimeException("Overloaded undual of arity != 1.");
-				}
 				if (func == null) {
 					yield UndualNodeGen.create(left);
 				} else {
+					if (!func.arityCorrect(1)) {
+						throw new ValidationParsingRuntimeException("Overloaded undual of arity != 1.");
+					}
 					// Operator overloading.
 					yield FunctionCallNodeGen.create(func, new ExpressionBaseNode[]{left});
 				}
