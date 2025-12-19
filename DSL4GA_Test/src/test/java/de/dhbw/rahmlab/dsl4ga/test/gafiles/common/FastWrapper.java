@@ -18,4 +18,10 @@ public interface FastWrapper {
 	List<SparseDoubleMatrix> test1(SparseDoubleMatrix a, SparseDoubleMatrix b);
 	List<SparseDoubleMatrix> ik(SparseDoubleMatrix p, SparseDoubleMatrix ae);
 	
+	List<SparseDoubleMatrix> pgatest(SparseDoubleMatrix a, SparseDoubleMatrix b,
+	SparseDoubleMatrix c,
+		SparseDoubleMatrix d,
+		SparseDoubleMatrix vec1,
+		SparseDoubleMatrix vec2);
+	
 }
