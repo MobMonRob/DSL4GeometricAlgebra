@@ -10,7 +10,7 @@ import com.oracle.truffle.api.library.ExportLibrary;
 import com.oracle.truffle.api.library.ExportMessage;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.superClasses.GeomAlgeLangBaseNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.FunctionDefinitionRootNode;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.DebuggerLocalVariablesScope;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.debugging.runtime.DebuggerLocalVariablesScope;
 
 @ExportLibrary(value = NodeLibrary.class)
 @NodeField(name = "scopeVisibleVariablesIndex", type = Integer.class)
