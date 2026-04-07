@@ -222,8 +222,8 @@ innerRecursiveExpr
 // atomic / terminal / firstOrder Expr
 ///////////////////////////////////////////////////////////////////////////
 
-// Edge case: The lexer tokenizes the E₀ als IDENTIFIER SUBSCRIPT_ZERO
-// Edge case: The lexer tokenizes the εᵢ als ANY+
+// Edge case: The lexer tokenizes E₀ as IDENTIFIER SUBSCRIPT_ZERO
+// Edge case: The lexer tokenizes εᵢ as ANY+
 literalExpr
 	:	value=DECIMAL_LITERAL	#LiteralDecimal
 	|	((name+=IDENTIFIER | name+=ANY+)
