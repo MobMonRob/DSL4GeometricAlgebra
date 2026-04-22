@@ -67,7 +67,23 @@ public final class ExecutionRootNode extends AbstractFunctionRootNode {
 				throw new ValidationException("main returned invalid object.");
 		};
 
-		List<SparseDoubleMatrix> numRes = GeomAlgeLangContext.currentExternalArgs.evalToSDM(symRes);
+		List<MultivectorExpression> simpleSymRes = symRes.stream()
+			.map(expr -> expr.simplify(GeomAlgeLangContext.currentExternalArgs.params))
+			.toList();
+
+		System.out.println("Symbolic results:");
+		for (var expr : symRes) {
+			System.out.println(expr);
+		}
+		System.out.println();
+
+		System.out.println("Simplified symbolic results:");
+		for (var expr : simpleSymRes) {
+			System.out.println(expr);
+		}
+		System.out.println();
+
+		List<SparseDoubleMatrix> numRes = GeomAlgeLangContext.currentExternalArgs.evalToSDM(simpleSymRes);
 		return new TruffleBox<>(numRes);
 	}
 }
