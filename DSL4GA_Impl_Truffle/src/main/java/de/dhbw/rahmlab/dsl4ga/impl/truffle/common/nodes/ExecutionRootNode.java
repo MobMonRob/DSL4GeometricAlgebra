@@ -71,6 +71,10 @@ public final class ExecutionRootNode extends AbstractFunctionRootNode {
 			.map(expr -> expr.simplify(GeomAlgeLangContext.currentExternalArgs.params))
 			.toList();
 
+		List<String> laTeXifiedSimpleSymRes = simpleSymRes.stream()
+			.map(MultivectorExpression::LaTeXify)
+			.toList();
+
 		System.out.println("Symbolic results:");
 		for (var expr : symRes) {
 			System.out.println(expr);
@@ -78,14 +82,14 @@ public final class ExecutionRootNode extends AbstractFunctionRootNode {
 		System.out.println();
 
 		System.out.println("Simplified symbolic results:");
-		for (var expr : simpleSymRes) {
-			System.out.println(expr);
+		for (var simpleExpr : simpleSymRes) {
+			System.out.println(simpleExpr);
 		}
 		System.out.println();
 
 		System.out.println("LaTeXified simplified symbolic results:");
-		for (var expr : simpleSymRes) {
-			System.out.println(expr.LaTeXify());
+		for (var laTeXExpr : laTeXifiedSimpleSymRes) {
+			System.out.println(laTeXExpr);
 		}
 		System.out.println();
 
