@@ -151,7 +151,10 @@ public class DebuggerLocalVariablesScope implements TruffleObject {
 		String str = "invalid";
 		if (varValue instanceof MultivectorExpression mvExpr) {
 			MultivectorValue mv = GeomAlgeLangContext.currentExternalArgs.evalToMV(List.of(mvExpr)).get(0);
-			str = mv.toString();
+			String mvNum = mv.toString();
+			String mvSym = mvExpr.toString();
+			mvSym = mvSym.replaceAll(",", ",\n");
+			str = String.format("val:\n%s\n\nexpr:\n%s", mvNum, mvSym);
 		}
 		if (varValue instanceof ArrayObject arr) {
 			// Currently, only MultivectorExpression is allowed in Array.
