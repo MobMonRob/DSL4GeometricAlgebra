@@ -27,9 +27,9 @@ public class IkTest {
 		// Profiler: Truffle 803 ms, Fast 20 ms
 		ikTest.firstInvocation(2.7);
 		// Profiler: Truffle 20 ms, Fast 6 ms
-		for (int i = 0; i < 20; ++i) {
-			ikTest.secondInvocation(3.14);
-		}
+		//for (int i = 0; i < 20; ++i) {
+		//	ikTest.secondInvocation(3.14);
+		//}
 		//
 		System.out.println("Cache size: " + CachedCgaMvExpr.getCache().getCacheSize());
 		System.out.println("......CachedFunctionUsage");

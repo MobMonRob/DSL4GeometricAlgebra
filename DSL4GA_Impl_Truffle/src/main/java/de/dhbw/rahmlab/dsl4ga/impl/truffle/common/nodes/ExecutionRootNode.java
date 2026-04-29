@@ -59,7 +59,7 @@ public final class ExecutionRootNode extends AbstractFunctionRootNode {
 		}
 		Object callRetVal = this.mainCallNode.call(symArgsBoxed);
 		List<MultivectorExpression> symRes = switch (callRetVal) {
-			case Tuple callRetValTuple -> // Contraint: main returns only MultivectorExpression.
+			case Tuple callRetValTuple -> // Constraint: main returns only MultivectorExpression.
 				Stream.of(callRetValTuple.getValues()).map(v -> (MultivectorExpression) v).toList();
 			case MultivectorExpression callRetValMV ->
 				List.of(callRetValMV);
@@ -80,6 +80,12 @@ public final class ExecutionRootNode extends AbstractFunctionRootNode {
 		System.out.println("Simplified symbolic results:");
 		for (var expr : simpleSymRes) {
 			System.out.println(expr);
+		}
+		System.out.println();
+
+		System.out.println("LaTeXified simplified symbolic results:");
+		for (var expr : simpleSymRes) {
+			System.out.println(expr.LaTeXify());
 		}
 		System.out.println();
 
