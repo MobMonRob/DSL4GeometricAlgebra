@@ -1,5 +1,5 @@
 # DSL4GA
-This repository contains code to work with multivector expressions of geometric algebra. The idea is to realise a complete toolchain with a geometric algebra specific domain specific language based on [Truffle/Graal](https://www.graalvm.org/latest/graalvm-as-a-platform/language-implementation-framework/) with state of the art smart editing features, debugging functionality and a fast implementation based on [JCasADi](https://github.com/MobMonRob/JCasADi/) focussed on bringing algorithmic differentation in the world of geometric algebra.
+This repository contains code to work with multivector expressions of geometric algebra. The idea is to realise a complete toolchain with a geometric algebra specific domain specific language based on [Truffle/Graal](https://www.graalvm.org/latest/graalvm-as-a-platform/language-implementation-framework/) with state of the art smart editing features, debugging functionality and a fast implementation based on [JCasADi](https://github.com/MobMonRob/JCasADi/) focused on bringing algorithmic differentation in the world of geometric algebra.
 
 
 ## Disclaimer
@@ -11,6 +11,14 @@ Especially be cautious regarding:
 - There is still no static type system. Even trivial errors may only be noticed late while executing. Sometimes exceptions are raised later than the actual error or not at all. Thus erroneous code can lead to undefined behaviour.
 - Rules specified in the documentation may not be consistently enforced with an eager exception. But adherence to them will avoid undefined behaviour and increase intelligibility of raised exceptions.
 
+
+## Features Overview
+- Domain specific language ("DSL") for Geometric Algebras. Including user defined functions.
+- Multiple Geometric Algebras can be used (Currently CGA and PGA). New ones can be added fast with changes in GACasADi.
+- Debugging to step through the DSL code and view variables content. Enabled by GraalVM. Tested with Netbeans.
+- Visualization of Objekts while debugging.
+- Fast numeric evaluation due to the internal use of sparsity and symbolic simplification of expressions (with CasADi and Maxima CAS). Additionally, the use of Geometric Algebra linearizes some transformations which increases likelyhood that the CAS finds shorter (faster) expressions.
+- LaTeX printing of expressions (with help of Maxima). Currently only at the end of program execution. Adding more flexibility is planned.
 
 
 ## GraalVM Setup
@@ -55,12 +63,21 @@ The project depends on the vecmath library in the refactored version of the JogA
 Alternatively clone it from [GitHub](https://github.com/JogAmp/vecmath/tree/dev1.7.1), update the compiler version in it's pom.xml and build it.
 
 Clone and checkout
-1. [GeometricAlgebra](https://github.com/orat/GeometricAlgebra)
-2. [ConformalGeometricAlgebra](https://github.com/orat/ConformalGeometricAlgebra)
-3. [SparseMatrix](https://github.com/orat/SparseMatrix)
-4. [CGACasADi](https://github.com/orat/CGACasADi)
+- [SparseMatrix](https://github.com/orat/SparseMatrix)
+- [GeometricAlgebra](https://github.com/orat/GeometricAlgebra)
+- [ConformalGeometricAlgebra](https://github.com/orat/ConformalGeometricAlgebra)
+- [JNativeLibLoader](https://github.com/MobMonRob/JNativeLibLoader)
+- [JCasADi](https://github.com/MobMonRob/JCasADi)
+- [GACalcAPI](https://github.com/orat/GACalcAPI)
+- [GACasADi](https://github.com/orat/GACasADi)
+- [Euclid3DViewAPI](https://github.com/orat/Euclid3DViewAPI)
+- [EuclidView3d](https://github.com/orat/EuclidView3d)
 
-and build those projects to have them available in your local Maven cache. SparseMatrix is a simple Java sparse matrix implementation used primarily as interface between the annotation based Java API and the DSL. So it allows to write code independend from GA-specific objects. CGACasADi is a fast symbolic implementation of CGA based on [CasADI](https://web.casadi.org/). A Java-Wrapper for CasADI based on [Swig](https://www.swig.org/) is used for Java integration.
+and build the projects in these repositories to have them available in your local Maven cache. Some of them require a C++ compiler and Linux to build. Read the README.md of these projects to make sure the projects will build. Once build, the artifacts should run on Windows as well.
+
+SparseMatrix is a simple Java sparse matrix implementation used primarily as interface between the annotation based Java API and the DSL. So it allows to write code independend from GA-specific objects. GACasADi is a fast symbolic implementation of GA based on [CasADI](https://web.casadi.org/). A Java-Wrapper for CasADI based on [Swig](https://www.swig.org/) is used for Java integration.
+
+Install Maxima 5.47.0 on your system.
 
 
 ## Run
@@ -386,16 +403,12 @@ There exist three types of involution operations: Space inversion, reversion and
 &#x03B5;&#x2080;&#x0045;&#x2080;=-&#x03B5;&#x2080;, &#x0045;&#x2080;&#x03B5;&#x2080;=&#x03B5;&#x2080;, &#x03B5;&#x1D62;&#x0045;&#x2080;=&#x03B5;&#x1D62;, &#x0045;&#x2080;&#x03B5;&#x1D62;=-&#x03B5;&#x1D62;, &#x0045;&#x2080;&#x00B2;=1, &#x03B5;&#x2080;&#x00B2;=&#x03B5;&#x1D62;&#x00B2;=0, &#x03B5;&#x208A;&#x00B2;=1, &#x03B5;&#x208B;&#x00B2;=-1, &#x03B5;&#x208A;&#x22C5;&#x03B5;&#x208B;=0
 
 ## Next Steps
-- completing the experimentally and optimized PGA implementation
-- merging the experimentally generic geometric algebra implementation into the main branch
 - adding operators and built-ins for symbolic derivation and algorithmic differentiation
 - adding more smart-editing features based on the language-agnostic LSP from GraalVM, completion of the implementation of a language-specific LSP
-- adding more debugging features e.g. step-in/step-out, showing the complete stacktrace polyglot till inside the native [CasADi](https://web.casadi.org/) libraries by building to LLVM
+- adding more debugging features e.g. showing the complete stacktrace polyglot till inside the native [CasADi](https://web.casadi.org/) libraries by building to LLVM
 - completing the design of a type-system and its implementation
 - extending the syntax with multidimensional arrays, loops and if-statements (A student project is already in the branch "loops")
 - Hyperwedge product implementation following [DeKeninck2020] to speed up program execution
-- Symbolic optimization with [Maxima](https://maxima.sourceforge.io/) - automated symbolical optimization of functions
 - C-code export and parallelization with CasADi
 - execution speed benchmarks, espcially to compare FAST- and TRUFFLE-implementation, autogenerated C-Code, ...
-
 
