@@ -16,7 +16,7 @@ Especially be cautious regarding:
 - Domain specific language ("DSL") for Geometric Algebras. Including user defined functions.
 - Multiple Geometric Algebras can be used (Currently CGA and PGA). New ones can be added fast with changes in GACasADi.
 - Debugging to step through the DSL code and view variables content. Enabled by GraalVM. Tested with Netbeans.
-- Visualization of Objekts while debugging.
+- Visualization of objects while debugging.
 - Fast numeric evaluation due to the internal use of sparsity and symbolic simplification of expressions (with CasADi and Maxima CAS). Additionally, the use of Geometric Algebra linearizes some transformations which increases likelyhood that the CAS finds shorter (faster) expressions.
 - LaTeX printing of expressions (with help of Maxima). Currently only at the end of program execution. Adding more flexibility is planned.
 
