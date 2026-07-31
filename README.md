@@ -364,6 +364,12 @@ There exist three types of involution operations: Space inversion, reversion and
 | up()        | up-projection of a euclidean vector into the conformal space |
 | down()      | down-projection of a multivector into the euclidean space by normalization and rejection from the minkowski plane E0 |
 
+### not yet implemented
+| symbol      | description |
+| :---------- | ------------ |
+| euclid()    | euclidean part of the multivector |
+| idle()      | idle part of the multivector |
+
 ### Scalar functions
 | symbol      | description |
 | :---------- | ------------ |
