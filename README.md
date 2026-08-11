@@ -409,16 +409,25 @@ There exist three types of involution operations: Space inversion, reversion and
 
 #### Geometric objects with intrinsic orientation type
 
-The orientation types of these objects correspond with the so called outer product null space representation (OPNS), sometimes also named as "direct" representation. The objects are constructed by joining points.
+The orientation types of these objects correspond with the so called outer product null space representation (OPNS), sometimes also named as "direct" representation. 
+
+The following objects are constructed by joining points (using the wedge-operator).
 
 | object | grade | type | formula | 
 | :---------- | :------ | :----| :-------- |
-| point pair |  2 | round | p1&#8743;p2 |
-| flat point (Finite-infinite point pair) |  2 | flat | p&#8743;&#x03B5;&#7522; |
-| Circle | 3 |  round | p1&#8743;p2&#8743;p3 |
-| Line | 3 | flat | p1&#8743;p2&#8743;&#x03B5;&#7522; |
-| Sphere |  4 |  round | p1&#8743;p2&#8743;p3&#8743;p4 |
-| Plane |  4 | flat | p1&#8743;p2&#8743;p3&#8743;&#x03B5;&#7522;|
+| point pair | 2 | round | p1&#8743;p2 |
+| flat (homogeneous) point (Finite-infinite point pair) |  2 | flat | p&#8743;&#x03B5;&#7522; |
+| circle | 3 |  round | p1&#8743;p2&#8743;p3 |
+| line | 3 | flat | p1&#8743;p2&#8743;&#x03B5;&#7522; |
+| sphere | 4 |  round | p1&#8743;p2&#8743;p3&#8743;p4 |
+| plane | 4 | flat | p1&#8743;p2&#8743;p3&#8743;&#x03B5;&#7522;|
+
+Round and oriented points can be created from euclidean parameters/coordinates:
+
+| object | grade | type | formula | 
+| :---------- | :------ | :----| :-------- |
+| round point | 1 | round | p1&#8743;p2 |
+| oriented point | 1 | round | 	$$\vec{Q}=\vec{m}\wedge\vec{v}+(\frac{1}{2}\vec{v}^2\vec{m}-\vec{v}(\vec{v}\cdot\vec{m}))\epsilon_\infty+\vec{m}\epsilon_0-\vec{m}\cdot\vec{v}E_0$$|
 
 #### Geometric objects with extrinsic orientation type
 
