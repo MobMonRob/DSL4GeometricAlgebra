@@ -414,12 +414,11 @@ The orientation type of these objects corresponds with the outer product null sp
 | object | grade | type | formula | 
 | :---------- | :------ | :----| :-------- |
 | point pair |  2 | round | p1&#8743;p2 |
-| (Flat) Finite-infinite point pair or Flat point |  2 | flat | p&#8743;&#x03B5;&#7522; |
+| flat point (Finite-infinite point pair) |  2 | flat | p&#8743;&#x03B5;&#7522; |
 | Circle | 3 |  round | p1&#8743;p2&#8743;p3 |
 | Line | 3 | flat | p1&#8743;p2&#8743;&#x03B5;&#7522; |
 | Sphere |  4 |  round | p1&#8743;p2&#8743;p3&#8743;p4 |
 | Plane |  4 | flat | p1&#8743;p2&#8743;p3&#8743;&#x03B5;&#7522;|
-| Plane between two ipns points (p1, p2) |  4 | flat | $ (\vec{p}_1\wedge\vec{p}_2)*\wedge\epsilon_\infinity $ |
 
 #### Geometric objects with extrinsic orientation type
 
