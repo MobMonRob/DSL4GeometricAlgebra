@@ -455,7 +455,7 @@ The orientation type of the following objects corresponds with the so called com
 
 | object | grade | formula | 
 | :---------- | :------ | :-------- |
-| plane | 1 |  p1&#8743;p2 |
+| plane | 1 |  $$\vv{n}+(\vv{x}\cdot\vv{n})\epsilon_\infty$$ |
 
 The following objects are constructed by meeting planes (using the wedge-operator).
 
