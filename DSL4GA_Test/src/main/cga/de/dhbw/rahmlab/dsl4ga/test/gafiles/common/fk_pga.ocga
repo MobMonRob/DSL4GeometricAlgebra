@@ -1,0 +1,52 @@
+#algebra pga
+
+fn motor(theta, a, d, alpha) {
+	T_d = 1 - 0.5 d (ε₀ ∧ ε₂) // Tz 
+	R_theta = cos(0.5 theta) - sin(0.5 theta) (ε₁ ∧ ε₂) // Rz // oder GP?
+	T_a = 1 - 0.5 a (ε₀  ∧ ε₁) // Tx // oder GP?
+    R_alpha = cos(0.5 alpha) - sin(0.5 alpha) (ε₂ ∧ ε₃) // Rx // oder GP?
+	M = R_alpha T_d T_a R_theta 
+	M
+}
+
+fn applyMotor(obj_prev, M) {
+	obj = M obj_prev M˜
+	obj
+}
+
+// Agut2017 5.3-3 S. 60
+// Zaplana2021 3. S. 10
+// Seybold2015 Diss 14.2 S. 136
+// TODO arrays als Funktionsargumente?
+// fn fk(L0, theta)
+fn fk(L0){
+	
+	// WORKAROUND
+	theta[] = {0, 0, 0, 0, 0, 0}
+
+	// dh parameters UR5
+	a[] = {0.0, -0.425, -0.392, 0.0, 0.0, 0.0}
+	d[] = {0.0892, 0.0, 0.0, 0.10915, 0.09465, 0.0825}
+    alpha[] = {π/2, 0, 0, π/2, -π/2, 0}
+
+	M[] = map(motor, theta, a, d, alpha)
+
+	//M_rev[] = reversed(M)
+	L0s[] = mapaccum(applyMotor, L0, M)
+	//ps[] = reversed(ps_rev)
+	//ps
+	L0s
+}
+
+fn main(theta1, theta2, theta3, theta4, theta5, theta6) {
+
+	L0 = ε₁ ∧ ε₂ // line in z-direction, through the origin
+	:Ls[] = fk(L0)
+
+	// euclidean part of the line divived by I3 = direction
+    direction = euclid(Ls[5])/E₃
+    // closed point on the line to the origin
+	position = Ls[5]/direction
+
+	Ls[5], direction
+}

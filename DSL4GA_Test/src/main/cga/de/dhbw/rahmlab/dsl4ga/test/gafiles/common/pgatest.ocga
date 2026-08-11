@@ -1,21 +1,31 @@
 #algebra pga
 
+// create point from an euclidean vector
 fn createPoint(vec) {
 	(vec + ε₀)*
+}
+
+// create line from two homogeneous points
+fn createLine(p1, p2){
+	p1∨p2
+}
+
+fn createPlane(a, b, c, d){
+	aε₁ + bε₂ + cε₃ + dε₀
 }
 
 fn main(a,b,c,d, vec1, vec2) {
 
 	// plane
-	pl = aε₁ + bε₂ + cε₃ + dε₀
+	pl = createPlane(a,b,c,d) 
 
 	// points
 	p1 = createPoint(vec1)
 	p2 = createPoint(vec2)
 
 	// line
-	l = p1∨p2
+	l = createLine(p1, p2)
 
 	// intersection
-	pl∧l
+	(pl∧l)⁻*
 }
