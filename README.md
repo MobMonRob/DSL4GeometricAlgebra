@@ -112,14 +112,17 @@ Fast will be used to measure the runtime difference to Truffle if certain CasADi
 
 
 ## Syntax
+
+### Algebra definitions
 The first line needs to declare the algebra used. Optionally, the implementation can be specified, too. \
 With algebra being "cga" and implementation being "theImpl", the first line would be:
 ```
 #algebra cga theImpl
 ```
 
+At the moment only the algebras "cga" and "pga" are available.
 
-## Function definitions
+### Function definitions
 #### Rules
 - There needs to be at least one function defined with the name `main`. Invokations of the program will call this one first.
 - Currently, callees need to be defined above the callers.
