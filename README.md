@@ -436,14 +436,14 @@ An oriented point can be created from euclidean parameters/coordinates:
 
 The orientation type of these objects corresponds with the inner product null space representation (IPNS), sometimes named as "dual" representation.
 
-| object | formula | grade |
+| object | grade | type formula | 
 | :---------- | :------ | :----|
-| point  | x+0.5x&sup2;&#x03B5;&#7522;+&#x03B5;&#8320; | 1 |
-| sphere | P-0.5r&sup2;&#x03B5;&#7522; | 1 |
-| plane  | n+d&#x03B5;&#7522; | 1 |
-| circle  | s1&#8743;s2 | 2 |
-| axis (line) | p1&#8743;p2 | 2 |
-| point pair | s1&#8743;s2&#8743;s3 | 3 |
+| point  | 1 | round | x+0.5x&sup2;&#x03B5;&#7522;+&#x03B5;&#8320; |
+| sphere | 1 | round | P-0.5r&sup2;&#x03B5;&#7522; |
+| plane  | 1 | flat  | n+d&#x03B5;&#7522; |
+| circle  | 2 | round | s1&#8743;s2 | 
+| axis (line) | 2 | flat | p1&#8743;p2 | 
+| point pair | 3 | round | s1&#8743;s2&#8743;s3 | 
 
 ### PGA
 
