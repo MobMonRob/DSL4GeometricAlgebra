@@ -289,12 +289,12 @@ Hint: The Unicode and Latex name for the symbol used for left contraction is "RI
 | precedence | symbol   | latex   | unicode | name | hints |
 | :--------: | :------: | ------- | ------- | ---- | ----- |
 | 4          |          |         | \u0020  | geometric product | Zero or more space characters are interpreted as the operator. |
-| 3          | &#x2227; | \wedge  | \u2227  | "wedge" or outer product (join, span for no common subspace) | joining linearily independend vectors/two disjoint subspaces |
+| 3          | &#x2227; | \wedge  | \u2227  | "wedge" or outer product (join/union or meet/intersection dependendend of the orientation type of the arguments) |
 | 1          | &#x002B; | +       | \u002B  | addition | |
 | 1          | &#x002D; | -       | \u002D  | subtraction | |
 | 3          | &#x230B; | \rfloor | \u230B  | left contraction |  |
 | 3          | &#x230A; | \lfloor | \u230A  | right contraction | | where the grade operator for negative grades is zero. This implies that `something of higher grade cannot be contracted onto something of lower grade`. |
-| 3          | &#x2228; | \vee    | \u2228  | "vee" or regressive product (meet if intersected) | |
+| 3          | &#x2228; | \vee    | \u2228  | "vee" or regressive product (join/union or meet/intersection dependendend of the orientation type of the arguments) | |
 | 2          | &#x002F; | /       | \u002F  | division (inverse geometric product) |  |
 
 ##### Implementation
