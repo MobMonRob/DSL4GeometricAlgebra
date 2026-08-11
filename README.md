@@ -259,19 +259,16 @@ fn main(a, b) {
 }
 ```
 
-The following table shows which elements are visualized and in which colors. The color depends on the grade of the object.
-
-| geometric object             | grade | color |
-| :--------------------------- | ------| ----- |
-| plane, round-point, sphere   |   1   | red   |
-| circle, oriented-point, line |   2   | green |
-| point pair, flat-point       |   3   | blue  |
-| point                        |   4   | yellow|
-
+The color of the visualized objects depends on the grade of the geometric object.
+| grade | color |
+| ------| ----- |
+|   1   | red   |
+|   2   | green |
+|   3   | blue  |
+|   4   | yellow|
 
 ### Expressions
 - Numeric literals like "0.5" and scalar constants like "π" are in OPNS representation.
-
 
 ### Operators
 Hint: Operator precedence determines how operators are parsed concerning each other. A higher precedence number
@@ -412,7 +409,13 @@ There exist three types of involution operations: Space inversion, reversion and
 
 The orientation type of these objects corresponds with the so called outer product null space representation (OPNS), sometimes also named as "direct" representation. 
 
-The following objects are constructed by joining points (using the wedge-operator).
+Round points can be created from euclidean parameters/coordinates:
+
+| object | grade | type | formula | 
+| :---------- | :---- | :----| :---------- |
+| round point | 1 | round | $$\vec{p}=\vv{x}+\frac{1}{2}\vv{x}\textsuperscript{2}\epsilon_\infty+\epsilon_0$$ |
+
+The following objects are constructed by joining round points (using the wedge-operator).
 
 | object | grade | type | formula | 
 | :---------- | :------ | :----| :-------- |
@@ -423,11 +426,10 @@ The following objects are constructed by joining points (using the wedge-operato
 | sphere | 4 |  round | p1&#8743;p2&#8743;p3&#8743;p4 |
 | plane | 4 | flat | p1&#8743;p2&#8743;p3&#8743;&#x03B5;&#7522;|
 
-Round and oriented points can be created from euclidean parameters/coordinates:
+An oriented point can be created from euclidean parameters/coordinates:
 
 | object | grade | type | formula | 
 | :---------- | :---- | :----| :---------- |
-| round point | 1 | round | $$\vec{p}=\vv{x}+\frac{1}{2}\vv{x}\textsuperscript{2}\epsilon_\infty+\epsilon_0$$ |
 | oriented point | 3 | round | 	$$\vec{Q}=\vec{m}\wedge\vec{v}+(\frac{1}{2}\vec{v}^2\vec{m}-\vec{v}(\vec{v}\cdot\vec{m}))\epsilon_\infty+\vec{m}\epsilon_0-\vec{m}\cdot\vec{v}E_0$$|
 
 #### Geometric objects with extrinsic orientation type
