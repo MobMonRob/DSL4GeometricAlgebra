@@ -403,7 +403,9 @@ There exist three types of involution operations: Space inversion, reversion and
 
 ## Algebras
 
-### CGA
+### CGA - Conformal Geometric Algebra Cl(4,1,0)
+
+This algebra contains flat and round elements.
 
 #### Geometric objects with intrinsic orientation type
 
@@ -445,9 +447,9 @@ The orientation type of these objects corresponds with the inner product null sp
 | axis (line) | 2 | flat | p1&#8743;p2 | 
 | point pair | 3 | round | s1&#8743;s2&#8743;s3 | 
 
-### PGA
+### PGA - projective geometric algebra Cl(3,0,1)
 
-PGA contains flat objects only.
+This algebra contains flat objects only.
 
 #### Geometric objects with intrinsic orientation type
 
