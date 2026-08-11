@@ -411,15 +411,15 @@ There exist three types of involution operations: Space inversion, reversion and
 
 The orientation type of these objects corresponds with the outer product null space representation (OPNS), sometimes also named as "direct" representation. The objects are constructed by joining points.
 
-| description | formula | grade | class |
+| object | grade | type | formula | 
 | :---------- | :------ | :----| :-------- |
-| Point pair from  two conformal points (p1, p2) | p1&#8743;p2 | 2 | round |
-| (Flat) Finite-infinite point pair or Flat point from  one conformal point (p) | p&#8743;&#x03B5;&#7522; | 2 | flat |
-| Circle from three ipns Points (p1, p2, p3) | p1&#8743;p2&#8743;p3 | 3 |  round |
-| Line from two conformal planes (p1, p2) | p1&#8743;p2&#8743;&#x03B5;&#7522; | 3 | flat |
-| Sphere from four ipns points (p1, p2, p3, p4) | p1&#8743;p2&#8743;p3&#8743;p4| 4 |  round |
-| Plane from three ipns points (p1, p2, p3) | p1&#8743;p2&#8743;p3&#8743;&#x03B5;&#7522;| 4 | flat |
-| Plane between two ipns points (p1, p2) | $ (\vec{p}_1\wedge\vec{p}_2)*\wedge\epsilon_\infinity $ | 4 | flat |
+| point pair |  2 | round | p1&#8743;p2 |
+| (Flat) Finite-infinite point pair or Flat point |  2 | flat | p&#8743;&#x03B5;&#7522; |
+| Circle | 3 |  round | p1&#8743;p2&#8743;p3 |
+| Line | 3 | flat | p1&#8743;p2&#8743;&#x03B5;&#7522; |
+| Sphere |  4 |  round | p1&#8743;p2&#8743;p3&#8743;p4 |
+| Plane |  4 | flat | p1&#8743;p2&#8743;p3&#8743;&#x03B5;&#7522;|
+| Plane between two ipns points (p1, p2) |  4 | flat | $ (\vec{p}_1\wedge\vec{p}_2)*\wedge\epsilon_\infinity $ |
 
 #### Geometric objects with extrinsic orientation type
 
