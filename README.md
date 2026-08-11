@@ -365,7 +365,7 @@ There exist three types of involution operations: Space inversion, reversion and
 | symbol      | description |
 | :---------- | ------------ |
 | euclid()    | euclidean part of the multivector |
-| idle()      | idle part of the multivector |
+| idle()      | idle part of the multivector (includes no location information) |
 
 #### Scalar functions
 | symbol      | description |
@@ -444,14 +444,24 @@ The orientation type of these objects corresponds with the inner product null sp
 
 ### PGA
 
+PGA contains flat objects only.
+
 #### Geometric objects with intrinsic orientation type
 
-The orientation type of the following objects corresponds with the so called outer product null space representation (OPNS), sometimes also named as "point based" representation. PGA contains flat objects only.
+The orientation type of the following objects corresponds with the so called outer product null space representation (OPNS), sometimes also named as "point based" representation. 
 
+Orthogonal reflection of objects from this type results in inversion of the orientation. Reflection of objects inside the reflection plane do not changed its orientation. 
+
+| object | grade | formula | 
+| :---------- | :------ | :-------- |
+| spear (join line) | 2 |  p1&#8743;p2 |
+| point | 3 |  p1&#8743;p2 |
+
+Spears correspond with polar vectors and can represent local orbits or momenta of points. 
 
 #### Geometric objects with extrinsic orientation type
 
-The orientation type of the following objects corresponds with the so called commutator product null space representation (CPNS), sometimes also named as "plane-based" representation.
+The orientation type of the following objects corresponds with the so called commutator product null space representation (CPNS), sometimes also named as "plane-based" representation. 
 
 | object | grade | formula | 
 | :---------- | :------ | :-------- |
@@ -461,8 +471,10 @@ The following objects are constructed by meeting planes (using the wedge-operato
 
 | object | grade | formula | 
 | :---------- | :------ | :-------- |
-| axis (line) | 2 |  p1&#8743;p2 |
-| point | 3 |  p1&#8743;p2 |
+| axis (meet line) | 2 |  p1&#8743;p2 |
+| point | 1 |  p1&#8743;p2 |
+
+Axes correspond to axial vectors and can describe movement velocity (rotations (finite) and translations (idial)).
 
 ## Next Steps
 - adding operators and built-ins for symbolic derivation and algorithmic differentiation
