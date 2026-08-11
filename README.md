@@ -110,7 +110,6 @@ Fast will be used to measure the runtime difference to Truffle if certain CasADi
 - Builtins and operators can be missing or wrong.
 - Missing features: arrays, higher-order functions.
 
-
 ## Syntax
 
 ### Algebra definitions
@@ -152,7 +151,7 @@ fn main(a, b) {
 }
 ```
 
-## Arrays
+### Arrays
 ```
 // Parameter
 fn callee(a[]) {
@@ -197,8 +196,7 @@ fn caller() {
 - Arrays are static. Their size cannot change.
 - The main Function shall not receive or return arrays.
 
-
-## Higher-order functions “HOF”
+### Higher-order functions “HOF”
 HOF are currently primarily used to express iteration. \
 HOF currently cannot be defined in the language itself. Instead HOF builtins are provided.
 
@@ -246,8 +244,7 @@ fn main() {
 }
 ```
 
-
-## Visualization
+### Visualization
 Variables can be visualized after assignment with one or two preceding colons.
 - `:a` will assume **IPNS** representation.
 - `::a` will assume **OPNS** representation.
@@ -272,21 +269,21 @@ The following table shows which elements are visualized and in which colors. The
 | point                        |   4   | yellow|
 
 
-## Expressions
+### Expressions
 - Numeric literals like "0.5" and scalar constants like "π" are in OPNS representation.
 
 
-## Operators
+### Operators
 Hint: Operator precedence determines how operators are parsed concerning each other. A higher precedence number
 results in a higher binding strength. Thus operators with higher precedence become the operands of operators with lower precedence.
 
 Exceptions from the precedence rules:
 - Expressions like `a-b` evaluate to `subtraction(a, b)` instead of `geometric_product(a, negate(b))`.
 
-### 2-ary operators
+#### 2-ary operators
 All 2-ary operators are left-associative.
 
-#### Base 2-ary operators
+##### Base 2-ary operators
 Hint: The Unicode and Latex name for the symbol used for left contraction is "RIGHT FLOOR" and for right contraction is "LEFT FLOOR". Please be cautious to this detail when writing Latex or programming tools which work with the language.
 
 | precedence | symbol   | latex   | unicode | name | hints |
@@ -305,7 +302,7 @@ $A\wedge B = \langle A B\rangle_{|k+l|}$
 
 $A\rfloor B = \langle A B\rangle_{|l-k|}$
 
-#### Additional 2-ary operators
+##### Additional 2-ary operators
 | precedence | symbol   | latex | unicode | description |
 | :--------: | :------: | ------| ------- | ----------- |
 | 3          | &#x22C5; | \cdot | \u22C5  | dot product (inner product without scalar parts) $A\cdot B=\langle A B\rangle_{|k-l|,k\neq 0, l\neq 0}$|
@@ -313,15 +310,13 @@ $A\rfloor B = \langle A B\rangle_{|l-k|}$
 | 3          | &#x222A; | \cup  | \u222A  | join  (union) of two subspaces is there smallest superspace = smallest space containing them both |
 | 3          | &#x2299; | \odot | \u2299  | hadamard product (element-wise multiplication) |
 
-
 ##### Implementation
 $A\cdot B=\langle A B\rangle_{|k-l|,k\neq 0, l\neq 0}$
 
-### 1-ary operators
+#### 1-ary operators
 All 1-ary operators have higher precedence than 2-ary ones. \
 All 1-ary operators are right-sides except from the negate operator '-'. \
 Except dual/undual the operators cancel itself so if your write X&#732;&#732; no reverse is executed.
-
 
 #### Base 1-ary operators
 | precedence | symbol           | latex                         | unicode      | description |  CLUscript |
@@ -341,14 +336,13 @@ There exist three types of involution operations: Space inversion, reversion and
 | 6          | &#x00B2;         | \textsuperscript{2}                     | \u00B2       | square |
 | 6          | &#x005E;         | \textsuperscript{$\wedge$}                      | \u005E       | grade involution/inversion (a sign change operation) $\hat{M} = \sum\limits_k{(-1)^k\langle M\rangle_{k}}$|
 
-### Composite operators
+#### Composite operators
 | symbol | latex | unicode      | description |
 | :----------------------------------------------------------------------------------------------------------------: | ----- | ------------ | ----------- |
 | &#x003C;multivector&#x003E;&#x209A; (with &#x209A; ∈ {&#x2080;, &#x2081;, &#x2082;, &#x2083;, &#x2084;, &#x2085;}) |       | &#x003C; = \u003C,  &#x003E; = \u003E, &#x2080; = \u2080, &#x2081; = \u2081, &#x2082; = \u2082, &#x2083; = \u2083, &#x2084; = \u2084, &#x2085; = \u2085| grade extraction, grade p=0-5 as subscript |
 
-
-## Built-in functions
-### Base functions
+### Built-in functions
+#### Base functions
 | symbol      | description |
 | :---------- | ------------ |
 | exp()       | exponential of a bivector or a scalar |
@@ -361,19 +355,19 @@ There exist three types of involution operations: Space inversion, reversion and
 | ip()        | inner product, 0-grade is excluded different to the dot-product |
 | negate14()  | negate the signs of the vector- and 4-vector parts of an multivector. Usable to implement general-inverse. |
 
-### up/down projection into euclidean space
+#### up/down projection into euclidean space
 | symbol      | description |
 | :---------- | ------------ |
 | up()        | up-projection of a euclidean vector into the conformal space |
 | down()      | down-projection of a multivector into the euclidean space by normalization and rejection from the minkowski plane E0 |
 
-### not yet implemented
+#### not yet implemented
 | symbol      | description |
 | :---------- | ------------ |
 | euclid()    | euclidean part of the multivector |
 | idle()      | idle part of the multivector |
 
-### Scalar functions
+#### Scalar functions
 | symbol      | description |
 | :---------- | ------------ |
 | atan2(x,y)  | arctansgent 2 (Converts the coordinates (x,y) to coordinates (r, theta) and returns the angle theta as the couterclockwise angle in radians between -pi and pi of the point (x,y) to the positive x-axis.)|
@@ -386,8 +380,8 @@ There exist three types of involution operations: Space inversion, reversion and
 | abs()       | absolute value of a scalar only ||
 | sign(x)     | -1 if x<0 else 1 |
 
-## Symbols
-### Base vector symbols
+### Symbols
+#### Base vector symbols
 | symbol           | latex        | Unicode      | description |
 | :--------------: | ------------ | ------------ | ----------- |
 | &#x03B5;&#x2080; | \epsilon_0 | \u03B5\u2080 | base vector representing the origin |
@@ -396,8 +390,7 @@ There exist three types of involution operations: Space inversion, reversion and
 | &#x03B5;&#x2082; | \epsilon_2 | \u03B5\u2082 | base vector representing y direction |
 | &#x03B5;&#x2083; | \epsilon_3 | \u03B5\u2083 | base vector representing z direction |
 
-
-### Further symbols
+#### Further symbols
 | symbol           | latex      | Unicode      | description | implementation |
 | :--------------: | -----------| ------------ | ----------- | -------------- |
 | &#x03B5;&#x208A; | \epsilon_+ | \u03B5\u208A |  | 0.5&#x03B5;&#x1D62; - &#x03B5;&#x2080; |
@@ -407,9 +400,41 @@ There exist three types of involution operations: Space inversion, reversion and
 | &#x0045;&#x2083; | E_3        | \u0045\u2083 | Euclidean pseudoscalar | &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083;     |
 | &#x0045;         | E          | \u0045       | Pseudoscalar | &#x03B5;&#x1D62; &#x2227; &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083; &#x2227; &#x03B5;&#x2080;|
 
-
-### Useful equations between above symbols
+#### Useful equations between above symbols
 &#x03B5;&#x2080;&#x0045;&#x2080;=-&#x03B5;&#x2080;, &#x0045;&#x2080;&#x03B5;&#x2080;=&#x03B5;&#x2080;, &#x03B5;&#x1D62;&#x0045;&#x2080;=&#x03B5;&#x1D62;, &#x0045;&#x2080;&#x03B5;&#x1D62;=-&#x03B5;&#x1D62;, &#x0045;&#x2080;&#x00B2;=1, &#x03B5;&#x2080;&#x00B2;=&#x03B5;&#x1D62;&#x00B2;=0, &#x03B5;&#x208A;&#x00B2;=1, &#x03B5;&#x208B;&#x00B2;=-1, &#x03B5;&#x208A;&#x22C5;&#x03B5;&#x208B;=0
+
+## Algebras
+
+### CGA
+
+#### Geometric objects with intrinsic orientation type
+
+The orientation type of these objects corresponds with the outer product null space representation (OPNS), sometimes also named as "direct" type.
+
+| description | formula | grade | class |
+| :---------- | :------ | :----| :-------- |
+| Point pair from  two conformal points (p1, p2) | p1&#8743;p2 | 2 | round |
+| (Flat) Finite-infinite point pair or Flat point from  one conformal point (p) | p&#8743;&#x03B5;&#7522; | 2 | flat |
+| Circle from three ipns Points (p1, p2, p3) | p1&#8743;p2&#8743;p3 | 3 |  round |
+| Line from two conformal planes (p1, p2) | p1&#8743;p2&#8743;&#x03B5;&#7522; | 3 | flat |
+| Sphere from four ipns points (p1, p2, p3, p4) | p1&#8743;p2&#8743;p3&#8743;p4| 4 |  round |
+| Plane from three ipns points (p1, p2, p3) | p1&#8743;p2&#8743;p3&#8743;&#x03B5;&#7522;| 4 | flat |
+| Plane between two ipns points (p1, p2) | $ (\vec{p}_1\wedge\vec{p}_2)*\wedge\epsilon_\infinity $ | 4 | flat |
+
+#### Geometric objects with extrinsic orientation type
+
+Thie orientation type of these objects corresponds with the inner product null space representation (IPNS), sometimes named as "dual" type.
+
+| description | formula | grade |
+| :---------- | :------ | :----|
+| Point from euclidian vector (x) | x+0.5x&sup2;&#x03B5;&#7522;+&#x03B5;&#8320; | 1 |
+| Sphere from conformal point (P) and radius (r) | P-0.5r&sup2;&#x03B5;&#7522; | 1 |
+| Plane from euclidian normal vector (n) and distance to origin (d) | n+d&#x03B5;&#7522; | 1 |
+| Circle from two conformal spheres (s1, s2) | s1&#8743;s2 | 2 |
+| Line from two conformal planes (p1, p2) | p1&#8743;p2 | 2 |
+| Point pair from  three conformal spheres (s1, s2, s3) | s1&#8743;s2&#8743;s3 | 3 |
+
+### PGA
 
 ## Next Steps
 - adding operators and built-ins for symbolic derivation and algorithmic differentiation
