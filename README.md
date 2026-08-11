@@ -306,7 +306,7 @@ $A\rfloor B = \langle A B\rangle_{|l-k|}$
 | precedence | symbol   | latex | unicode | description |
 | :--------: | :------: | ------| ------- | ----------- |
 | 3			 | &#x00D7; | \times | \u00D7  | commutator product |       
-| 3          | &#x22C5; | \cdot  | \u22C5  | dot product (inner product without scalar parts) $A\cdot B=\langle A B\rangle_{|k-l|,k\neq 0, l\neq 0}$|
+| 3          | &#x22C5; | \cdot  | \u22C5  | dot product (inner product without scalar parts) $$A\cdot B=\langle A B\rangle_{|k-l|,k\neq 0, l\neq 0}$$|
 | 3          | &#x2229; | \cap   | \u2229  | meet (intersection) = largest common subspace |
 | 3          | &#x222A; | \cup   | \u222A  | join  (union) of two subspaces is there smallest superspace = smallest space containing them both |
 | 3          | &#x2299; | \odot  | \u2299  | hadamard product (element-wise multiplication) |
