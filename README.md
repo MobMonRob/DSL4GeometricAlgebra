@@ -409,7 +409,7 @@ There exist three types of involution operations: Space inversion, reversion and
 
 #### Geometric objects with intrinsic orientation type
 
-The orientation type of these objects corresponds with the outer product null space representation (OPNS), sometimes also named as "direct" type.
+The orientation type of these objects corresponds with the outer product null space representation (OPNS), sometimes also named as "direct" representation. The objects are constructed by joining points.
 
 | description | formula | grade | class |
 | :---------- | :------ | :----| :-------- |
@@ -423,7 +423,7 @@ The orientation type of these objects corresponds with the outer product null sp
 
 #### Geometric objects with extrinsic orientation type
 
-Thie orientation type of these objects corresponds with the inner product null space representation (IPNS), sometimes named as "dual" type.
+Thie orientation type of these objects corresponds with the inner product null space representation (IPNS), sometimes named as "dual" representation.
 
 | description | formula | grade |
 | :---------- | :------ | :----|
