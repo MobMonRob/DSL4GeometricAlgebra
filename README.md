@@ -425,7 +425,7 @@ The following objects are constructed by joining points (using the wedge-operato
 Round and oriented points can be created from euclidean parameters/coordinates:
 
 | object | grade | type | formula | 
-| :---------- | :------ | :----| :-------- |
+| :---------- | :---- | :----| :---------- |
 | round point | 1 | round | $$\vec{p}=\vv{x}+\frac{1}{2}\vv{x}\textsuperscript{2}\epsilon_\infty+\epsilon_0$$ |
 | oriented point | 3 | round | 	$$\vec{Q}=\vec{m}\wedge\vec{v}+(\frac{1}{2}\vec{v}^2\vec{m}-\vec{v}(\vec{v}\cdot\vec{m}))\epsilon_\infty+\vec{m}\epsilon_0-\vec{m}\cdot\vec{v}E_0$$|
 
