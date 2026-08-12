@@ -497,7 +497,7 @@ The following objects are constructed by intersection of spheres (using the wedg
 | :---------- | :------ | :------| :-------------|
 | circle  | 2 | round | s1&#8743;s2 | 
 | point pair | 3 | round | s1&#8743;s2&#8743;s3 | 
-| point  | 1 | round | x+0.5x&sup2;&#x03B5;&#7522;+&#x03B5;&#8320; |
+| point  | 4 | round | s1&#8743;s2&#8743;s3&#8743;s4 |
 
 Different to PGA there are spheres which do not intersect and further geometric objects are determined otherwise.
 
