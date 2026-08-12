@@ -356,8 +356,8 @@ There exist three types of involution operations: Space inversion, reversion and
 #### up/down projection into euclidean space
 | symbol      | description |
 | :---------- | ------------ |
-| up()        | up-projection of a euclidean vector into the conformal space |
-| down()      | down-projection of a multivector into the euclidean space by normalization and rejection from the minkowski plane E0 |
+| up()        | up-projection of a euclidean vector into the space of the multivector (conformal, projection, ... depending on the algbra) |
+| down()      | down-projection of a multivector into the euclidean space (by normalization and rejection from the minkowski plane E0 in the case of CGA) |
 
 #### not yet implemented
 | symbol      | description |
