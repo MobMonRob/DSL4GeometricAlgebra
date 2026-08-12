@@ -434,14 +434,14 @@ The orientation type of the following objects corresponds with the so called com
 
 | object | grade | formula | 
 | :---------- | :------ | :-------- |
-| plane | 1 |  $$\vec{n}+(\vec{x}\cdot\vec{n})\epsilon_\infty$$ |
+| plane | 1 |  $$\pi =\vec{n}+(\vec{x}\cdot\vec{n})\epsilon_0$$ |
 
 The following objects are constructed by meeting planes (also using the wedge-operator).
 
 | object | grade | formula | 
 | :---------- | :------ | :-------- |
-| axis (meet line) | 2 |  p1&#8743;p2 |
-| point | 1 |  p1&#8743;p2&#8743;p3 |
+| axis (meet line) | 2 |  $$\pi_2\wedge\pi_1$$ |
+| point | 1 | $$\pi_3\wedge\pi_2\wedge\pi_1=E_3 + E_4\vec{x}$$ |
 
 Axes correspond to axial vectors and can describe movement velocity (rotations (finite) and translations (idial)).
 
