@@ -403,50 +403,6 @@ There exist three types of involution operations: Space inversion, reversion and
 
 ## Algebras
 
-### CGA - Conformal Geometric Algebra Cl(4,1,0)
-
-This algebra contains flat and round elements.
-
-#### Geometric objects with intrinsic orientation type
-
-The orientation type of these objects corresponds with the so called outer product null space representation (OPNS), sometimes also named as "direct" representation. 
-
-Round points can be created from euclidean parameters/coordinates:
-
-| object | grade | type | formula | 
-| :---------- | :---- | :----| :---------- |
-| round point | 1 | round | $$\vec{p}=\vv{x}+\frac{1}{2}\vv{x}\textsuperscript{2}\epsilon_\infty+\epsilon_0$$ |
-
-The following objects are constructed by joining round points (using the wedge-operator).
-
-| object | grade | type | formula | 
-| :---------- | :------ | :----| :-------- |
-| dipole (point pair) | 2 | round | p1&#8743;p2 |
-| flat (homogeneous) point |  2 | flat | p&#8743;&#x03B5;&#7522; |
-| circle | 3 |  round | p1&#8743;p2&#8743;p3 |
-| spear (join line) | 3 | flat | p1&#8743;p2&#8743;&#x03B5;&#7522; |
-| sphere | 4 |  round | p1&#8743;p2&#8743;p3&#8743;p4 |
-| plane | 4 | flat | p1&#8743;p2&#8743;p3&#8743;&#x03B5;&#7522;|
-
-An oriented point can be created from euclidean parameters/coordinates:
-
-| object | grade | type | formula | 
-| :---------- | :---- | :----| :---------- |
-| oriented point | 3 | round | 	$$\vec{Q}=\vec{m}\wedge\vec{v}+(\frac{1}{2}\vec{v}^2\vec{m}-\vec{v}(\vec{v}\cdot\vec{m}))\epsilon_\infty+\vec{m}\epsilon_0-\vec{m}\cdot\vec{v}E_0$$|
-
-#### Geometric objects with extrinsic orientation type
-
-The orientation type of these objects corresponds with the inner product null space representation (IPNS), sometimes named as "dual" representation.
-
-| object | grade | type | formula | 
-| :---------- | :------ | :------| :-------------|
-| point  | 1 | round | x+0.5x&sup2;&#x03B5;&#7522;+&#x03B5;&#8320; |
-| sphere | 1 | round | P-0.5r&sup2;&#x03B5;&#7522; |
-| plane  | 1 | flat  | n+d&#x03B5;&#7522; |
-| circle  | 2 | round | s1&#8743;s2 | 
-| axis (line) | 2 | flat | p1&#8743;p2 | 
-| point pair | 3 | round | s1&#8743;s2&#8743;s3 | 
-
 ### PGA - projective geometric algebra Cl(3,0,1)
 
 This algebra contains flat objects only.
@@ -480,6 +436,63 @@ The following objects are constructed by meeting planes (using the wedge-operato
 | point | 1 |  p1&#8743;p2 |
 
 Axes correspond to axial vectors and can describe movement velocity (rotations (finite) and translations (idial)).
+
+### CGA - Conformal Geometric Algebra Cl(4,1,0)
+
+This algebra contains flat and round elements.
+
+#### Geometric objects with intrinsic orientation type
+
+The orientation type of these objects corresponds with the so called outer product null space representation (OPNS), sometimes also named as "direct" representation. 
+
+Round points can be created from euclidean parameters/coordinates:
+
+| object | grade | type | formula | 
+| :---------- | :---- | :----| :---------- |
+| round point | 1 | round | $$\vec{p}=\vv{x}+\frac{1}{2}\vv{x}\textsuperscript{2}\epsilon_\infty+\epsilon_0$$ |
+
+The following objects are constructed by joining round points (using the wedge-operator). That´s why these geometric objects are called "point-based".
+
+| object | grade | type | formula | 
+| :---------- | :------ | :----| :-------- |
+| dipole (point pair) | 2 | round | p1&#8743;p2 |
+| flat (homogeneous) point |  2 | flat | p&#8743;&#x03B5;&#7522; |
+| circle | 3 |  round | p1&#8743;p2&#8743;p3 |
+| spear (join line) | 3 | flat | p1&#8743;p2&#8743;&#x03B5;&#7522; |
+| sphere | 4 |  round | p1&#8743;p2&#8743;p3&#8743;p4 |
+| plane | 4 | flat | p1&#8743;p2&#8743;p3&#8743;&#x03B5;&#7522;|
+
+An oriented point can be created from euclidean parameters/coordinates:
+
+| object | grade | type | formula | 
+| :---------- | :---- | :----| :---------- |
+| oriented point | 3 | round | 	$$\vec{Q}=\vec{m}\wedge\vec{v}+(\frac{1}{2}\vec{v}^2\vec{m}-\vec{v}(\vec{v}\cdot\vec{m}))\epsilon_\infty+\vec{m}\epsilon_0-\vec{m}\cdot\vec{v}E_0$$|
+
+#### Geometric objects with extrinsic orientation type
+
+The orientation type of these objects corresponds with the inner product null space representation (IPNS), sometimes named as "dual" representation.
+
+Spheres can be created from euclidean parameters/coordinates:
+
+| object | grade | type | formula | 
+| :---------- | :---- | :----| :---------- |
+| sphere | 1 | round | P-0.5r&sup2;&#x03B5;&#7522; |
+
+The following objects are constructed by intersection of spheres (using the wedge-operator). That´s why these geometric objects are called "sphere-based".
+
+| object | grade | type | formula | 
+| :---------- | :------ | :------| :-------------|
+| circle  | 2 | round | s1&#8743;s2 | 
+| point pair | 3 | round | s1&#8743;s2&#8743;s3 | 
+| point  | 1 | round | x+0.5x&sup2;&#x03B5;&#7522;+&#x03B5;&#8320; |
+
+Different to PGA there are spheres which do not intersect and further geometric objects are determined otherwise.
+
+| object | grade | type | formula | 
+| :---------- | :------ | :------| :-------------|
+| plane  | 1 | flat  | n+d&#x03B5;&#7522; |
+| axis (meet line) | 2 | flat | p1&#8743;p2 | 
+
 
 ## Next Steps
 - adding operators and built-ins for symbolic derivation and algorithmic differentiation
