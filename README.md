@@ -421,7 +421,7 @@ The following objects are constructed by joining round points (using the wedge-o
 
 | object | grade | type | formula | 
 | :---------- | :------ | :----| :-------- |
-| point pair | 2 | round | p1&#8743;p2 |
+| dipole (point pair) | 2 | round | p1&#8743;p2 |
 | flat (homogeneous) point |  2 | flat | p&#8743;&#x03B5;&#7522; |
 | circle | 3 |  round | p1&#8743;p2&#8743;p3 |
 | spear (join line) | 3 | flat | p1&#8743;p2&#8743;&#x03B5;&#7522; |
