@@ -439,7 +439,7 @@ The orientation type of the following objects corresponds with the so called com
 The following objects are constructed by meeting planes (also using the wedge-operator).
 
 | object | grade | formula | 
-| :---------- | :------ | :-------- |
+| :---------- | :------ | -------- |
 | axis (meet line) | 2 |  $l=\pi_2\wedge\pi_1=\vec{n}^{\ast}-(\vec{p}\cdot\vec{n}^{\ast})\epsilon_0$ |
 | point | 1 | $$p=\pi_3\wedge\pi_2\wedge\pi_1=\pi\wedge l=E_3 + \vec{x}\epsilon_0 E_3$$ |
 
