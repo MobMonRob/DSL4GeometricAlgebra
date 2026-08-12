@@ -364,6 +364,7 @@ There exist three types of involution operations: Space inversion, reversion and
 | :---------- | ------------ |
 | euclid()    | euclidean part of the multivector |
 | idle()      | idle part of the multivector (includes no location information) |
+| coef()      | with two mulitvectors as arguments. The second must be one blade only. The function extracts the coefficient for this blade in the first argument as as scalar |
 
 #### Scalar functions
 | symbol      | description |
