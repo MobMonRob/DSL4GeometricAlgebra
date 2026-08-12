@@ -457,7 +457,7 @@ Round points can be created from euclidean parameters/coordinates:
 
 | object | grade |  formula | 
 | :---------- | :---- | :----------------- |
-| round point | 1 |  $$\vec{p}=\vec{x}+\frac{1}{2}\vec{x}^2\epsilon_\infty+\epsilon_0$$ |
+| round point | 1 |  $\displaystyle \vec{p}=\vec{x}+\frac{1}{2}\vec{x}^2\epsilon_\infty+\epsilon_0$ |
 
 Joining round points only (using the wedge-operator) produces further round objects. That´s why these geometric objects are called "point-based".
 
