@@ -463,7 +463,7 @@ Joining round points only (using the wedge-operator) produces further round obje
 
 | object | grade | formula | 
 | :---------- | :------ | :-------- |
-| dipole (point pair) | 2 |  p1&#8743;p2 |
+| dipole (oriented point pair) | 2 |  p1&#8743;p2 |
 | circle | 3 |  p1&#8743;p2&#8743;p3 |
 | sphere | 4 |  p1&#8743;p2&#8743;p3&#8743;p4 |
 
