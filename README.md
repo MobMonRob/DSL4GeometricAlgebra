@@ -417,7 +417,7 @@ Homogeneous/directed points are defined as:
 
 | object | grade | formula | 
 | :---------- | :------ | :-------- |
-| point | 1 |  $$e_0 + \vec(t)$$ |
+| point | 1 |  $$e_0 + \vec{n}$$ |
 
 and from this the following geometric objects can be created by joining the points (using the wedge-operator):
 
@@ -440,7 +440,7 @@ The following objects are constructed by meeting planes (also using the wedge-op
 
 | object | grade | formula | 
 | :---------- | :------ | :-------- |
-| axis (meet line) | 2 |  $$l=\pi_2\wedge\pi_1 = \vec{n}^*-(\vec{p}\dot\vec{n}^*)\epsilon_0$$ |
+| axis (meet line) | 2 |  $$l=\pi_2\wedge\pi_1 = \vec{n}^{*}-(\vec{p}\dot\vec{n}^{*})\epsilon_0$$ |
 | point | 1 | $$p=\pi_3\wedge\pi_2\wedge\pi_1=\pi\wedge l=E_3 + \vec{x}\epsilon_0 I_3$$ |
 
 Axes correspond to axial vectors and can describe movement velocity (rotations (finite) and translations (idial)).
