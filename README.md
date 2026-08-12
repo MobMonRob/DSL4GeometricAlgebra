@@ -456,7 +456,7 @@ The orientation type of these objects corresponds with the so called outer produ
 Round points can be created from euclidean parameters/coordinates:
 
 | object | grade | type | formula | 
-| :---------- | :---- | :----| :---------- |
+| :---------- | :---- | :----| :----------------- |
 | round point | 1 | round | $$\vec{p}=\vec{x}+\frac{1}{2}\vec{x}^2\epsilon_\infty+\epsilon_0$$ |
 
 Joining round points only (using the wedge-operator) produces the so called round objects. That´s why these geometric objects are called "point-based".
@@ -478,7 +478,7 @@ Joining round points with the point in infinity creates the flat objects:
 An oriented point can be created from euclidean parameters/coordinates:
 
 | object | grade | type | formula | 
-| :---------- | :---- | :----| :---------- |
+| :---------- | :---- | :----| :-------------------- |
 | oriented point | 3 | round | 	$$\vec{Q}=\vec{m}\wedge\vec{v}+(\frac{1}{2}\vec{v}^2\vec{m}-\vec{v}(\vec{v}\cdot\vec{m}))\epsilon_\infty+\vec{m}\epsilon_0-\vec{m}\cdot\vec{v}E_0$$|
 
 #### Geometric objects with extrinsic orientation type
