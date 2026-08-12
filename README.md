@@ -110,16 +110,18 @@ Fast will be used to measure the runtime difference to Truffle if certain CasADi
 - Builtins and operators can be missing or wrong.
 - Missing features: arrays, higher-order functions.
 
-
 ## Syntax
+
+### Algebra definitions
 The first line needs to declare the algebra used. Optionally, the implementation can be specified, too. \
 With algebra being "cga" and implementation being "theImpl", the first line would be:
 ```
 #algebra cga theImpl
 ```
 
+At the moment only the algebras "cga" and "pga" are available.
 
-## Function definitions
+### Function definitions
 #### Rules
 - There needs to be at least one function defined with the name `main`. Invokations of the program will call this one first.
 - Currently, callees need to be defined above the callers.
@@ -149,7 +151,7 @@ fn main(a, b) {
 }
 ```
 
-## Arrays
+### Arrays
 ```
 // Parameter
 fn callee(a[]) {
@@ -194,8 +196,7 @@ fn caller() {
 - Arrays are static. Their size cannot change.
 - The main Function shall not receive or return arrays.
 
-
-## Higher-order functions “HOF”
+### Higher-order functions “HOF”
 HOF are currently primarily used to express iteration. \
 HOF currently cannot be defined in the language itself. Instead HOF builtins are provided.
 
@@ -243,8 +244,7 @@ fn main() {
 }
 ```
 
-
-## Visualization
+### Visualization
 Variables can be visualized after assignment with one or two preceding colons.
 - `:a` will assume **IPNS** representation.
 - `::a` will assume **OPNS** representation.
@@ -259,42 +259,39 @@ fn main(a, b) {
 }
 ```
 
-The following table shows which elements are visualized and in which colors. The color depends on the grade of the object.
+The color of the visualized objects depends on the grade of the geometric object.
+| grade | color |
+| ------| ----- |
+|   1   | red   |
+|   2   | green |
+|   3   | blue  |
+|   4   | yellow|
 
-| geometric object             | grade | color |
-| :--------------------------- | ------| ----- |
-| plane, round-point, sphere   |   1   | red   |
-| circle, oriented-point, line |   2   | green |
-| point pair, flat-point       |   3   | blue  |
-| point                        |   4   | yellow|
-
-
-## Expressions
+### Expressions
 - Numeric literals like "0.5" and scalar constants like "π" are in OPNS representation.
 
-
-## Operators
+### Operators
 Hint: Operator precedence determines how operators are parsed concerning each other. A higher precedence number
 results in a higher binding strength. Thus operators with higher precedence become the operands of operators with lower precedence.
 
 Exceptions from the precedence rules:
 - Expressions like `a-b` evaluate to `subtraction(a, b)` instead of `geometric_product(a, negate(b))`.
 
-### 2-ary operators
+#### 2-ary operators
 All 2-ary operators are left-associative.
 
-#### Base 2-ary operators
+##### Base 2-ary operators
 Hint: The Unicode and Latex name for the symbol used for left contraction is "RIGHT FLOOR" and for right contraction is "LEFT FLOOR". Please be cautious to this detail when writing Latex or programming tools which work with the language.
 
 | precedence | symbol   | latex   | unicode | name | hints |
 | :--------: | :------: | ------- | ------- | ---- | ----- |
 | 4          |          |         | \u0020  | geometric product | Zero or more space characters are interpreted as the operator. |
-| 3          | &#x2227; | \wedge  | \u2227  | "wedge" or outer product (join, span for no common subspace) | joining linearily independend vectors/two disjoint subspaces |
+| 3          | &#x2227; | \wedge  | \u2227  | "wedge" or outer product (join/union or meet/intersection dependendend of the orientation type of the arguments) |
 | 1          | &#x002B; | +       | \u002B  | addition | |
 | 1          | &#x002D; | -       | \u002D  | subtraction | |
 | 3          | &#x230B; | \rfloor | \u230B  | left contraction |  |
 | 3          | &#x230A; | \lfloor | \u230A  | right contraction | | where the grade operator for negative grades is zero. This implies that `something of higher grade cannot be contracted onto something of lower grade`. |
-| 3          | &#x2228; | \vee    | \u2228  | "vee" or regressive product (meet if intersected) | |
+| 3          | &#x2228; | \vee    | \u2228  | "vee" or regressive product (join/union or meet/intersection dependendend of the orientation type of the arguments) | |
 | 2          | &#x002F; | /       | \u002F  | division (inverse geometric product) |  |
 
 ##### Implementation
@@ -302,23 +299,22 @@ $A\wedge B = \langle A B\rangle_{|k+l|}$
 
 $A\rfloor B = \langle A B\rangle_{|l-k|}$
 
-#### Additional 2-ary operators
+##### Additional 2-ary operators
 | precedence | symbol   | latex | unicode | description |
 | :--------: | :------: | ------| ------- | ----------- |
-| 3          | &#x22C5; | \cdot | \u22C5  | dot product (inner product without scalar parts) $A\cdot B=\langle A B\rangle_{|k-l|,k\neq 0, l\neq 0}$|
-| 3          | &#x2229; | \cap  | \u2229  | meet (intersection) = largest common subspace |
-| 3          | &#x222A; | \cup  | \u222A  | join  (union) of two subspaces is there smallest superspace = smallest space containing them both |
-| 3          | &#x2299; | \odot | \u2299  | hadamard product (element-wise multiplication) |
-
+| 3			 | &#x00D7; | \times | \u00D7  | commutator product |       
+| 3          | &#x22C5; | \cdot  | \u22C5  | dot product (inner product without scalar parts) |
+| 3          | &#x2229; | \cap   | \u2229  | meet (intersection) = largest common subspace |
+| 3          | &#x222A; | \cup   | \u222A  | join  (union) of two subspaces is there smallest superspace = smallest space containing them both |
+| 3          | &#x2299; | \odot  | \u2299  | hadamard product (element-wise multiplication) |
 
 ##### Implementation
 $A\cdot B=\langle A B\rangle_{|k-l|,k\neq 0, l\neq 0}$
 
-### 1-ary operators
+#### 1-ary operators
 All 1-ary operators have higher precedence than 2-ary ones. \
 All 1-ary operators are right-sides except from the negate operator '-'. \
 Except dual/undual the operators cancel itself so if your write X&#732;&#732; no reverse is executed.
-
 
 #### Base 1-ary operators
 | precedence | symbol           | latex                         | unicode      | description |  CLUscript |
@@ -338,14 +334,13 @@ There exist three types of involution operations: Space inversion, reversion and
 | 6          | &#x00B2;         | \textsuperscript{2}                     | \u00B2       | square |
 | 6          | &#x005E;         | \textsuperscript{$\wedge$}                      | \u005E       | grade involution/inversion (a sign change operation) $\hat{M} = \sum\limits_k{(-1)^k\langle M\rangle_{k}}$|
 
-### Composite operators
+#### Composite operators
 | symbol | latex | unicode      | description |
 | :----------------------------------------------------------------------------------------------------------------: | ----- | ------------ | ----------- |
 | &#x003C;multivector&#x003E;&#x209A; (with &#x209A; ∈ {&#x2080;, &#x2081;, &#x2082;, &#x2083;, &#x2084;, &#x2085;}) |       | &#x003C; = \u003C,  &#x003E; = \u003E, &#x2080; = \u2080, &#x2081; = \u2081, &#x2082; = \u2082, &#x2083; = \u2083, &#x2084; = \u2084, &#x2085; = \u2085| grade extraction, grade p=0-5 as subscript |
 
-
-## Built-in functions
-### Base functions
+### Built-in functions
+#### Base functions
 | symbol      | description |
 | :---------- | ------------ |
 | exp()       | exponential of a bivector or a scalar |
@@ -358,19 +353,20 @@ There exist three types of involution operations: Space inversion, reversion and
 | ip()        | inner product, 0-grade is excluded different to the dot-product |
 | negate14()  | negate the signs of the vector- and 4-vector parts of an multivector. Usable to implement general-inverse. |
 
-### up/down projection into euclidean space
+#### up/down projection into euclidean space
 | symbol      | description |
 | :---------- | ------------ |
-| up()        | up-projection of a euclidean vector into the conformal space |
-| down()      | down-projection of a multivector into the euclidean space by normalization and rejection from the minkowski plane E0 |
+| up()        | up-projection of a euclidean vector into the space of the multivector (conformal, projection, ... depending on the algbra) |
+| down()      | down-projection of a multivector into the euclidean space (by normalization and rejection from the minkowski plane E0 in the case of CGA) |
 
-### not yet implemented
+#### not yet implemented
 | symbol      | description |
 | :---------- | ------------ |
 | euclid()    | euclidean part of the multivector |
-| idle()      | idle part of the multivector |
+| idle()      | idle part of the multivector (includes no location information) |
+| coef()      | with two mulitvectors as arguments. The second must be one blade only. The function extracts the coefficient for this blade in the first argument as as scalar |
 
-### Scalar functions
+#### Scalar functions
 | symbol      | description |
 | :---------- | ------------ |
 | atan2(x,y)  | arctansgent 2 (Converts the coordinates (x,y) to coordinates (r, theta) and returns the angle theta as the couterclockwise angle in radians between -pi and pi of the point (x,y) to the positive x-axis.)|
@@ -383,8 +379,8 @@ There exist three types of involution operations: Space inversion, reversion and
 | abs()       | absolute value of a scalar only ||
 | sign(x)     | -1 if x<0 else 1 |
 
-## Symbols
-### Base vector symbols
+### Symbols
+#### Base vector symbols
 | symbol           | latex        | Unicode      | description |
 | :--------------: | ------------ | ------------ | ----------- |
 | &#x03B5;&#x2080; | \epsilon_0 | \u03B5\u2080 | base vector representing the origin |
@@ -393,8 +389,7 @@ There exist three types of involution operations: Space inversion, reversion and
 | &#x03B5;&#x2082; | \epsilon_2 | \u03B5\u2082 | base vector representing y direction |
 | &#x03B5;&#x2083; | \epsilon_3 | \u03B5\u2083 | base vector representing z direction |
 
-
-### Further symbols
+#### Further symbols
 | symbol           | latex      | Unicode      | description | implementation |
 | :--------------: | -----------| ------------ | ----------- | -------------- |
 | &#x03B5;&#x208A; | \epsilon_+ | \u03B5\u208A |  | 0.5&#x03B5;&#x1D62; - &#x03B5;&#x2080; |
@@ -404,9 +399,113 @@ There exist three types of involution operations: Space inversion, reversion and
 | &#x0045;&#x2083; | E_3        | \u0045\u2083 | Euclidean pseudoscalar | &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083;     |
 | &#x0045;         | E          | \u0045       | Pseudoscalar | &#x03B5;&#x1D62; &#x2227; &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083; &#x2227; &#x03B5;&#x2080;|
 
-
-### Useful equations between above symbols
+#### Useful equations between above symbols
 &#x03B5;&#x2080;&#x0045;&#x2080;=-&#x03B5;&#x2080;, &#x0045;&#x2080;&#x03B5;&#x2080;=&#x03B5;&#x2080;, &#x03B5;&#x1D62;&#x0045;&#x2080;=&#x03B5;&#x1D62;, &#x0045;&#x2080;&#x03B5;&#x1D62;=-&#x03B5;&#x1D62;, &#x0045;&#x2080;&#x00B2;=1, &#x03B5;&#x2080;&#x00B2;=&#x03B5;&#x1D62;&#x00B2;=0, &#x03B5;&#x208A;&#x00B2;=1, &#x03B5;&#x208B;&#x00B2;=-1, &#x03B5;&#x208A;&#x22C5;&#x03B5;&#x208B;=0
+
+## Algebras
+
+### PGA - projective geometric algebra Cl(3,0,1)
+
+This algebra contains flat objects only.
+
+#### Geometric objects with intrinsic orientation type
+
+The orientation type of the following objects corresponds with the so called outer product null space representation (OPNS), sometimes also named as "point based" representation. 
+
+Orthogonal reflection of objects from this type results in inversion of the orientation. Reflection of objects inside the reflection plane do not changed its orientation. Therefore these objects are handedness-preserving under reflection on planes.
+
+Homogeneous/directed points are defined as:
+
+| object | grade | formula | 
+| :---------- | :------ | :-------- |
+| point | 1 |  $\displaystyle p = e_0 + \vec{n}$ |
+
+and from this, the following geometric objects can be created by joining the points (using the wedge-operator):
+
+| object | grade | formula | description |
+| :---------- | :------ | :-------- | ---------------- |
+| spear (join line) | 2 |  $\displaystyle l = p_2\wedge p_1 = \vec{n}\wedge p$ | line points from the first to the second point |
+| plane | 3 |   $\displaystyle \pi = p_1\wedge p_2\wedge p_3 = p\wedge\vec{n}^{\ast} =\epsilon_0\wedge\vec{n}^{\ast}+\vec{x}\wedge\vec{n}^{\ast} = \epsilon_0\wedge\vec{n}^{\ast}-(\vec{x}\cdot\vec{n})E_3$ | clockwise  arrangement of the points |
+
+Spears correspond with polar vectors and can represent local orbits or momenta of points. 
+
+#### Geometric objects with extrinsic orientation type
+
+The orientation type of the following objects corresponds with the so called commutator product null space representation (CPNS), sometimes also named as "plane-based" representation. 
+
+| object | grade | formula | 
+| :---------- | :------ | :-------- |
+| plane | 1 |  $\displaystyle \pi =\vec{n}+(\vec{x}\cdot\vec{n})\epsilon_0 = p_3\vee p_2\vee p_1$ |
+
+The following objects are constructed by meeting planes (also using the wedge-operator).
+
+| object | grade | formula | 
+| :----- | :--- | -------- |
+| axis (meet line) | 2 |  $\displaystyle l=\pi_2\wedge\pi_1=\vec{n}^{\ast}-(\vec{x}\cdot\vec{n}^{\ast})\mathord{\epsilon_0}$ |
+| point | 3 | $\displaystyle p=\pi_3\wedge\pi_2\wedge\pi_1=\pi\wedge l=E_3 + \vec{x}\epsilon_0 E_3$ |
+
+Axes correspond to axial vectors and can describe movement velocity (rotations (finite) and translations (idial)).
+
+### CGA - Conformal Geometric Algebra Cl(4,1,0)
+
+This algebra contains flat and round elements.
+
+#### Geometric objects with intrinsic orientation type
+
+The orientation type of these objects corresponds with the so called outer product null space representation (OPNS), sometimes also named as "direct" representation. 
+
+Round points can be created from euclidean parameters/coordinates:
+
+| object | grade |  formula | 
+| :---------- | :---- | :----------------- |
+| round point | 1 |  $\displaystyle \vec{p}=\vec{x}+\frac{1}{2}\vec{x}^2\epsilon_\infty+\epsilon_0$ |
+
+Joining round points only (using the wedge-operator) produces further round objects. That´s why these geometric objects are called "point-based".
+
+| object | grade | formula | 
+| :---------- | :------ | :-------- |
+| dipole (oriented point pair) | 2 |  p1&#8743;p2 |
+| circle | 3 |  p1&#8743;p2&#8743;p3 |
+| sphere | 4 |  p1&#8743;p2&#8743;p3&#8743;p4 |
+
+Joining round points with the point in infinity creates the flat objects:
+
+| object | grade | formula | 
+| :---------- | :------ |  :-------- |
+| flat (homogeneous) point |  2 |  p&#8743;&#x03B5;&#7522; |
+| spear (join line) | 3 | p1&#8743;p2&#8743;&#x03B5;&#7522; |
+| plane | 4 |  p1&#8743;p2&#8743;p3&#8743;&#x03B5;&#7522;|
+
+An oriented point can be created from euclidean parameters/coordinates:
+
+| object | grade | type | formula | 
+| :---------- | :---- | :----| :-------------------- |
+| oriented point | 3 | round | 	$$\vec{Q}=\vec{m}\wedge\vec{v}+(\frac{1}{2}\vec{v}^2\vec{m}-\vec{v}(\vec{v}\cdot\vec{m}))\epsilon_\infty+\vec{m}\epsilon_0-\vec{m}\cdot\vec{v}E_0$$|
+
+#### Geometric objects with extrinsic orientation type
+
+The orientation type of these objects corresponds with the inner product null space representation (IPNS), sometimes named as "dual" representation.
+
+Spheres can be created from euclidean parameters/coordinates:
+
+| object | grade |  formula | 
+| :---------- | :---- |  :---------- |
+| sphere | 1 |  P-0.5r&sup2;&#x03B5;&#7522; |
+
+Further round objects are constructed by intersection of spheres (using the wedge-operator). That´s why these geometric objects are called "sphere-based".
+
+| object | grade |  formula | 
+| :---------- | :------ | :-------------|
+| circle  | 2 |  s1&#8743;s2 | 
+| point pair | 3 |  s1&#8743;s2&#8743;s3 | 
+| point  | 4 |  s1&#8743;s2&#8743;s3&#8743;s4 |
+
+Different to PGA there are spheres which do not intersect and further flat geometric objects are determined otherwise.
+
+| object | grade |  formula | 
+| :---------- | :------ |  :-------------|
+| plane  | 1 |  n+d&#x03B5;&#7522; |
+| axis (meet line) | 2 |  p1&#8743;p2 | 
 
 ## Next Steps
 - adding operators and built-ins for symbolic derivation and algorithmic differentiation
