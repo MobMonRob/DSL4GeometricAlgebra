@@ -418,14 +418,14 @@ Homogeneous/directed points are defined as:
 
 | object | grade | formula | 
 | :---------- | :------ | :-------- |
-| point | 1 |  $\displaystyle e_0 + \vec{n}$ |
+| point | 1 |  $\displaystyle p = e_0 + \vec{n}$ |
 
-and from this the following geometric objects can be created by joining the points (using the wedge-operator):
+and from this, the following geometric objects can be created by joining the points (using the wedge-operator):
 
-| object | grade | formula | 
-| :---------- | :------ | :-------- |
-| spear (join line) | 2 |  p1&#8743;p2 |
-| plane | 3 |  p1&#8743;p2&#8743;p3 |
+| object | grade | formula | description |
+| :---------- | :------ | :-------- | ---------------- |
+| spear (join line) | 2 |  $\displaystyle l = p_2\wedge\p_1 = \vec{n}\wedge p$ | line points from the first to the second point |
+| plane | 3 |   $\displaystyle l = p_1\wedge\p_2\wedge p_3$ | clockwise  arrangement of the points |
 
 Spears correspond with polar vectors and can represent local orbits or momenta of points. 
 
