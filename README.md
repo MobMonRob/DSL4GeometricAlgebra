@@ -443,6 +443,8 @@ The following objects are constructed by meeting planes (also using the wedge-op
 | axis (meet line) | 2 |  $l=\pi_2\wedge\pi_1=\vec{n}^{\ast}-(\vec{p}\cdot\vec{n}^{\ast})\mathord{\epsilon_0}$ |
 | point | 3 | $$p=\pi_3\wedge\pi_2\wedge\pi_1=\pi\wedge l=E_3 + \vec{x}\epsilon_0 E_3$$ |
 
+$l=\pi_2\wedge\pi_1=\vec{n}^{\ast}-(\vec{p}\cdot\vec{n}^{\ast})\mathord{\epsilon_0}$
+
 Axes correspond to axial vectors and can describe movement velocity (rotations (finite) and translations (idial)).
 
 ### CGA - Conformal Geometric Algebra Cl(4,1,0)
