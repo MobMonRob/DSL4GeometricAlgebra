@@ -435,7 +435,7 @@ The orientation type of the following objects corresponds with the so called com
 
 | object | grade | formula | 
 | :---------- | :------ | :-------- |
-| plane | 1 |  $\displaystyle \pi =\vec{n}+(\vec{x}\cdot\vec{n})\epsilon_0 = p_3\vee\p_2\vee\p_1$ |
+| plane | 1 |  $\displaystyle \pi =\vec{n}+(\vec{x}\cdot\vec{n})\epsilon_0 = p_3\vee p_2\vee p_1$ |
 
 The following objects are constructed by meeting planes (also using the wedge-operator).
 
