@@ -424,7 +424,7 @@ The following objects are constructed by joining round points (using the wedge-o
 | point pair | 2 | round | p1&#8743;p2 |
 | flat (homogeneous) point |  2 | flat | p&#8743;&#x03B5;&#7522; |
 | circle | 3 |  round | p1&#8743;p2&#8743;p3 |
-| spear (line) | 3 | flat | p1&#8743;p2&#8743;&#x03B5;&#7522; |
+| spear (join line) | 3 | flat | p1&#8743;p2&#8743;&#x03B5;&#7522; |
 | sphere | 4 |  round | p1&#8743;p2&#8743;p3&#8743;p4 |
 | plane | 4 | flat | p1&#8743;p2&#8743;p3&#8743;&#x03B5;&#7522;|
 
