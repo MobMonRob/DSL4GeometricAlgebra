@@ -419,12 +419,12 @@ Homogeneous/directed points are defined as:
 | :---------- | :------ | :-------- |
 | point | 1 |  $$e_0 + \vec(t)$$ |
 
-and from this the following geometric objects can be created by joining the points:
+and from this the following geometric objects can be created by joining the points (using the wedge-operator):
 
 | object | grade | formula | 
 | :---------- | :------ | :-------- |
 | spear (join line) | 2 |  p1&#8743;p2 |
-| plane | 3 |  p1&#8743;p2 |
+| plane | 3 |  p1&#8743;p2&#8743;p3 |
 
 Spears correspond with polar vectors and can represent local orbits or momenta of points. 
 
@@ -436,12 +436,12 @@ The orientation type of the following objects corresponds with the so called com
 | :---------- | :------ | :-------- |
 | plane | 1 |  $$\vv{n}+(\vv{x}\cdot\vv{n})\epsilon_\infty$$ |
 
-The following objects are constructed by meeting planes (using the wedge-operator).
+The following objects are constructed by meeting planes (also using the wedge-operator).
 
 | object | grade | formula | 
 | :---------- | :------ | :-------- |
 | axis (meet line) | 2 |  p1&#8743;p2 |
-| point | 1 |  p1&#8743;p2 |
+| point | 1 |  p1&#8743;p2&#8743;p3 |
 
 Axes correspond to axial vectors and can describe movement velocity (rotations (finite) and translations (idial)).
 
