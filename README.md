@@ -464,8 +464,8 @@ Joining round points only (using the wedge-operator) produces further round obje
 | object | grade | formula | 
 | :---------- | :------ | :-------- |
 | dipole (point pair) | 2 |  p1&#8743;p2 |
-| circle | 3 |  | p1&#8743;p2&#8743;p3 |
-| sphere | 4 |  | p1&#8743;p2&#8743;p3&#8743;p4 |
+| circle | 3 |  p1&#8743;p2&#8743;p3 |
+| sphere | 4 |  p1&#8743;p2&#8743;p3&#8743;p4 |
 
 Joining round points with the point in infinity creates the flat objects:
 
@@ -488,13 +488,13 @@ The orientation type of these objects corresponds with the inner product null sp
 Spheres can be created from euclidean parameters/coordinates:
 
 | object | grade |  formula | 
-| :---------- | :---- | :----| :---------- |
+| :---------- | :---- |  :---------- |
 | sphere | 1 |  P-0.5r&sup2;&#x03B5;&#7522; |
 
 Further round objects are constructed by intersection of spheres (using the wedge-operator). That´s why these geometric objects are called "sphere-based".
 
 | object | grade |  formula | 
-| :---------- | :------ | :------| :-------------|
+| :---------- | :------ | :-------------|
 | circle  | 2 |  s1&#8743;s2 | 
 | point pair | 3 |  s1&#8743;s2&#8743;s3 | 
 | point  | 4 |  s1&#8743;s2&#8743;s3&#8743;s4 |
@@ -502,7 +502,7 @@ Further round objects are constructed by intersection of spheres (using the wedg
 Different to PGA there are spheres which do not intersect and further flat geometric objects are determined otherwise.
 
 | object | grade |  formula | 
-| :---------- | :------ | :------| :-------------|
+| :---------- | :------ |  :-------------|
 | plane  | 1 |  n+d&#x03B5;&#7522; |
 | axis (meet line) | 2 |  p1&#8743;p2 | 
 
