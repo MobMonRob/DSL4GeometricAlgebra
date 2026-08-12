@@ -412,7 +412,7 @@ This algebra contains flat objects only.
 
 The orientation type of the following objects corresponds with the so called outer product null space representation (OPNS), sometimes also named as "point based" representation. 
 
-Orthogonal reflection of objects from this type results in inversion of the orientation. Reflection of objects inside the reflection plane do not changed its orientation. 
+Orthogonal reflection of objects from this type results in inversion of the orientation. Reflection of objects inside the reflection plane do not changed its orientation. Therefore these objects are handedness-preserving under reflection on planes.
 
 Homogeneous/directed points are defined as:
 
