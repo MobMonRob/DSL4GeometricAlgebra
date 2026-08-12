@@ -465,7 +465,7 @@ Joining round points only (using the wedge-operator) produces the so called roun
 | :---------- | :------ | :-------- |
 | dipole (point pair) | 2 |  p1&#8743;p2 |
 | circle | 3 |  | p1&#8743;p2&#8743;p3 |
-| sphere | 4 |   p1&#8743;p2&#8743;p3&#8743;p4 |
+| sphere | 4 |  | p1&#8743;p2&#8743;p3&#8743;p4 |
 
 Joining round points with the point in infinity creates the flat objects:
 
