@@ -425,7 +425,7 @@ and from this, the following geometric objects can be created by joining the poi
 | object | grade | formula | description |
 | :---------- | :------ | :-------- | ---------------- |
 | spear (join line) | 2 |  $\displaystyle l = p_2\wedge p_1 = \vec{n}\wedge p$ | line points from the first to the second point |
-| plane | 3 |   $\displaystyle \pi = p_1\wedge p_2\wedge p_3 = \epsilon_0\wedge\vec{n}^{\ast}+p\wedge\vec{n}^{\ast} = \epsilon_0\wedge\vec{n}^{\ast}-(\vec{p}\cdot\vec{n})E_3$ | clockwise  arrangement of the points |
+| plane | 3 |   $\displaystyle \pi = p_1\wedge p_2\wedge p_3 = p\wedge\vec{n}^{\ast} =\epsilon_0\wedge\vec{n}^{\ast}+\vec{x}\wedge\vec{n}^{\ast} = \epsilon_0\wedge\vec{n}^{\ast}-(\vec{x}\cdot\vec{n})E_3$ | clockwise  arrangement of the points |
 
 Spears correspond with polar vectors and can represent local orbits or momenta of points. 
 
@@ -435,7 +435,7 @@ The orientation type of the following objects corresponds with the so called com
 
 | object | grade | formula | 
 | :---------- | :------ | :-------- |
-| plane | 1 |  $$\pi =\vec{n}+(\vec{x}\cdot\vec{n})\epsilon_0$$ |
+| plane | 1 |  $\pi =\vec{n}+(\vec{x}\cdot\vec{n})\epsilon_0 = p_3\vee\p_2\vee\p_1$ |
 
 The following objects are constructed by meeting planes (also using the wedge-operator).
 
