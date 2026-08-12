@@ -434,7 +434,7 @@ The orientation type of the following objects corresponds with the so called com
 
 | object | grade | formula | 
 | :---------- | :------ | :-------- |
-| plane | 1 |  $$\vv{n}+(\vv{x}\cdot\vv{n})\epsilon_\infty$$ |
+| plane | 1 |  $$\vec{n}+(\vec{x}\cdot\vec{n})\epsilon_\infty$$ |
 
 The following objects are constructed by meeting planes (also using the wedge-operator).
 
@@ -455,13 +455,13 @@ The orientation type of these objects corresponds with the so called outer produ
 
 Round points can be created from euclidean parameters/coordinates:
 
-| object | grade | type | formula | 
-| :---------- | :---- | :----| :----------------- |
-| round point | 1 | round | $$\vec{p}=\vec{x}+\frac{1}{2}\vec{x}^2\epsilon_\infty+\epsilon_0$$ |
-
-Joining round points only (using the wedge-operator) produces the so called round objects. That´s why these geometric objects are called "point-based".
-
 | object | grade |  formula | 
+| :---------- | :---- | :----------------- |
+| round point | 1 |  $$\vec{p}=\vec{x}+\frac{1}{2}\vec{x}^2\epsilon_\infty+\epsilon_0$$ |
+
+Joining round points only (using the wedge-operator) produces further round objects. That´s why these geometric objects are called "point-based".
+
+| object | grade | formula | 
 | :---------- | :------ | :-------- |
 | dipole (point pair) | 2 |  p1&#8743;p2 |
 | circle | 3 |  | p1&#8743;p2&#8743;p3 |
@@ -487,25 +487,24 @@ The orientation type of these objects corresponds with the inner product null sp
 
 Spheres can be created from euclidean parameters/coordinates:
 
-| object | grade | type | formula | 
+| object | grade |  formula | 
 | :---------- | :---- | :----| :---------- |
-| sphere | 1 | round | P-0.5r&sup2;&#x03B5;&#7522; |
+| sphere | 1 |  P-0.5r&sup2;&#x03B5;&#7522; |
 
-The following objects are constructed by intersection of spheres (using the wedge-operator). That´s why these geometric objects are called "sphere-based".
+Further round objects are constructed by intersection of spheres (using the wedge-operator). That´s why these geometric objects are called "sphere-based".
 
-| object | grade | type | formula | 
+| object | grade |  formula | 
 | :---------- | :------ | :------| :-------------|
-| circle  | 2 | round | s1&#8743;s2 | 
-| point pair | 3 | round | s1&#8743;s2&#8743;s3 | 
-| point  | 4 | round | s1&#8743;s2&#8743;s3&#8743;s4 |
+| circle  | 2 |  s1&#8743;s2 | 
+| point pair | 3 |  s1&#8743;s2&#8743;s3 | 
+| point  | 4 |  s1&#8743;s2&#8743;s3&#8743;s4 |
 
-Different to PGA there are spheres which do not intersect and further geometric objects are determined otherwise.
+Different to PGA there are spheres which do not intersect and further flat geometric objects are determined otherwise.
 
-| object | grade | type | formula | 
+| object | grade |  formula | 
 | :---------- | :------ | :------| :-------------|
-| plane  | 1 | flat  | n+d&#x03B5;&#7522; |
-| axis (meet line) | 2 | flat | p1&#8743;p2 | 
-
+| plane  | 1 |  n+d&#x03B5;&#7522; |
+| axis (meet line) | 2 |  p1&#8743;p2 | 
 
 ## Next Steps
 - adding operators and built-ins for symbolic derivation and algorithmic differentiation
