@@ -440,7 +440,7 @@ The following objects are constructed by meeting planes (also using the wedge-op
 
 | object | grade | formula | 
 | :---------- | :------ | :-------- |
-| axis (meet line) | 2 |  $\displaystyle l=\pi_2\wedge\pi_1 = \vec{n}*-(\vec{p}\cdot\vec{n}*)\epsilon_0$ |
+| axis (meet line) | 2 |  $ l=\pi_2\wedge\pi_1 = \vec{n}^\*-(\vec{p}\cdot\vec{n}^\*)\epsilon_0$ |
 | point | 1 | $$p=\pi_3\wedge\pi_2\wedge\pi_1=\pi\wedge l=E_3 + \vec{x}\epsilon_0 E_3$$ |
 
 Axes correspond to axial vectors and can describe movement velocity (rotations (finite) and translations (idial)).
