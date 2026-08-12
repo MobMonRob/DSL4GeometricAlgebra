@@ -459,16 +459,21 @@ Round points can be created from euclidean parameters/coordinates:
 | :---------- | :---- | :----| :---------- |
 | round point | 1 | round | $$\vec{p}=\vec{x}+\frac{1}{2}\vec{x}^2\epsilon_\infty+\epsilon_0$$ |
 
-The following objects are constructed by joining round points (using the wedge-operator). That´s why these geometric objects are called "point-based".
+Joining round points only (using the wedge-operator) produces the so called round objects. That´s why these geometric objects are called "point-based".
 
-| object | grade | type | formula | 
-| :---------- | :------ | :----| :-------- |
-| dipole (point pair) | 2 | round | p1&#8743;p2 |
-| flat (homogeneous) point |  2 | flat | p&#8743;&#x03B5;&#7522; |
-| circle | 3 |  round | p1&#8743;p2&#8743;p3 |
-| spear (join line) | 3 | flat | p1&#8743;p2&#8743;&#x03B5;&#7522; |
-| sphere | 4 |  round | p1&#8743;p2&#8743;p3&#8743;p4 |
-| plane | 4 | flat | p1&#8743;p2&#8743;p3&#8743;&#x03B5;&#7522;|
+| object | grade |  formula | 
+| :---------- | :------ | :-------- |
+| dipole (point pair) | 2 |  p1&#8743;p2 |
+| circle | 3 |  | p1&#8743;p2&#8743;p3 |
+| sphere | 4 |   p1&#8743;p2&#8743;p3&#8743;p4 |
+
+Joining round points with the point in infinity creates the flat objects:
+
+| object | grade | formula | 
+| :---------- | :------ |  :-------- |
+| flat (homogeneous) point |  2 |  p&#8743;&#x03B5;&#7522; |
+| spear (join line) | 3 | p1&#8743;p2&#8743;&#x03B5;&#7522; |
+| plane | 4 |  p1&#8743;p2&#8743;p3&#8743;&#x03B5;&#7522;|
 
 An oriented point can be created from euclidean parameters/coordinates:
 
