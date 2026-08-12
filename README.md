@@ -413,10 +413,18 @@ The orientation type of the following objects corresponds with the so called out
 
 Orthogonal reflection of objects from this type results in inversion of the orientation. Reflection of objects inside the reflection plane do not changed its orientation. 
 
+Homogeneous/directed oints are defined as:
+
+| object | grade | formula | 
+| :---------- | :------ | :-------- |
+| point | 1 |  $$e_0 + \vec(t)$$ |
+
+and from this the following geometric objects can be created by joining the points:
+
 | object | grade | formula | 
 | :---------- | :------ | :-------- |
 | spear (join line) | 2 |  p1&#8743;p2 |
-| point | 3 |  p1&#8743;p2 |
+| plane | 3 |  p1&#8743;p2 |
 
 Spears correspond with polar vectors and can represent local orbits or momenta of points. 
 
