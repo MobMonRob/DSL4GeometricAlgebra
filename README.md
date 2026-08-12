@@ -418,7 +418,7 @@ Homogeneous/directed points are defined as:
 
 | object | grade | formula | 
 | :---------- | :------ | :-------- |
-| point | 1 |  $$e_0 + \vec{n}$$ |
+| point | 1 |  $\displaystyle e_0 + \vec{n}$ |
 
 and from this the following geometric objects can be created by joining the points (using the wedge-operator):
 
