@@ -519,6 +519,8 @@ If the name of the Builtin class is “Abs”, the Builtin function in the DSL w
 
 
 ## Next Steps
+- adding builtins for symbolic (implemented with Maxima) and numeric (implementy with Casadi) zerofinding, e.g. for singularity detection in robotics
+- symbolically optimizing expressions with many trigometric functions
 - adding operators and built-ins for symbolic derivation and algorithmic differentiation
 - adding more smart-editing features based on the language-agnostic LSP from GraalVM, completion of the implementation of a language-specific LSP
 - adding more debugging features e.g. showing the complete stacktrace polyglot till inside the native [CasADi](https://web.casadi.org/) libraries by building to LLVM
