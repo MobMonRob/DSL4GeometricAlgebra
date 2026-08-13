@@ -510,10 +510,10 @@ Different to PGA there are spheres which do not intersect and further flat geome
 In `DSL4GA_Impl_Truffle`:
 
 - Go to package: `de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.builtins`
-- Make a new class similar to the existing ones.
+	- Make a new class similar to the existing ones.
 
 - Go to class: `de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.runtime.BuiltinRegistry`
-- Register yor Builtin in `installBuiltins()` similar to the existing ones.
+	- Register yor Builtin in `installBuiltins()` similar to the existing ones.
 
 If the name of the Builtin class is “Abs”, the Builtin function in the DSL will be “abs”.
 
