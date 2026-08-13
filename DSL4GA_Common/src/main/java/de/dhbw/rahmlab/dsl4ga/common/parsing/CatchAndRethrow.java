@@ -2,6 +2,7 @@ package de.dhbw.rahmlab.dsl4ga.common.parsing;
 
 import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.Token;
 
 public final class CatchAndRethrow {
 
@@ -49,7 +50,13 @@ public final class CatchAndRethrow {
 		} else {
 			// Create position info the first time at the lowest point.
 			int fromIndex = ctx.getStart().getStartIndex();
-			int toIndexInclusive = ctx.getStop().getStopIndex();
+			// ctx.getStop() may be null when parsing aborts before completing the rule,
+			// and the EOF token has stopIndex = startIndex - 1 (sentinel for "no text").
+			// Guard both cases to avoid fromIndex > toIndexInclusive in ExceptionContext.
+			Token stopToken = ctx.getStop();
+			int toIndexInclusive = (stopToken == null)
+				? fromIndex
+				: Math.max(stopToken.getStopIndex(), fromIndex);
 
 			String infoString = parser.getInputStream().getText(ctx.start, ctx.stop);
 			int line = ctx.start.getLine();

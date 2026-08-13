@@ -116,7 +116,12 @@ public class SyntaxErrorListener extends BaseErrorListener {
 		 */
 		String errorMessage = errorMessageBuilder.toString();
 
-		ExceptionContext exCtx = new ExceptionContext(token.getStartIndex(), token.getStopIndex());
+		int tokenStart = token.getStartIndex();
+		// ANTLR's EOF token is created with stopIndex = startIndex - 1 (sentinel for "no text").
+		// Guard against fromIndex > toIndexInclusive, which would cause an IllegalArgumentException
+		// in setSourceSection. Collapse such a token to a zero-length mark at its start position.
+		int tokenStop = Math.max(token.getStopIndex(), tokenStart);
+		ExceptionContext exCtx = new ExceptionContext(tokenStart, tokenStop);
 
 		throw new ContextParseCancellationException(exCtx, errorMessage, e);
 	}

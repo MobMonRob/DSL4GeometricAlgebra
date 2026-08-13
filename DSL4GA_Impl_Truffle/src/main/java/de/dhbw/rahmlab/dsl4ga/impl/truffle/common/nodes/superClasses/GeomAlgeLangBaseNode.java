@@ -36,6 +36,8 @@ public abstract class GeomAlgeLangBaseNode extends Node {
 		// commented out because multiple invocation of parse() is possible 
 		//assert sourceCharIndex != NO_SOURCE : "source should only be set once";
 		if (fromIndex > toIndexInclusive) {
+			// ANTLR EOF token has stopIndex = startIndex - 1 (sentinel for "no text").
+			// Measures were taken. But if this exeception occurs at token <EOF>, not enough measures were taken.
 			throw new IllegalArgumentException("from Index "
 				+ String.valueOf(fromIndex) + " > " + String.valueOf(toIndexInclusive));
 		}
