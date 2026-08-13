@@ -302,7 +302,7 @@ $A\rfloor B = \langle A B\rangle_{|l-k|}$
 ##### Additional 2-ary operators
 | precedence | symbol   | latex | unicode | description |
 | :--------: | :------: | ------| ------- | ----------- |
-| 3			 | &#x00D7; | \times | \u00D7  | commutator product |       
+| 3			 | &#x00D7; | \times | \u00D7  | commutator product |
 | 3          | &#x22C5; | \cdot  | \u22C5  | dot product (inner product without scalar parts) |
 | 3          | &#x2229; | \cap   | \u2229  | meet (intersection) = largest common subspace |
 | 3          | &#x222A; | \cup   | \u222A  | join  (union) of two subspaces is there smallest superspace = smallest space containing them both |
@@ -340,7 +340,6 @@ There exist three types of involution operations: Space inversion, reversion and
 | &#x003C;multivector&#x003E;&#x209A; (with &#x209A; ∈ {&#x2080;, &#x2081;, &#x2082;, &#x2083;, &#x2084;, &#x2085;}) |       | &#x003C; = \u003C,  &#x003E; = \u003E, &#x2080; = \u2080, &#x2081; = \u2081, &#x2082; = \u2082, &#x2083; = \u2083, &#x2084; = \u2084, &#x2085; = \u2085| grade extraction, grade p=0-5 as subscript |
 
 ### Built-in functions
-#### Base functions
 | symbol      | description |
 | :---------- | ------------ |
 | exp()       | exponential of a bivector or a scalar |
@@ -352,18 +351,14 @@ There exist three types of involution operations: Space inversion, reversion and
 | dot()       | dot product, 0-grade indcluded - different to inner product |
 | ip()        | inner product, 0-grade is excluded different to the dot-product |
 | negate14()  | negate the signs of the vector- and 4-vector parts of an multivector. Usable to implement general-inverse. |
-
-#### up/down projection into euclidean space
-| symbol      | description |
-| :---------- | ------------ |
 | up()        | up-projection of a euclidean vector into the space of the multivector (conformal, projection, ... depending on the algbra) |
 | down()      | down-projection of a multivector into the euclidean space (by normalization and rejection from the minkowski plane E0 in the case of CGA) |
+| euclid()    | euclidean part of the multivector (Blades containing **only** base elements with metric 1 and no others. (without 0-grade scalar)) |
+| idle()      | idle part of the multivector (includes no location information) (Blades containing base elements with metric 0 or -1. (without 0-grade scalar)) |
 
 #### not yet implemented
 | symbol      | description |
 | :---------- | ------------ |
-| euclid()    | euclidean part of the multivector |
-| idle()      | idle part of the multivector (includes no location information) |
 | coef()      | with two mulitvectors as arguments. The second must be one blade only. The function extracts the coefficient for this blade in the first argument as as scalar |
 
 #### Scalar functions
@@ -412,13 +407,13 @@ This algebra contains flat objects only. The dual operator is defined by the Hod
 
 #### Geometric objects with intrinsic orientation type
 
-The orientation type of the following objects corresponds with the so called outer product null space representation (OPNS), sometimes also named as "point based" representation. 
+The orientation type of the following objects corresponds with the so called outer product null space representation (OPNS), sometimes also named as "point based" representation.
 
 Orthogonal reflection of objects from this type results in inversion of the orientation. Reflection of objects inside the reflection plane do not changed its orientation. Therefore these objects are handedness-preserving under reflection on planes.
 
 Homogeneous/directed points are defined as:
 
-| object | grade | formula | 
+| object | grade | formula |
 | :---------- | :------ | :-------- |
 | point | 1 |  $\displaystyle p = e_0 + \vec{n}$ |
 
@@ -429,19 +424,19 @@ and from this, the following geometric objects can be created by joining the poi
 | spear (join line) | 2 |  $\displaystyle l = p_2\wedge p_1 = \vec{n}\wedge p$ | The line points from the first to the second point, or is defined by one point and an euclidean direction vector. |
 | plane | 3 |   $\displaystyle \pi = p_1\wedge p_2\wedge p_3 = p\wedge\vec{n}^{\ast} =\epsilon_0\wedge\vec{n}^{\ast}+\vec{x}\wedge\vec{n}^{\ast} = \epsilon_0\wedge\vec{n}^{\ast}-(\vec{x}\cdot\vec{n})E_3$ | clockwise  arrangement of the points, defines the plane and the direction of its normal vector. |
 
-Spears correspond with polar vectors and can represent local orbits or momenta of points. 
+Spears correspond with polar vectors and can represent local orbits or momenta of points.
 
 #### Geometric objects with extrinsic orientation type
 
-The orientation type of the following objects corresponds with the so called commutator product null space representation (CPNS), sometimes also named as "plane-based" representation. 
+The orientation type of the following objects corresponds with the so called commutator product null space representation (CPNS), sometimes also named as "plane-based" representation.
 
-| object | grade | formula | 
+| object | grade | formula |
 | :---------- | :------ | :-------- |
 | plane | 1 |  $\displaystyle \pi =\vec{n}+(\vec{x}\cdot\vec{n})\epsilon_0 = p_3\vee p_2\vee p_1$ |
 
 The following objects are constructed by meeting planes (also using the wedge-operator).
 
-| object | grade | formula | 
+| object | grade | formula |
 | :----- | :--- | -------- |
 | axis (meet line) | 2 |  $\displaystyle l=\pi_2\wedge\pi_1=\vec{n}^{\ast}-(\vec{x}\cdot\vec{n}^{\ast})\mathord{\epsilon_0}$ |
 | point | 3 | $\displaystyle p=\pi_3\wedge\pi_2\wedge\pi_1=\pi\wedge l=E_3 + \vec{x}\epsilon_0 E_3$ |
@@ -454,17 +449,17 @@ This algebra contains flat and round elements.
 
 #### Geometric objects with intrinsic orientation type
 
-The orientation type of these objects corresponds with the so called outer product null space representation (OPNS), sometimes also named as "direct" representation. 
+The orientation type of these objects corresponds with the so called outer product null space representation (OPNS), sometimes also named as "direct" representation.
 
 Round points can be created from euclidean parameters/coordinates:
 
-| object | grade |  formula | 
+| object | grade |  formula |
 | :---------- | :---- | :----------------- |
 | round point | 1 |  $\displaystyle \vec{p}=\vec{x}+\frac{1}{2}\vec{x}^2\epsilon_\infty+\epsilon_0$ |
 
 Joining round points only (using the wedge-operator) produces further round objects. That´s why these geometric objects are called "point-based".
 
-| object | grade | formula | 
+| object | grade | formula |
 | :---------- | :------ | :-------- |
 | dipole (oriented point pair) | 2 |  p1&#8743;p2 |
 | circle | 3 |  p1&#8743;p2&#8743;p3 |
@@ -472,7 +467,7 @@ Joining round points only (using the wedge-operator) produces further round obje
 
 Joining round points with the point in infinity creates the flat objects:
 
-| object | grade | formula | 
+| object | grade | formula |
 | :---------- | :------ |  :-------- |
 | flat (homogeneous) point |  2 |  p&#8743;&#x03B5;&#7522; |
 | spear (join line) | 3 | p1&#8743;p2&#8743;&#x03B5;&#7522; |
@@ -480,7 +475,7 @@ Joining round points with the point in infinity creates the flat objects:
 
 An oriented point can be created from euclidean parameters/coordinates:
 
-| object | grade | type | formula | 
+| object | grade | type | formula |
 | :---------- | :---- | :----| :-------------------- |
 | oriented point | 3 | round | 	$$\vec{Q}=\vec{m}\wedge\vec{v}+(\frac{1}{2}\vec{v}^2\vec{m}-\vec{v}(\vec{v}\cdot\vec{m}))\epsilon_\infty+\vec{m}\epsilon_0-\vec{m}\cdot\vec{v}E_0$$|
 
@@ -490,24 +485,38 @@ The orientation type of these objects corresponds with the inner product null sp
 
 Spheres can be created from euclidean parameters/coordinates:
 
-| object | grade |  formula | 
+| object | grade |  formula |
 | :---------- | :---- |  :---------- |
 | sphere | 1 |  P-0.5r&sup2;&#x03B5;&#7522; |
 
 Further round objects are constructed by intersection of spheres (using the wedge-operator). That´s why these geometric objects are called "sphere-based".
 
-| object | grade |  formula | 
+| object | grade |  formula |
 | :---------- | :------ | :-------------|
-| circle  | 2 |  s1&#8743;s2 | 
-| point pair | 3 |  s1&#8743;s2&#8743;s3 | 
+| circle  | 2 |  s1&#8743;s2 |
+| point pair | 3 |  s1&#8743;s2&#8743;s3 |
 | point  | 4 |  s1&#8743;s2&#8743;s3&#8743;s4 |
 
 Different to PGA there are spheres which do not intersect and further flat geometric objects are determined otherwise.
 
-| object | grade |  formula | 
+| object | grade |  formula |
 | :---------- | :------ |  :-------------|
 | plane  | 1 |  n+d&#x03B5;&#7522; |
-| axis (meet line) | 2 |  p1&#8743;p2 | 
+| axis (meet line) | 2 |  p1&#8743;p2 |
+
+
+## Dev Docs / Implementation notes
+### How to create a new Builtin?
+In `DSL4GA_Impl_Truffle`:
+
+- Go to package: `de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.builtins`
+- Make a new class similar to the existing ones.
+
+- Go to class: `de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.runtime.BuiltinRegistry`
+- Register yor Builtin in `installBuiltins()` similar to the existing ones.
+
+If the name of the Builtin class is “Abs”, the Builtin function in the DSL will be “abs”.
+
 
 ## Next Steps
 - adding operators and built-ins for symbolic derivation and algorithmic differentiation
