@@ -43,7 +43,7 @@ public class TruffleFKDebugging {
 		var fac = new TruffleProgramFactory();
 		var prog = fac.parse(uri);
 		
-		double[] thetas = new double[]{0,0,0,0,0,0,0,0,0,0,0,0};
+		double[] thetas = new double[]{0, 0, 0, 0, 0, 0};
 		var res = prog.invoke(createArguments(thetas));
 
 		System.out.println("answer: ");
