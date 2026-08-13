@@ -404,9 +404,11 @@ There exist three types of involution operations: Space inversion, reversion and
 
 ## Algebras
 
+Each algebra has to define a dual operator. Using the Hodge-dual makes such a definition dependend from the choice of the basis.
+
 ### PGA - projective geometric algebra Cl(3,0,1)
 
-This algebra contains flat objects only.
+This algebra contains flat objects only. The dual operator is defined by $\widetilde{idle(A)}E_3+\epsilon_0\widehat{\widetilde{euclid(A)}}E_3$.
 
 #### Geometric objects with intrinsic orientation type
 
