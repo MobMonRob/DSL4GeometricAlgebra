@@ -21,7 +21,7 @@ This simplifies grammar development a lot and improves readability.
 
 sourceUnit
 	:	WHITE_LINE* algebra WHITE_LINE*
-		(WHITE_LINE* functions+=function WHITE_LINE*)+
+		(WHITE_LINE* functions+=function WHITE_LINE*)*
 		EOF // https://stackoverflow.com/a/61402548
 	;
 
