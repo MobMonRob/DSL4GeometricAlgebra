@@ -408,7 +408,7 @@ Each algebra has to define a dual operator. Using the Hodge-dual makes such a de
 
 ### PGA - projective geometric algebra Cl(3,0,1)
 
-This algebra contains flat objects only. The dual operator is defined by $\widetilde{idle(A)}E_3+\epsilon_0\widehat{\widetilde{euclid(A)}}E_3$.
+This algebra contains flat objects only. The dual operator is defined by the Hodge Dual. Using the euclidean split it admits the closed form expression $\widetilde{idle(A)}E_3+\epsilon_0\widehat{\widetilde{euclid(A)}}E_3$.
 
 #### Geometric objects with intrinsic orientation type
 
