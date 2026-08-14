@@ -407,7 +407,7 @@ This algebra contains flat objects only.
 
 The dual operator is defined by the Hodge Dual. Using the euclidean split it admits the closed form expression $\tilde{A_I}E_3+\epsilon_0\hat{\tilde{A_E}}E_3$ with $A_I=idle(A), A_E=euclid(A) $
 
-The inverse operator is defined also by using the euclidean split: $B\tilde{B} = a+b\epsilon_{0123}$ is a study number corresponding to a dual number. The dual number inverse is $\frac{1}{a+b\epsilon_{0123}} = \frac{1}{a}+\frac{b}{a^2}\epsilon_{0123}$. Multiplying by $\tilde{B}$ results in $\frac{1}{B}=(\frac{1}{a}+\frac{b}{a^2}\epsilon_{0123})\tilde{B}$.
+The inverse operator is defined also by using the euclidean split of $B\tilde{B} = a+b\epsilon_{0123}$. This is a study number corresponding to a dual number. The dual number inverse is $\frac{1}{a+b\epsilon_{0123}} = \frac{1}{a}+\frac{b}{a^2}\epsilon_{0123}$. Multiplying by $\tilde{B}$ results in $\frac{1}{B}=(\frac{1}{a}+\frac{b}{a^2}\epsilon_{0123})\tilde{B}$.
 
 #### Geometric objects with intrinsic orientation type
 
