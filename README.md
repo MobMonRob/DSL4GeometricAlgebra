@@ -355,11 +355,11 @@ There exist three types of involution operations: Space inversion, reversion and
 | down()      | down-projection of a multivector into the euclidean space (by normalization and rejection from the minkowski plane E0 in the case of CGA) |
 | euclid()    | euclidean part of the multivector (Blades containing **only** base elements with metric 1 and no others. (without 0-grade scalar)) |
 | idle()      | idle part of the multivector (includes no location information) (Blades containing base elements with metric 0 or -1. (without 0-grade scalar)) |
+| coef()      | with two multivectors as arguments. The second must be one blade only. The function extracts the coefficient for this blade in the first argument as as scalar |
 
 #### not yet implemented
 | symbol      | description |
 | :---------- | ------------ |
-| coef()      | with two mulitvectors as arguments. The second must be one blade only. The function extracts the coefficient for this blade in the first argument as as scalar |
 
 #### Scalar functions
 | symbol      | description |
@@ -403,11 +403,11 @@ Each algebra has to define a dual operator. Using the Hodge-dual makes such a de
 
 ### PGA - projective geometric algebra Cl(3,0,1)
 
-This algebra contains flat objects only. 
+This algebra contains flat objects only.
 
 The dual operator is defined by the Hodge Dual. Using the euclidean split it admits the closed form expression $\tilde{A_I}E_3+\epsilon_0\hat{\tilde{A_E}}E_3$ with $A_I=idle(A), A_E=euclid(A) $.
 
-The inverse operator is implemented by analysing the type of the mulitivector and switching automatically between different implementations. Not all multivectors have an inverse e.g. specific points at infinity or pure idle lines. Inverses are only determined for extrinsic orientation types. The inverse of a plane is the same plane. The inverse of an axis and of a point only changes the sign. The inverse of a motor is the reverse (normalization of the motor is a precondition which is not tested during compiletime and also not tested during runtime) and the most complex inverse is needed for a general bivector. For this, the euclidean split of the squared (pseudo) norm $B\tilde{B} = \lvert B \rvert^2 = a+b\epsilon_{0123}$ is used. This is a study number corresponding to a dual number. The dual number inverse is $\frac{1}{a+b\epsilon_{0123}} = \frac{1}{a}+\frac{b}{a^2}\epsilon_{0123}$. Multiplying by $\tilde{B}$ results in $\frac{1}{B}=(\frac{1}{a}-\frac{b}{a^2}\epsilon_{0123})\tilde{B}$. 
+The inverse operator is implemented by analysing the type of the mulitivector and switching automatically between different implementations. Not all multivectors have an inverse e.g. specific points at infinity or pure idle lines. Inverses are only determined for extrinsic orientation types. The inverse of a plane is the same plane. The inverse of an axis and of a point only changes the sign. The inverse of a motor is the reverse (normalization of the motor is a precondition which is not tested during compiletime and also not tested during runtime) and the most complex inverse is needed for a general bivector. For this, the euclidean split of the squared (pseudo) norm $B\tilde{B} = \lvert B \rvert^2 = a+b\epsilon_{0123}$ is used. This is a study number corresponding to a dual number. The dual number inverse is $\frac{1}{a+b\epsilon_{0123}} = \frac{1}{a}+\frac{b}{a^2}\epsilon_{0123}$. Multiplying by $\tilde{B}$ results in $\frac{1}{B}=(\frac{1}{a}-\frac{b}{a^2}\epsilon_{0123})\tilde{B}$.
 
 #### Geometric objects with intrinsic orientation type
 

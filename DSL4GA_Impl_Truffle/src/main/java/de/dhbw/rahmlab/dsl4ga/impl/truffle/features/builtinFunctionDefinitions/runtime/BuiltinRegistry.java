@@ -33,6 +33,7 @@ public class BuiltinRegistry {
 		// others
 		this.installBuiltin(IdleFactory.getInstance());
 		this.installBuiltin(EuclidFactory.getInstance());
+		this.installBuiltin(CoefFactory.getInstance());
 		
 		// in/out functions
 		this.installBuiltin(UpFactory.getInstance());
