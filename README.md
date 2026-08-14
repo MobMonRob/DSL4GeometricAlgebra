@@ -405,9 +405,9 @@ Each algebra has to define a dual operator. Using the Hodge-dual makes such a de
 
 This algebra contains flat objects only. 
 
-The dual operator is defined by the Hodge Dual. Using the euclidean split it admits the closed form expression $\tilde{A_I}E_3+\epsilon_0\hat{\tilde{A_E}}E_3$ with $A_I=idle(A), A_E=euclid(A) $
+The dual operator is defined by the Hodge Dual. Using the euclidean split it admits the closed form expression $\tilde{A_I}E_3+\epsilon_0\hat{\tilde{A_E}}E_3$ with $A_I=idle(A), A_E=euclid(A) $.
 
-The inverse operator is implemented by analysing the type of the mulitivector and switching automatically between different implementations. Not all multivectors have an inverse e.g. specific points at infinity or pure idle lines. The inverse of a plane is the same plane. The iverse of a line and of a point only changes the sign. The inverse of a motor is the reverse and the most complex inverse is needed for a general bivector. For this, the euclidean split of $B\tilde{B} = a+b\epsilon_{0123}$ is used. This is a study number corresponding to a dual number. The dual number inverse is $\frac{1}{a+b\epsilon_{0123}} = \frac{1}{a}+\frac{b}{a^2}\epsilon_{0123}$. Multiplying by $\tilde{B}$ results in $\frac{1}{B}=(\frac{1}{a}+\frac{b}{a^2}\epsilon_{0123})\tilde{B}$. 
+The inverse operator is implemented by analysing the type of the mulitivector and switching automatically between different implementations. Not all multivectors have an inverse e.g. specific points at infinity or pure idle lines. Inverses are only determined for extrinsic orientation types. The inverse of a plane is the same plane. The iverse of an axis and of a point only changes the sign. The inverse of a motor is the reverse and the most complex inverse is needed for a general bivector. For this, the euclidean split of $B\tilde{B} = a+b\epsilon_{0123}$ is used. This is a study number corresponding to a dual number. The dual number inverse is $\frac{1}{a+b\epsilon_{0123}} = \frac{1}{a}+\frac{b}{a^2}\epsilon_{0123}$. Multiplying by $\tilde{B}$ results in $\frac{1}{B}=(\frac{1}{a}+\frac{b}{a^2}\epsilon_{0123})\tilde{B}$. 
 
 #### Geometric objects with intrinsic orientation type
 
