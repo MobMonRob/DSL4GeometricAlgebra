@@ -8,5 +8,6 @@ fn main(a, b) {
 	c1, _ = test(b)
 	d = abs(c1) 2.0
 	e = coef(d, 1)
-	a, b, d, e
+	f = 2 × 3
+	a, b, d, e, f
 }
