@@ -357,10 +357,6 @@ There exist three types of involution operations: Space inversion, reversion and
 | idle()      | idle part of the multivector (Blades containing base elements with metric 0 or -1. (without 0-grade scalar)) - encodes the position relative to the origin; an object with a vanashing idea part necessarily passes through the origin |
 | coef()      | with two multivectors as arguments. The second must be one blade only. The function extracts the coefficient for this blade in the first argument as as scalar |
 
-#### not yet implemented
-| symbol      | description |
-| :---------- | ------------ |
-
 #### Scalar functions
 | symbol      | description |
 | :---------- | ------------ |
@@ -377,8 +373,8 @@ There exist three types of involution operations: Space inversion, reversion and
 ### Symbols
 | symbol           | latex        | Unicode      | description |
 | :--------------: | ------------ | ------------ | ----------- |
-| &#x03C0;         | \pi        | \u03C0       | Ludolphs- or circle constant | Math.PI |
-| &#x0049;         | I          | \u0049       | Pseudoscalar | dependend on the algebra |
+| &#x03C0;         | \pi        | \u03C0         | Ludolphs- or circle constant  Math.PI |
+| &#x0049;         | I          | \u0049         | Pseudoscalar - implementation dependend on the algebra |
 
 ## Algebras
 
@@ -402,8 +398,8 @@ The inverse operator is implemented by analysing the type of the mulitivector an
 | &#x03B5;&#x2081; | \epsilon_1 | \u03B5\u2081 | base vector representing x direction |
 | &#x03B5;&#x2082; | \epsilon_2 | \u03B5\u2082 | base vector representing y direction |
 | &#x03B5;&#x2083; | \epsilon_3 | \u03B5\u2083 | base vector representing z direction |
-| &#x0045;&#x2083; | E_3        | \u0045\u2083 | Euclidean pseudoscalar | &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083;     |
-| &#x0049;         | I          | \u0049       | Pseudoscalar | |
+| &#x0045;&#x2083; | E_3        | \u0045\u2083 | Euclidean pseudoscalar &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083;  |
+| &#x0049;         | I          | \u0049       | Pseudoscalar - &#x03B5;&#x1D62; &#x2227; &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083; &#x2227; &#x03B5;&#x2080; |
 
 #### Geometric objects with intrinsic orientation type
 
@@ -460,7 +456,7 @@ This algebra contains flat and round elements.
 | &#x03B5;&#x208B; | \epsilon_- | \u03B5\u208B |  | 0.5&#x03B5;&#x1D62; + &#x03B5;&#x2080; |
 | &#x0045;&#x2080; | E_0        | \u0045\u2080 | Minkowski bivector (is its own inverse) | &#x03B5;&#7522; &#x2227; &#x03B5;&#8320;|
 | &#x0045;&#x2083; | E_3        | \u0045\u2083 | Euclidean pseudoscalar | &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083;     |
-| &#x0049;         | I          | \u0049       | Pseudoscalar | &#x03B5;&#x1D62; &#x2227; &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083; &#x2227; &#x03B5;&#x2080; |
+| &#x0049;         | I          | \u0049       | Pseudoscalar - &#x03B5;&#x1D62; &#x2227; &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083; &#x2227; &#x03B5;&#x2080; |
 
 #### Useful equations between some of the above symbols
 &#x03B5;&#x2080;&#x0045;&#x2080;=-&#x03B5;&#x2080;, &#x0045;&#x2080;&#x03B5;&#x2080;=&#x03B5;&#x2080;, &#x03B5;&#x1D62;&#x0045;&#x2080;=&#x03B5;&#x1D62;, &#x0045;&#x2080;&#x03B5;&#x1D62;=-&#x03B5;&#x1D62;, &#x0045;&#x2080;&#x00B2;=1, &#x03B5;&#x2080;&#x00B2;=&#x03B5;&#x1D62;&#x00B2;=0, &#x03B5;&#x208A;&#x00B2;=1, &#x03B5;&#x208B;&#x00B2;=-1, &#x03B5;&#x208A;&#x22C5;&#x03B5;&#x208B;=0
