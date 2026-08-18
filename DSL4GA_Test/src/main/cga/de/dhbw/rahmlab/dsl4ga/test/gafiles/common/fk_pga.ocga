@@ -1,10 +1,10 @@
 #algebra pga
 
 fn motor(theta, a, d, alpha) {
-	T_d = 1 - 0.5 d (ε₀ ∧ ε₂) // Tz 
-	R_theta = cos(0.5 theta) - sin(0.5 theta) (ε₁ ∧ ε₂) // Rz // oder GP?
-	T_a = 1 - 0.5 a (ε₀  ∧ ε₁) // Tx // oder GP?
-    R_alpha = cos(0.5 alpha) - sin(0.5 alpha) (ε₂ ∧ ε₃) // Rx // oder GP?
+	T_d = 1 - 0.5 d (ε₀ ∧ ε₂) // Tz
+	R_theta = cos(0.5 theta) - sin(0.5 theta) (ε₁ ∧ ε₂) // Rz
+	T_a = 1 - 0.5 a (ε₀ ∧ ε₁) // Tx
+    R_alpha = cos(0.5 alpha) - sin(0.5 alpha) (ε₂ ∧ ε₃) // Rx
 	M = R_alpha T_d T_a R_theta 
 	M
 }
@@ -44,9 +44,14 @@ fn main(theta1, theta2, theta3, theta4, theta5, theta6) {
 	:Ls[] = fk(L0)
 
 	// euclidean part of the line divived by I3 = direction
+    // corresponding to points at infinity, with an implied e123 coefficient of 00
     direction = euclid(Ls[5])/E₃
-    // closed point on the line to the origin
-	position = Ls[5]/direction
+    //direction = Ls[5]∧ε₀ // direction ideal point, direction in the trivectors, ToDo how to extract it from e023, e031, e012
 
-	Ls[5], direction
+    // closest point on the line to the origin
+	//position = Ls[5]/direction
+    position = ((ε₁∧ε₂∧ε₃)⋅Ls[5])Ls[5]
+	// a direction is a flat point at infinity directs into direction? or plane?
+    
+	position, direction
 }
