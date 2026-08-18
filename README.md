@@ -375,24 +375,10 @@ There exist three types of involution operations: Space inversion, reversion and
 | sign(x)     | -1 if x<0 else 1 |
 
 ### Symbols
-#### Base vector symbols
 | symbol           | latex        | Unicode      | description |
 | :--------------: | ------------ | ------------ | ----------- |
-| &#x03B5;&#x2080; | \epsilon_0 | \u03B5\u2080 | base vector representing the origin |
-| &#x03B5;&#x1D62; | \epsilon_i | \u03B5\u1D62 | base vector representing the infinity |
-| &#x03B5;&#x2081; | \epsilon_1 | \u03B5\u2081 | base vector representing x direction |
-| &#x03B5;&#x2082; | \epsilon_2 | \u03B5\u2082 | base vector representing y direction |
-| &#x03B5;&#x2083; | \epsilon_3 | \u03B5\u2083 | base vector representing z direction |
-
-#### Further symbols
-| symbol           | latex      | Unicode      | description | implementation |
-| :--------------: | -----------| ------------ | ----------- | -------------- |
-| &#x03B5;&#x208A; | \epsilon_+ | \u03B5\u208A |  | 0.5&#x03B5;&#x1D62; - &#x03B5;&#x2080; |
-| &#x03B5;&#x208B; | \epsilon_- | \u03B5\u208B |  | 0.5&#x03B5;&#x1D62; + &#x03B5;&#x2080; |
 | &#x03C0;         | \pi        | \u03C0       | Ludolphs- or circle constant | Math.PI |
-| &#x0045;&#x2080; | E_0        | \u0045\u2080 | Minkowski bivector (is its own inverse) | &#x03B5;&#7522; &#x2227; &#x03B5;&#8320;|
-| &#x0045;&#x2083; | E_3        | \u0045\u2083 | Euclidean pseudoscalar | &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083;     |
-| &#x0049;         | I          | \u0049       | Pseudoscalar | dependend on the algebra|
+| &#x0049;         | I          | \u0049       | Pseudoscalar | dependend on the algebra |
 
 #### Useful equations between above symbols
 &#x03B5;&#x2080;&#x0045;&#x2080;=-&#x03B5;&#x2080;, &#x0045;&#x2080;&#x03B5;&#x2080;=&#x03B5;&#x2080;, &#x03B5;&#x1D62;&#x0045;&#x2080;=&#x03B5;&#x1D62;, &#x0045;&#x2080;&#x03B5;&#x1D62;=-&#x03B5;&#x1D62;, &#x0045;&#x2080;&#x00B2;=1, &#x03B5;&#x2080;&#x00B2;=&#x03B5;&#x1D62;&#x00B2;=0, &#x03B5;&#x208A;&#x00B2;=1, &#x03B5;&#x208B;&#x00B2;=-1, &#x03B5;&#x208A;&#x22C5;&#x03B5;&#x208B;=0
@@ -408,6 +394,17 @@ This algebra contains flat objects only.
 The dual operator is defined by the Hodge Dual. Using the euclidean split it admits the closed form expression $\tilde{A_I}E_3+\epsilon_0\hat{\tilde{A_E}}E_3$ with $A_I=idle(A), A_E=euclid(A) $.
 
 The inverse operator is implemented by analysing the type of the mulitivector and switching automatically between different implementations. Not all multivectors have an inverse e.g. specific points at infinity or pure idle lines. Inverses are only determined for extrinsic orientation types. The inverse of a plane is the same plane. The inverse of an axis and of a point only changes the sign. The inverse of a motor is the reverse (normalization of the motor is a precondition which is not tested during compiletime and also not tested during runtime) and the most complex inverse is needed for a general bivector. For this, the euclidean split of the squared (pseudo) norm $B\tilde{B} = \lvert B \rvert^2 = a+b\epsilon_{0123}$ is used. This is a study number corresponding to a dual number. The dual number inverse is $\frac{1}{a+b\epsilon_{0123}} = \frac{1}{a}+\frac{b}{a^2}\epsilon_{0123}$. Multiplying by $\tilde{B}$ results in $\frac{1}{B}=(\frac{1}{a}-\frac{b}{a^2}\epsilon_{0123})\tilde{B}$.
+
+#### Symbols
+
+| symbol           | latex        | Unicode      | description |
+| :--------------: | ------------ | ------------ | ----------- |
+| &#x03B5;&#x2080; | \epsilon_0 | \u03B5\u2080 | base vector representing the origin |
+| &#x03B5;&#x2081; | \epsilon_1 | \u03B5\u2081 | base vector representing x direction |
+| &#x03B5;&#x2082; | \epsilon_2 | \u03B5\u2082 | base vector representing y direction |
+| &#x03B5;&#x2083; | \epsilon_3 | \u03B5\u2083 | base vector representing z direction |
+| &#x0045;&#x2083; | E_3        | \u0045\u2083 | Euclidean pseudoscalar | &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083;     |
+| &#x0049;         | I          | \u0049       | Pseudoscalar | |
 
 #### Geometric objects with intrinsic orientation type
 
@@ -451,11 +448,25 @@ Axes correspond to axial vectors and can describe movement velocity (rotations (
 
 This algebra contains flat and round elements.
 
+#### Symbols
+
+| symbol           | latex        | Unicode      | description |
+| :--------------: | ------------ | ------------ | ----------- |
+| &#x03B5;&#x2080; | \epsilon_0 | \u03B5\u2080 | base vector representing the origin |
+| &#x03B5;&#x1D62; | \epsilon_i | \u03B5\u1D62 | base vector representing the infinity |
+| &#x03B5;&#x2081; | \epsilon_1 | \u03B5\u2081 | base vector representing x direction |
+| &#x03B5;&#x2082; | \epsilon_2 | \u03B5\u2082 | base vector representing y direction |
+| &#x03B5;&#x2083; | \epsilon_3 | \u03B5\u2083 | base vector representing z direction |
+| &#x03B5;&#x208A; | \epsilon_+ | \u03B5\u208A |  | 0.5&#x03B5;&#x1D62; - &#x03B5;&#x2080; |
+| &#x03B5;&#x208B; | \epsilon_- | \u03B5\u208B |  | 0.5&#x03B5;&#x1D62; + &#x03B5;&#x2080; |
+| &#x0045;&#x2080; | E_0        | \u0045\u2080 | Minkowski bivector (is its own inverse) | &#x03B5;&#7522; &#x2227; &#x03B5;&#8320;|
+| &#x0045;&#x2083; | E_3        | \u0045\u2083 | Euclidean pseudoscalar | &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083;     |
+| &#x0049;         | I          | \u0049       | Pseudoscalar | &#x03B5;&#x1D62; &#x2227; &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083; &#x2227; &#x03B5;&#x2080; |
+
+
 #### Geometric objects with intrinsic orientation type
 
 The orientation type of these objects corresponds with the so called outer product null space representation (OPNS), sometimes also named as "direct" representation.
-
-The Pseudoscalar is defined by &#x03B5;&#x1D62; &#x2227; &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083; &#x2227; &#x03B5;&#x2080;
 
 Round points can be created from euclidean parameters/coordinates:
 
