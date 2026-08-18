@@ -417,7 +417,7 @@ and from this, the following geometric objects can be created by joining the poi
 
 | object | grade | formula | description |
 | :---------- | :------ | :-------- | ---------------- |
-| spear (join line) | 2 |  $\displaystyle l = p_2\wedge p_1 = \vec{n}\wedge p$ | The line points from the first to the second point, or is defined by one point and an euclidean direction vector. |
+| spear (join line) | 2 |  $\displaystyle l = p_2\wedge p_1 = \vec{n}\wedge p$ | The line points from $p_1$ to $p_2$, or is defined by one point and an euclidean direction vector. |
 | plane | 3 |   $\displaystyle \pi = p_1\wedge p_2\wedge p_3 = p\wedge\vec{n}^{\ast} =\epsilon_0\wedge\vec{n}^{\ast}+\vec{x}\wedge\vec{n}^{\ast} = \epsilon_0\wedge\vec{n}^{\ast}-(\vec{x}\cdot\vec{n})E_3$ | clockwise  arrangement of the points, defines the plane and the direction of its normal vector. |
 
 Spears correspond with polar vectors and can represent local orbits or momenta of points.
