@@ -2,9 +2,7 @@ package de.dhbw.rahmlab.dsl4ga.test.gafiles;
 
 import de.dhbw.rahmlab.dsl4ga.test.gafiles.common.Util;
 import de.dhbw.rahmlab.dsl4ga.test.gafiles.common.gen.fastwrapper.Test1Program;
-import de.orat.math.sparsematrix.SparseDoubleMatrix;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import util.cga.SparseCGAColumnVector;
 
@@ -12,6 +10,11 @@ import util.cga.SparseCGAColumnVector;
 public class Test1Test {
 
 	private static Test1Program PROGRAM;
+
+	public static void main(String args[]) {
+		init();
+		new Test1Test().dummy();
+	}
 
 	@BeforeAll
 	static void init() {

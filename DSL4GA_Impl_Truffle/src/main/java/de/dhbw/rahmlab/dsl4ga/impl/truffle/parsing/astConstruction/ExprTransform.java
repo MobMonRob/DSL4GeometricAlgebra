@@ -20,6 +20,8 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.literals.nodes.expr.Constant
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.literals.nodes.expr.ScalarLiteral;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.literals.nodes.expr.ScalarLiteralNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.AdditionNodeGen;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.CommutatorProduct;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.CommutatorProductNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.DivisionNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.DotProductNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.binaryOps.GeometricProductNodeGen;
@@ -158,6 +160,8 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 				JoinNodeGen.create(left, right);
 			case GeomAlgeParser.CIRCLED_DOT_OPERATOR ->
 				HadamardProductNodeGen.create(left, right);
+			case GeomAlgeParser.MULTIPLICATION_SIGN ->
+				CommutatorProductNodeGen.create(left, right);
 			default ->
 				throw new AssertionError();
 		};

@@ -163,6 +163,7 @@ binOpExpr
 			|L_CONTRACTION
 			|LOGICAL_OR
 			|CIRCLED_DOT_OPERATOR
+			|MULTIPLICATION_SIGN
 			)
 		SPACE*
 		binOpExpr			#BinOp	//Precedence 3

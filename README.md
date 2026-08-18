@@ -16,7 +16,7 @@ Especially be cautious regarding:
 - Domain specific language ("DSL") for Geometric Algebras. Including user defined functions.
 - Multiple Geometric Algebras can be used (Currently CGA and PGA). New ones can be added fast with changes in GACasADi.
 - Debugging to step through the DSL code and view variables content. Enabled by GraalVM. Tested with Netbeans.
-- Visualization of Objekts while debugging.
+- Visualization of objects while debugging.
 - Fast numeric evaluation due to the internal use of sparsity and symbolic simplification of expressions (with CasADi and Maxima CAS). Additionally, the use of Geometric Algebra linearizes some transformations which increases likelyhood that the CAS finds shorter (faster) expressions.
 - LaTeX printing of expressions (with help of Maxima). Currently only at the end of program execution. Adding more flexibility is planned.
 
@@ -353,13 +353,13 @@ There exist three types of involution operations: Space inversion, reversion and
 | negate14()  | negate the signs of the vector- and 4-vector parts of an multivector. Usable to implement general-inverse. |
 | up()        | up-projection of a euclidean vector into the space of the multivector (conformal, projection, ... depending on the algbra) |
 | down()      | down-projection of a multivector into the euclidean space (by normalization and rejection from the minkowski plane E0 in the case of CGA) |
-| euclid()    | euclidean part of the multivector (Blades containing **only** base elements with metric 1 and no others. (without 0-grade scalar)) |
-| idle()      | idle part of the multivector (includes no location information) (Blades containing base elements with metric 0 or -1. (without 0-grade scalar)) |
+| euclid()    | euclidean part of the multivector (Blades containing **only** base elements with metric 1 and no others. (without 0-grade scalar)) - encodes the objects orientation or weight; an object with a non zero euclidean part is called finite; an object with a vanashing euclidean part is called idle  |
+| idle()      | idle part of the multivector (Blades containing base elements with metric 0 or -1. (without 0-grade scalar)) - encodes the position relative to the origin; an object with a vanashing idea part necessarily passes through the origin |
+| coef()      | with two multivectors as arguments. The second must be one blade only. The function extracts the coefficient for this blade in the first argument as as scalar |
 
 #### not yet implemented
 | symbol      | description |
 | :---------- | ------------ |
-| coef()      | with two mulitvectors as arguments. The second must be one blade only. The function extracts the coefficient for this blade in the first argument as as scalar |
 
 #### Scalar functions
 | symbol      | description |
@@ -392,7 +392,7 @@ There exist three types of involution operations: Space inversion, reversion and
 | &#x03C0;         | \pi        | \u03C0       | Ludolphs- or circle constant | Math.PI |
 | &#x0045;&#x2080; | E_0        | \u0045\u2080 | Minkowski bivector (is its own inverse) | &#x03B5;&#7522; &#x2227; &#x03B5;&#8320;|
 | &#x0045;&#x2083; | E_3        | \u0045\u2083 | Euclidean pseudoscalar | &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083;     |
-| &#x0045;         | E          | \u0045       | Pseudoscalar | &#x03B5;&#x1D62; &#x2227; &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083; &#x2227; &#x03B5;&#x2080;|
+| &#x0045;         | I          | \u0049       | Pseudoscalar | &#x03B5;&#x1D62; &#x2227; &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083; &#x2227; &#x03B5;&#x2080;|
 
 #### Useful equations between above symbols
 &#x03B5;&#x2080;&#x0045;&#x2080;=-&#x03B5;&#x2080;, &#x0045;&#x2080;&#x03B5;&#x2080;=&#x03B5;&#x2080;, &#x03B5;&#x1D62;&#x0045;&#x2080;=&#x03B5;&#x1D62;, &#x0045;&#x2080;&#x03B5;&#x1D62;=-&#x03B5;&#x1D62;, &#x0045;&#x2080;&#x00B2;=1, &#x03B5;&#x2080;&#x00B2;=&#x03B5;&#x1D62;&#x00B2;=0, &#x03B5;&#x208A;&#x00B2;=1, &#x03B5;&#x208B;&#x00B2;=-1, &#x03B5;&#x208A;&#x22C5;&#x03B5;&#x208B;=0
@@ -403,7 +403,11 @@ Each algebra has to define a dual operator. Using the Hodge-dual makes such a de
 
 ### PGA - projective geometric algebra Cl(3,0,1)
 
-This algebra contains flat objects only. The dual operator is defined by the Hodge Dual. Using the euclidean split it admits the closed form expression $\tilde{A_I}E_3+\epsilon_0\hat{\tilde{A_E}}E_3$ with $A_I=idle(A), A_E=euclid(A) $
+This algebra contains flat objects only.
+
+The dual operator is defined by the Hodge Dual. Using the euclidean split it admits the closed form expression $\tilde{A_I}E_3+\epsilon_0\hat{\tilde{A_E}}E_3$ with $A_I=idle(A), A_E=euclid(A) $.
+
+The inverse operator is implemented by analysing the type of the mulitivector and switching automatically between different implementations. Not all multivectors have an inverse e.g. specific points at infinity or pure idle lines. Inverses are only determined for extrinsic orientation types. The inverse of a plane is the same plane. The inverse of an axis and of a point only changes the sign. The inverse of a motor is the reverse (normalization of the motor is a precondition which is not tested during compiletime and also not tested during runtime) and the most complex inverse is needed for a general bivector. For this, the euclidean split of the squared (pseudo) norm $B\tilde{B} = \lvert B \rvert^2 = a+b\epsilon_{0123}$ is used. This is a study number corresponding to a dual number. The dual number inverse is $\frac{1}{a+b\epsilon_{0123}} = \frac{1}{a}+\frac{b}{a^2}\epsilon_{0123}$. Multiplying by $\tilde{B}$ results in $\frac{1}{B}=(\frac{1}{a}-\frac{b}{a^2}\epsilon_{0123})\tilde{B}$.
 
 #### Geometric objects with intrinsic orientation type
 
