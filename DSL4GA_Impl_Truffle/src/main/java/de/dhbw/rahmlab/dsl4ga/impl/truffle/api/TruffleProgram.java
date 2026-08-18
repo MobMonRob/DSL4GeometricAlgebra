@@ -35,7 +35,7 @@ public class TruffleProgram implements iProgram {
 		}
 		try {
 			this.parsedProgram = context.parse(source);
-			this.fac = GeomAlgeLangContext.GA_FACTORY; // Correct use.
+			this.fac = GeomAlgeLangContext.GA_FACTORY; // Correct use. Available after parsing.
 		} catch (PolyglotException ex) {
 			throw enrichException(ex);
 		}
@@ -49,7 +49,7 @@ public class TruffleProgram implements iProgram {
 		}
 		try {
 			this.parsedProgram = context.parse(source);
-			this.fac = GeomAlgeLangContext.GA_FACTORY; // Correct use.
+			this.fac = GeomAlgeLangContext.GA_FACTORY; // Correct use. Available after parsing.
 		} catch (PolyglotException ex) {
 			throw enrichException(ex);
 		}
@@ -74,7 +74,7 @@ public class TruffleProgram implements iProgram {
 
 	private List<SparseDoubleMatrix> truffleInvokeOuterNumeric(List<SparseDoubleMatrix> argsList) {
 		ArgsMapper argsMapper = new ArgsMapper(this.fac, argsList);
-		GeomAlgeLangContext.get().currentExternalArgs = argsMapper;
+		GeomAlgeLangContext.get().currentExternalArgs = argsMapper; // Needs to be set before truffle execution.
 
 		List<MultivectorExpression> symRes = truffleInvoke(argsMapper.params);
 
