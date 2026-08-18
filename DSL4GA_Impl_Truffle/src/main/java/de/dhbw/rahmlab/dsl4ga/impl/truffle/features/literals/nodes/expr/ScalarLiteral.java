@@ -12,7 +12,7 @@ public abstract class ScalarLiteral extends ExpressionBaseNode {
 	public abstract double getScalar();
 
 	protected MultivectorExpression createScalarMV() {
-		return currentLanguageContext().exprGraphFactory.createExpr(getScalar());
+		return currentLanguageContext().getFac().createExpr(getScalar());
 	}
 
 	@Specialization

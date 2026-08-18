@@ -1,4 +1,4 @@
-package de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime;
+package de.dhbw.rahmlab.dsl4ga.impl.truffle.exchange;
 
 import de.orat.math.gacalc.api.GAFactory;
 import de.orat.math.gacalc.api.MultivectorExpression;
@@ -36,12 +36,18 @@ public class ArgsMapper {
 	}
 
 	public List<MultivectorValue> evalToMV(List<? extends MultivectorExpression> retSym) {
-		var func = fac.createFunction("eval", this.params, retSym);
+		var func = this.fac.createFunction("eval", this.params, retSym);
 		var retNum = func.callValue(this.args);
 		return retNum;
 	}
 
+	@Deprecated
 	public List<SparseDoubleMatrix> evalToSDM(List<? extends MultivectorExpression> retSym) {
 		return this.evalToMV(retSym).stream().map(MultivectorValue::elements).toList();
+	}
+
+	@Deprecated
+	public List<SparseDoubleMatrix> VALtoSDM(List<MultivectorValue> val) {
+		return val.stream().map(MultivectorValue::elements).toList();
 	}
 }

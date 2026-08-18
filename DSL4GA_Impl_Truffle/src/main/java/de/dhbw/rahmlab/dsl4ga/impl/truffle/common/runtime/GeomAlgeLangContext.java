@@ -1,5 +1,6 @@
 package de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime;
 
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.exchange.ArgsMapper;
 import com.oracle.truffle.api.TruffleLanguage;
 import com.oracle.truffle.api.TruffleLanguage.ContextReference;
 import com.oracle.truffle.api.TruffleLanguage.Env;
@@ -16,14 +17,22 @@ public final class GeomAlgeLangContext {
 		return GeomAlgeLangContext.contextRef.get(node);
 	}
 
+	public static GeomAlgeLangContext get() {
+		return GeomAlgeLangContext.contextRef.get(null);
+	}
+
 	public final BuiltinRegistry builtinRegistry;
 	public final GeomAlgeLang truffleLanguage;
 	public final TruffleLanguage.Env env;
-	public GAFactory exprGraphFactory;
+	private GAFactory gaFactory = null;
+	/**
+	 * Only to be read from outside of truffle.
+	 */
+	@Deprecated
+	public static volatile GAFactory GA_FACTORY = null;
 	private Source source = null;
 
-	// Maybe better: use scoped values. (JDK 25)
-	public static ArgsMapper currentExternalArgs = null;
+	public static volatile ArgsMapper currentExternalArgs = null;
 
 	public GeomAlgeLangContext() {
 		this(null, null);
@@ -33,6 +42,18 @@ public final class GeomAlgeLangContext {
 		this.builtinRegistry = new BuiltinRegistry(truffleLanguage);
 		this.truffleLanguage = truffleLanguage;
 		this.env = env;
+	}
+
+	public void setFac(GAFactory fac) {
+		this.gaFactory = fac;
+		GA_FACTORY = fac;
+	}
+
+	/**
+	 * Can be null, if not set in parsing. Should never happen after parsing.
+	 */
+	public GAFactory getFac() {
+		return this.gaFactory;
 	}
 
 	public void setSource(Source source) {

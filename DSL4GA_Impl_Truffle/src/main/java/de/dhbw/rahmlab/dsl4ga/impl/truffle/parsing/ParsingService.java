@@ -65,8 +65,8 @@ public final class ParsingService {
 		GAFactory fac = SourceUnitTransform.getFactory(parser, sourceUnit);
 		Map<String, Function> allFunctions = functionsView;
 
-		if (geomAlgeLangContext.exprGraphFactory == null) {
-			geomAlgeLangContext.exprGraphFactory = fac;
+		if (geomAlgeLangContext.getFac() == null) {
+			geomAlgeLangContext.setFac(fac);
 		}
 
 		if (optFac.isEmpty()) {

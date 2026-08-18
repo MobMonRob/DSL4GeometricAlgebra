@@ -1,11 +1,15 @@
 package de.dhbw.rahmlab.dsl4ga.impl.truffle.api;
 
 import de.dhbw.rahmlab.dsl4ga.api.iProgram;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.builtinTypes.truffleBox.TruffleBox;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.superClasses.GeomAlgeLangBaseNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLang;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.AbstractExternalException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.LanguageRuntimeException;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.exchange.ArgsMapper;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.exchange.TruffleBox;
+import de.orat.math.gacalc.api.GAFactory;
+import de.orat.math.gacalc.api.MultivectorExpression;
 import de.orat.math.sparsematrix.SparseDoubleMatrix;
 import java.io.IOException;
 import java.io.Reader;
@@ -21,6 +25,7 @@ public class TruffleProgram implements iProgram {
 
 	private final Source source;
 	private final Value parsedProgram;
+	private final GAFactory fac;
 
 	protected TruffleProgram(Context context, Reader sourceReader) {
 		try {
@@ -30,6 +35,7 @@ public class TruffleProgram implements iProgram {
 		}
 		try {
 			this.parsedProgram = context.parse(source);
+			this.fac = GeomAlgeLangContext.GA_FACTORY; // Correct use.
 		} catch (PolyglotException ex) {
 			throw enrichException(ex);
 		}
@@ -43,22 +49,69 @@ public class TruffleProgram implements iProgram {
 		}
 		try {
 			this.parsedProgram = context.parse(source);
+			this.fac = GeomAlgeLangContext.GA_FACTORY; // Correct use.
 		} catch (PolyglotException ex) {
 			throw enrichException(ex);
 		}
 	}
 
-	@Override
-	public List<SparseDoubleMatrix> invoke(List<SparseDoubleMatrix> arguments) {
+	private List<MultivectorExpression> truffleInvoke(List<? extends MultivectorExpression> arguments) {
+		// Same types as in TruffleProgram.
+		TruffleBox<List<? extends MultivectorExpression>> symArgsBoxed = new TruffleBox<>(arguments);
+
+		List<MultivectorExpression> truffleResults;
 		try {
-			TruffleBox<List<SparseDoubleMatrix>> truffleArgs = new TruffleBox<>(arguments);
-			Value result = this.parsedProgram.execute(truffleArgs);
-			TruffleBox<List<SparseDoubleMatrix>> truffleResults = (TruffleBox<List<SparseDoubleMatrix>>) result.as(TruffleBox.class);
-			List<SparseDoubleMatrix> results = truffleResults.getInner();
-			return results;
+			Value result = this.parsedProgram.execute(symArgsBoxed);
+			// Same types as in ExecutionRootNode.
+			TruffleBox<List<MultivectorExpression>> truffleResultsBoxed = (TruffleBox<List<MultivectorExpression>>) result.as(TruffleBox.class);
+			truffleResults = truffleResultsBoxed.getInner();
 		} catch (PolyglotException ex) {
 			throw enrichException(ex);
 		}
+
+		return truffleResults;
+	}
+
+	private List<SparseDoubleMatrix> truffleInvokeOuterNumeric(List<SparseDoubleMatrix> argsList) {
+		ArgsMapper argsMapper = new ArgsMapper(this.fac, argsList);
+		GeomAlgeLangContext.get().currentExternalArgs = argsMapper;
+
+		List<MultivectorExpression> symRes = truffleInvoke(argsMapper.params);
+
+		List<MultivectorExpression> simpleSymRes = symRes.stream()
+			.map(expr -> expr.simplify(argsMapper.params))
+			.toList();
+
+		List<String> laTeXifiedSimpleSymRes = simpleSymRes.stream()
+			.map(MultivectorExpression::LaTeXify)
+			.toList();
+
+		System.out.println("Symbolic results:");
+		for (var expr : symRes) {
+			System.out.println(expr);
+		}
+		System.out.println();
+
+		System.out.println("Simplified symbolic results:");
+		for (var simpleExpr : simpleSymRes) {
+			System.out.println(simpleExpr);
+		}
+		System.out.println();
+
+		System.out.println("LaTeXified simplified symbolic results:");
+		for (var laTeXExpr : laTeXifiedSimpleSymRes) {
+			System.out.println(laTeXExpr);
+		}
+		System.out.println();
+
+		List<SparseDoubleMatrix> numRes = argsMapper.evalToSDM(simpleSymRes);
+		return numRes;
+	}
+
+	@Override
+	@Deprecated
+	public List<SparseDoubleMatrix> invoke(List<SparseDoubleMatrix> arguments) {
+		return truffleInvokeOuterNumeric(arguments);
 	}
 
 	private RuntimeException enrichException(PolyglotException ex) {
