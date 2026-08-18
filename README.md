@@ -399,7 +399,7 @@ The inverse operator is implemented by analysing the type of the mulitivector an
 | &#x03B5;&#x2082; | \epsilon_2 | \u03B5\u2082 | base vector representing y direction |
 | &#x03B5;&#x2083; | \epsilon_3 | \u03B5\u2083 | base vector representing z direction |
 | &#x0045;&#x2083; | E_3        | \u0045\u2083 | Euclidean pseudoscalar &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083;  |
-| &#x0049;         | I          | \u0049       | Pseudoscalar - &#x03B5;&#x1D62; &#x2227; &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083; &#x2227; &#x03B5;&#x2080; |
+| &#x0049;         | I          | \u0049       | Pseudoscalar &#x03B5;&#x2080;  &#x2227; &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083; &#x2227;  |
 
 #### Geometric objects with intrinsic orientation type
 
