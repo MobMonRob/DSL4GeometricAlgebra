@@ -439,6 +439,8 @@ The following objects are constructed by meeting planes (also using the wedge-op
 
 Axes correspond to axial vectors and can describe movement velocity (rotations (finite) and translations (idial)).
 
+Decomposition of a point $p$ into an Euclidean point "\vec{x}$ can be done by $\vec{x}=(\frac{-p}{\langle p \dot \E_3}-E_3)^{\ast}$
+
 ### CGA - Conformal Geometric Algebra Cl(4,1,0)
 
 This algebra contains flat and round elements.
