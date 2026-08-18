@@ -439,7 +439,7 @@ The following objects are constructed by meeting planes (also using the wedge-op
 
 Axes correspond to axial vectors and can describe movement velocity (rotations (finite) and translations (idial)).
 
-Decomposition of a PGA point $p$ (as a tri-vector) into an Euclidean point $\vec{x}$ can be done by $\displaystyle \vec{x}=(\frac{-p}{\langle p \cdot E_3 \rangle}-E_3)^{\ast}$
+Decomposition of a PGA point $p$ (as a tri-vector) into an Euclidean point $\vec{x}$ can be done by $\displaystyle \vec{x}=(\frac{-p}{\langle p \cdot E_3 \rangle\_0}-E_3)^{\ast}$
 
 ### CGA - Conformal Geometric Algebra Cl(4,1,0)
 
