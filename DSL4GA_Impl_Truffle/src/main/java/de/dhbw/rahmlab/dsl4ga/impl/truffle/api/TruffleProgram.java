@@ -1,11 +1,8 @@
 package de.dhbw.rahmlab.dsl4ga.impl.truffle.api;
 
 import de.dhbw.rahmlab.dsl4ga.api.iProgram;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.superClasses.GeomAlgeLangBaseNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLang;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.AbstractExternalException;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.LanguageRuntimeException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.exchange.ArgsMapper;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.exchange.TruffleBox;
 import de.orat.math.gacalc.api.GAFactory;
@@ -20,7 +17,6 @@ import java.util.List;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.PolyglotException;
 import org.graalvm.polyglot.Source;
-import org.graalvm.polyglot.SourceSection;
 import org.graalvm.polyglot.Value;
 
 public class TruffleProgram implements iProgram {
@@ -39,7 +35,7 @@ public class TruffleProgram implements iProgram {
 			this.parsedProgram = context.parse(source);
 			this.fac = GeomAlgeLangContext.GA_FACTORY; // Correct use. Available after parsing.
 		} catch (PolyglotException ex) {
-			throw enrichException(ex);
+			throw ExceptionEnricher.enrichException(ex);
 		}
 	}
 
@@ -53,7 +49,7 @@ public class TruffleProgram implements iProgram {
 			this.parsedProgram = context.parse(source);
 			this.fac = GeomAlgeLangContext.GA_FACTORY; // Correct use. Available after parsing.
 		} catch (PolyglotException ex) {
-			throw enrichException(ex);
+			throw ExceptionEnricher.enrichException(ex);
 		}
 	}
 
@@ -68,7 +64,7 @@ public class TruffleProgram implements iProgram {
 			TruffleBox<List<MultivectorExpression>> truffleResultsBoxed = (TruffleBox<List<MultivectorExpression>>) result.as(TruffleBox.class);
 			truffleResults = truffleResultsBoxed.getInner();
 		} catch (PolyglotException ex) {
-			throw enrichException(ex);
+			throw ExceptionEnricher.enrichException(ex);
 		}
 
 		return truffleResults;
@@ -140,76 +136,4 @@ public class TruffleProgram implements iProgram {
 			.toList();
 	}
 
-	private RuntimeException enrichException(PolyglotException ex) {
-		// // Print CGA functions stacktrace. ToDo: implement with the CGA functions feature.
-		// Iterable<PolyglotException.StackFrame> polyglotStackTrace = ex.getPolyglotStackTrace();
-		// Can we use the Java default StackWalker here?
-		// ---
-
-		// Print the full originating error.
-		AbstractExternalException origin = null;
-		try {
-			origin = ex.getGuestObject().as(AbstractExternalException.class);
-		} catch (Throwable ex2) {
-			RuntimeException fullEx = new RuntimeException(ex2);
-			fullEx.addSuppressed(ex);
-			return fullEx;
-		}
-		if (origin == null) {
-			return new RuntimeException(ex);
-		}
-
-//			// Hier würde noch der Ort im ocga Quelltext fehlen.
-//			// Und auch die Nachricht der geworfenen Exception.
-//			Iterable<PolyglotException.StackFrame> polyglotStackTrace = ex.getPolyglotStackTrace();
-//			String truffleStackFrames = StreamSupport.stream(polyglotStackTrace.spliterator(), false).filter(sf -> sf.isGuestFrame()).map(sf -> sf.getRootName()).collect(Collectors.joining("\n"));
-//			return new RuntimeException("\n->TruffleStackFrames:\n" + truffleStackFrames + "\n");
-		//
-//			List<TruffleStackTraceElement> stackTrace = TruffleStackTrace.getStackTrace(langException);
-//			String collect = stackTrace.stream().map(el -> el.getTarget().getRootNode().getName()).collect(Collectors.joining("\n"));
-//			return new LanguageRuntimeException("\nCollect: " + collect + "\n", langException.location());
-		//
-		return enrichLanguageException(ex, origin);
-	}
-
-	private AbstractExternalException enrichLanguageException(
-		PolyglotException containingException,
-		AbstractExternalException langException
-	) {
-
-		SourceSection sourceSection = containingException.getSourceLocation();
-		if (sourceSection == null) {
-			return langException;
-		}
-
-		GeomAlgeLangBaseNode location = langException.location();
-
-		String locationDescription = String.format(
-			"line %s, column %s",
-			sourceSection.getStartLine(),
-			sourceSection.getStartColumn()
-		);
-		String nodeType = location.getClass().getSimpleName();
-		String characters = sourceSection.getCharacters().toString();
-		String message = null;
-		for (Throwable currentMessager = langException;
-			currentMessager != null;
-			currentMessager = currentMessager.getCause()) {
-
-			message = currentMessager.getMessage();
-			if (message != null) {
-				break;
-			}
-		}
-
-		String newMessage = String.format(
-			"\nLocation: %s\nCharacters: \"%s\"\nNodeType: %s\nMessage: %s\n\n\n",
-			locationDescription,
-			characters,
-			nodeType,
-			message
-		);
-
-		return new LanguageRuntimeException(newMessage, langException, location);
-	}
 }
