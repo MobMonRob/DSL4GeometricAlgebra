@@ -5,6 +5,7 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.exchange.ArgsMapper;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.exchange.TruffleBox;
 import de.orat.math.gacalc.api.GAFactory;
+import de.orat.math.gacalc.api.GAFunction;
 import de.orat.math.gacalc.api.MultivectorExpression;
 import de.orat.math.gacalc.api.MultivectorValue;
 import de.orat.math.gacalc.api.MultivectorVariable;
@@ -88,10 +89,19 @@ public class TruffleProgram implements iProgram {
 	 * Zur Bestimmung müsste ich aber über die Polyglot-API irgendwie die Anzahl an Inputs und Outputs durchschleifen. Das lasse ich erst mal.
 	 * Ich könnte sogar im ExecutionRootNode mich darum kümmern, komplett ohne übergebene Argumente rein symbolische Skalare MV zu basteln. Und die GAFunction über die Polyglot API zurück geben.
 	 * Dann kann ich mir hier sparen, die arguments zu übergeben.
+	 * Ich kann createEfficientProgram() sogar zusätzlich in der TruffleProgramFactory anbieten.
 	 * </pre>
 	 */
 	public EfficientProgram createEfficientProgram(List<Double> arguments) {
-		return null;
+		List<MultivectorValue> argsVal = arguments.stream()
+			.map(this.fac::createValue)
+			.toList();
+		ArgsMapper argsMapper = new ArgsMapper(this.fac, argsVal);
+		List<MultivectorExpression> symRes = invokeTruffleSym(argsMapper);
+		List<MultivectorExpression> simpleSymRes = TruffleProgram.simplify(argsMapper.params, symRes);
+		GAFunction func = this.fac.createFunction("eval", argsMapper.params, simpleSymRes);
+		EfficientProgram efficientProgram = new EfficientProgram(func, this.fac);
+		return efficientProgram;
 	}
 
 	// ToDo: Rename to invoke
