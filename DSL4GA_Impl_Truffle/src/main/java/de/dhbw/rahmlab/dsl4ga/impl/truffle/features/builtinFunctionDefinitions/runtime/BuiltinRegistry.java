@@ -29,22 +29,25 @@ public class BuiltinRegistry {
 	}
 
 	private void installBuiltins() {
+
+		// others
+		this.installBuiltin(IdleFactory.getInstance());
+		this.installBuiltin(EuclidFactory.getInstance());
+		this.installBuiltin(CoefFactory.getInstance());
 		
 		// in/out functions
 		this.installBuiltin(UpFactory.getInstance());
 		this.installBuiltin(DownFactory.getInstance());
-		// scalar functions
-		this.installBuiltin(AbsFactory.getInstance());
-		this.installBuiltin(Atan2Factory.getInstance());
-		// this.installBuiltin(GetLastListReturnFactory.getInstance()); // Only for internal use
-		
-		// NSELGA
+
+		// NSEL GA
 		this.installBuiltin(NormalizeFactory.getInstance());
 		this.installBuiltin(SqrtFactory.getInstance());
 		this.installBuiltin(ExpFactory.getInstance());
 		this.installBuiltin(LogFactory.getInstance());
 		
-		// new scalar functions
+		// scalar functions
+		this.installBuiltin(AbsFactory.getInstance());
+		this.installBuiltin(Atan2Factory.getInstance());
 		this.installBuiltin(AcosFactory.getInstance());
 		this.installBuiltin(AsinFactory.getInstance());
 		this.installBuiltin(AtanFactory.getInstance());

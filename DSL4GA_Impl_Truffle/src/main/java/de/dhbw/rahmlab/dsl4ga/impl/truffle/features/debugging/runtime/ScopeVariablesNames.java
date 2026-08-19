@@ -1,4 +1,4 @@
-package de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime;
+package de.dhbw.rahmlab.dsl4ga.impl.truffle.features.debugging.runtime;
 
 import com.oracle.truffle.api.interop.InteropLibrary;
 import com.oracle.truffle.api.interop.TruffleObject;

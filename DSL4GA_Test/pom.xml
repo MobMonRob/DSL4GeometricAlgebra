@@ -59,6 +59,9 @@
 		<resources>
 			<resource>
 				<directory>src/main/cga</directory>
+		    </resource>
+		    <resource>
+				<directory>src/main/pga</directory>
 			</resource>
 		</resources>
 		<plugins>

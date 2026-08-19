@@ -21,7 +21,7 @@ This simplifies grammar development a lot and improves readability.
 
 sourceUnit
 	:	WHITE_LINE* algebra WHITE_LINE*
-		(WHITE_LINE* functions+=function WHITE_LINE*)+
+		(WHITE_LINE* functions+=function WHITE_LINE*)*
 		EOF // https://stackoverflow.com/a/61402548
 	;
 
@@ -163,6 +163,7 @@ binOpExpr
 			|L_CONTRACTION
 			|LOGICAL_OR
 			|CIRCLED_DOT_OPERATOR
+			|MULTIPLICATION_SIGN
 			)
 		SPACE*
 		binOpExpr			#BinOp	//Precedence 3
@@ -222,17 +223,18 @@ innerRecursiveExpr
 // atomic / terminal / firstOrder Expr
 ///////////////////////////////////////////////////////////////////////////
 
+// Edge case: The lexer tokenizes E₀ as IDENTIFIER SUBSCRIPT_ZERO
+// Edge case: The lexer tokenizes εᵢ as ANY+
 literalExpr
-	:	value=DECIMAL_LITERAL		#LiteralDecimal
-	|	(name+=IDENTIFIER
-		|name+=ANY+ name+=SUBSCRIPT_ZERO
-		|name+=ANY+ name+=SUBSCRIPT_ONE
-		|name+=ANY+ name+=SUBSCRIPT_TWO
-		|name+=ANY+ name+=SUBSCRIPT_THREE
-		|name+=ANY+ name+=SUBSCRIPT_FOUR
-		|name+=ANY+ name+=SUBSCRIPT_FIVE
-		|name+=ANY+
-		)					#LiteralOrReference
+	:	value=DECIMAL_LITERAL	#LiteralDecimal
+	|	((name+=IDENTIFIER | name+=ANY+)
+		(name+=SUBSCRIPT_ZERO
+		|name+=SUBSCRIPT_ONE
+		|name+=SUBSCRIPT_TWO
+		|name+=SUBSCRIPT_THREE
+		|name+=SUBSCRIPT_FOUR
+		|name+=SUBSCRIPT_FIVE
+		)?)						#LiteralOrReference
 	;
 
 parenExpr

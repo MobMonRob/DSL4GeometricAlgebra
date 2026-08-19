@@ -59,7 +59,7 @@ public final class ExecutionRootNode extends AbstractFunctionRootNode {
 		}
 		Object callRetVal = this.mainCallNode.call(symArgsBoxed);
 		List<MultivectorExpression> symRes = switch (callRetVal) {
-			case Tuple callRetValTuple -> // Contraint: main returns only MultivectorExpression.
+			case Tuple callRetValTuple -> // Constraint: main returns only MultivectorExpression.
 				Stream.of(callRetValTuple.getValues()).map(v -> (MultivectorExpression) v).toList();
 			case MultivectorExpression callRetValMV ->
 				List.of(callRetValMV);
@@ -67,7 +67,33 @@ public final class ExecutionRootNode extends AbstractFunctionRootNode {
 				throw new ValidationException("main returned invalid object.");
 		};
 
-		List<SparseDoubleMatrix> numRes = GeomAlgeLangContext.currentExternalArgs.evalToSDM(symRes);
+		List<MultivectorExpression> simpleSymRes = symRes.stream()
+			.map(expr -> expr.simplify(GeomAlgeLangContext.currentExternalArgs.params))
+			.toList();
+
+		List<String> laTeXifiedSimpleSymRes = simpleSymRes.stream()
+			.map(MultivectorExpression::LaTeXify)
+			.toList();
+
+		System.out.println("Symbolic results:");
+		for (var expr : symRes) {
+			System.out.println(expr);
+		}
+		System.out.println();
+
+		System.out.println("Simplified symbolic results:");
+		for (var simpleExpr : simpleSymRes) {
+			System.out.println(simpleExpr);
+		}
+		System.out.println();
+
+		System.out.println("LaTeXified simplified symbolic results:");
+		for (var laTeXExpr : laTeXifiedSimpleSymRes) {
+			System.out.println(laTeXExpr);
+		}
+		System.out.println();
+
+		List<SparseDoubleMatrix> numRes = GeomAlgeLangContext.currentExternalArgs.evalToSDM(simpleSymRes);
 		return new TruffleBox<>(numRes);
 	}
 }
