@@ -15,6 +15,9 @@ import java.util.List;
 import org.graalvm.polyglot.PolyglotException;
 import org.graalvm.polyglot.Value;
 
+/**
+ * Used for debugging.
+ */
 public class TruffleProgram implements iProgram {
 
 	private final Value parsedProgram;

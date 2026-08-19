@@ -5,6 +5,9 @@ import de.orat.math.gacalc.api.GAFunction;
 import de.orat.math.gacalc.api.MultivectorValue;
 import java.util.List;
 
+/**
+ * Used for production and benchmarking.
+ */
 public class EfficientProgram {
 
 	private final GAFunction func;
