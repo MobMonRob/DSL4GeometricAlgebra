@@ -21,8 +21,6 @@ public class ArgsMapper {
 
 			// sym
 			var name = String.format("arg%s", i);
-			// Wäre gut, wenn direkt ginge.
-			// Evtl. sogar to... Methode.
 			MultivectorVariable param = currentArg.toVar(name);
 			paramsVar.add(param);
 		}

@@ -15,6 +15,7 @@ import de.orat.math.sparsematrix.SparseDoubleMatrix;
 import java.io.IOException;
 import java.io.Reader;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.PolyglotException;
@@ -113,13 +114,18 @@ public class TruffleProgram implements iProgram {
 		List<MultivectorValue> argsVal = arguments.stream()
 			.map(this.fac::createValue)
 			.toList();
-		List<MultivectorValue> resultVal = truffleInvokeOuterNumeric(argsVal);
-		for (int i = 0; i < resultVal.size(); ++i) {
-			// asScalar
-			// isScalar
-			MultivectorValue currentVal = resultVal.get(i);
+		List<MultivectorValue> resultsVal = truffleInvokeOuterNumeric(argsVal);
+		final int resultsValSize = resultsVal.size();
+		List<Double> resultsDouble = new ArrayList<>(resultsValSize);
+		for (int i = 0; i < resultsValSize; ++i) {
+			MultivectorValue currentVal = resultsVal.get(i);
+			if (!currentVal.isScalar()) {
+				System.out.println(String.format("Warning: Output No. %s not a scalar: %s", i, currentVal));
+			}
+			double currentScalar = currentVal.extractScalar();
+			resultsDouble.add(currentScalar);
 		}
-		return null;
+		return resultsDouble;
 	}
 
 	@Override
