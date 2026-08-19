@@ -3,12 +3,11 @@ package de.dhbw.rahmlab.dsl4ga.test;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.api.TruffleProgramFactory;
 import de.orat.math.sparsematrix.SparseDoubleMatrix;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import org.jogamp.vecmath.Matrix4d;
 import util.pga.SparsePGAColumnVector;
 
-public class TruffleFKDebugging {
+public class TruffleFKpgaDebugging {
 
 	// dh parameters UR5
 	private static double[] a = new double[]{0.0, -0.425, -0.392, 0.0, 0.0, 0.0};
@@ -34,8 +33,8 @@ public class TruffleFKDebugging {
 	 * Wie Pose definieren?
 	 */
 	private static void invocationTest() throws Exception {
-		String path = "./gafiles/common/fk_pga.ocga";
-		var uri = TruffleFKDebugging.class.getResource(path);
+		String path = "./gafiles/common/fk.ocga";
+		var uri = TruffleFKpgaDebugging.class.getResource(path);
 		if (uri == null) {
 			throw new RuntimeException(String.format("Path not found: %s", path));
 		}

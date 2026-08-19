@@ -357,10 +357,6 @@ There exist three types of involution operations: Space inversion, reversion and
 | idle()      | idle part of the multivector (Blades containing base elements with metric 0 or -1. (without 0-grade scalar)) - encodes the position relative to the origin; an object with a vanashing idea part necessarily passes through the origin |
 | coef()      | with two multivectors as arguments. The second must be one blade only. The function extracts the coefficient for this blade in the first argument as as scalar |
 
-#### not yet implemented
-| symbol      | description |
-| :---------- | ------------ |
-
 #### Scalar functions
 | symbol      | description |
 | :---------- | ------------ |
@@ -375,27 +371,10 @@ There exist three types of involution operations: Space inversion, reversion and
 | sign(x)     | -1 if x<0 else 1 |
 
 ### Symbols
-#### Base vector symbols
 | symbol           | latex        | Unicode      | description |
 | :--------------: | ------------ | ------------ | ----------- |
-| &#x03B5;&#x2080; | \epsilon_0 | \u03B5\u2080 | base vector representing the origin |
-| &#x03B5;&#x1D62; | \epsilon_i | \u03B5\u1D62 | base vector representing the infinity |
-| &#x03B5;&#x2081; | \epsilon_1 | \u03B5\u2081 | base vector representing x direction |
-| &#x03B5;&#x2082; | \epsilon_2 | \u03B5\u2082 | base vector representing y direction |
-| &#x03B5;&#x2083; | \epsilon_3 | \u03B5\u2083 | base vector representing z direction |
-
-#### Further symbols
-| symbol           | latex      | Unicode      | description | implementation |
-| :--------------: | -----------| ------------ | ----------- | -------------- |
-| &#x03B5;&#x208A; | \epsilon_+ | \u03B5\u208A |  | 0.5&#x03B5;&#x1D62; - &#x03B5;&#x2080; |
-| &#x03B5;&#x208B; | \epsilon_- | \u03B5\u208B |  | 0.5&#x03B5;&#x1D62; + &#x03B5;&#x2080; |
-| &#x03C0;         | \pi        | \u03C0       | Ludolphs- or circle constant | Math.PI |
-| &#x0045;&#x2080; | E_0        | \u0045\u2080 | Minkowski bivector (is its own inverse) | &#x03B5;&#7522; &#x2227; &#x03B5;&#8320;|
-| &#x0045;&#x2083; | E_3        | \u0045\u2083 | Euclidean pseudoscalar | &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083;     |
-| &#x0045;         | I          | \u0049       | Pseudoscalar | &#x03B5;&#x1D62; &#x2227; &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083; &#x2227; &#x03B5;&#x2080;|
-
-#### Useful equations between above symbols
-&#x03B5;&#x2080;&#x0045;&#x2080;=-&#x03B5;&#x2080;, &#x0045;&#x2080;&#x03B5;&#x2080;=&#x03B5;&#x2080;, &#x03B5;&#x1D62;&#x0045;&#x2080;=&#x03B5;&#x1D62;, &#x0045;&#x2080;&#x03B5;&#x1D62;=-&#x03B5;&#x1D62;, &#x0045;&#x2080;&#x00B2;=1, &#x03B5;&#x2080;&#x00B2;=&#x03B5;&#x1D62;&#x00B2;=0, &#x03B5;&#x208A;&#x00B2;=1, &#x03B5;&#x208B;&#x00B2;=-1, &#x03B5;&#x208A;&#x22C5;&#x03B5;&#x208B;=0
+| &#x03C0;         | \pi        | \u03C0         | Ludolphs- or circle constant  Math.PI |
+| &#x0049;         | I          | \u0049         | Pseudoscalar - implementation dependend on the algebra |
 
 ## Algebras
 
@@ -405,9 +384,22 @@ Each algebra has to define a dual operator. Using the Hodge-dual makes such a de
 
 This algebra contains flat objects only.
 
+#### Operators
+
 The dual operator is defined by the Hodge Dual. Using the euclidean split it admits the closed form expression $\tilde{A_I}E_3+\epsilon_0\hat{\tilde{A_E}}E_3$ with $A_I=idle(A), A_E=euclid(A) $.
 
 The inverse operator is implemented by analysing the type of the mulitivector and switching automatically between different implementations. Not all multivectors have an inverse e.g. specific points at infinity or pure idle lines. Inverses are only determined for extrinsic orientation types. The inverse of a plane is the same plane. The inverse of an axis and of a point only changes the sign. The inverse of a motor is the reverse (normalization of the motor is a precondition which is not tested during compiletime and also not tested during runtime) and the most complex inverse is needed for a general bivector. For this, the euclidean split of the squared (pseudo) norm $B\tilde{B} = \lvert B \rvert^2 = a+b\epsilon_{0123}$ is used. This is a study number corresponding to a dual number. The dual number inverse is $\frac{1}{a+b\epsilon_{0123}} = \frac{1}{a}+\frac{b}{a^2}\epsilon_{0123}$. Multiplying by $\tilde{B}$ results in $\frac{1}{B}=(\frac{1}{a}-\frac{b}{a^2}\epsilon_{0123})\tilde{B}$.
+
+#### Symbols
+
+| symbol           | latex        | Unicode      | description |
+| :--------------: | ------------ | ------------ | ----------- |
+| &#x03B5;&#x2080; | \epsilon_0 | \u03B5\u2080 | base vector representing the origin |
+| &#x03B5;&#x2081; | \epsilon_1 | \u03B5\u2081 | base vector representing x direction |
+| &#x03B5;&#x2082; | \epsilon_2 | \u03B5\u2082 | base vector representing y direction |
+| &#x03B5;&#x2083; | \epsilon_3 | \u03B5\u2083 | base vector representing z direction |
+| &#x0045;&#x2083; | E_3        | \u0045\u2083 | Euclidean pseudoscalar &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083;  |
+| &#x0049;         | I          | \u0049       | Pseudoscalar &#x03B5;&#x2080;  &#x2227; &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083; &#x2227;  |
 
 #### Geometric objects with intrinsic orientation type
 
@@ -419,13 +411,13 @@ Homogeneous/directed points are defined as:
 
 | object | grade | formula |
 | :---------- | :------ | :-------- |
-| point | 1 |  $\displaystyle p = e_0 + \vec{n}$ |
+| point | 1 |  $\displaystyle p = e_0 + \vec{x}$ |
 
 and from this, the following geometric objects can be created by joining the points (using the wedge-operator):
 
 | object | grade | formula | description |
 | :---------- | :------ | :-------- | ---------------- |
-| spear (join line) | 2 |  $\displaystyle l = p_2\wedge p_1 = \vec{n}\wedge p$ | The line points from the first to the second point, or is defined by one point and an euclidean direction vector. |
+| spear (join line) | 2 |  $\displaystyle l = p_2\wedge p_1 = \vec{n}\wedge p$ | The line points from $p_1$ to $p_2$, or is defined by one point and an euclidean direction vector. |
 | plane | 3 |   $\displaystyle \pi = p_1\wedge p_2\wedge p_3 = p\wedge\vec{n}^{\ast} =\epsilon_0\wedge\vec{n}^{\ast}+\vec{x}\wedge\vec{n}^{\ast} = \epsilon_0\wedge\vec{n}^{\ast}-(\vec{x}\cdot\vec{n})E_3$ | clockwise  arrangement of the points, defines the plane and the direction of its normal vector. |
 
 Spears correspond with polar vectors and can represent local orbits or momenta of points.
@@ -447,9 +439,29 @@ The following objects are constructed by meeting planes (also using the wedge-op
 
 Axes correspond to axial vectors and can describe movement velocity (rotations (finite) and translations (idial)).
 
+Decomposition of a PGA point $p$ (as a tri-vector) into an Euclidean point $\vec{x}$ can be done by $\displaystyle \vec{x}=(\frac{-p}{\langle p \cdot E_3 \rangle\_0}-E_3)^{\ast}$
+
 ### CGA - Conformal Geometric Algebra Cl(4,1,0)
 
 This algebra contains flat and round elements.
+
+#### Symbols
+
+| symbol           | latex        | Unicode      | description |
+| :--------------: | ------------ | ------------ | ----------- |
+| &#x03B5;&#x2080; | \epsilon_0 | \u03B5\u2080 | base vector representing the origin |
+| &#x03B5;&#x1D62; | \epsilon_i | \u03B5\u1D62 | base vector representing the infinity |
+| &#x03B5;&#x2081; | \epsilon_1 | \u03B5\u2081 | base vector representing x direction |
+| &#x03B5;&#x2082; | \epsilon_2 | \u03B5\u2082 | base vector representing y direction |
+| &#x03B5;&#x2083; | \epsilon_3 | \u03B5\u2083 | base vector representing z direction |
+| &#x03B5;&#x208A; | \epsilon_+ | \u03B5\u208A |  | 0.5&#x03B5;&#x1D62; - &#x03B5;&#x2080; |
+| &#x03B5;&#x208B; | \epsilon_- | \u03B5\u208B |  | 0.5&#x03B5;&#x1D62; + &#x03B5;&#x2080; |
+| &#x0045;&#x2080; | E_0        | \u0045\u2080 | Minkowski bivector (is its own inverse) | &#x03B5;&#7522; &#x2227; &#x03B5;&#8320;|
+| &#x0045;&#x2083; | E_3        | \u0045\u2083 | Euclidean pseudoscalar | &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083;     |
+| &#x0049;         | I          | \u0049       | Pseudoscalar &#x03B5;&#x1D62; &#x2227; &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083; &#x2227; &#x03B5;&#x2080; |
+
+#### Useful equations between some of the above symbols
+&#x03B5;&#x2080;&#x0045;&#x2080;=-&#x03B5;&#x2080;, &#x0045;&#x2080;&#x03B5;&#x2080;=&#x03B5;&#x2080;, &#x03B5;&#x1D62;&#x0045;&#x2080;=&#x03B5;&#x1D62;, &#x0045;&#x2080;&#x03B5;&#x1D62;=-&#x03B5;&#x1D62;, &#x0045;&#x2080;&#x00B2;=1, &#x03B5;&#x2080;&#x00B2;=&#x03B5;&#x1D62;&#x00B2;=0, &#x03B5;&#x208A;&#x00B2;=1, &#x03B5;&#x208B;&#x00B2;=-1, &#x03B5;&#x208A;&#x22C5;&#x03B5;&#x208B;=0
 
 #### Geometric objects with intrinsic orientation type
 
