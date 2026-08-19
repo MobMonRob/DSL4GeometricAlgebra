@@ -1,7 +1,6 @@
 package de.dhbw.rahmlab.dsl4ga.impl.truffle.api;
 
 import de.dhbw.rahmlab.dsl4ga.api.iProgram;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLang;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.exchange.ArgsMapper;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.exchange.TruffleBox;
@@ -9,48 +8,19 @@ import de.orat.math.gacalc.api.GAFactory;
 import de.orat.math.gacalc.api.MultivectorExpression;
 import de.orat.math.gacalc.api.MultivectorValue;
 import de.orat.math.sparsematrix.SparseDoubleMatrix;
-import java.io.IOException;
-import java.io.Reader;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.PolyglotException;
-import org.graalvm.polyglot.Source;
 import org.graalvm.polyglot.Value;
 
 public class TruffleProgram implements iProgram {
 
-	private final Source source;
 	private final Value parsedProgram;
 	private final GAFactory fac;
 
-	protected TruffleProgram(Context context, Reader sourceReader) {
-		try {
-			this.source = Source.newBuilder(GeomAlgeLang.LANGUAGE_ID, sourceReader, "TruffleProgram").build();
-		} catch (IOException ex) {
-			throw new RuntimeException(ex);
-		}
-		try {
-			this.parsedProgram = context.parse(source);
-			this.fac = GeomAlgeLangContext.GA_FACTORY; // Correct use. Available after parsing.
-		} catch (PolyglotException ex) {
-			throw ExceptionEnricher.enrichException(ex);
-		}
-	}
-
-	protected TruffleProgram(Context context, URL url) {
-		try {
-			this.source = Source.newBuilder(GeomAlgeLang.LANGUAGE_ID, url).build();
-		} catch (IOException ex) {
-			throw new RuntimeException(ex);
-		}
-		try {
-			this.parsedProgram = context.parse(source);
-			this.fac = GeomAlgeLangContext.GA_FACTORY; // Correct use. Available after parsing.
-		} catch (PolyglotException ex) {
-			throw ExceptionEnricher.enrichException(ex);
-		}
+	protected TruffleProgram(Value parsedProgram, GAFactory fac) {
+		this.parsedProgram = parsedProgram;
+		this.fac = fac;
 	}
 
 	private List<MultivectorExpression> truffleInvoke(List<? extends MultivectorExpression> arguments) {
