@@ -81,8 +81,14 @@ Install Maxima 5.47.0 on your system.
 
 
 ## Run
-In order to run the example invokation in the package 'de.dhbw.rahmlab.geomalgelang.App' make sure you successfully executed the steps [GraalVM Setup](#graalvm-setup) and [Dependencies Setup](#dependencies-setup) beforehand. \
+In order to run the example invokation ['App'](DSL4GA_Impl_Truffle/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/truffle/App.java) make sure you successfully executed the steps [GraalVM Setup](#graalvm-setup) and [Dependencies Setup](#dependencies-setup) beforehand. \
 If you use an IDE other than Netbeans and execute the generated .class files directly rather than the generated .jar file, it might be necessary to configure the Maven execution in your IDE with the same properties set in the [nbactions.xml](nbactions.xml) file.
+
+Generally, to run a '.ocga'-file, you have to
+- Create a ['TruffleProgramFactory'](DSL4GA_Impl_Truffle/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/truffle/api/TruffleProgramFactory.java) while passing the correct reference to your file.
+- Invoke the returned ['TruffleProgram'](DSL4GA_Impl_Truffle/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/truffle/api/TruffleProgram.java) with values of the correct shape.
+
+**The user is responsible to include the correct up- and down-projections between the passed values and the multivectors of their chosen algebra into their '.ocga'-file.**
 
 
 ## Annotation based API
