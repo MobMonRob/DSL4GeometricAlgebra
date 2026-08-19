@@ -23,7 +23,7 @@ public class TruffleProgram implements iProgram {
 		this.fac = fac;
 	}
 
-	private List<MultivectorExpression> truffleInvoke(List<? extends MultivectorExpression> arguments) {
+	private List<MultivectorExpression> invokeTruffleSym(List<? extends MultivectorExpression> arguments) {
 		// Same types as in TruffleProgram.
 		TruffleBox<List<? extends MultivectorExpression>> symArgsBoxed = new TruffleBox<>(arguments);
 
@@ -40,11 +40,11 @@ public class TruffleProgram implements iProgram {
 		return truffleResults;
 	}
 
-	private List<MultivectorValue> truffleInvokeOuterNumeric(List<MultivectorValue> argsList) {
+	private List<MultivectorValue> invokeNum(List<MultivectorValue> argsList) {
 		ArgsMapper argsMapper = new ArgsMapper(this.fac, argsList);
 		GeomAlgeLangContext.get().currentExternalArgs = argsMapper; // Needs to be set before truffle execution.
 
-		List<MultivectorExpression> symRes = truffleInvoke(argsMapper.params);
+		List<MultivectorExpression> symRes = invokeTruffleSym(argsMapper.params);
 
 		List<MultivectorExpression> simpleSymRes = symRes.stream()
 			.map(expr -> expr.simplify(argsMapper.params))
@@ -76,11 +76,12 @@ public class TruffleProgram implements iProgram {
 		return numRes;
 	}
 
+	// ToDo: Rename to invoke
 	public List<Double> invokeDouble(List<Double> arguments) {
 		List<MultivectorValue> argsVal = arguments.stream()
 			.map(this.fac::createValue)
 			.toList();
-		List<MultivectorValue> resultsVal = truffleInvokeOuterNumeric(argsVal);
+		List<MultivectorValue> resultsVal = invokeNum(argsVal);
 		final int resultsValSize = resultsVal.size();
 		List<Double> resultsDouble = new ArrayList<>(resultsValSize);
 		for (int i = 0; i < resultsValSize; ++i) {
@@ -100,7 +101,7 @@ public class TruffleProgram implements iProgram {
 		List<MultivectorValue> argsVal = arguments.stream()
 			.map(this.fac::createValue)
 			.toList();
-		return truffleInvokeOuterNumeric(argsVal)
+		return invokeNum(argsVal)
 			.stream()
 			.map(MultivectorValue::elements)
 			.toList();
