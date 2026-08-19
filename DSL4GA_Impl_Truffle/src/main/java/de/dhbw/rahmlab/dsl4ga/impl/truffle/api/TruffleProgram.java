@@ -10,6 +10,7 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.exchange.ArgsMapper;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.exchange.TruffleBox;
 import de.orat.math.gacalc.api.GAFactory;
 import de.orat.math.gacalc.api.MultivectorExpression;
+import de.orat.math.gacalc.api.MultivectorValue;
 import de.orat.math.sparsematrix.SparseDoubleMatrix;
 import java.io.IOException;
 import java.io.Reader;
@@ -72,7 +73,7 @@ public class TruffleProgram implements iProgram {
 		return truffleResults;
 	}
 
-	private List<SparseDoubleMatrix> truffleInvokeOuterNumeric(List<SparseDoubleMatrix> argsList) {
+	private List<SparseDoubleMatrix> truffleInvokeOuterNumeric(List<MultivectorValue> argsList) {
 		ArgsMapper argsMapper = new ArgsMapper(this.fac, argsList);
 		GeomAlgeLangContext.get().currentExternalArgs = argsMapper; // Needs to be set before truffle execution.
 
@@ -111,7 +112,10 @@ public class TruffleProgram implements iProgram {
 	@Override
 	@Deprecated
 	public List<SparseDoubleMatrix> invoke(List<SparseDoubleMatrix> arguments) {
-		return truffleInvokeOuterNumeric(arguments);
+		List<MultivectorValue> argsVal = arguments.stream()
+			.map(this.fac::createValue)
+			.toList();
+		return truffleInvokeOuterNumeric(argsVal);
 	}
 
 	private RuntimeException enrichException(PolyglotException ex) {

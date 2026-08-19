@@ -14,24 +14,20 @@ public class ArgsMapper {
 	public final List<MultivectorVariable> params;
 	public final GAFactory fac;
 
-	public ArgsMapper(GAFactory fac, List<SparseDoubleMatrix> argsExternal) {
-		List<MultivectorValue> argsNum = new ArrayList<>(argsExternal.size());
-		List<MultivectorVariable> paramsSym = new ArrayList<>(argsExternal.size());
-		for (int i = 0; i < argsExternal.size(); ++i) {
-			var currentDoubleMatrix = argsExternal.get(i);
+	public ArgsMapper(GAFactory fac, List<MultivectorValue> argsNum) {
+		List<MultivectorVariable> paramsVar = new ArrayList<>(argsNum.size());
+		for (int i = 0; i < argsNum.size(); ++i) {
+			MultivectorValue currentArg = argsNum.get(i);
 
 			// sym
 			var name = String.format("arg%s", i);
-			var sparsity = currentDoubleMatrix.getSparsity();
-			var param = fac.createVariable(name, sparsity);
-			paramsSym.add(param);
-
-			// num
-			var arg = fac.createValue(currentDoubleMatrix);
-			argsNum.add(arg);
+			// Wäre gut, wenn direkt ginge.
+			// Evtl. sogar to... Methode.
+			MultivectorVariable param = fac.createVariable(name, currentArg.toExpr());
+			paramsVar.add(param);
 		}
 		this.args = argsNum;
-		this.params = paramsSym;
+		this.params = paramsVar;
 		this.fac = fac;
 	}
 
