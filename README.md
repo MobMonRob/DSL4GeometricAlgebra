@@ -246,8 +246,8 @@ fn main() {
 
 ### Visualization
 Variables can be visualized after assignment with one or two preceding colons.
-- `:a` will assume **extrinsic (IPNS for CGA, CPNS for PGA)** representation.
-- `::a` will assume **intrinsic (OPNS for CGa and PGA)** representation.
+- `:a` will assume **extrinsic** (IPNS for CGA, CPNS for PGA) representation.
+- `::a` will assume **intrinsic** (OPNS for CGA and PGA) representation.
 
 After leaving a function, the visualizations done in it will be cleaned up. Visualizations from the calling function remain.
 
