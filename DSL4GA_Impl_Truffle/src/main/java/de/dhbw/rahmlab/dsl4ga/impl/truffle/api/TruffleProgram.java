@@ -73,7 +73,7 @@ public class TruffleProgram implements iProgram {
 		return truffleResults;
 	}
 
-	private List<SparseDoubleMatrix> truffleInvokeOuterNumeric(List<MultivectorValue> argsList) {
+	private List<MultivectorValue> truffleInvokeOuterNumeric(List<MultivectorValue> argsList) {
 		ArgsMapper argsMapper = new ArgsMapper(this.fac, argsList);
 		GeomAlgeLangContext.get().currentExternalArgs = argsMapper; // Needs to be set before truffle execution.
 
@@ -105,8 +105,21 @@ public class TruffleProgram implements iProgram {
 		}
 		System.out.println();
 
-		List<SparseDoubleMatrix> numRes = argsMapper.evalToSDM(simpleSymRes);
+		List<MultivectorValue> numRes = argsMapper.evalToMV(simpleSymRes);
 		return numRes;
+	}
+
+	public List<Double> invokeDouble(List<Double> arguments) {
+		List<MultivectorValue> argsVal = arguments.stream()
+			.map(this.fac::createValue)
+			.toList();
+		List<MultivectorValue> resultVal = truffleInvokeOuterNumeric(argsVal);
+		for (int i = 0; i < resultVal.size(); ++i) {
+			// asScalar
+			// isScalar
+			MultivectorValue currentVal = resultVal.get(i);
+		}
+		return null;
 	}
 
 	@Override
@@ -115,7 +128,10 @@ public class TruffleProgram implements iProgram {
 		List<MultivectorValue> argsVal = arguments.stream()
 			.map(this.fac::createValue)
 			.toList();
-		return truffleInvokeOuterNumeric(argsVal);
+		return truffleInvokeOuterNumeric(argsVal)
+			.stream()
+			.map(MultivectorValue::elements)
+			.toList();
 	}
 
 	private RuntimeException enrichException(PolyglotException ex) {

@@ -23,7 +23,7 @@ public class ArgsMapper {
 			var name = String.format("arg%s", i);
 			// Wäre gut, wenn direkt ginge.
 			// Evtl. sogar to... Methode.
-			MultivectorVariable param = fac.createVariable(name, currentArg.toExpr());
+			MultivectorVariable param = currentArg.toVar(name);
 			paramsVar.add(param);
 		}
 		this.args = argsNum;
