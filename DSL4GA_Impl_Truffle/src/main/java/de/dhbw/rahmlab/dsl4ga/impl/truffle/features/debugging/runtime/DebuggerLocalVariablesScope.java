@@ -146,28 +146,49 @@ public class DebuggerLocalVariablesScope implements TruffleObject {
 	@ExportMessage
 	@TruffleBoundary
 	String readMember(String member) {
+		// System.out.println(String.format("-------> Ask: %s", member));
 		LocalVariableAssignment varNode = this.namesToVarNodes.get(member);
 		Object varValue = this.frame.getObjectStatic(varNode.getFrameSlot());
 		String str = "invalid";
 		if (varValue instanceof MultivectorExpression mvExpr) {
+			/*
+			// Use simplified mvs to better show structural zeroes in mvValues.
+			MultivectorExpression simpleMvExpr = mvExpr.simplify(GeomAlgeLangContext.currentExternalArgs.params);
+			MultivectorValue mv = GeomAlgeLangContext.currentExternalArgs.evalToMV(List.of(simpleMvExpr)).get(0);
+			 */
 			MultivectorValue mv = GeomAlgeLangContext.currentExternalArgs.evalToMV(List.of(mvExpr)).get(0);
 			String mvNum = mv.toString();
+			// Use unsimplified mvSym for display.
 			String mvSym = mvExpr.toString();
 			mvSym = mvSym.replaceAll(",", ",\n");
-			str = String.format("val:\n%s\n\nexpr:\n%s", mvNum, mvSym);
+			str = String.format("val:\n%s\nexpr:\n%s", mvNum, mvSym);
 		}
 		if (varValue instanceof ArrayObject arr) {
 			// Currently, only MultivectorExpression is allowed in Array.
 			List<MultivectorExpression> mvs = Arrays.stream(arr.getValues()).map(o -> (MultivectorExpression) o).toList();
+			/*
+			List<MultivectorExpression> mvsSimple = mvs.stream()
+				.map(mv -> mv.simplify(GeomAlgeLangContext.currentExternalArgs.params))
+				.toList();
+			// Use simplified mvs to better show structural zeroes in mvValues.
+			List<MultivectorValue> mvValues = GeomAlgeLangContext.currentExternalArgs.evalToMV(mvsSimple);
+			 */
 			List<MultivectorValue> mvValues = GeomAlgeLangContext.currentExternalArgs.evalToMV(mvs);
+			final int size = mvValues.size(); // == mvs.size()
 			StringBuilder sb = new StringBuilder();
-			for (MultivectorValue mv : mvValues) {
-				sb.append(mv);
-				sb.append('\n');
+			for (int i = 0; i < size; ++i) {
+				String mvNum = mvValues.get(i).toString();
+				// Use unsimplified mvSym for display.
+				String mvSym = mvs.get(i).toString();
+				mvSym = mvSym.replaceAll(",", ",\n");
+				str = String.format("%s val:\n%s\n%s expr:\n%s", i, mvNum, i, mvSym);
+
+				sb.append(str);
+				sb.append("\n\n");
 			}
 			str = sb.toString();
 		}
- 
+
 		return str;
 	}
 
