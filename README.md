@@ -350,7 +350,6 @@ There exist three types of involution operations: Space inversion, reversion and
 | scp()       | scalar product |
 | dot()       | dot product, 0-grade indcluded - different to inner product |
 | ip()        | inner product, 0-grade is excluded different to the dot-product |
-| negate14()  | negate the signs of the vector- and 4-vector parts of an multivector. Usable to implement general-inverse. |
 | up()        | up-projection of a euclidean vector into the space of the multivector (conformal, projection, ... depending on the algbra) |
 | down()      | down-projection of a multivector into the euclidean space (by normalization and rejection from the minkowski plane E0 in the case of CGA) |
 | euclid()    | euclidean part of the multivector (Blades containing **only** base elements with metric 1 and no others. (without 0-grade scalar)) - encodes the objects orientation or weight; an object with a non zero euclidean part is called finite; an object with a vanashing euclidean part is called idle  |
@@ -445,7 +444,7 @@ Decomposition of a PGA point $p$ (as a tri-vector) into an Euclidean point $\vec
 
 This algebra contains flat and round elements.
 
-#### Symbols
+#### Additional algebra specific symbols
 
 | symbol           | latex        | Unicode      | description |
 | :--------------: | ------------ | ------------ | ----------- |
@@ -462,6 +461,10 @@ This algebra contains flat and round elements.
 
 #### Useful equations between some of the above symbols
 &#x03B5;&#x2080;&#x0045;&#x2080;=-&#x03B5;&#x2080;, &#x0045;&#x2080;&#x03B5;&#x2080;=&#x03B5;&#x2080;, &#x03B5;&#x1D62;&#x0045;&#x2080;=&#x03B5;&#x1D62;, &#x0045;&#x2080;&#x03B5;&#x1D62;=-&#x03B5;&#x1D62;, &#x0045;&#x2080;&#x00B2;=1, &#x03B5;&#x2080;&#x00B2;=&#x03B5;&#x1D62;&#x00B2;=0, &#x03B5;&#x208A;&#x00B2;=1, &#x03B5;&#x208B;&#x00B2;=-1, &#x03B5;&#x208A;&#x22C5;&#x03B5;&#x208B;=0
+
+#### Additional algebra specific functions
+|------------ | ------------------------ |
+| negate14()  | negate the signs of the vector- and 4-vector parts of an multivector. Usable to implement general-inverse. |
 
 #### Geometric objects with intrinsic orientation type
 
