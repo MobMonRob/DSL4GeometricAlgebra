@@ -46,7 +46,7 @@ public class TruffleDKDebugging {
 		List<SparseDoubleMatrix> args = new ArrayList<>();
 		SparseCGAColumnVector p = SparseCGAColumnVector.createEuclid(new double[]{0.5, 0.5, 0d});
 		args.add(p);
-		var res = prog.invoke(args);
+		var res = prog.invokeSDM(args);
 
 		System.out.println("answer: ");
 		res.forEach(System.out::println);

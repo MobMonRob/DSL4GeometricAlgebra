@@ -1,5 +1,6 @@
 package de.dhbw.rahmlab.dsl4ga.impl.truffle.api;
 
+import de.dhbw.rahmlab.dsl4ga.api.iProgram;
 import de.orat.math.gacalc.api.GAFactory;
 import de.orat.math.gacalc.api.GAFunction;
 import de.orat.math.gacalc.api.MultivectorValue;
@@ -8,7 +9,7 @@ import java.util.List;
 /**
  * Used for production and benchmarking.
  */
-public class EfficientProgram {
+public class EfficientProgram implements iProgram {
 
 	private final GAFunction func;
 	private final GAFactory fac;
@@ -18,6 +19,7 @@ public class EfficientProgram {
 		this.fac = fac;
 	}
 
+	@Override
 	public List<Double> invoke(List<Double> arguments) {
 		List<MultivectorValue> argsVal = arguments.stream()
 			.map(this.fac::createValue)

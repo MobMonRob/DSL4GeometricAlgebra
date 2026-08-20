@@ -107,8 +107,8 @@ public class TruffleProgram implements iProgram {
 		return efficientProgram;
 	}
 
-	// ToDo: Rename to invoke
-	public List<Double> invokeDouble(List<Double> arguments) {
+	@Override
+	public List<Double> invoke(List<Double> arguments) {
 		List<MultivectorValue> argsVal = arguments.stream()
 			.map(this.fac::createValue)
 			.toList();
@@ -128,7 +128,7 @@ public class TruffleProgram implements iProgram {
 
 	@Override
 	@Deprecated
-	public List<SparseDoubleMatrix> invoke(List<SparseDoubleMatrix> arguments) {
+	public List<SparseDoubleMatrix> invokeSDM(List<SparseDoubleMatrix> arguments) {
 		List<MultivectorValue> argsVal = arguments.stream()
 			.map(this.fac::createValue)
 			.toList();

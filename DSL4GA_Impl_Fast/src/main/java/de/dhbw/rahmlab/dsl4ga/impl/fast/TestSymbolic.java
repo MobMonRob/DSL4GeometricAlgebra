@@ -35,7 +35,7 @@ public class TestSymbolic {
 		arguments.add(new SparseDoubleMatrix(0,0));
 		arguments.add(new SparseDoubleMatrix(0,0));
 
-		List<SparseDoubleMatrix> answer = program.invoke(arguments);
+		List<SparseDoubleMatrix> answer = program.invokeSDM(arguments);
 
 		System.out.println("answer: ");
 		for (int i = 0; i < answer.size(); ++i) {

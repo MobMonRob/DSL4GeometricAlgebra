@@ -66,7 +66,7 @@ public class App {
 
 		var fac = new TruffleProgramFactory();
 		var prog = fac.parse(url);
-		var res = prog.invoke(args);
+		var res = prog.invokeSDM(args);
 
 		System.out.println("answer: ");
 		res.forEach(System.out::println);

@@ -43,7 +43,7 @@ public class TruffleFKpgaDebugging {
 		var prog = fac.parse(uri);
 		
 		double[] thetas = new double[]{0, 0, 0, 0, 0, 0};
-		var res = prog.invoke(createArguments(thetas));
+		var res = prog.invokeSDM(createArguments(thetas));
 
 		System.out.println("answer: ");
 		res.forEach(System.out::println);

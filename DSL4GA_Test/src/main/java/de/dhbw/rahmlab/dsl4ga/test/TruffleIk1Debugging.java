@@ -37,7 +37,7 @@ public class TruffleIk1Debugging {
 		args.add(p);
 		SparseCGAColumnVector ae = SparseCGAColumnVector.createEuclid(new double[]{0d, 1d, 0d});
 		args.add(ae);
-		var res = prog.invoke(/*Collections.emptyList()*/ args);
+		var res = prog.invokeSDM(/*Collections.emptyList()*/ args);
 
 		System.out.println("answer: ");
 		res.forEach(System.out::println);
