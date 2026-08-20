@@ -349,6 +349,7 @@ There exist three types of involution operations: Space inversion, reversion and
 | symbol      | description |
 | :---------- | ------------ |
 | simplify()  | simplifies the underlying expression. Helpful in debugging to see if structural zeroes are created or unexpected values might be caused by compounded numerical errors. |
+| setBlade()  | with 3 multivectors as arguments. 1. the multivector to be applied on, 2. the bladeIndexMV which contains only 1 blade, used to select the blade, 3. a scalar containing the expression or value the selected blade's coefficient will be set to. Can be used to enforce structural zeroes. |
 | exp()       | exponential of a bivector or a scalar |
 | log()       | logarithm of general rotor/even multivector (should be normalized) |
 | normalize() | normalize of an even multivector (general rotor, scalars inclusive)|
