@@ -348,7 +348,7 @@ There exist three types of involution operations: Space inversion, reversion and
 ### Built-in functions
 | symbol      | description |
 | :---------- | ------------ |
-| simplify()  | simplifies the underlying expression. Helpful in debugging to see if structural zeroes are created or unexpected values might be due caused by compunded numerical errors. |
+| simplify()  | simplifies the underlying expression. Helpful in debugging to see if structural zeroes are created or unexpected values might be caused by compounded numerical errors. |
 | exp()       | exponential of a bivector or a scalar |
 | log()       | logarithm of general rotor/even multivector (should be normalized) |
 | normalize() | normalize of an even multivector (general rotor, scalars inclusive)|
