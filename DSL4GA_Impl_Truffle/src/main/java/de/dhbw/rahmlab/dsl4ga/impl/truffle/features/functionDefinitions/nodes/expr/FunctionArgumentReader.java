@@ -3,7 +3,7 @@ package de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.e
 import com.oracle.truffle.api.dsl.NodeField;
 import com.oracle.truffle.api.dsl.Specialization;
 import com.oracle.truffle.api.frame.VirtualFrame;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.builtinTypes.truffleBox.ListTruffleBox;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.exchange.ListTruffleBox;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import java.util.stream.IntStream;
 

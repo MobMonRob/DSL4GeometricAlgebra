@@ -16,7 +16,7 @@ public class Case1_1To1 {
 		var y = new MultivectorExpressionArray(List.of());
 
 		// Loops API Argumente.
-		var paramsAccum_x = fac.createVariable("x", x.get(0));
+		var paramsAccum_x = x.get(0).toVar("x");
 		// // Returns mittels ExprTransform machen.
 		var returnsArray_y_i = paramsAccum_x.addition(fac.createExpr(2));
 		var returnsAccum_x_i1 = returnsArray_y_i.addition(fac.createExpr(1));

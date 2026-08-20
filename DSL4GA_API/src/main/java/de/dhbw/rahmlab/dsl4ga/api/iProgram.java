@@ -5,5 +5,10 @@ import java.util.List;
 
 public interface iProgram {
 
-	List<SparseDoubleMatrix> invoke(List<SparseDoubleMatrix> arguments);
+	List<Double> invoke(List<Double> arguments);
+
+	@Deprecated
+	default List<SparseDoubleMatrix> invokeSDM(List<SparseDoubleMatrix> arguments) {
+		throw new UnsupportedOperationException();
+	}
 }

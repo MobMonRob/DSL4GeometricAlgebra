@@ -279,7 +279,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 			Function function = findFunction(name);
 			ref = FunctionReferenceNodeGen.create(function);
 		} else {
-			Map<String, MultivectorExpression> constants = this.geomAlgeLangContext.exprGraphFactory.getConstants();
+			Map<String, MultivectorExpression> constants = this.geomAlgeLangContext.getFac().getConstants();
 
 			if (constants.isEmpty()) {
 				throw new ValidationParsingRuntimeException(String.format("Variable or function \"%s\" has not been declared before.", name));

@@ -16,8 +16,8 @@ public class FastProgram implements iProgram {
 		this.main = main;
 	}
 
-	@Override
-	public List<SparseDoubleMatrix> invoke(List<SparseDoubleMatrix> arguments) {
+	@Deprecated
+	public List<SparseDoubleMatrix> invokeSDM(List<SparseDoubleMatrix> arguments) {
 		var mVecArgs = arguments.stream().map(vec -> this.exprGraphFactory.createValue(vec)).toList();
 		try {
 			var mVecResults = this.main.callValue(mVecArgs);
@@ -26,5 +26,10 @@ public class FastProgram implements iProgram {
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		}
+	}
+
+	@Override
+	public List<Double> invoke(List<Double> arguments) {
+		throw new UnsupportedOperationException();
 	}
 }

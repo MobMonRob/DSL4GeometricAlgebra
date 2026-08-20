@@ -1,4 +1,4 @@
-package de.dhbw.rahmlab.dsl4ga.impl.truffle.common.builtinTypes.truffleBox;
+package de.dhbw.rahmlab.dsl4ga.impl.truffle.exchange;
 
 /*
 import com.oracle.truffle.api.CompilerDirectives;
@@ -9,9 +9,9 @@ import com.oracle.truffle.api.library.ExportMessage;
 import de.orat.math.gacalc.api.MultivectorExpression;
 
 //@ExportLibrary(InteropLibrary.class)
-public class CgaTruffleBox extends TruffleBox<MultivectorExpression> {
+public class MVExprTruffleBox extends TruffleBox<MultivectorExpression> {
 
-	public CgaTruffleBox(MultivectorExpression mvec) {
+	public MVExprTruffleBox(MultivectorExpression mvec) {
 		super(mvec);
 	}
 

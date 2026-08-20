@@ -91,7 +91,7 @@ final class ClassGenerator {
 		String args = m.parameters.stream().map(p -> p.identifier).collect(Collectors.joining(", "));
 		CodeBlock.Builder bodyBuilder = CodeBlock.builder()
 			.addStatement("var arguments = $T.of($L)", List.class, args)
-			.addStatement("return this.program.invoke(arguments)");
+			.addStatement("return this.program.invokeSDM(arguments)");
 
 		//
 		methodBuilder

@@ -135,7 +135,7 @@ public final class DSL4GAMain {
 		//TODO arguments die der main()-Methode mitgegeben werden sollen
 		var arguments = new ArrayList<SparseDoubleMatrix>();
 
-		List<SparseDoubleMatrix> answer = program.invoke(arguments);
+		List<SparseDoubleMatrix> answer = program.invokeSDM(arguments);
 
 		System.out.println("answer: ");
 		answer.forEach(System.out::println);

@@ -5,18 +5,14 @@ import com.oracle.truffle.api.frame.FrameSlotKind;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.DirectCallNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.builtinTypes.Tuple;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.builtinTypes.truffleBox.ListTruffleBox;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.builtinTypes.truffleBox.TruffleBox;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.ArgsMapper;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLang;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.LanguageRuntimeException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.ValidationException;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.exchange.ListTruffleBox;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.exchange.TruffleBox;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.superClasses.AbstractFunctionRootNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.Function;
-import de.orat.math.gacalc.api.GAFactory;
 import de.orat.math.gacalc.api.MultivectorExpression;
-import de.orat.math.sparsematrix.SparseDoubleMatrix;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
@@ -24,7 +20,6 @@ import java.util.stream.Stream;
 public final class ExecutionRootNode extends AbstractFunctionRootNode {
 
 	private final Function function;
-	private final GAFactory fac;
 	private final DirectCallNode mainCallNode;
 
 	private static FrameDescriptor frameDescriptor() {
@@ -34,26 +29,24 @@ public final class ExecutionRootNode extends AbstractFunctionRootNode {
 		return frameDescriptor;
 	}
 
-	public ExecutionRootNode(GeomAlgeLang language, Function function, GAFactory fac) {
+	public ExecutionRootNode(GeomAlgeLang language, Function function) {
 		super(language, frameDescriptor(), function.getName());
 		this.function = function;
-		this.fac = fac;
 		this.mainCallNode = DirectCallNode.create(function.getRootNode().getCallTarget());
 	}
 
 	@Override
 	public Object execute(VirtualFrame frame) {
-		// Get input.
-		List<SparseDoubleMatrix> argsList;
+		// Same types as in TruffleProgram.
+		List<MultivectorExpression> argsList;
 		Object[] oArgs = frame.getArguments();
 		if (oArgs.length != 0) {
-			argsList = ((TruffleBox<List<SparseDoubleMatrix>>) oArgs[0]).getInner();
+			argsList = ((TruffleBox<List<MultivectorExpression>>) oArgs[0]).getInner();
 		} else {
 			argsList = Collections.emptyList();
 		}
-		GeomAlgeLangContext.currentExternalArgs = new ArgsMapper(fac, argsList);
 
-		ListTruffleBox symArgsBoxed = new ListTruffleBox(GeomAlgeLangContext.currentExternalArgs.params);
+		ListTruffleBox symArgsBoxed = new ListTruffleBox(argsList);
 		if (!function.arityCorrect(symArgsBoxed.getInner().size())) {
 			throw new LanguageRuntimeException("main called with wrong argument count.", null);
 		}
@@ -67,33 +60,7 @@ public final class ExecutionRootNode extends AbstractFunctionRootNode {
 				throw new ValidationException("main returned invalid object.");
 		};
 
-		List<MultivectorExpression> simpleSymRes = symRes.stream()
-			.map(expr -> expr.simplify(GeomAlgeLangContext.currentExternalArgs.params))
-			.toList();
-
-		List<String> laTeXifiedSimpleSymRes = simpleSymRes.stream()
-			.map(MultivectorExpression::LaTeXify)
-			.toList();
-
-		System.out.println("Symbolic results:");
-		for (var expr : symRes) {
-			System.out.println(expr);
-		}
-		System.out.println();
-
-		System.out.println("Simplified symbolic results:");
-		for (var simpleExpr : simpleSymRes) {
-			System.out.println(simpleExpr);
-		}
-		System.out.println();
-
-		System.out.println("LaTeXified simplified symbolic results:");
-		for (var laTeXExpr : laTeXifiedSimpleSymRes) {
-			System.out.println(laTeXExpr);
-		}
-		System.out.println();
-
-		List<SparseDoubleMatrix> numRes = GeomAlgeLangContext.currentExternalArgs.evalToSDM(simpleSymRes);
-		return new TruffleBox<>(numRes);
+		// Same types as in TruffleProgram.
+		return new TruffleBox<>(symRes);
 	}
 }

@@ -1,136 +1,140 @@
 package de.dhbw.rahmlab.dsl4ga.impl.truffle.api;
 
 import de.dhbw.rahmlab.dsl4ga.api.iProgram;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.builtinTypes.truffleBox.TruffleBox;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.superClasses.GeomAlgeLangBaseNode;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLang;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.AbstractExternalException;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.LanguageRuntimeException;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.exchange.ArgsMapper;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.exchange.TruffleBox;
+import de.orat.math.gacalc.api.GAFactory;
+import de.orat.math.gacalc.api.GAFunction;
+import de.orat.math.gacalc.api.MultivectorExpression;
+import de.orat.math.gacalc.api.MultivectorValue;
+import de.orat.math.gacalc.api.MultivectorVariable;
 import de.orat.math.sparsematrix.SparseDoubleMatrix;
-import java.io.IOException;
-import java.io.Reader;
-import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
-import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.PolyglotException;
-import org.graalvm.polyglot.Source;
-import org.graalvm.polyglot.SourceSection;
 import org.graalvm.polyglot.Value;
 
+/**
+ * Used for debugging.
+ */
 public class TruffleProgram implements iProgram {
 
-	private final Source source;
 	private final Value parsedProgram;
+	private final GAFactory fac;
 
-	protected TruffleProgram(Context context, Reader sourceReader) {
-		try {
-			this.source = Source.newBuilder(GeomAlgeLang.LANGUAGE_ID, sourceReader, "TruffleProgram").build();
-		} catch (IOException ex) {
-			throw new RuntimeException(ex);
-		}
-		try {
-			this.parsedProgram = context.parse(source);
-		} catch (PolyglotException ex) {
-			throw enrichException(ex);
-		}
+	protected TruffleProgram(Value parsedProgram, GAFactory fac) {
+		this.parsedProgram = parsedProgram;
+		this.fac = fac;
 	}
 
-	protected TruffleProgram(Context context, URL url) {
+	private List<MultivectorExpression> invokeTruffleSym(ArgsMapper argsMapper) {
+		// Needs to be set before truffle execution.
+		GeomAlgeLangContext.get().currentExternalArgs = argsMapper;
+
+		// Same types as in TruffleProgram.
+		TruffleBox<List<? extends MultivectorExpression>> symArgsBoxed = new TruffleBox<>(argsMapper.params);
+
+		List<MultivectorExpression> truffleResults;
 		try {
-			this.source = Source.newBuilder(GeomAlgeLang.LANGUAGE_ID, url).build();
-		} catch (IOException ex) {
-			throw new RuntimeException(ex);
-		}
-		try {
-			this.parsedProgram = context.parse(source);
+			Value result = this.parsedProgram.execute(symArgsBoxed);
+			// Same types as in ExecutionRootNode.
+			TruffleBox<List<MultivectorExpression>> truffleResultsBoxed = (TruffleBox<List<MultivectorExpression>>) result.as(TruffleBox.class);
+			truffleResults = truffleResultsBoxed.getInner();
 		} catch (PolyglotException ex) {
-			throw enrichException(ex);
+			throw ExceptionEnricher.enrichException(ex);
 		}
+
+		return truffleResults;
+	}
+
+	private static List<MultivectorExpression> simplify(List<MultivectorVariable> symVars, List<MultivectorExpression> symRes) {
+		List<MultivectorExpression> simpleSymRes = symRes.stream()
+			.map(expr -> expr.simplify(symVars))
+			.toList();
+
+		List<String> laTeXifiedSimpleSymRes = simpleSymRes.stream()
+			.map(MultivectorExpression::LaTeXify)
+			.toList();
+
+		System.out.println("Symbolic results:");
+		for (var expr : symRes) {
+			System.out.println(expr);
+		}
+		System.out.println();
+
+		System.out.println("Simplified symbolic results:");
+		for (var simpleExpr : simpleSymRes) {
+			System.out.println(simpleExpr);
+		}
+		System.out.println();
+
+		System.out.println("LaTeXified simplified symbolic results:");
+		for (var laTeXExpr : laTeXifiedSimpleSymRes) {
+			System.out.println(laTeXExpr);
+		}
+		System.out.println();
+
+		return simpleSymRes;
+	}
+
+	private List<MultivectorValue> invokeNum(List<MultivectorValue> argsNum) {
+		ArgsMapper argsMapper = new ArgsMapper(this.fac, argsNum);
+		List<MultivectorExpression> symRes = invokeTruffleSym(argsMapper);
+		List<MultivectorExpression> simpleSymRes = TruffleProgram.simplify(argsMapper.params, symRes);
+		List<MultivectorValue> numRes = argsMapper.evalToMV(simpleSymRes);
+		return numRes;
+	}
+
+	/**
+	 * <pre>
+	 * Ich weiß eigentlich statisch schon den Shape. Alles nur Doubles.
+	 * Zur Bestimmung müsste ich aber über die Polyglot-API irgendwie die Anzahl an Inputs und Outputs durchschleifen. Das lasse ich erst mal.
+	 * Ich könnte sogar im ExecutionRootNode mich darum kümmern, komplett ohne übergebene Argumente rein symbolische Skalare MV zu basteln. Und die GAFunction über die Polyglot API zurück geben.
+	 * Dann kann ich mir hier sparen, die arguments zu übergeben.
+	 * Ich kann createEfficientProgram() sogar zusätzlich in der TruffleProgramFactory anbieten.
+	 * </pre>
+	 */
+	public EfficientProgram createEfficientProgram(List<Double> arguments) {
+		List<MultivectorValue> argsVal = arguments.stream()
+			.map(this.fac::createValue)
+			.toList();
+		ArgsMapper argsMapper = new ArgsMapper(this.fac, argsVal);
+		List<MultivectorExpression> symRes = invokeTruffleSym(argsMapper);
+		List<MultivectorExpression> simpleSymRes = TruffleProgram.simplify(argsMapper.params, symRes);
+		GAFunction func = this.fac.createFunction("eval", argsMapper.params, simpleSymRes);
+		EfficientProgram efficientProgram = new EfficientProgram(func, this.fac);
+		return efficientProgram;
 	}
 
 	@Override
-	public List<SparseDoubleMatrix> invoke(List<SparseDoubleMatrix> arguments) {
-		try {
-			TruffleBox<List<SparseDoubleMatrix>> truffleArgs = new TruffleBox<>(arguments);
-			Value result = this.parsedProgram.execute(truffleArgs);
-			TruffleBox<List<SparseDoubleMatrix>> truffleResults = (TruffleBox<List<SparseDoubleMatrix>>) result.as(TruffleBox.class);
-			List<SparseDoubleMatrix> results = truffleResults.getInner();
-			return results;
-		} catch (PolyglotException ex) {
-			throw enrichException(ex);
-		}
-	}
-
-	private RuntimeException enrichException(PolyglotException ex) {
-		// // Print CGA functions stacktrace. ToDo: implement with the CGA functions feature.
-		// Iterable<PolyglotException.StackFrame> polyglotStackTrace = ex.getPolyglotStackTrace();
-		// Can we use the Java default StackWalker here?
-		// ---
-
-		// Print the full originating error.
-		AbstractExternalException origin = null;
-		try {
-			origin = ex.getGuestObject().as(AbstractExternalException.class);
-		} catch (Throwable ex2) {
-			RuntimeException fullEx = new RuntimeException(ex2);
-			fullEx.addSuppressed(ex);
-			return fullEx;
-		}
-		if (origin == null) {
-			return new RuntimeException(ex);
-		}
-
-//			// Hier würde noch der Ort im ocga Quelltext fehlen.
-//			// Und auch die Nachricht der geworfenen Exception.
-//			Iterable<PolyglotException.StackFrame> polyglotStackTrace = ex.getPolyglotStackTrace();
-//			String truffleStackFrames = StreamSupport.stream(polyglotStackTrace.spliterator(), false).filter(sf -> sf.isGuestFrame()).map(sf -> sf.getRootName()).collect(Collectors.joining("\n"));
-//			return new RuntimeException("\n->TruffleStackFrames:\n" + truffleStackFrames + "\n");
-		//
-//			List<TruffleStackTraceElement> stackTrace = TruffleStackTrace.getStackTrace(langException);
-//			String collect = stackTrace.stream().map(el -> el.getTarget().getRootNode().getName()).collect(Collectors.joining("\n"));
-//			return new LanguageRuntimeException("\nCollect: " + collect + "\n", langException.location());
-		//
-		return enrichLanguageException(ex, origin);
-	}
-
-	private AbstractExternalException enrichLanguageException(
-		PolyglotException containingException,
-		AbstractExternalException langException
-	) {
-
-		SourceSection sourceSection = containingException.getSourceLocation();
-		if (sourceSection == null) {
-			return langException;
-		}
-
-		GeomAlgeLangBaseNode location = langException.location();
-
-		String locationDescription = String.format(
-			"line %s, column %s",
-			sourceSection.getStartLine(),
-			sourceSection.getStartColumn()
-		);
-		String nodeType = location.getClass().getSimpleName();
-		String characters = sourceSection.getCharacters().toString();
-		String message = null;
-		for (Throwable currentMessager = langException;
-			currentMessager != null;
-			currentMessager = currentMessager.getCause()) {
-
-			message = currentMessager.getMessage();
-			if (message != null) {
-				break;
+	public List<Double> invoke(List<Double> arguments) {
+		List<MultivectorValue> argsVal = arguments.stream()
+			.map(this.fac::createValue)
+			.toList();
+		List<MultivectorValue> resultsVal = invokeNum(argsVal);
+		final int resultsValSize = resultsVal.size();
+		List<Double> resultsDouble = new ArrayList<>(resultsValSize);
+		for (int i = 0; i < resultsValSize; ++i) {
+			MultivectorValue currentVal = resultsVal.get(i);
+			if (!currentVal.isScalar()) {
+				System.out.println(String.format("Warning: Output No. %s not a scalar: %s", i, currentVal));
 			}
+			double currentScalar = currentVal.extractScalar();
+			resultsDouble.add(currentScalar);
 		}
+		return resultsDouble;
+	}
 
-		String newMessage = String.format(
-			"\nLocation: %s\nCharacters: \"%s\"\nNodeType: %s\nMessage: %s\n\n\n",
-			locationDescription,
-			characters,
-			nodeType,
-			message
-		);
-
-		return new LanguageRuntimeException(newMessage, langException, location);
+	@Override
+	@Deprecated
+	public List<SparseDoubleMatrix> invokeSDM(List<SparseDoubleMatrix> arguments) {
+		List<MultivectorValue> argsVal = arguments.stream()
+			.map(this.fac::createValue)
+			.toList();
+		return invokeNum(argsVal)
+			.stream()
+			.map(MultivectorValue::elements)
+			.toList();
 	}
 }

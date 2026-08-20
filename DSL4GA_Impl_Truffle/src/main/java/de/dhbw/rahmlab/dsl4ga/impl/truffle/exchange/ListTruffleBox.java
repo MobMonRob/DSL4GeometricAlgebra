@@ -1,4 +1,4 @@
-package de.dhbw.rahmlab.dsl4ga.impl.truffle.common.builtinTypes.truffleBox;
+package de.dhbw.rahmlab.dsl4ga.impl.truffle.exchange;
 
 import java.util.List;
 

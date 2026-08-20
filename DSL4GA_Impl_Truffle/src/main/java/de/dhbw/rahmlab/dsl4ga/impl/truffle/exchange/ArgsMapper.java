@@ -1,4 +1,4 @@
-package de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime;
+package de.dhbw.rahmlab.dsl4ga.impl.truffle.exchange;
 
 import de.orat.math.gacalc.api.GAFactory;
 import de.orat.math.gacalc.api.MultivectorExpression;
@@ -14,34 +14,34 @@ public class ArgsMapper {
 	public final List<MultivectorVariable> params;
 	public final GAFactory fac;
 
-	public ArgsMapper(GAFactory fac, List<SparseDoubleMatrix> argsExternal) {
-		List<MultivectorValue> argsNum = new ArrayList<>(argsExternal.size());
-		List<MultivectorVariable> paramsSym = new ArrayList<>(argsExternal.size());
-		for (int i = 0; i < argsExternal.size(); ++i) {
-			var currentDoubleMatrix = argsExternal.get(i);
+	public ArgsMapper(GAFactory fac, List<MultivectorValue> argsNum) {
+		List<MultivectorVariable> paramsVar = new ArrayList<>(argsNum.size());
+		for (int i = 0; i < argsNum.size(); ++i) {
+			MultivectorValue currentArg = argsNum.get(i);
 
 			// sym
 			var name = String.format("arg%s", i);
-			var sparsity = currentDoubleMatrix.getSparsity();
-			var param = fac.createVariable(name, sparsity);
-			paramsSym.add(param);
-
-			// num
-			var arg = fac.createValue(currentDoubleMatrix);
-			argsNum.add(arg);
+			MultivectorVariable param = currentArg.toVar(name);
+			paramsVar.add(param);
 		}
 		this.args = argsNum;
-		this.params = paramsSym;
+		this.params = paramsVar;
 		this.fac = fac;
 	}
 
 	public List<MultivectorValue> evalToMV(List<? extends MultivectorExpression> retSym) {
-		var func = fac.createFunction("eval", this.params, retSym);
+		var func = this.fac.createFunction("eval", this.params, retSym);
 		var retNum = func.callValue(this.args);
 		return retNum;
 	}
 
+	@Deprecated
 	public List<SparseDoubleMatrix> evalToSDM(List<? extends MultivectorExpression> retSym) {
 		return this.evalToMV(retSym).stream().map(MultivectorValue::elements).toList();
+	}
+
+	@Deprecated
+	public List<SparseDoubleMatrix> VALtoSDM(List<MultivectorValue> val) {
+		return val.stream().map(MultivectorValue::elements).toList();
 	}
 }

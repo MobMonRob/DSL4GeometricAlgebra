@@ -31,6 +31,8 @@ public class BuiltinRegistry {
 	private void installBuiltins() {
 
 		// others
+		this.installBuiltin(SimplifyFactory.getInstance());
+		this.installBuiltin(SetBladeFactory.getInstance());
 		this.installBuiltin(IdleFactory.getInstance());
 		this.installBuiltin(EuclidFactory.getInstance());
 		this.installBuiltin(CoefFactory.getInstance());

@@ -81,8 +81,14 @@ Install Maxima 5.47.0 on your system.
 
 
 ## Run
-In order to run the example invokation in the package 'de.dhbw.rahmlab.geomalgelang.App' make sure you successfully executed the steps [GraalVM Setup](#graalvm-setup) and [Dependencies Setup](#dependencies-setup) beforehand. \
-If you use an IDE other than Netbeans and execute the generated .class files directly rather than the generated .jar file, it might be necessary to configure the Maven execution in your IDE with the same properties set in the [nbactions.xml](nbactions.xml) file.
+In order to run the example invokation [`App`](DSL4GA_Impl_Truffle/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/truffle/App.java) make sure you successfully executed the steps [GraalVM Setup](#graalvm-setup) and [Dependencies Setup](#dependencies-setup) beforehand. \
+If you use an IDE other than Netbeans and execute the generated .class files directly rather than the generated .jar file, it might be necessary to configure the Maven execution in your IDE with the same properties set in the [`nbactions.xml`](nbactions.xml) file.
+
+Generally, to run a `.ocga`-file, you have to
+- Create a [`TruffleProgramFactory`](DSL4GA_Impl_Truffle/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/truffle/api/TruffleProgramFactory.java) while passing the correct reference to your file.
+- Invoke the returned [`TruffleProgram`](DSL4GA_Impl_Truffle/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/truffle/api/TruffleProgram.java) with values of the correct shape.
+
+**The user is responsible to include the correct up- and down-projections between the passed values and the multivectors of their chosen algebra into their `.ocga`-file.**
 
 
 ## Annotation based API
@@ -246,8 +252,8 @@ fn main() {
 
 ### Visualization
 Variables can be visualized after assignment with one or two preceding colons.
-- `:a` will assume **IPNS** representation.
-- `::a` will assume **OPNS** representation.
+- `:a` will assume **extrinsic** (IPNS for CGA, CPNS for PGA) representation.
+- `::a` will assume **intrinsic** (OPNS for CGA and PGA) representation.
 
 After leaving a function, the visualizations done in it will be cleaned up. Visualizations from the calling function remain.
 
@@ -342,6 +348,8 @@ There exist three types of involution operations: Space inversion, reversion and
 ### Built-in functions
 | symbol      | description |
 | :---------- | ------------ |
+| simplify()  | simplifies the underlying expression. Helpful in debugging to see if structural zeroes are created or unexpected values might be caused by compounded numerical errors. |
+| setBlade()  | with 3 multivectors as arguments. 1. the multivector to be applied on, 2. the bladeIndexMV which contains only 1 blade, used to select the blade, 3. a scalar containing the expression or value the selected blade's coefficient will be set to. Can be used to enforce structural zeroes. |
 | exp()       | exponential of a bivector or a scalar |
 | log()       | logarithm of general rotor/even multivector (should be normalized) |
 | normalize() | normalize of an even multivector (general rotor, scalars inclusive)|
@@ -350,7 +358,6 @@ There exist three types of involution operations: Space inversion, reversion and
 | scp()       | scalar product |
 | dot()       | dot product, 0-grade indcluded - different to inner product |
 | ip()        | inner product, 0-grade is excluded different to the dot-product |
-| negate14()  | negate the signs of the vector- and 4-vector parts of an multivector. Usable to implement general-inverse. |
 | up()        | up-projection of a euclidean vector into the space of the multivector (conformal, projection, ... depending on the algbra) |
 | down()      | down-projection of a multivector into the euclidean space (by normalization and rejection from the minkowski plane E0 in the case of CGA) |
 | euclid()    | euclidean part of the multivector (Blades containing **only** base elements with metric 1 and no others. (without 0-grade scalar)) - encodes the objects orientation or weight; an object with a non zero euclidean part is called finite; an object with a vanashing euclidean part is called idle  |
@@ -445,7 +452,7 @@ Decomposition of a PGA point $p$ (as a tri-vector) into an Euclidean point $\vec
 
 This algebra contains flat and round elements.
 
-#### Symbols
+#### Additional algebra specific symbols
 
 | symbol           | latex        | Unicode      | description |
 | :--------------: | ------------ | ------------ | ----------- |
@@ -463,6 +470,12 @@ This algebra contains flat and round elements.
 #### Useful equations between some of the above symbols
 &#x03B5;&#x2080;&#x0045;&#x2080;=-&#x03B5;&#x2080;, &#x0045;&#x2080;&#x03B5;&#x2080;=&#x03B5;&#x2080;, &#x03B5;&#x1D62;&#x0045;&#x2080;=&#x03B5;&#x1D62;, &#x0045;&#x2080;&#x03B5;&#x1D62;=-&#x03B5;&#x1D62;, &#x0045;&#x2080;&#x00B2;=1, &#x03B5;&#x2080;&#x00B2;=&#x03B5;&#x1D62;&#x00B2;=0, &#x03B5;&#x208A;&#x00B2;=1, &#x03B5;&#x208B;&#x00B2;=-1, &#x03B5;&#x208A;&#x22C5;&#x03B5;&#x208B;=0
 
+#### Additional algebra specific functions
+
+| symbol      | description              |
+|------------ | ------------------------ |
+| negate14()  | negate the signs of the vector- and 4-vector parts of an multivector. Usable to implement general-inverse. |
+
 #### Geometric objects with intrinsic orientation type
 
 The orientation type of these objects corresponds with the so called outer product null space representation (OPNS), sometimes also named as "direct" representation.
@@ -471,7 +484,7 @@ Round points can be created from euclidean parameters/coordinates:
 
 | object | grade |  formula |
 | :---------- | :---- | :----------------- |
-| round point | 1 |  $\displaystyle \vec{p}=\vec{x}+\frac{1}{2}\vec{x}^2\epsilon_\infty+\epsilon_0$ |
+| round point | 1 |  $\displaystyle p=\vec{x}+\frac{1}{2}\vec{x}^2\epsilon_\infty+\epsilon_0$ |
 
 Joining round points only (using the wedge-operator) produces further round objects. That´s why these geometric objects are called "point-based".
 
@@ -501,9 +514,9 @@ The orientation type of these objects corresponds with the inner product null sp
 
 Spheres can be created from euclidean parameters/coordinates:
 
-| object | grade |  formula |
-| :---------- | :---- |  :---------- |
-| sphere | 1 |  P-0.5r&sup2;&#x03B5;&#7522; |
+| object | grade |  formula | description |
+| :---------- | :---- |  :---------- | -------------------|
+| sphere | 1 |  $ s = p - \frac{1}{2}r^2\epsilon_\infty$ | p is a point of extrinsic orientation type |
 
 Further round objects are constructed by intersection of spheres (using the wedge-operator). That´s why these geometric objects are called "sphere-based".
 
@@ -535,13 +548,14 @@ If the name of the Builtin class is “Abs”, the Builtin function in the DSL w
 
 
 ## Next Steps
-- adding builtins for symbolic (implemented with Maxima) and numeric (implementy with Casadi) zerofinding, e.g. for singularity detection in robotics
 - symbolically optimizing expressions with many trigometric functions
+- adding G6 - Cl(6,0,0) algebra
+- adding syntax for using of matrices
 - adding operators and built-ins for symbolic derivation and algorithmic differentiation
+- adding builtins for symbolic (implemented with Maxima) and numeric (implementy with Casadi) zerofinding, e.g. for singularity detection in robotics
 - adding more smart-editing features based on the language-agnostic LSP from GraalVM, completion of the implementation of a language-specific LSP
 - adding more debugging features e.g. showing the complete stacktrace polyglot till inside the native [CasADi](https://web.casadi.org/) libraries by building to LLVM
 - completing the design of a type-system and its implementation
-- extending the syntax with multidimensional arrays, if-statements
 - Hyperwedge product implementation following [DeKeninck2020] to speed up program execution
 - C-code export and parallelization with CasADi
 - execution speed benchmarks, espcially to compare FAST- and TRUFFLE-implementation, autogenerated C-Code, ...
