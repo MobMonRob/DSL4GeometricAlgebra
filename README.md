@@ -471,7 +471,7 @@ Round points can be created from euclidean parameters/coordinates:
 
 | object | grade |  formula |
 | :---------- | :---- | :----------------- |
-| round point | 1 |  $\displaystyle \vec{p}=\vec{x}+\frac{1}{2}\vec{x}^2\epsilon_\infty+\epsilon_0$ |
+| round point | 1 |  $\displaystyle p=\vec{x}+\frac{1}{2}\vec{x}^2\epsilon_\infty+\epsilon_0$ |
 
 Joining round points only (using the wedge-operator) produces further round objects. That´s why these geometric objects are called "point-based".
 
@@ -501,9 +501,9 @@ The orientation type of these objects corresponds with the inner product null sp
 
 Spheres can be created from euclidean parameters/coordinates:
 
-| object | grade |  formula |
-| :---------- | :---- |  :---------- |
-| sphere | 1 |  P-0.5r&sup2;&#x03B5;&#7522; |
+| object | grade |  formula | description |
+| :---------- | :---- |  :---------- | -------------------|
+| sphere | 1 |  $ s = p - \frac{1}{2}r^2\epsilon_}infty | p is a point of extrinsic orientation type |
 
 Further round objects are constructed by intersection of spheres (using the wedge-operator). That´s why these geometric objects are called "sphere-based".
 
