@@ -20,9 +20,6 @@ fn applyMotor(obj_prev, M) {
 // fn fk(L0, theta)
 fn fk(L0, theta[]){
 	
-	// WORKAROUND
-	//theta[] = {0, 0, 0, 0, 0, 0}
-
 	// dh parameters UR5
 	a[] = {0.0, -0.425, -0.392, 0.0, 0.0, 0.0}
 	d[] = {0.0892, 0.0, 0.0, 0.10915, 0.09465, 0.0825}
@@ -41,9 +38,10 @@ fn fk(L0, theta[]){
 
 fn main(theta1, theta2, theta3, theta4, theta5, theta6) {
 
-	:L0 = ε₁ ∧ ε₂ // line in z-direction, through the origin
+	::L0 = ε₁ ∧ ε₂ // line in z-direction, through the origin, e12, intrinsic, opns
 	theta[] = {theta1, theta2, theta3, theta4, theta5, theta6}
-	:Ls[] = fk(L0, theta)
+	::Ls[] = fk(L0, theta) // FIXME hier bekomme ich grades [0,2,4] statt nur einen grade
+    // grade=4 ist nicht strukturell null, aber numerisch fast 0
 
 	// euclidean part of the line divived by I3 = direction
     // corresponding to points at infinity, with an implied e123 coefficient of 00

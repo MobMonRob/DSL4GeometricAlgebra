@@ -31,10 +31,10 @@ public class VisualizerService {
 		return INSTANCE;
 	}
 
-	public void add(MultivectorExpression mv, String name, VisualizerFunctionContext vizContext, boolean isIPNS) {
+	public void add(MultivectorExpression mv, String name, VisualizerFunctionContext vizContext, boolean isExtrinsic) {
 
 		MultivectorValue mvValue = GeomAlgeLangContext.currentExternalArgs.evalToMV(List.of(mv)).get(0);
-		GeometricObject geometricObject = mvValue.decompose(isIPNS);
+		GeometricObject geometricObject = mvValue.decompose(isExtrinsic);
 		if (geometricObject != null) {
 			try {
 				GAViewObject gaViewObject = this.viewer.addGeometricObject(geometricObject, name/*, isIPNS*/);

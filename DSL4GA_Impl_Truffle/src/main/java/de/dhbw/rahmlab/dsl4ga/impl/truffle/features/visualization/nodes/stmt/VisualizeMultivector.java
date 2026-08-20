@@ -16,14 +16,14 @@ import de.orat.math.gacalc.api.MultivectorExpression;
 
 @NodeChild(value = "varRef", type = LocalVariableReference.class)
 @NodeField(name = "vizContext", type = VisualizerFunctionContext.class)
-@NodeField(name = "isIPNS", type = Boolean.class)
+@NodeField(name = "isExtrinsic", type = Boolean.class) // "isIPNS"
 public abstract class VisualizeMultivector extends NonReturningStatementBaseNode {
 
 	protected abstract LocalVariableReference getVarRef();
 
 	protected abstract VisualizerFunctionContext getVizContext();
 
-	protected abstract Boolean getIsIPNS();
+	protected abstract Boolean getIsExtrinsic(); // getIsIPNS
 
 	@Specialization
 	protected void doExecute(VirtualFrame frame, Object varRefValue) {
@@ -35,14 +35,14 @@ public abstract class VisualizeMultivector extends NonReturningStatementBaseNode
 		try {
 			// Better use specialization instead.
 			if (varRefValue instanceof MultivectorExpression mv) {
-				VisualizerService.instance().add(mv, fullName, getVizContext(), getIsIPNS());
+				VisualizerService.instance().add(mv, fullName, getVizContext(), getIsExtrinsic());
 			} else if (varRefValue instanceof ArrayObject arr) {
 				Object[] arrValues = arr.getValues();
 				final int arrLen = arrValues.length;
 				for (int i = 0; i < arrLen; ++i) {
 					Object value = arrValues[i];
 					if (value instanceof MultivectorExpression mv) {
-						VisualizerService.instance().add(mv, String.format("%s%s", fullName, i), getVizContext(), getIsIPNS());
+						VisualizerService.instance().add(mv, String.format("%s%s", fullName, i), getVizContext(), getIsExtrinsic());
 					} else {
 						throw new ValidationException(String.format("No MultivectorExpression: %s[%s]: %s", fullName, i, value));
 					}
@@ -54,6 +54,7 @@ public abstract class VisualizeMultivector extends NonReturningStatementBaseNode
 			int line = this.getSourceSection().getStartLine();
 			String msg = String.format("Line %s, viz failure: %s", line, iiEx.getMessage());
 			System.err.println(msg);
+			iiEx.printStackTrace(); // testweise
 		}
 	}
 

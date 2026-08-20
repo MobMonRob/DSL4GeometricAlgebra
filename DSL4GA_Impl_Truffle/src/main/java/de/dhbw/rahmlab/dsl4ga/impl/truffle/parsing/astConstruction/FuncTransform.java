@@ -166,9 +166,9 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 		}
 		LocalVariableReference varRefNode = LocalVariableReferenceNodeGen.create(name, frameSlot);
 		varRefNode.setSourceSection(assigned.getStartIndex(), assigned.getStopIndex());
-		boolean isIPNS = viz.size() == 1;
+		boolean isExtrinsic = viz.size() == 1; // ipns
 
-		VisualizeMultivector vizNode = VisualizeMultivectorNodeGen.create(varRefNode, getNewScopeVisibleVariablesIndex(), this.vizContext, isIPNS);
+		VisualizeMultivector vizNode = VisualizeMultivectorNodeGen.create(varRefNode, getNewScopeVisibleVariablesIndex(), this.vizContext, isExtrinsic);
 		vizNode.setSourceSection(viz.getFirst().getStartIndex(), viz.getLast().getStopIndex());
 
 		this.stmts.add(vizNode);

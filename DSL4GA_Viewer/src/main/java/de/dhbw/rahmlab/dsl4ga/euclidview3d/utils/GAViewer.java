@@ -262,7 +262,7 @@ public class GAViewer extends GAViewObject {
 		return new Point3d(tuple.values[0], tuple.values[1], tuple.values[2]);  //parameters.location();
 	}
 	private static Vector3d toVector3d(Tuple tuple){
-		return new Vector3d(tuple.values[0], tuple.values[1], tuple.values[3]);
+		return new Vector3d(tuple.values[0], tuple.values[1], tuple.values[2]);
 	}
 	
 	
@@ -497,7 +497,6 @@ public class GAViewer extends GAViewObject {
      * 
      * @param parameters, unit is [m]
      * @param label
-     * @param isIPNS 
      */
     long[] addOrientedPoint(GeometricObject geometricObject, String label){
        //Color color = COLOR_GRADE_2;
