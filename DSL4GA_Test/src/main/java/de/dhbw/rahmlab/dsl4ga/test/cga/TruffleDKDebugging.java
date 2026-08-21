@@ -1,18 +1,19 @@
-package de.dhbw.rahmlab.dsl4ga.test;
+package de.dhbw.rahmlab.dsl4ga.test.cga;
 
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.api.TruffleProgramFactory;
 import de.orat.math.sparsematrix.SparseDoubleMatrix;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.jogamp.vecmath.Matrix4d;
-import util.pga.SparsePGAColumnVector;
+import util.cga.SparseCGAColumnVector;
 
-public class TruffleFKpgaDebugging {
+public class TruffleDKDebugging {
 
-	// dh parameters UR5
-	private static double[] a = new double[]{0.0, -0.425, -0.392, 0.0, 0.0, 0.0};
-	private static double[] d = new double[]{0.0892, 0.0, 0.0, 0.10915, 0.09465, 0.0825};
-	private static double[] alpha = new double[]{Math.PI/2.0, 0.0, 0.0, Math.PI/2.0, -Math.PI/2.0, 0.0}; 
+	// dh parameters UR5e
+	private static double[] a = new double[]{0.0, -0.425, -0.3922, 0.0, 0.0, 0.0};
+	private static double[] d = new double[]{0.1625, 0.0, 0.0, 0.1333, 0.0997, 0.0996};
+	private static double[] alpha = new double[]{}; //TODO
 
 	public static void main(String[] args) throws Exception {
 		invocationTest();
@@ -33,8 +34,8 @@ public class TruffleFKpgaDebugging {
 	 * Wie Pose definieren?
 	 */
 	private static void invocationTest() throws Exception {
-		String path = "./gafiles/common/fk.ocga";
-		var uri = TruffleFKpgaDebugging.class.getResource(path);
+		String path = "./gafiles/common/dk2.ocga";
+		var uri = TruffleDKDebugging.class.getResource(path);
 		if (uri == null) {
 			throw new RuntimeException(String.format("Path not found: %s", path));
 		}
@@ -42,8 +43,10 @@ public class TruffleFKpgaDebugging {
 		var fac = new TruffleProgramFactory();
 		var prog = fac.parse(uri);
 		
-		double[] thetas = new double[]{0, 0, 0, 0, 0, 0};
-		var res = prog.invokeSDM(createArguments(thetas));
+		List<SparseDoubleMatrix> args = new ArrayList<>();
+		SparseCGAColumnVector p = SparseCGAColumnVector.createEuclid(new double[]{0.5, 0.5, 0d});
+		args.add(p);
+		var res = prog.invokeSDM(args);
 
 		System.out.println("answer: ");
 		res.forEach(System.out::println);
@@ -53,14 +56,11 @@ public class TruffleFKpgaDebugging {
 	private static List<SparseDoubleMatrix> createArguments(double[] thetas){
 		List<SparseDoubleMatrix> args = new ArrayList<>();
 		for (int i=0;i<thetas.length;i++){
-			SparsePGAColumnVector p = SparsePGAColumnVector.createScalar(thetas[i]);
+			SparseCGAColumnVector p = SparseCGAColumnVector.createScalar(thetas[i]);
 			args.add(p);
 		}
 		return args;
 	}
-	
-	
-	// for testing the ga-based fk a comparable matrix based implementation
 	
 	private static Pose dk(double[] theta){
 		Matrix4d m = new Matrix4d();

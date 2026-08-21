@@ -1,4 +1,4 @@
-package de.dhbw.rahmlab.dsl4ga.test;
+package de.dhbw.rahmlab.dsl4ga.test.cga;
 
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.api.TruffleProgramFactory;
 import de.orat.math.sparsematrix.SparseDoubleMatrix;
@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import util.cga.SparseCGAColumnVector;
 
-public class TruffleIk1Debugging {
+public class TruffleVizDebugging {
 
 	public static void main(String[] args) throws Exception {
 		invocationTest();
@@ -23,8 +23,8 @@ public class TruffleIk1Debugging {
 	 * </pre>
 	 */
 	private static void invocationTest() throws Exception {
-		String path = "./gafiles/common/ik1.ocga";
-		var uri = TruffleIk1Debugging.class.getResource(path);
+		String path = "./gafiles/common/viz.ocga";
+		var uri = TruffleVizDebugging.class.getResource(path);
 		if (uri == null) {
 			throw new RuntimeException(String.format("Path not found: %s", path));
 		}
@@ -37,7 +37,7 @@ public class TruffleIk1Debugging {
 		args.add(p);
 		SparseCGAColumnVector ae = SparseCGAColumnVector.createEuclid(new double[]{0d, 1d, 0d});
 		args.add(ae);
-		var res = prog.invokeSDM(/*Collections.emptyList()*/ args);
+		var res = prog.invokeSDM(/*Collections.emptyList()*/args);
 
 		System.out.println("answer: ");
 		res.forEach(System.out::println);

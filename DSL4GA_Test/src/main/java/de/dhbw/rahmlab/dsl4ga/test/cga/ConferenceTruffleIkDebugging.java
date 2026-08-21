@@ -1,4 +1,4 @@
-package de.dhbw.rahmlab.dsl4ga.test;
+package de.dhbw.rahmlab.dsl4ga.test.cga;
 
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.api.TruffleProgramFactory;
 import java.util.Collections;

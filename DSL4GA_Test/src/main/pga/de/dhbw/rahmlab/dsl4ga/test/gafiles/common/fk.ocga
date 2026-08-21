@@ -1,8 +1,8 @@
 #algebra pga
 
 fn motor(theta, a, d, alpha) {
-	T_d = 1 - 0.5 d (ε₀ ∧ ε₂) // Tz
-	R_theta = cos(0.5 theta) - sin(0.5 theta) (ε₁ ∧ ε₂) // Rz
+	T_d = 1 - 0.5 d (ε₀ ∧ ε₂) // Tz 
+	R_theta = cos(0.5 theta) - sin(0.5 theta) (ε₁ ∧ ε₂) // Rz - rotation around the z-axis
 	T_a = 1 - 0.5 a (ε₀ ∧ ε₁) // Tx
     R_alpha = cos(0.5 alpha) - sin(0.5 alpha) (ε₂ ∧ ε₃) // Rx
 	M = R_alpha T_d T_a R_theta 
