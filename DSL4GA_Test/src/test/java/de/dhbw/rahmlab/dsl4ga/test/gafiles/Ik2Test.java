@@ -1,8 +1,7 @@
 package de.dhbw.rahmlab.dsl4ga.test.gafiles;
 
 import de.dhbw.rahmlab.dsl4ga.test.gafiles.common.Util;
-import de.dhbw.rahmlab.dsl4ga.test.gafiles.common.gen.fastwrapper.Ik2Program;
-import de.dhbw.rahmlab.dsl4ga.test.gafiles.common.gen.fastwrapper.Test1Program;
+import de.dhbw.rahmlab.dsl4ga.test.gafiles.common.gen.invokationwrapper.Ik2Program;
 import de.orat.math.sparsematrix.SparseDoubleMatrix;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;

@@ -276,7 +276,10 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 			int frameSlot = this.localVariablesView.get(name);
 			ref = LocalVariableReferenceNodeGen.create(name, frameSlot);
 		} else if (this.functionsView.containsKey(name)) {
-			Function function = findFunction(name);
+			Function function = this.functionsView.get(name);
+			ref = FunctionReferenceNodeGen.create(function);
+		} else if (this.geomAlgeLangContext.builtinRegistry.hasBuiltinFunction(name)) {
+			Function function = this.geomAlgeLangContext.builtinRegistry.getBuiltinFunction(name);
 			ref = FunctionReferenceNodeGen.create(function);
 		} else {
 			Map<String, MultivectorExpression> constants = this.geomAlgeLangContext.getFac().getConstants();

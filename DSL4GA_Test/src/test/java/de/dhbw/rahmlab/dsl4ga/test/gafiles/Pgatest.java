@@ -1,7 +1,7 @@
 package de.dhbw.rahmlab.dsl4ga.test.gafiles;
 
 import de.dhbw.rahmlab.dsl4ga.test.gafiles.common.Util;
-import de.dhbw.rahmlab.dsl4ga.test.gafiles.common.gen.fastwrapper.PgatestProgram;
+import de.dhbw.rahmlab.dsl4ga.test.gafiles.common.gen.invokationwrapper.PgatestProgram;
 import de.orat.math.sparsematrix.ColumnVectorSparsity;
 import de.orat.math.sparsematrix.SparseDoubleColumnVector;
 import org.junit.jupiter.api.BeforeAll;

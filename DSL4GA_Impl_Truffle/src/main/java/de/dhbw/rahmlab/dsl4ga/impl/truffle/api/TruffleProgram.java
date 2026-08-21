@@ -50,6 +50,7 @@ public class TruffleProgram implements iProgram {
 
 	private static List<MultivectorExpression> simplify(List<MultivectorVariable> symVars, List<MultivectorExpression> symRes) {
 		List<MultivectorExpression> simpleSymRes = symRes.stream()
+			.parallel()
 			.map(expr -> expr.simplify(symVars))
 			.toList();
 
