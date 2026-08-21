@@ -1,6 +1,7 @@
 package de.dhbw.rahmlab.dsl4ga.impl.truffle.api;
 
 import de.dhbw.rahmlab.dsl4ga.api.iProgram;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.exchange.ArgsMapper;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.exchange.TruffleBox;
 import de.orat.math.gacalc.api.GAFactory;
@@ -28,7 +29,7 @@ public class TruffleProgram implements iProgram {
 		this.parsedProgram = parsedProgram;
 		this.fac = fac;
 		this.contexter = contexter;
-		this.mainArity = contexter.exec2(c -> c.getMainArity());
+		this.mainArity = contexter.exec2(GeomAlgeLangContext::getMainArity);
 	}
 
 	private List<MultivectorExpression> invokeTruffleSym(ArgsMapper argsMapper) {
