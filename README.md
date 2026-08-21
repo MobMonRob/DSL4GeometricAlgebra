@@ -358,8 +358,8 @@ There exist three types of involution operations: Space inversion, reversion and
 | scp()       | scalar product |
 | dot()       | dot product, 0-grade indcluded - different to inner product |
 | ip()        | inner product, 0-grade is excluded different to the dot-product |
-| up()        | up-projection of a euclidean vector into the space of the multivector (conformal, projection, ... depending on the algbra) |
-| down()      | down-projection of a multivector into the euclidean space (by normalization and rejection from the minkowski plane E0 in the case of CGA) |
+| up()        | up-projection of an euclidian point represented by an euclidean vector into the space of the multivector (with intrinsic orientation type) |
+| down()      | down-projection of a multivector point with intrinsic orientation type into the euclidean space (by normalization and rejection from the minkowski plane E0 in the case of CGA) |
 | euclid()    | euclidean part of the multivector (Blades containing **only** base elements with metric 1 and no others. (without 0-grade scalar)) - encodes the objects orientation or weight; an object with a non zero euclidean part is called finite; an object with a vanashing euclidean part is called idle  |
 | idle()      | idle part of the multivector (Blades containing base elements with metric 0 or -1. (without 0-grade scalar)) - encodes the position relative to the origin; an object with a vanashing idea part necessarily passes through the origin |
 | coef()      | with two multivectors as arguments. The second must be one blade only. The function extracts the coefficient for this blade in the first argument as as scalar |
@@ -516,7 +516,7 @@ Spheres can be created from euclidean parameters/coordinates:
 
 | object | grade |  formula | description |
 | :---------- | :---- |  :---------- | -------------------|
-| sphere | 1 |  $ s = p - \frac{1}{2}r^2\epsilon_\infty$ | p is a point of extrinsic orientation type |
+| sphere | 1 |  $ s = p - \frac{1}{2} r^2\epsilon_{\infty} $ | p is a point of extrinsic orientation type |
 
 Further round objects are constructed by intersection of spheres (using the wedge-operator). That´s why these geometric objects are called "sphere-based".
 
