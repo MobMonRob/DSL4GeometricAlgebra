@@ -327,8 +327,8 @@ Except dual/undual the operators cancel itself so if your write X&#732;&#732; no
 | :--------: | :--------------: | ----------------------------- | ------------ | ----------- |  :------- |
 | 5          | &#x002D;         | &#x002D;                      | \u002D       | negate      |  - |
 | 6          | &#x207B;&#x00B9; | \textsuperscript{-1}          | \u207B\u00B9 | general inverse |  |
-| 6          | &#x002A;         | \textsuperscript{\*}          | \u002A       | Hodge dual      | ! |
-| 6          | &#x02DC;         | \textsuperscript{$\tilde$}      | \u02DC       | reverse/adjoint: reverse all multiplications (e.g. inverse for rotor) |  &#732; |
+| 6          | &#x002A;         | \textsuperscript{\*}          | \u002A       | Hodge dual (from intrinsic to extrinsic orient type)     | ! |
+| 6          | &#x02DC;         | \textsuperscript{$\tilde$}    | \u02DC       | reverse/adjoint: reverse all multiplications (e.g. inverse for rotor) |  &#732; |
 | 6          | &#x2020;         | \textsuperscript{\textdagger} | \u2020       | clifford conjugate (a sign change operation) | |
 
 There exist three types of involution operations: Space inversion, reversion and the combination of both the clifford conjugation.
@@ -336,7 +336,7 @@ There exist three types of involution operations: Space inversion, reversion and
 #### Additional 1-ary operators
 | precedence | symbol           | latex                 | unicode      | description |
 | :--------: | :--------------: | --------------------- | ------------ | ----------- |
-| 6          | &#x207B;&#x002A; | \textsuperscript{-\*} | \u207B\u002A | undual |
+| 6          | &#x207B;&#x002A; | \textsuperscript{-\*} | \u207B\u002A | Hoge undual (from extrinsic to intrinsic orientation type) |
 | 6          | &#x00B2;         | \textsuperscript{2}                     | \u00B2       | square |
 | 6          | &#x005E;         | \textsuperscript{$\wedge$}                      | \u005E       | grade involution/inversion (a sign change operation) $\hat{M} = \sum\limits_k{(-1)^k\langle M\rangle_{k}}$|
 
