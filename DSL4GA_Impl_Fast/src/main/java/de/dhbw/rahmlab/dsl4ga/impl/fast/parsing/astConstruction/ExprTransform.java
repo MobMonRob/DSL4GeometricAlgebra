@@ -297,8 +297,6 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 								arg.scalarAbs();
 							case "sqrt" ->
 								arg.sqrt();
-							case "negate14" ->
-								arg.negate14();
 						    // new scalar functions
 							case "sign" ->
 								arg.scalarSign();
