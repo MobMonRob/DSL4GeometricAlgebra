@@ -51,7 +51,7 @@ public class TruffleProgramFactory implements iProgramFactory<TruffleProgram> {
 		final GAFactory fac;
 		try {
 			parsedProgram = context.parse(source);
-			fac = GeomAlgeLangContext.GA_FACTORY; // Correct use. Available after parsing.
+			fac = context.getPolyglotBindings().getMember(GeomAlgeLangContext.FAC_SYMBOL).asHostObject(); // Available after parsing.
 		} catch (PolyglotException ex) {
 			throw ExceptionEnricher.enrichException(ex);
 		}
