@@ -1,7 +1,6 @@
 package de.dhbw.rahmlab.dsl4ga.impl.truffle.api;
 
 import de.dhbw.rahmlab.dsl4ga.api.iProgram;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.exchange.ArgsMapper;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.exchange.TruffleBox;
 import de.orat.math.gacalc.api.GAFactory;
@@ -23,17 +22,18 @@ public class TruffleProgram implements iProgram {
 	private final Value parsedProgram;
 	private final GAFactory fac;
 	private final Contexter contexter;
+	private final int mainArity;
 
 	protected TruffleProgram(Value parsedProgram, GAFactory fac, Contexter contexter) {
 		this.parsedProgram = parsedProgram;
 		this.fac = fac;
 		this.contexter = contexter;
+		this.mainArity = contexter.exec2(c -> c.getMainArity());
 	}
 
 	private List<MultivectorExpression> invokeTruffleSym(ArgsMapper argsMapper) {
 		// Needs to be set before truffle execution.
 		this.contexter.exec1(c -> c.setCurrentExternalArgs(argsMapper));
-		// int mainArity = this.contexter.exec2(c -> c.getMainArity());
 
 		// Same types as in TruffleProgram.
 		TruffleBox<List<? extends MultivectorExpression>> symArgsBoxed = new TruffleBox<>(argsMapper.params);
@@ -82,28 +82,27 @@ public class TruffleProgram implements iProgram {
 		return simpleSymRes;
 	}
 
+	public int getMainArity() {
+		return this.mainArity;
+	}
+
+	public List<MultivectorExpression> invokeSym() {
+		ArgsMapper argsMapper = new ArgsMapper(this.fac, this.mainArity);
+		List<MultivectorExpression> symRes = invokeTruffleSym(argsMapper);
+		return symRes;
+	}
+
 	private List<MultivectorValue> invokeNum(List<MultivectorValue> argsNum) {
 		ArgsMapper argsMapper = new ArgsMapper(this.fac, argsNum);
 		List<MultivectorExpression> symRes = invokeTruffleSym(argsMapper);
+		// Simplify could be omitted here for testing performance.
 		List<MultivectorExpression> simpleSymRes = TruffleProgram.simplify(argsMapper.params, symRes);
 		List<MultivectorValue> numRes = argsMapper.evalToMV(simpleSymRes);
 		return numRes;
 	}
 
-	/**
-	 * <pre>
-	 * Ich weiß eigentlich statisch schon den Shape. Alles nur Doubles.
-	 * Zur Bestimmung müsste ich aber über die Polyglot-API irgendwie die Anzahl an Inputs und Outputs durchschleifen. Das lasse ich erst mal.
-	 * Ich könnte sogar im ExecutionRootNode mich darum kümmern, komplett ohne übergebene Argumente rein symbolische Skalare MV zu basteln. Und die GAFunction über die Polyglot API zurück geben.
-	 * Dann kann ich mir hier sparen, die arguments zu übergeben.
-	 * Ich kann createEfficientProgram() sogar zusätzlich in der TruffleProgramFactory anbieten.
-	 * </pre>
-	 */
-	public EfficientProgram createEfficientProgram(List<Double> arguments) {
-		List<MultivectorValue> argsVal = arguments.stream()
-			.map(this.fac::createValue)
-			.toList();
-		ArgsMapper argsMapper = new ArgsMapper(this.fac, argsVal);
+	public EfficientProgram createEfficientProgram() {
+		ArgsMapper argsMapper = new ArgsMapper(this.fac, this.mainArity);
 		List<MultivectorExpression> symRes = invokeTruffleSym(argsMapper);
 		List<MultivectorExpression> simpleSymRes = TruffleProgram.simplify(argsMapper.params, symRes);
 		GAFunction func = this.fac.createFunction("eval", argsMapper.params, simpleSymRes);
