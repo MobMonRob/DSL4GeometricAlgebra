@@ -25,11 +25,6 @@ public final class GeomAlgeLangContext {
 	public final GeomAlgeLang truffleLanguage;
 	public final TruffleLanguage.Env env;
 	private GAFactory gaFactory = null;
-	/**
-	 * Only to be read from outside of truffle.
-	 */
-	@Deprecated
-	public static volatile GAFactory GA_FACTORY = null;
 	private Source source = null;
 
 	public static volatile ArgsMapper currentExternalArgs = null;
@@ -44,9 +39,11 @@ public final class GeomAlgeLangContext {
 		this.env = env;
 	}
 
+	public static final String FAC_SYMBOL = "__fac";
+
 	public void setFac(GAFactory fac) {
 		this.gaFactory = fac;
-		GA_FACTORY = fac;
+		this.env.exportSymbol(FAC_SYMBOL, this.env.asGuestValue(fac));
 	}
 
 	/**

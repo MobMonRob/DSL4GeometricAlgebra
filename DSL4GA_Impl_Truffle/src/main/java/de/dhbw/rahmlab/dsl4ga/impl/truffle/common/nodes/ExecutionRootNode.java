@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 
 public final class ExecutionRootNode extends AbstractFunctionRootNode {
 
-	private final Function function;
+	private final Function main;
 	private final DirectCallNode mainCallNode;
 
 	private static FrameDescriptor frameDescriptor() {
@@ -29,14 +29,16 @@ public final class ExecutionRootNode extends AbstractFunctionRootNode {
 		return frameDescriptor;
 	}
 
-	public ExecutionRootNode(GeomAlgeLang language, Function function) {
-		super(language, frameDescriptor(), function.getName());
-		this.function = function;
-		this.mainCallNode = DirectCallNode.create(function.getRootNode().getCallTarget());
+	public ExecutionRootNode(GeomAlgeLang language, Function main) {
+		super(language, frameDescriptor(), main.getName());
+		this.main = main;
+		this.mainCallNode = DirectCallNode.create(main.getRootNode().getCallTarget());
 	}
 
 	@Override
 	public Object execute(VirtualFrame frame) {
+
+		// --------------------------------
 		// Same types as in TruffleProgram.
 		List<MultivectorExpression> argsList;
 		Object[] oArgs = frame.getArguments();
@@ -47,7 +49,7 @@ public final class ExecutionRootNode extends AbstractFunctionRootNode {
 		}
 
 		ListTruffleBox symArgsBoxed = new ListTruffleBox(argsList);
-		if (!function.arityCorrect(symArgsBoxed.getInner().size())) {
+		if (!main.arityCorrect(symArgsBoxed.getInner().size())) {
 			throw new LanguageRuntimeException("main called with wrong argument count.", null);
 		}
 		Object callRetVal = this.mainCallNode.call(symArgsBoxed);
