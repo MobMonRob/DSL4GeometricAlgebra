@@ -26,8 +26,15 @@ public final class GeomAlgeLangContext {
 	public final TruffleLanguage.Env env;
 	private GAFactory gaFactory = null;
 	private Source source = null;
+	private ArgsMapper currentExternalArgs = null;
 
-	public static volatile ArgsMapper currentExternalArgs = null;
+	public ArgsMapper getCurrentExternalArgs() {
+		return this.currentExternalArgs;
+	}
+
+	public void setCurrentExternalArgs(ArgsMapper currentExternalArgs) {
+		this.currentExternalArgs = currentExternalArgs;
+	}
 
 	public GeomAlgeLangContext() {
 		this(null, null);
@@ -43,6 +50,7 @@ public final class GeomAlgeLangContext {
 
 	public void setFac(GAFactory fac) {
 		this.gaFactory = fac;
+		// Alternative to GeomAlgeLangContext.get().getFac() from outside Truffle.
 		this.env.exportSymbol(FAC_SYMBOL, this.env.asGuestValue(fac));
 	}
 

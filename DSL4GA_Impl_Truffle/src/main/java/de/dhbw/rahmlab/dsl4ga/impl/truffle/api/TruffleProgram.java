@@ -30,7 +30,7 @@ public class TruffleProgram implements iProgram {
 
 	private List<MultivectorExpression> invokeTruffleSym(ArgsMapper argsMapper) {
 		// Needs to be set before truffle execution.
-		GeomAlgeLangContext.get().currentExternalArgs = argsMapper;
+		GeomAlgeLangContext.get().setCurrentExternalArgs(argsMapper);
 
 		// Same types as in TruffleProgram.
 		TruffleBox<List<? extends MultivectorExpression>> symArgsBoxed = new TruffleBox<>(argsMapper.params);

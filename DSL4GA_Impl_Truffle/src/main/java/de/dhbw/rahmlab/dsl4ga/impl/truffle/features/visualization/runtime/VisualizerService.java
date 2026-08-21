@@ -34,7 +34,7 @@ public class VisualizerService {
 	}
 
 	public void add(MultivectorExpression mv, String name, VisualizerFunctionContext vizContext, boolean isIPNS) {
-		SparseDoubleMatrix sparseDoubleMatrix = GeomAlgeLangContext.currentExternalArgs.evalToSDM(List.of(mv)).get(0);
+		SparseDoubleMatrix sparseDoubleMatrix = GeomAlgeLangContext.get().getCurrentExternalArgs().evalToSDM(List.of(mv)).get(0);
 		var sparseDoubleColumnVector = new SparseDoubleColumnVector(sparseDoubleMatrix);
 		var doubleArray = sparseDoubleColumnVector.toArray();
 		//FIXME vermutlich erwartet der Konstruktor ein doubleArray Argument in einer anderen Representation

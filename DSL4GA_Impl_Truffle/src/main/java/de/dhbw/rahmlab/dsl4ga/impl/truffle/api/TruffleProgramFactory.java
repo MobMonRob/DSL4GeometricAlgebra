@@ -44,6 +44,17 @@ public class TruffleProgramFactory implements iProgramFactory<TruffleProgram> {
 		return parse(source);
 	}
 
+	public <T> T contexter(java.util.function.Function<GeomAlgeLangContext, T> func) {
+		Context context = this.contextCloser.get();
+		try {
+			context.enter();
+			GeomAlgeLangContext innerContext = GeomAlgeLangContext.get(); // Works only after context.enter()
+			return func.apply(innerContext);
+		} finally {
+			context.leave();
+		}
+	}
+
 	private TruffleProgram parse(Source source) {
 		Context context = this.contextCloser.get();
 
