@@ -88,7 +88,9 @@ Generally, to run a `.ocga`-file, you have to
 - Create a [`TruffleProgramFactory`](DSL4GA_Impl_Truffle/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/truffle/api/TruffleProgramFactory.java) while passing the correct reference to your file.
 - Invoke the returned [`TruffleProgram`](DSL4GA_Impl_Truffle/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/truffle/api/TruffleProgram.java) with values of the correct shape.
 
-**The user is responsible to include the correct up- and down-projections between the passed values and the multivectors of their chosen algebra into their `.ocga`-file.**
+**Only scalars can be passed to and received from the main function.**
+
+**The user is responsible to include the correct up- and down-projections between the external scalar values and the multivectors of their chosen algebra into their `.ocga`-file.**
 
 
 ## Annotation based API
