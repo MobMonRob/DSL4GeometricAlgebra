@@ -470,12 +470,6 @@ This algebra contains flat and round elements.
 #### Useful equations between some of the above symbols
 &#x03B5;&#x2080;&#x0045;&#x2080;=-&#x03B5;&#x2080;, &#x0045;&#x2080;&#x03B5;&#x2080;=&#x03B5;&#x2080;, &#x03B5;&#x1D62;&#x0045;&#x2080;=&#x03B5;&#x1D62;, &#x0045;&#x2080;&#x03B5;&#x1D62;=-&#x03B5;&#x1D62;, &#x0045;&#x2080;&#x00B2;=1, &#x03B5;&#x2080;&#x00B2;=&#x03B5;&#x1D62;&#x00B2;=0, &#x03B5;&#x208A;&#x00B2;=1, &#x03B5;&#x208B;&#x00B2;=-1, &#x03B5;&#x208A;&#x22C5;&#x03B5;&#x208B;=0
 
-#### Additional algebra specific functions
-
-| symbol      | description              |
-|------------ | ------------------------ |
-| negate14()  | negate the signs of the vector- and 4-vector parts of an multivector. Usable to implement general-inverse. |
-
 #### Geometric objects with intrinsic orientation type
 
 The orientation type of these objects corresponds with the so called outer product null space representation (OPNS), sometimes also named as "direct" representation.
