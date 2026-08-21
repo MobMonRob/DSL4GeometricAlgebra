@@ -9,6 +9,7 @@ import com.oracle.truffle.api.source.Source;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.CharStreamSupplier;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.ExecutionRootNode;
 import static de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.CatchAndRethrow.catchAndRethrow;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.Function;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.ParsingService;
 import java.io.IOException;
 
@@ -56,9 +57,10 @@ public class GeomAlgeLang extends TruffleLanguage<GeomAlgeLangContext> {
 		Source source = request.getSource();
 		this.context.setSource(source);
 		ParsingService.FactoryAndMain factoryAndMain = ParsingService.instance().parse(CharStreamSupplier.from(source.getReader()), this.context);
-		// Will be set at ParsingService::invoke.
-		// this.context.setFac(factoryAndMain.fac());
-		ExecutionRootNode rootNode = new ExecutionRootNode(this, factoryAndMain.main());
+		this.context.setFac(factoryAndMain.fac()); // Set in ParsingService::invoke, too.
+		Function main = factoryAndMain.main();
+		this.context.setMainArity(main.getArity());
+		ExecutionRootNode rootNode = new ExecutionRootNode(this, main);
 		return rootNode.getCallTarget();
 	}
 }

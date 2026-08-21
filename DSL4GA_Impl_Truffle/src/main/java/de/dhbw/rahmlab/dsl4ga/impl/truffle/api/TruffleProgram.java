@@ -33,6 +33,7 @@ public class TruffleProgram implements iProgram {
 	private List<MultivectorExpression> invokeTruffleSym(ArgsMapper argsMapper) {
 		// Needs to be set before truffle execution.
 		this.contexter.exec1(c -> c.setCurrentExternalArgs(argsMapper));
+		// int mainArity = this.contexter.exec2(c -> c.getMainArity());
 
 		// Same types as in TruffleProgram.
 		TruffleBox<List<? extends MultivectorExpression>> symArgsBoxed = new TruffleBox<>(argsMapper.params);

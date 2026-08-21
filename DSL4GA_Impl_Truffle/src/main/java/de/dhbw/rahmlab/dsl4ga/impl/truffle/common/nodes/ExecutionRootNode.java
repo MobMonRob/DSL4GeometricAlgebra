@@ -37,8 +37,6 @@ public final class ExecutionRootNode extends AbstractFunctionRootNode {
 
 	@Override
 	public Object execute(VirtualFrame frame) {
-
-		// --------------------------------
 		// Same types as in TruffleProgram.
 		List<MultivectorExpression> argsList;
 		Object[] oArgs = frame.getArguments();

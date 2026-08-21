@@ -27,6 +27,15 @@ public final class GeomAlgeLangContext {
 	private GAFactory gaFactory = null;
 	private Source source = null;
 	private ArgsMapper currentExternalArgs = null;
+	private int mainArity = -1;
+
+	public int getMainArity() {
+		return this.mainArity;
+	}
+
+	public void setMainArity(int mainArity) {
+		this.mainArity = mainArity;
+	}
 
 	public ArgsMapper getCurrentExternalArgs() {
 		return this.currentExternalArgs;
