@@ -103,7 +103,7 @@ public final class ParsingService {
 
 	public FactoryAndMain parse(CharStreamSupplier program, GeomAlgeLangContext geomAlgeLangContext) {
 		try {
-			FactoryAndFunctions factoryAndFunctions = parse(Optional.empty(), Collections.emptyMap(), program, geomAlgeLangContext);
+			FactoryAndFunctions factoryAndFunctions = parse(Optional.empty(), geomAlgeLangContext.builtinRegistry.getBuiltinsView(), program, geomAlgeLangContext);
 			Function main = factoryAndFunctions.functions().get("main");
 			if (main == null) {
 				throw new ValidationException("No main function has been defined.");

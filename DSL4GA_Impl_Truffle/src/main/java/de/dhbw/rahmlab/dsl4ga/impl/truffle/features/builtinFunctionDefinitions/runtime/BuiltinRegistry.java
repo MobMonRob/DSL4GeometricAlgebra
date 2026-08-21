@@ -15,6 +15,7 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.n
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.expr.FunctionArgumentReader;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.superClasses.AbstractFunctionBody;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.Function;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,7 +37,7 @@ public class BuiltinRegistry {
 		this.installBuiltin(IdleFactory.getInstance());
 		this.installBuiltin(EuclidFactory.getInstance());
 		this.installBuiltin(CoefFactory.getInstance());
-		
+
 		// in/out functions
 		this.installBuiltin(UpFactory.getInstance());
 		this.installBuiltin(DownFactory.getInstance());
@@ -46,7 +47,7 @@ public class BuiltinRegistry {
 		this.installBuiltin(SqrtFactory.getInstance());
 		this.installBuiltin(ExpFactory.getInstance());
 		this.installBuiltin(LogFactory.getInstance());
-		
+
 		// scalar functions
 		this.installBuiltin(AbsFactory.getInstance());
 		this.installBuiltin(Atan2Factory.getInstance());
@@ -57,7 +58,7 @@ public class BuiltinRegistry {
 		this.installBuiltin(SinFactory.getInstance());
 		this.installBuiltin(TanFactory.getInstance());
 		this.installBuiltin(SignFactory.getInstance());
-		
+
 		// new products
 		this.installBuiltin(DotFactory.getInstance());
 		this.installBuiltin(IpFactory.getInstance());
@@ -110,5 +111,9 @@ public class BuiltinRegistry {
 		}
 
 		return this.builtins.get(name);
+	}
+
+	public Map<String, Function> getBuiltinsView() {
+		return Collections.unmodifiableMap(this.builtins);
 	}
 }
