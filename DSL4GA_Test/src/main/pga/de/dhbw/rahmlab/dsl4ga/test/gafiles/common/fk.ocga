@@ -38,9 +38,18 @@ fn fk(L0, theta[]){
 
 fn main(theta1, theta2, theta3, theta4, theta5, theta6) {
 
-	::L0 = ε₁ ∧ ε₂ // line in z-direction, through the origin, e12, intrinsic, opns
+	// bounding box
+    ::P1 = up(2 ε₁)
+	::P2 = up(2 ε₂)
+	::P3 = up(2 ε₃)
+
+	:L0 = ε₁ ∧ ε₂ // line in z-direction, through the origin, e12, extrinsic, ipns
+	L0Dir = euclid(L0)/E₃
 	theta[] = {theta1, theta2, theta3, theta4, theta5, theta6}
-	::Ls[] = fk(L0, theta) // FIXME hier bekomme ich grades [0,2,4] statt nur einen grade
+	Ls[] = fk(L0, theta) // hier bekomme ich grades [0,2,4] statt homogene Multivektoren
+	::Ls1 = simplify(Ls[0]) // FIXME die Formel stimmt nicht mit der von Gaalop bestimmten überein
+	::Ls2 = simplify(Ls[1])
+	::Ls3 = simplify(Ls[2])
     // grade=4 ist nicht strukturell null, aber numerisch fast 0
 
 	// euclidean part of the line divived by I3 = direction

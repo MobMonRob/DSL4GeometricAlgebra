@@ -37,16 +37,16 @@ public class GAViewer extends GAViewObject {
    
     public static Optional<GAViewer> getInstance(){
          Optional<iEuclidViewer3D> viewer = ViewerService.getInstance().getViewer();
-         GAViewer cgaViewer = null;
+         GAViewer gaViewer = null;
          if (viewer.isPresent()){
              try {
-                cgaViewer = new GAViewer(viewer.get());
+                gaViewer = new GAViewer(viewer.get());
              } catch (Exception ex){
-                cgaViewer = null;
+                gaViewer = null;
                 ex.printStackTrace();
              }
          }
-         return Optional.ofNullable(cgaViewer);
+         return Optional.ofNullable(gaViewer);
     }
     
     GAViewer(iEuclidViewer3D impl) throws Exception {
@@ -116,16 +116,24 @@ public class GAViewer extends GAViewObject {
 	 * @param parent
 	 * @param mv
 	 * @param label
-	 * @param color if == null, color is determined automatically for the geometric object type
+	 * @param color if == null, color is determined automatically from the geometric object type
 	 * @return 
 	 */
-    GAViewObject addGeometricObject(GAViewObject parent, GeometricObject geometricObject, String label, 
-		                        /*boolean isIPNS,*/ Color color){
+    GAViewObject addGeometricObject(GAViewObject parent, GeometricObject geometricObject, String label, Color color){
         
         long id = -1;
         long[] ids;
             
 		switch (geometricObject.geometricType){
+			
+			case GeometricObject.GeometricType.POINT:
+				if (color == null){
+					id = addRoundPoint(geometricObject, label);
+				} else {
+					id = addRoundPoint(geometricObject, label, color);
+				}
+				return new GAViewObject(geometricObject, label, parent, id);
+				
 			case GeometricObject.GeometricType.ROUND_POINT:
 				if (color == null){
 					id = addRoundPoint(geometricObject, label);
@@ -468,6 +476,10 @@ public class GAViewer extends GAViewObject {
 		Vector3d a = toVector3d(geometricObject.attitude);
 		
         //Vector3d a = parameters.attitude();
+		
+		//TODO
+		// get orientation type from geometricObject and visualize this type
+		
         System.out.println("Add line \""+label+"\" at ("+String.valueOf(p1.x)+", "+String.valueOf(p1.y)+
                         ", "+String.valueOf(p1.z)+") with a=("+String.valueOf(a.x)+", "+String.valueOf(a.y)+", "+
                         String.valueOf(a.z)+")");
