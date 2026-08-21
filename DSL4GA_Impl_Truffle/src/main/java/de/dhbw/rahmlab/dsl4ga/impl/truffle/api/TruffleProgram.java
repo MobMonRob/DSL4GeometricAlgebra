@@ -22,15 +22,17 @@ public class TruffleProgram implements iProgram {
 
 	private final Value parsedProgram;
 	private final GAFactory fac;
+	private final Contexter contexter;
 
-	protected TruffleProgram(Value parsedProgram, GAFactory fac) {
+	protected TruffleProgram(Value parsedProgram, GAFactory fac, Contexter contexter) {
 		this.parsedProgram = parsedProgram;
 		this.fac = fac;
+		this.contexter = contexter;
 	}
 
 	private List<MultivectorExpression> invokeTruffleSym(ArgsMapper argsMapper) {
 		// Needs to be set before truffle execution.
-		GeomAlgeLangContext.get().setCurrentExternalArgs(argsMapper);
+		this.contexter.exec1(c -> c.setCurrentExternalArgs(argsMapper));
 
 		// Same types as in TruffleProgram.
 		TruffleBox<List<? extends MultivectorExpression>> symArgsBoxed = new TruffleBox<>(argsMapper.params);

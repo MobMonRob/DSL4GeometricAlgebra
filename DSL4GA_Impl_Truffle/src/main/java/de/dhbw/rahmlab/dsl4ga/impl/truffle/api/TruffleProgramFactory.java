@@ -44,17 +44,6 @@ public class TruffleProgramFactory implements iProgramFactory<TruffleProgram> {
 		return parse(source);
 	}
 
-	public <T> T contexter(java.util.function.Function<GeomAlgeLangContext, T> func) {
-		Context context = this.contextCloser.get();
-		try {
-			context.enter();
-			GeomAlgeLangContext innerContext = GeomAlgeLangContext.get(); // Works only after context.enter()
-			return func.apply(innerContext);
-		} finally {
-			context.leave();
-		}
-	}
-
 	private TruffleProgram parse(Source source) {
 		Context context = this.contextCloser.get();
 
@@ -67,7 +56,9 @@ public class TruffleProgramFactory implements iProgramFactory<TruffleProgram> {
 			throw ExceptionEnricher.enrichException(ex);
 		}
 
-		TruffleProgram truffleProgram = new TruffleProgram(parsedProgram, fac);
+		Contexter contexter = new Contexter(context);
+		// LifeTimeExtender.extend(this.contextCloser, contexter); // Not necessary since lifetime is bound to truffleProgram anyway.
+		TruffleProgram truffleProgram = new TruffleProgram(parsedProgram, fac, contexter);
 		LifeTimeExtender.extend(this.contextCloser, truffleProgram);
 		return truffleProgram;
 	}

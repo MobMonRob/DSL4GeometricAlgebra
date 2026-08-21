@@ -50,7 +50,7 @@ public final class GeomAlgeLangContext {
 
 	public void setFac(GAFactory fac) {
 		this.gaFactory = fac;
-		// Alternative to GeomAlgeLangContext.get().getFac() from outside Truffle.
+		// Alternative to GeomAlgeLangContext.get().getFac() (which needs context.enter()) from outside Truffle.
 		this.env.exportSymbol(FAC_SYMBOL, this.env.asGuestValue(fac));
 	}
 
