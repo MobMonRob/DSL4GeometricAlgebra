@@ -484,9 +484,9 @@ Joining round points only (using the wedge-operator) produces further round obje
 
 | object | grade | formula |
 | :---------- | :------ | :-------- |
-| dipole (oriented point pair) | 2 |  p1&#8743;p2 |
-| circle | 3 |  p1&#8743;p2&#8743;p3 |
-| sphere | 4 |  p1&#8743;p2&#8743;p3&#8743;p4 |
+| dipole (oriented point pair) | 2 |  $\displaystyle \vec{P}_p=\vec{p}_1\wedge\vec{p}_2$ |
+| circle | 3 |  $\vec{C}=\vec{p}_1\wedge\vec{p}_2\wedge\vec{p}_3$ |
+| sphere | 4 |  $\vec{S}=\vec{p}_1\wedge\vec{p}_2\wedge\vec{p}_3\wedge\vec{p}_4$ |
 
 Joining round points with the point in infinity creates the flat objects:
 
