@@ -51,7 +51,7 @@ fn main() {
 	// by finding the point Pc with an offset d4 from P5, horizon technique to find the cirld C5k:
 
 	// ipns sphere around P5
-	:Sc = sp(P5, d4) // eq. 43, P5-0.5d4²εᵢ
+	:Sc = simplify(sp(P5, d4)) // eq. 43, P5-0.5d4²εᵢ
 
 	// ipns sphere around the origin, eq. 43
 	:K0 = ε₀+(Sc⋅ε₀)εᵢ

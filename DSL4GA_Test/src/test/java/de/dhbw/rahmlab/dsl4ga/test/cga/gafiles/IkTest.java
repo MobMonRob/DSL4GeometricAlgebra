@@ -1,7 +1,7 @@
-package de.dhbw.rahmlab.dsl4ga.test.gafiles;
+package de.dhbw.rahmlab.dsl4ga.test.cga.gafiles;
 
-import de.dhbw.rahmlab.dsl4ga.test.gafiles.common.Util;
-import de.dhbw.rahmlab.dsl4ga.test.gafiles.common.gen.invokationwrapper.IkProgram;
+import de.dhbw.rahmlab.dsl4ga.test.cga.gafiles.common.Util;
+import de.dhbw.rahmlab.dsl4ga.test.cga.gafiles.common.gen.invokationwrapper.IkProgram;
 import de.orat.math.gacasadi.specific.cga.gen.CachedCgaMvExpr;
 import de.orat.math.sparsematrix.ColumnVectorSparsity;
 import de.orat.math.sparsematrix.MatrixSparsity;

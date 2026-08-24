@@ -46,10 +46,11 @@ fn main(theta1, theta2, theta3, theta4, theta5, theta6) {
 	:L0 = ε₁ ∧ ε₂ // line in z-direction, through the origin, e12, extrinsic, ipns
 	L0Dir = euclid(L0)/E₃
 	theta[] = {theta1, theta2, theta3, theta4, theta5, theta6}
-	Ls[] = fk(L0, theta) // hier bekomme ich grades [0,2,4] statt homogene Multivektoren
-	::Ls1 = simplify(Ls[0]) // FIXME die Formel stimmt nicht mit der von Gaalop bestimmten überein
-	::Ls2 = simplify(Ls[1])
-	::Ls3 = simplify(Ls[2])
+	L[] = fk(L0, theta) // hier bekomme ich grades [0,2,4] statt homogene Multivektoren
+    ::Ls[] = map(simplify, L)
+	//::Ls1 = simplify(Ls[0]) // FIXME die Formel stimmt nicht mit der von Gaalop bestimmten überein
+	//::Ls2 = simplify(Ls[1])
+	//::Ls3 = simplify(Ls[2])
     // grade=4 ist nicht strukturell null, aber numerisch fast 0
 
 	// euclidean part of the line divived by I3 = direction
@@ -62,5 +63,6 @@ fn main(theta1, theta2, theta3, theta4, theta5, theta6) {
     position = ((ε₁∧ε₂∧ε₃)⋅Ls[5])Ls[5]
 	// a direction is a flat point at infinity directs into direction? or plane?
     
+	// TODO extract all coordinates as double coefficients
 	position, direction
 }

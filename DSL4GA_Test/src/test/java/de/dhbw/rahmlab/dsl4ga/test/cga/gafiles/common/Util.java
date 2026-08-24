@@ -1,4 +1,4 @@
-package de.dhbw.rahmlab.dsl4ga.test.gafiles.common;
+package de.dhbw.rahmlab.dsl4ga.test.cga.gafiles.common;
 
 //import de.orat.math.sparsematrix.SparseDoubleColumnVector;
 import de.orat.math.sparsematrix.SparseDoubleMatrix;

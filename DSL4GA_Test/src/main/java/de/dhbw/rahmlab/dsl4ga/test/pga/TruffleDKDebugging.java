@@ -3,6 +3,7 @@ package de.dhbw.rahmlab.dsl4ga.test.pga;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.api.TruffleProgramFactory;
 import de.orat.math.sparsematrix.SparseDoubleMatrix;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.jogamp.vecmath.Matrix4d;
 import util.pga.SparsePGAColumnVector;
@@ -43,7 +44,7 @@ public class TruffleDKDebugging {
 		var prog = fac.parse(uri);
 		
 		double[] thetas = new double[]{0, 0, 0, 0, 0, 0};
-		var res = prog.invokeSDM(createArguments(thetas));
+		var res = prog.invoke(Arrays.stream(thetas).boxed().toList());
 
 		System.out.println("answer: ");
 		res.forEach(System.out::println);

@@ -1,7 +1,7 @@
-package de.dhbw.rahmlab.dsl4ga.test.gafiles;
+package de.dhbw.rahmlab.dsl4ga.test.cga.gafiles;
 
-import de.dhbw.rahmlab.dsl4ga.test.gafiles.common.Util;
-import de.dhbw.rahmlab.dsl4ga.test.gafiles.common.gen.invokationwrapper.Test1Program;
+import de.dhbw.rahmlab.dsl4ga.test.cga.gafiles.common.Util;
+import de.dhbw.rahmlab.dsl4ga.test.cga.gafiles.common.gen.invokationwrapper.Test1Program;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import util.cga.SparseCGAColumnVector;

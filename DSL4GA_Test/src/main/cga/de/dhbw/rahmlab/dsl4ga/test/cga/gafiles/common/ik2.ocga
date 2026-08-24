@@ -202,7 +202,11 @@ fn getP2(p0, p1, p3, s1_, a3_){
 
 // arguments as cga multivector types, represented as sparse matrices
 // result: all 8 tuples (solutions) with points p1-p6
-fn main(p, ae){
+fn main(px, py, pz, aex, aey, aez){
+
+    p = px ε₁ + py ε₂ + pz ε₃
+	ae = aex ε₁ + aey ε₂ + aez ε₃
+
 	// nominal dh parameters UR5e, the d-parameters corresponding to the link lengths
     // and fullfill the assumption to apply the approach
 	a2 = -0.425

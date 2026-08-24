@@ -32,7 +32,6 @@ public class VisualizerService {
 	}
 
 	public void add(MultivectorExpression mv, String name, VisualizerFunctionContext vizContext, boolean isExtrinsic) {
-
 		MultivectorValue mvValue = GeomAlgeLangContext.currentExternalArgs.evalToMV(List.of(mv)).get(0);
 		GeometricObject geometricObject = mvValue.decompose(isExtrinsic);
 		if (geometricObject != null) {
@@ -47,8 +46,12 @@ public class VisualizerService {
 				throw new ValidationException(ex.getMessage(), ex);
 			}
 		} else {
-			throw new ValidationException(
-				String.format("Variable \"%s\" is no k-vector!", mvValue.toString(/*name*/)));
+			// FIXME mvValue.toString liefert keinen Namen
+			// vielleicht hier auch keine Exception werfen, wenn nur der Multivektor nicht visualisierbar ist
+			// nur eine Warnung ausgeben
+			//TODO
+			//throw new ValidationException(
+			System.out.println(String.format("Variable \"%s\" is no k-vector:", name)+mv.toString());
 		}
 	}
 }

@@ -155,8 +155,11 @@ fn getRotationRotor(theta, axis){
 
 // arguments as cga multivector types, represented as sparse matrices
 // result: all 8 tuples (solutions) with points p1-p6
-fn main(p, ae){
+fn main(px, py, pz, aex, aey, aez){
 	
+	p = px ε₁ + py ε₂ + pz ε₃
+    ae = aex ε₁ + aey ε₂ + aez ε₃
+
 	// robots origin as ipns round point
     :p0 = ε₀ // equivalent to rp(0.0, 0.0, 0.0)
 
@@ -189,7 +192,7 @@ fn main(p, ae){
 	:pp0b = (p1⌋plane*)⌋(plane*⁻¹) // Add sphere "main::pp0b" at (0.0mm,1000.0mm, 1000.0mm) with radius 1000.0mm!
 	:pp0c = (p1⌋plane*⁻¹)⌋(plane*) // dito
 
-    :pp0d = (p1⌋plane)/
+    :pp0d = (p1⌋plane)
 	:pp1 = (p1⌋sphere)⌋(sphere⁻¹) // Add sphere "main::pp1" at (1000.0mm,1000.0mm, 1000.0mm) with radius 500.0mm!
 	:pp1a = (p1⌋sphere⁻¹)⌋(sphere) // Add sphere "main::pp1a" at (1000.0mm,1000.0mm, 1000.0mm) with radius 500.0mm!
 	:pp1b = (p1⌋sphere*)⌋(sphere*⁻¹) //= sphere
