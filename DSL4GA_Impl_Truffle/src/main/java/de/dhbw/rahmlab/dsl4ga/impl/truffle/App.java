@@ -1,10 +1,10 @@
 package de.dhbw.rahmlab.dsl4ga.impl.truffle;
 
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.api.TruffleProgramFactory;
-import de.orat.math.cga.api.CGARoundPointIPNS;
-import de.orat.math.cga.api.CGARoundPointOPNS;
-import de.orat.math.cga.api.CGAViewObject;
-import de.orat.math.cga.api.CGAViewer;
+//import de.orat.math.cga.api.CGARoundPointIPNS;
+//import de.orat.math.cga.api.CGARoundPointOPNS;
+//import de.orat.math.cga.api.CGAViewObject;
+//import de.orat.math.cga.api.CGAViewer;
 import de.orat.math.sparsematrix.DenseDoubleColumnVector;
 import de.orat.math.sparsematrix.SparseDoubleMatrix;
 import java.nio.charset.Charset;
@@ -19,10 +19,12 @@ public class App {
 		// System.setProperty("jogamp.verbose", "true");
 		// vizTest();
 		// encodingTest();
-		invocationTest();
+		
+		// auskommentiert um Abhängigkeit zu ConformalGeometricAlgebra entfernen zu können
+		//invocationTest();
 	}
 
-	private static void vizTest() throws InterruptedException {
+	/*private static void vizTest() throws InterruptedException {
 		Optional<CGAViewer> viewerOptional = CGAViewer.getInstance();
 		CGAViewer viewer = viewerOptional.orElseThrow();
 
@@ -39,7 +41,7 @@ public class App {
 				System.out.println("Failed " + i);
 			}
 		}
-	}
+	}*/
 
 	private static void encodingTest() {
 		System.out.println(System.getProperty("stdout.encoding"));
@@ -51,7 +53,7 @@ public class App {
 		System.out.println("ä π");
 	}
 
-	private static void invocationTest() throws Exception {
+	/*private static void invocationTest() throws Exception {
 		String path = "./vizTest.ocga";
 		var url = DebuggerTest.class.getResource(path);
 		if (url == null) {
@@ -71,5 +73,5 @@ public class App {
 		System.out.println("answer: ");
 		res.forEach(System.out::println);
 		System.out.println();
-	}
+	}*/
 }

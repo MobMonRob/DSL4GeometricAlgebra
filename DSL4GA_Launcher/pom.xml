@@ -43,6 +43,12 @@
 			<groupId>de.dhbw.rahmlab</groupId>
 			<artifactId>DSL4GA_Impl_Truffle</artifactId>
 			<version>1.0-SNAPSHOT</version>
+		 <exclusions>
+		  <exclusion>
+		   <groupId>de.orat.math.ga</groupId>
+		   <artifactId>GeometricAlgebra</artifactId>
+		  </exclusion>
+		 </exclusions>
 		</dependency>
 		<!--dependency>
 			<groupId>org.graalvm.tools</groupId>

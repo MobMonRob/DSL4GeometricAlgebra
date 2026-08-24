@@ -42,19 +42,7 @@
 			<version>1.0-SNAPSHOT</version>
 			<scope>runtime</scope>
 		</dependency>
-
-
-		<dependency>
-			<groupId>de.orat.math.ga</groupId>
-			<artifactId>GeometricAlgebra</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
 		<!-- Still needed for visualisation. -->
-		<dependency>
-			<groupId>de.orat.math.cga</groupId>
-			<artifactId>ConformalGeometricAlgebra</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
 
 
 		<dependency>

@@ -113,6 +113,12 @@
             <artifactId>DSL4GA_Impl_Truffle</artifactId>
             <version>1.0-SNAPSHOT</version>
             <type>jar</type>
+            <exclusions>
+                <exclusion>
+                    <groupId>de.orat.math.ga</groupId>
+                    <artifactId>GeometricAlgebra</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
