@@ -33,6 +33,12 @@ public class TruffleProgram implements iProgram {
 	}
 
 	private List<MultivectorExpression> invokeTruffleSym(ArgsMapper argsMapper) {
+		for (int i = 0; i < argsMapper.params.size(); ++i) {
+			if (!argsMapper.params.get(i).isScalar()) {
+				throw new RuntimeException(String.format("Input No. %s is not a scalar.", i));
+			}
+		}
+
 		// Needs to be set before truffle execution.
 		this.contexter.exec1(c -> c.setCurrentExternalArgs(argsMapper));
 
@@ -47,6 +53,12 @@ public class TruffleProgram implements iProgram {
 			truffleResults = truffleResultsBoxed.getInner();
 		} catch (PolyglotException ex) {
 			throw ExceptionEnricher.enrichException(ex);
+		}
+
+		for (int i = 0; i < truffleResults.size(); ++i) {
+			if (!truffleResults.get(i).isScalar()) {
+				throw new RuntimeException(String.format("Output No. %s is not a scalar.", i));
+			}
 		}
 
 		return truffleResults;
@@ -87,21 +99,6 @@ public class TruffleProgram implements iProgram {
 		return this.mainArity;
 	}
 
-	public List<MultivectorExpression> invokeSym() {
-		ArgsMapper argsMapper = new ArgsMapper(this.fac, this.mainArity);
-		List<MultivectorExpression> symRes = invokeTruffleSym(argsMapper);
-		return symRes;
-	}
-
-	private List<MultivectorValue> invokeNum(List<MultivectorValue> argsNum) {
-		ArgsMapper argsMapper = new ArgsMapper(this.fac, argsNum);
-		List<MultivectorExpression> symRes = invokeTruffleSym(argsMapper);
-		// Simplify could be omitted here for testing performance.
-		List<MultivectorExpression> simpleSymRes = TruffleProgram.simplify(argsMapper.params, symRes);
-		List<MultivectorValue> numRes = argsMapper.evalToMV(simpleSymRes);
-		return numRes;
-	}
-
 	public EfficientProgram createEfficientProgram() {
 		ArgsMapper argsMapper = new ArgsMapper(this.fac, this.mainArity);
 		List<MultivectorExpression> symRes = invokeTruffleSym(argsMapper);
@@ -111,22 +108,28 @@ public class TruffleProgram implements iProgram {
 		return efficientProgram;
 	}
 
+	public List<MultivectorExpression> invokeSym() {
+		ArgsMapper argsMapper = new ArgsMapper(this.fac, this.mainArity);
+		List<MultivectorExpression> symRes = invokeTruffleSym(argsMapper);
+		return symRes;
+	}
+
+	public List<MultivectorValue> invokeNum(List<MultivectorValue> argsNum) {
+		ArgsMapper argsMapper = new ArgsMapper(this.fac, argsNum);
+		List<MultivectorExpression> symRes = invokeTruffleSym(argsMapper);
+		// Simplify could be omitted here for testing performance.
+		List<MultivectorExpression> simpleSymRes = TruffleProgram.simplify(argsMapper.params, symRes);
+		List<MultivectorValue> numRes = argsMapper.evalToMV(simpleSymRes);
+		return numRes;
+	}
+
 	@Override
 	public List<Double> invoke(List<Double> arguments) {
 		List<MultivectorValue> argsVal = arguments.stream()
 			.map(this.fac::createValue)
 			.toList();
 		List<MultivectorValue> resultsVal = invokeNum(argsVal);
-		final int resultsValSize = resultsVal.size();
-		List<Double> resultsDouble = new ArrayList<>(resultsValSize);
-		for (int i = 0; i < resultsValSize; ++i) {
-			MultivectorValue currentVal = resultsVal.get(i);
-			if (!currentVal.isScalar()) {
-				System.out.println(String.format("Warning: Output No. %s not a scalar: %s", i, currentVal));
-			}
-			double currentScalar = currentVal.extractScalar();
-			resultsDouble.add(currentScalar);
-		}
+		List<Double> resultsDouble = resultsVal.stream().map(MultivectorValue::extractScalar).toList();
 		return resultsDouble;
 	}
 
