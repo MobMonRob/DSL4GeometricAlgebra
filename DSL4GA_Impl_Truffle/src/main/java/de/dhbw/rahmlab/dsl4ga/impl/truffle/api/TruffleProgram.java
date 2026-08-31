@@ -10,7 +10,6 @@ import de.orat.math.gacalc.api.MultivectorExpression;
 import de.orat.math.gacalc.api.MultivectorValue;
 import de.orat.math.gacalc.api.MultivectorVariable;
 import de.orat.math.sparsematrix.SparseDoubleMatrix;
-import java.util.ArrayList;
 import java.util.List;
 import org.graalvm.polyglot.PolyglotException;
 import org.graalvm.polyglot.Value;

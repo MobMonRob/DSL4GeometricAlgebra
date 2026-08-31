@@ -25,7 +25,6 @@ public class EfficientProgram implements iProgram {
 			.map(this.fac::createValue)
 			.toList();
 		List<MultivectorValue> retVal = func.callValue(argsVal);
-		// Check isScalar() omitted for performance.
 		List<Double> retDouble = retVal.stream()
 			.mapToDouble(MultivectorValue::extractScalar)
 			.boxed()

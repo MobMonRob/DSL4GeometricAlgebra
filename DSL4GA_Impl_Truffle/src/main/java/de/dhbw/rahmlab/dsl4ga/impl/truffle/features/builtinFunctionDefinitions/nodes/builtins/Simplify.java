@@ -9,6 +9,6 @@ public abstract class Simplify extends BuiltinFunctionBody {
 
 	@Specialization
 	protected MultivectorExpression doExecute(MultivectorExpression input) {
-		return input.simplify(GeomAlgeLangContext.get(this).getCurrentExternalArgs().params);
+		return input.simplify(GeomAlgeLangContext.get(this).getVisibleSimplificationVariables());
 	}
 }
