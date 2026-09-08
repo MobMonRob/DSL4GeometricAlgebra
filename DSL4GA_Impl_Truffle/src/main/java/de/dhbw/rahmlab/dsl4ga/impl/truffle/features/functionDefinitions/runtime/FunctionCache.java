@@ -23,7 +23,7 @@ final class FunctionCache {
 
 	/** Local test switch for comparing direct, simplified, and cached execution. */
 	private enum ExecutionMode { DIRECT, SIMPLIFY_ONLY, CACHE }
-	private static final ExecutionMode EXECUTION_MODE = ExecutionMode.CACHE;
+	private static final ExecutionMode EXECUTION_MODE = ExecutionMode.SIMPLIFY_ONLY;
 
 	private enum Kind { MULTIVECTOR, ARRAY, TUPLE }
 	private record ValueShape(Kind kind, int length) {
