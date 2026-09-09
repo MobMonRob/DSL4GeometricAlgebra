@@ -11,6 +11,8 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.superClasses.GeomAlgeLan
 
 /**
  * This is a superclass for all those exceptions which can be propagated to the invoking language.
+ * It must extend AbstractTruffleException so that the Truffle framework treats it as a first-class guest 
+ * language error.
  */
 @ExportLibrary(InteropLibrary.class)
 public abstract class AbstractExternalException extends AbstractTruffleException {

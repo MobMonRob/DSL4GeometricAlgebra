@@ -5,7 +5,9 @@ import com.oracle.truffle.api.frame.Frame;
 import com.oracle.truffle.api.instrumentation.InstrumentableNode;
 import com.oracle.truffle.api.instrumentation.StandardTags;
 import com.oracle.truffle.api.instrumentation.Tag;
+import com.oracle.truffle.api.interop.InteropLibrary;
 import com.oracle.truffle.api.interop.NodeLibrary;
+import com.oracle.truffle.api.interop.TruffleObject;
 import com.oracle.truffle.api.library.ExportLibrary;
 import com.oracle.truffle.api.library.ExportMessage;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.superClasses.GeomAlgeLangBaseNode;
@@ -37,17 +39,19 @@ public abstract class StatementBaseNode extends GeomAlgeLangBaseNode implements 
 	public abstract int getScopeVisibleVariablesIndex();
 
 	// Needed for Debugger.
+	// Declaring a variable counts as a structural statement, needed for the language server
 	@Override
 	public boolean hasTag(Class<? extends Tag> tag) {
 		// dbg
 //		if (tag == DebuggerTags.AlwaysHalt.class) {
 //			return true;
 //		}
-		// dbg
 		if (tag == StandardTags.StatementTag.class) {
 			return true;
 		}
 		return false;
+		//TODO sollte das nicht so aussehen
+		//return tag == StandardTags.StatementTag.class || super.hasTag(tag);
 	}
 
 	// Needed for Debugger Callstack.
@@ -78,4 +82,49 @@ public abstract class StatementBaseNode extends GeomAlgeLangBaseNode implements 
 			return new DebuggerLocalVariablesScope(frame, rootNode, getScopeVisibleVariablesIndex());
 		}
 	}
+	
+	
+	// Crucial for LSP: Expose the structural properties of this node
+	// neu
+	// oder muss der Code in subclasses?
+	// mir fehlt hier noch der Variable name, das spricht dafür dass der Code
+	// nur in einige Subclasses muss
+	// Im Beispielcode wurde der variable name als final im Konstruktor übergeben
+	//TODO
+	
+    /*@Override
+    public Object getNodeObject() {
+        return new VariableMetadata(variableName);
+    }
+
+    // A small TruffleObject that describes the variable to GraalVM's tools
+    @ExportLibrary(InteropLibrary.class)
+    static final class VariableMetadata implements TruffleObject {
+        private final String name;
+
+        VariableMetadata(String name) {
+            this.name = name;
+        }
+
+        @ExportMessage
+        boolean hasMembers() { return true; }
+
+		// (Note: KeysArray is a simple helper implementing InteropLibrary to wrap a string 
+		// array of property keys, common in Truffle languages).
+        @ExportMessage
+        Object getMembers(boolean includeInternal) {
+            return new KeysArray(new String[]{"name"});
+        }
+
+        @ExportMessage
+        boolean isMemberReadable(String member) {
+            return "name".equals(member);
+        }
+
+        @ExportMessage
+        Object readMember(String member) {
+            if ("name".equals(member)) return this.name;
+            return null;
+        }
+	}*/
 }

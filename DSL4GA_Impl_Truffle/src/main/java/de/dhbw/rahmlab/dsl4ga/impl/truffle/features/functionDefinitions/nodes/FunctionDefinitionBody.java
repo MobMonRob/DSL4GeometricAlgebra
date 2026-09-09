@@ -12,6 +12,10 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.st
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.superClasses.AbstractFunctionBody;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.visualization.nodes.stmt.CleanupVisualizer;
 
+/**
+  * The root node of a function must declare itself as a RootTag so GraalVM knows it represents an identifiable 
+  * block of logic.
+  */
 @GenerateWrapper
 public class FunctionDefinitionBody extends AbstractFunctionBody {
 
@@ -53,7 +57,8 @@ public class FunctionDefinitionBody extends AbstractFunctionBody {
 	}
 	private static final BlockExecutor blockExecutor = new BlockExecutor();
 
-	public FunctionDefinitionBody(NonReturningStatementBaseNode[] stmts, RetExprStmt retExprStmt, CleanupVisualizer nulleableCleanupVizualizer) {
+	public FunctionDefinitionBody(NonReturningStatementBaseNode[] stmts, RetExprStmt retExprStmt, 
+		                          CleanupVisualizer nulleableCleanupVizualizer) {
 		this.retExprStmt = retExprStmt;
 		this.nulleableCleanupVizualizer = nulleableCleanupVizualizer;
 		if (stmts.length != 0) {
@@ -83,6 +88,7 @@ public class FunctionDefinitionBody extends AbstractFunctionBody {
 	}
 
 	// Needed for Debugger.
+	// GraalVM LSP uses RootTag to map out the available functions/methods in a file
 	@Override
 	public boolean hasTag(Class<? extends Tag> tag) {
 		return tag == StandardTags.RootTag.class;

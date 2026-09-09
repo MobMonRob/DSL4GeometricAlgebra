@@ -60,6 +60,13 @@ public abstract class FunctionCall extends ExpressionBaseNode {
 		}
 	}
 
+	/**
+	 * Why is this commented out. It seems to be needed for the language server:
+	 * When parsing a function invocation or variable reference, you mark that node with CallTag. Crucially, 
+	 * to make navigation work, your node needs to provide a mechanism to look up its target function name 
+	 * or resolution reference.
+	 */
+	
 	/*
 	@Override
 	public boolean hasTag(Class<? extends Tag> tag) {
