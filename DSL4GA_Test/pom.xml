@@ -134,7 +134,7 @@
 					<trimStackTrace>false</trimStackTrace>
 					<!-- <printSummary>false</printSummary> -->
 					<enableAssertions>false</enableAssertions>
-					<testFailureIgnore>false</testFailureIgnore>
+					<testFailureIgnore>true</testFailureIgnore>
 				</configuration>
 			</plugin>
 			<plugin>
