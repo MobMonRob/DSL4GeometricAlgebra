@@ -20,6 +20,26 @@ public abstract class CatchAndRethrow {
 			return executable.execute();
 		} catch (Throwable ex) {
 			handle(ex, location);
+			// Re-throw it. GraalVM LSP listens for exceptions originating here
+            // and translates them directly to NetBeans editor squiggles.
+			
+			// To make sure the GraalVM Language Server Protocol (LSP) correctly intercepts your exceptions 
+			// and translates them into NetBeans editor red squiggles / diagnostics, you must throw a subclass 
+			// of:com.oracle.truffle.api.exception.AbstractTruffleException 
+            // [1] (https://www.graalvm.org/jdk24/graalvm-as-a-platform/language-implementation-framework/Options/), 
+			// [2] (https://www.graalvm.org/truffle/javadoc/org/graalvm/polyglot/PolyglotException.html)Truffle-aware	
+			// tools, instruments, and the built-in language server specifically catch AbstractTruffleException. 
+			// This base class ensures the underlying runtime treats the error as an expected guest language 
+			// runtime or syntax error rather than an internal host-side crash (like a standard RuntimeException 
+			// or NullPointerException, which the LSP framework safely swallows or treats as an internal server 
+			// bug). 
+			// [1] (https://www.graalvm.org/truffle/javadoc/org/graalvm/polyglot/PolyglotException.html), 
+			// [2] (https://www.graalvm.org/sdk/javadoc/org/graalvm/polyglot/PolyglotException.html)
+			
+			// TODO AssertionError scheint mir demnach hier falsch zu sein?
+			// vielleicht ist das hier doch richtig, da dies gerade nur die Fälle verarbeitet bei einem echten
+			// Absturz und bei einem Syntax-Error wird die method weiter unten aufgerufen die auch die passende
+			// Ex re-threwed
 			throw new AssertionError();
 		}
 	}
