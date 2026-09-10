@@ -156,7 +156,7 @@ public class DebuggerLocalVariablesScope implements TruffleObject {
 			MultivectorExpression simpleMvExpr = mvExpr.simplify(GeomAlgeLangContext.currentExternalArgs.params);
 			MultivectorValue mv = GeomAlgeLangContext.currentExternalArgs.evalToMV(List.of(simpleMvExpr)).get(0);
 			 */
-			MultivectorValue mv = GeomAlgeLangContext.currentExternalArgs.evalToMV(List.of(mvExpr)).get(0);
+			MultivectorValue mv = GeomAlgeLangContext.get().getCurrentExternalArgs().evalToMV(List.of(mvExpr)).get(0);
 			String mvNum = mv.toString();
 			// Use unsimplified mvSym for display.
 			String mvSym = mvExpr.toString();
@@ -173,7 +173,7 @@ public class DebuggerLocalVariablesScope implements TruffleObject {
 			// Use simplified mvs to better show structural zeroes in mvValues.
 			List<MultivectorValue> mvValues = GeomAlgeLangContext.currentExternalArgs.evalToMV(mvsSimple);
 			 */
-			List<MultivectorValue> mvValues = GeomAlgeLangContext.currentExternalArgs.evalToMV(mvs);
+			List<MultivectorValue> mvValues = GeomAlgeLangContext.get().getCurrentExternalArgs().evalToMV(mvs);
 			final int size = mvValues.size(); // == mvs.size()
 			StringBuilder sb = new StringBuilder();
 			for (int i = 0; i < size; ++i) {

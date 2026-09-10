@@ -27,6 +27,10 @@ public abstract class VisualizeMultivector extends NonReturningStatementBaseNode
 
 	@Specialization
 	protected void doExecute(VirtualFrame frame, Object varRefValue) {
+		if (!super.currentLanguageContext().isDebuggerActive()) {
+			return;
+		}
+
 		String varName = this.getVarRef().getName();
 		String funcName = ((FunctionDefinitionRootNode) super.getRootNode()).getName();
 		String fullName = String.format("%s::%s", funcName, varName);

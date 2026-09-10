@@ -88,7 +88,9 @@ Generally, to run a `.ocga`-file, you have to
 - Create a [`TruffleProgramFactory`](DSL4GA_Impl_Truffle/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/truffle/api/TruffleProgramFactory.java) while passing the correct reference to your file.
 - Invoke the returned [`TruffleProgram`](DSL4GA_Impl_Truffle/src/main/java/de/dhbw/rahmlab/dsl4ga/impl/truffle/api/TruffleProgram.java) with values of the correct shape.
 
-**The user is responsible to include the correct up- and down-projections between the passed values and the multivectors of their chosen algebra into their `.ocga`-file.**
+**Only scalars can be passed to and received from the main function.**
+
+**The user is responsible to include the correct up- and down-projections between the external scalar values and the multivectors of their chosen algebra into their `.ocga`-file.**
 
 
 ## Annotation based API
@@ -484,9 +486,9 @@ Joining round points only (using the wedge-operator) produces further round obje
 
 | object | grade | formula |
 | :---------- | :------ | :-------- |
-| dipole (oriented point pair) | 2 |  p1&#8743;p2 |
-| circle | 3 |  p1&#8743;p2&#8743;p3 |
-| sphere | 4 |  p1&#8743;p2&#8743;p3&#8743;p4 |
+| dipole (oriented point pair) | 2 |  $\displaystyle \vec{P}_p=\vec{p}_1\wedge\vec{p}_2$ |
+| circle | 3 |  $\displaystyle C=p_1\wedge p_2\wedge p_3$ |
+| sphere | 4 |  $\displaystyle S=p_1\wedge p_2\wedge p_3\wedge p_4$ |
 
 Joining round points with the point in infinity creates the flat objects:
 

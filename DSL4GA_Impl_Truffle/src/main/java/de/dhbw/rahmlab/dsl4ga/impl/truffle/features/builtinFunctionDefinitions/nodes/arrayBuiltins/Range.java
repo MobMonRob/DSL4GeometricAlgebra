@@ -18,7 +18,7 @@ public abstract class Range extends BuiltinFunctionBody {
 
 		// Hacky workaround.
 		// Better would be to have Integer directly.
-		List<MultivectorValue> numerics = GeomAlgeLangContext.currentExternalArgs.evalToMV(List.of(start, stop, step));
+		List<MultivectorValue> numerics = GeomAlgeLangContext.get(this).getCurrentExternalArgs().evalToMV(List.of(start, stop, step));
 		int[] intNumerics = numerics.stream().mapToInt(n -> (int) Math.round(n.elements().nonzeros()[0])).toArray();
 		int startInt = intNumerics[0];
 		int stopInt = intNumerics[1];

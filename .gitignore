@@ -13,4 +13,5 @@ DSL4GA_LSP/test.txt
 **/Debug
 **/Release
 **/target
+**/.codegraph
 
