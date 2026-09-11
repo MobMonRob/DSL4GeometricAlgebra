@@ -32,7 +32,7 @@ public class VisualizerService {
 	}
 
 	public void add(MultivectorExpression mv, String name, VisualizerFunctionContext vizContext, boolean isExtrinsic) {
-		MultivectorValue mvValue = GeomAlgeLangContext.currentExternalArgs.evalToMV(List.of(mv)).get(0);
+		MultivectorValue mvValue = GeomAlgeLangContext.get().getCurrentExternalArgs().evalToMV(List.of(mv)).get(0);
 		GeometricObject geometricObject = mvValue.decompose(isExtrinsic);
 		if (geometricObject != null) {
 			try {

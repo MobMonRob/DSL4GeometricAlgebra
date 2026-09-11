@@ -56,7 +56,9 @@ public class TruffleProgramFactory implements iProgramFactory<TruffleProgram> {
 			throw ExceptionEnricher.enrichException(ex);
 		}
 
-		TruffleProgram truffleProgram = new TruffleProgram(parsedProgram, fac);
+		Contexter contexter = new Contexter(context);
+		// LifeTimeExtender.extend(this.contextCloser, contexter); // Not necessary since lifetime is bound to truffleProgram anyway.
+		TruffleProgram truffleProgram = new TruffleProgram(parsedProgram, fac, contexter);
 		LifeTimeExtender.extend(this.contextCloser, truffleProgram);
 		return truffleProgram;
 	}

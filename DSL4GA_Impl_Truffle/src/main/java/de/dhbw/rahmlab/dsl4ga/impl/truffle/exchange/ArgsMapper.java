@@ -7,12 +7,24 @@ import de.orat.math.gacalc.api.MultivectorVariable;
 import de.orat.math.sparsematrix.SparseDoubleMatrix;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class ArgsMapper {
 
 	public final List<MultivectorValue> args;
 	public final List<MultivectorVariable> params;
 	public final GAFactory fac;
+
+	public ArgsMapper(GAFactory fac, int mainArity) {
+		this.fac = fac;
+		params = IntStream.range(0, mainArity)
+			.mapToObj(i -> String.format("arg%s", i))
+			.map(name -> fac.createVariable(name, 0)) // main params are always scalars.
+			.toList();
+		args = IntStream.range(0, mainArity)
+			.mapToObj(i -> fac.createValue(0d)) // Dummy scalars.
+			.toList();
+	}
 
 	public ArgsMapper(GAFactory fac, List<MultivectorValue> argsNum) {
 		List<MultivectorVariable> paramsVar = new ArrayList<>(argsNum.size());

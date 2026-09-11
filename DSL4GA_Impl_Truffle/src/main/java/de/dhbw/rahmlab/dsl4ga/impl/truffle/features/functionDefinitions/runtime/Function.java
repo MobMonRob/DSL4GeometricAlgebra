@@ -26,10 +26,20 @@ public class Function implements TruffleObject {
 	public static final int UNKNOWN_ARITY = -1;
 
 	protected final int arity;
+	private final CachePolicy cachePolicy;
+	private final FunctionCache cache;
+
+	public enum CachePolicy { CACHE, BYPASS }
 
 	public Function(AbstractFunctionRootNode functionRootNode, int arity) {
+		this(functionRootNode, arity, CachePolicy.CACHE);
+	}
+
+	public Function(AbstractFunctionRootNode functionRootNode, int arity, CachePolicy cachePolicy) {
 		this.functionRootNode = functionRootNode;
 		this.arity = arity;
+		this.cachePolicy = cachePolicy;
+		this.cache = new FunctionCache(this);
 	}
 
 	public String getName() {
@@ -62,6 +72,12 @@ public class Function implements TruffleObject {
 		return functionRootNode.getCallTarget();
 	}
 
+	CachePolicy getCachePolicy() { return cachePolicy; }
+
+	public void clearCache() { cache.clear(); }
+
+	public int getCacheSize() { return cache.size(); }
+
 	@ExportMessage
 	protected boolean isExecutable() {
 		return true;
@@ -86,7 +102,7 @@ public class Function implements TruffleObject {
 			// This is to find programming errors.
 			ensureArity(function, arguments); // assert
 
-			return callNode.call(arguments);
+			return function.cache.execute(arguments, callNode::call);
 		}
 
 		@Specialization(replaces = "doDirect")
@@ -97,7 +113,7 @@ public class Function implements TruffleObject {
 			// This is to find programming errors.
 			ensureArity(function, arguments); // assert
 
-			return callNode.call(function.getCallTarget(), arguments);
+			return function.cache.execute(arguments, rawArguments -> callNode.call(function.getCallTarget(), rawArguments));
 		}
 	}
 }

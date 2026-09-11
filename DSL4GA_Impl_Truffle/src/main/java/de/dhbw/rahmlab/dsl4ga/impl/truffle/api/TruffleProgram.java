@@ -10,7 +10,6 @@ import de.orat.math.gacalc.api.MultivectorExpression;
 import de.orat.math.gacalc.api.MultivectorValue;
 import de.orat.math.gacalc.api.MultivectorVariable;
 import de.orat.math.sparsematrix.SparseDoubleMatrix;
-import java.util.ArrayList;
 import java.util.List;
 import org.graalvm.polyglot.PolyglotException;
 import org.graalvm.polyglot.Value;
@@ -22,15 +21,25 @@ public class TruffleProgram implements iProgram {
 
 	private final Value parsedProgram;
 	private final GAFactory fac;
+	private final Contexter contexter;
+	private final int mainArity;
 
-	protected TruffleProgram(Value parsedProgram, GAFactory fac) {
+	protected TruffleProgram(Value parsedProgram, GAFactory fac, Contexter contexter) {
 		this.parsedProgram = parsedProgram;
 		this.fac = fac;
+		this.contexter = contexter;
+		this.mainArity = contexter.exec2(GeomAlgeLangContext::getMainArity);
 	}
 
 	private List<MultivectorExpression> invokeTruffleSym(ArgsMapper argsMapper) {
+		for (int i = 0; i < argsMapper.params.size(); ++i) {
+			if (!argsMapper.params.get(i).isScalar()) {
+				throw new RuntimeException(String.format("Input No. %s is not a scalar.", i));
+			}
+		}
+
 		// Needs to be set before truffle execution.
-		GeomAlgeLangContext.get().currentExternalArgs = argsMapper;
+		this.contexter.exec1(c -> c.setCurrentExternalArgs(argsMapper));
 
 		// Same types as in TruffleProgram.
 		TruffleBox<List<? extends MultivectorExpression>> symArgsBoxed = new TruffleBox<>(argsMapper.params);
@@ -43,6 +52,12 @@ public class TruffleProgram implements iProgram {
 			truffleResults = truffleResultsBoxed.getInner();
 		} catch (PolyglotException ex) {
 			throw ExceptionEnricher.enrichException(ex);
+		}
+
+		for (int i = 0; i < truffleResults.size(); ++i) {
+			if (!truffleResults.get(i).isScalar()) {
+				throw new RuntimeException(String.format("Output No. %s is not a scalar.", i));
+			}
 		}
 
 		return truffleResults;
@@ -79,33 +94,32 @@ public class TruffleProgram implements iProgram {
 		return simpleSymRes;
 	}
 
-	private List<MultivectorValue> invokeNum(List<MultivectorValue> argsNum) {
-		ArgsMapper argsMapper = new ArgsMapper(this.fac, argsNum);
-		List<MultivectorExpression> symRes = invokeTruffleSym(argsMapper);
-		List<MultivectorExpression> simpleSymRes = TruffleProgram.simplify(argsMapper.params, symRes);
-		List<MultivectorValue> numRes = argsMapper.evalToMV(simpleSymRes);
-		return numRes;
+	public int getMainArity() {
+		return this.mainArity;
 	}
 
-	/**
-	 * <pre>
-	 * Ich weiß eigentlich statisch schon den Shape. Alles nur Doubles.
-	 * Zur Bestimmung müsste ich aber über die Polyglot-API irgendwie die Anzahl an Inputs und Outputs durchschleifen. Das lasse ich erst mal.
-	 * Ich könnte sogar im ExecutionRootNode mich darum kümmern, komplett ohne übergebene Argumente rein symbolische Skalare MV zu basteln. Und die GAFunction über die Polyglot API zurück geben.
-	 * Dann kann ich mir hier sparen, die arguments zu übergeben.
-	 * Ich kann createEfficientProgram() sogar zusätzlich in der TruffleProgramFactory anbieten.
-	 * </pre>
-	 */
-	public EfficientProgram createEfficientProgram(List<Double> arguments) {
-		List<MultivectorValue> argsVal = arguments.stream()
-			.map(this.fac::createValue)
-			.toList();
-		ArgsMapper argsMapper = new ArgsMapper(this.fac, argsVal);
+	public EfficientProgram createEfficientProgram() {
+		ArgsMapper argsMapper = new ArgsMapper(this.fac, this.mainArity);
 		List<MultivectorExpression> symRes = invokeTruffleSym(argsMapper);
 		List<MultivectorExpression> simpleSymRes = TruffleProgram.simplify(argsMapper.params, symRes);
 		GAFunction func = this.fac.createFunction("eval", argsMapper.params, simpleSymRes);
 		EfficientProgram efficientProgram = new EfficientProgram(func, this.fac);
 		return efficientProgram;
+	}
+
+	public List<MultivectorExpression> invokeSym() {
+		ArgsMapper argsMapper = new ArgsMapper(this.fac, this.mainArity);
+		List<MultivectorExpression> symRes = invokeTruffleSym(argsMapper);
+		return symRes;
+	}
+
+	public List<MultivectorValue> invokeNum(List<MultivectorValue> argsNum) {
+		ArgsMapper argsMapper = new ArgsMapper(this.fac, argsNum);
+		List<MultivectorExpression> symRes = invokeTruffleSym(argsMapper);
+		// Simplify could be omitted here for testing performance.
+		List<MultivectorExpression> simpleSymRes = TruffleProgram.simplify(argsMapper.params, symRes);
+		List<MultivectorValue> numRes = argsMapper.evalToMV(simpleSymRes);
+		return numRes;
 	}
 
 	@Override
@@ -114,16 +128,7 @@ public class TruffleProgram implements iProgram {
 			.map(this.fac::createValue)
 			.toList();
 		List<MultivectorValue> resultsVal = invokeNum(argsVal);
-		final int resultsValSize = resultsVal.size();
-		List<Double> resultsDouble = new ArrayList<>(resultsValSize);
-		for (int i = 0; i < resultsValSize; ++i) {
-			MultivectorValue currentVal = resultsVal.get(i);
-			if (!currentVal.isScalar()) {
-				System.out.println(String.format("Warning: Output No. %s not a scalar: %s", i, currentVal));
-			}
-			double currentScalar = currentVal.extractScalar();
-			resultsDouble.add(currentScalar);
-		}
+		List<Double> resultsDouble = resultsVal.stream().map(MultivectorValue::extractScalar).toList();
 		return resultsDouble;
 	}
 

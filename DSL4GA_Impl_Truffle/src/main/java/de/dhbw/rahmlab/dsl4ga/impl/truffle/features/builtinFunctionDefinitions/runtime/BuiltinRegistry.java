@@ -32,7 +32,7 @@ public class BuiltinRegistry {
 	private void installBuiltins() {
 
 		// others
-		this.installBuiltin(SimplifyFactory.getInstance());
+		this.installBuiltin(SimplifyFactory.getInstance(), Function.CachePolicy.BYPASS);
 		this.installBuiltin(SetBladeFactory.getInstance());
 		this.installBuiltin(IdleFactory.getInstance());
 		this.installBuiltin(EuclidFactory.getInstance());
@@ -65,38 +65,50 @@ public class BuiltinRegistry {
 		this.installBuiltin(ScpFactory.getInstance());
 
 		// Array
-		this.installBuiltin(ReversedFactory.getInstance());
-		this.installBuiltin(ConcatFactory.getInstance());
-		this.installBuiltin(RangeFactory.getInstance());
+		this.installBuiltin(ReversedFactory.getInstance(), Function.CachePolicy.BYPASS);
+		this.installBuiltin(ConcatFactory.getInstance(), Function.CachePolicy.BYPASS);
+		this.installBuiltin(RangeFactory.getInstance(), Function.CachePolicy.BYPASS);
 
 		// HOF
-		this.installBuiltin("map", MapNodeGen.create());
-		this.installBuiltin("mapaccum", MapaccumNodeGen.create());
-		this.installBuiltin("mapfold", MapfoldNodeGen.create());
+		this.installBuiltin("map", MapNodeGen.create(), Function.CachePolicy.BYPASS);
+		this.installBuiltin("mapaccum", MapaccumNodeGen.create(), Function.CachePolicy.BYPASS);
+		this.installBuiltin("mapfold", MapfoldNodeGen.create(), Function.CachePolicy.BYPASS);
 	}
 
 	private void installBuiltin(String name, AbstractFunctionBody funcBody) {
+		installBuiltin(name, funcBody, Function.CachePolicy.CACHE);
+	}
+
+	private void installBuiltin(String name, AbstractFunctionBody funcBody, Function.CachePolicy cachePolicy) {
 		BuiltinFunctionRootNode builtinFunctionRootNode = new BuiltinFunctionRootNode(truffleLanguage, funcBody, name);
-		Function function = new Function(builtinFunctionRootNode, Function.UNKNOWN_ARITY);
+		Function function = new Function(builtinFunctionRootNode, Function.UNKNOWN_ARITY, cachePolicy);
 		this.builtins.put(function.getName(), function);
 	}
 
 	private void installBuiltin(NodeFactory<? extends BuiltinFunctionBody> factory) {
+		installBuiltin(factory, Function.CachePolicy.CACHE);
+	}
+
+	private void installBuiltin(NodeFactory<? extends BuiltinFunctionBody> factory, Function.CachePolicy cachePolicy) {
 		String simpleName = factory.getNodeClass().getSimpleName();
 		String first = simpleName.substring(0, 1).toLowerCase();
 		String residue = simpleName.substring(1, simpleName.length());
 		String name = first + residue;
-		installBuiltin(name, factory);
+		installBuiltin(name, factory, cachePolicy);
 	}
 
 	private void installBuiltin(String name, NodeFactory<? extends BuiltinFunctionBody> factory) {
+		installBuiltin(name, factory, Function.CachePolicy.CACHE);
+	}
+
+	private void installBuiltin(String name, NodeFactory<? extends BuiltinFunctionBody> factory, Function.CachePolicy cachePolicy) {
 		final int arity = factory.getExecutionSignature().size();
 
 		FunctionArgumentReader[] functionArguments = FunctionArgumentReader.createArray(0, arity);
 
 		BuiltinFunctionBody builtinFunctionBody = factory.createNode((Object) functionArguments);
 		BuiltinFunctionRootNode builtinFunctionRootNode = new BuiltinFunctionRootNode(truffleLanguage, builtinFunctionBody, name);
-		Function function = new Function(builtinFunctionRootNode, arity);
+		Function function = new Function(builtinFunctionRootNode, arity, cachePolicy);
 
 		this.builtins.put(function.getName(), function);
 	}
