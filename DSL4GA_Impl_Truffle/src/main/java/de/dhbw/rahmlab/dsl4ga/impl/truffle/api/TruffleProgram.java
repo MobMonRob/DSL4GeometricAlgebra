@@ -99,12 +99,17 @@ public class TruffleProgram implements iProgram {
 	}
 
 	public EfficientProgram createEfficientProgram() {
+		GAFunction func = this.invokeSymAsFunction();
+		EfficientProgram efficientProgram = new EfficientProgram(func, this.fac);
+		return efficientProgram;
+	}
+
+	public GAFunction invokeSymAsFunction() {
 		ArgsMapper argsMapper = new ArgsMapper(this.fac, this.mainArity);
 		List<MultivectorExpression> symRes = invokeTruffleSym(argsMapper);
 		List<MultivectorExpression> simpleSymRes = TruffleProgram.simplify(argsMapper.params, symRes);
-		GAFunction func = this.fac.createFunction("eval", argsMapper.params, simpleSymRes);
-		EfficientProgram efficientProgram = new EfficientProgram(func, this.fac);
-		return efficientProgram;
+		GAFunction func = this.fac.createFunction("main", argsMapper.params, simpleSymRes);
+		return func;
 	}
 
 	public List<MultivectorExpression> invokeSym() {
