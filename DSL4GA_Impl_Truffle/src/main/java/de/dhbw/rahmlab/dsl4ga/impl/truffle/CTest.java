@@ -14,7 +14,7 @@ public class CTest {
 		var fac = new TruffleProgramFactory();
 		var prog = fac.parse(url);
 		var func = prog.invokeSymAsFunction();
-		// "" as path: output will be in DSL4G directory.
+		// "" as path: output will be in DSL4GA_Impl_Truffle directory.
 		func.generateC("", "gen.c");
 	}
 }
