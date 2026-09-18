@@ -64,14 +64,14 @@ Alternatively clone it from [GitHub](https://github.com/JogAmp/vecmath/tree/dev1
 
 Clone and checkout
 - [SparseMatrix](https://github.com/orat/SparseMatrix)
-- [GeometricAlgebra](https://github.com/orat/GeometricAlgebra)
-- [ConformalGeometricAlgebra](https://github.com/orat/ConformalGeometricAlgebra)
+- [GeometricAlgebra](https://github.com/orat/GeometricAlgebra) - DEPRECATED
+- [ConformalGeometricAlgebra](https://github.com/orat/ConformalGeometricAlgebra) - DEPRECATED
 - [JNativeLibLoader](https://github.com/MobMonRob/JNativeLibLoader)
 - [JCasADi](https://github.com/MobMonRob/JCasADi)
 - [GACalcAPI](https://github.com/orat/GACalcAPI)
 - [GACasADi](https://github.com/orat/GACasADi)
-- [Euclid3DViewAPI](https://github.com/orat/Euclid3DViewAPI)
-- [EuclidView3d](https://github.com/orat/EuclidView3d)
+- [Euclid3DViewAPI](https://github.com/orat/Euclid3DViewAPI) - API to external visualization tools
+- [EuclidView3d](https://github.com/orat/EuclidView3d) - default visualization tool which opens its own frame
 
 and build the projects in these repositories to have them available in your local Maven cache. Some of them require a C++ compiler and Linux to build. Read the README.md of these projects to make sure the projects will build. Once build, the artifacts should run on Windows as well.
 
