@@ -16,6 +16,7 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.Va
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.Function;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.parsing.astConstruction.SourceUnitTransform;
 import de.orat.math.gacalc.api.GAFactory;
+import de.orat.math.gacalc.api.GAServiceLoader;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collections;
@@ -23,6 +24,7 @@ import java.util.Map;
 import java.util.Optional;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.atn.PredictionMode;
 
 public final class ParsingService {
@@ -51,6 +53,12 @@ public final class ParsingService {
 
 	}
 
+	@FunctionalInterface
+	private interface ParserOperation<T> {
+
+		T invoke(GeomAlgeParser parser) throws ValidationParsingException;
+	}
+
 	private static <E extends Exception & IGetExceptionContext> ValidationException decorateException(E ex) {
 		ExceptionContext exCtx = ex.getExceptionContext();
 
@@ -62,7 +70,7 @@ public final class ParsingService {
 
 	protected FactoryAndFunctions invoke(Optional<GAFactory> optFac, Map<String, Function> functionsView, GeomAlgeParser parser, GeomAlgeLangContext geomAlgeLangContext) throws ValidationParsingException {
 		GeomAlgeParser.SourceUnitContext sourceUnit = parser.sourceUnit();
-		GAFactory fac = SourceUnitTransform.getFactory(parser, sourceUnit);
+		GAFactory fac = resolveFactory(sourceUnit);
 		Map<String, Function> allFunctions = functionsView;
 
 		if (geomAlgeLangContext.getFac() == null) {
@@ -119,49 +127,39 @@ public final class ParsingService {
 	 * language context or compiling its functions.
 	 */
 	public GAFactory getFactory(CharStreamSupplier program) {
-		GeomAlgeLexer lexer = this.getLexer(program);
-		GeomAlgeParser parser = this.getParser(lexer);
 		try {
-			return getFactory(parser);
-		} catch (ContextParseCancellationException ex) {
-			program.get().seek(0);
-			lexer = this.getLexer(program);
-			parser = this.getParser(lexer);
-			configureParserDiagnostic(parser);
-			try {
-				return getFactory(parser);
-			} catch (ContextParseCancellationException ex2) {
-				throw decorateException(ex);
-			}
+			return parseWithFallback(program, parser -> resolveFactory(parser.sourceUnit()));
+		} catch (ValidationParsingException ex) {
+			throw decorateException(ex);
 		}
 	}
 
-	private static GAFactory getFactory(GeomAlgeParser parser) {
-		GeomAlgeParser.SourceUnitContext sourceUnit = parser.sourceUnit();
-		return SourceUnitTransform.getFactory(parser, sourceUnit);
+	private static GAFactory resolveFactory(GeomAlgeParser.SourceUnitContext sourceUnit) {
+		var algebraContext = sourceUnit.algebra();
+		String algebraID = algebraContext.algebraID.getText();
+		Token implID = algebraContext.implID;
+		if (implID != null) {
+			return GAServiceLoader.getGAFactoryThrowing(algebraID, implID.getText());
+		}
+		return GAServiceLoader.getGAFactoryThrowing(algebraID);
 	}
 
 	protected FactoryAndFunctions parse(Optional<GAFactory> optFac, Map<String, Function> functionsView, CharStreamSupplier program, GeomAlgeLangContext geomAlgeLangContext) throws ValidationParsingException {
+		return parseWithFallback(program, parser -> invoke(optFac, functionsView, parser, geomAlgeLangContext));
+	}
+
+	private <T> T parseWithFallback(CharStreamSupplier program, ParserOperation<T> operation) throws ValidationParsingException {
 		GeomAlgeLexer lexer = this.getLexer(program);
 		GeomAlgeParser parser = this.getParser(lexer);
-		configureParserDefault(parser);
-		// configureParserDiagnostic(parser); //DBG
 		try {
-			return invoke(optFac, functionsView, parser, geomAlgeLangContext);
+			return operation.invoke(parser);
 		} catch (ContextParseCancellationException ex) {
-			// System.out.println("PredictionMode.SLL failed.");
-
-			// Leads to incorrect error reporting in some cases.
-			// lexer.reset();
-			// parser.reset();
-			// Better instead:
 			program.get().seek(0);
 			lexer = this.getLexer(program);
 			parser = this.getParser(lexer);
-
 			configureParserDiagnostic(parser);
 			try {
-				return invoke(optFac, functionsView, parser, geomAlgeLangContext);
+				return operation.invoke(parser);
 			} catch (ContextParseCancellationException ex2) {
 				throw decorateException(ex);
 			}
