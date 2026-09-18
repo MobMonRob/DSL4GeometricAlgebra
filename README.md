@@ -104,6 +104,9 @@ A Syntax-Highlighting plugin for the Netbeans-IDE can be found [here](https://gi
 ### Insertion of special characters
 A Netbeans-IDE plugin which adds a submenu into the context-menu of the editor to insert CGA-specific symbols and operators can be found [here](https://github.com/orat/netbeans-cgasymbols).
 
+### Visualization
+Default is to show visualizations in a seperate window. But the the module DSL4GAViewer it is possible to connect to Visualizer window which is integrated into netbeans. To use this functionality the netbeans-IDE must run the netbeans-EudlcidView3d plugin. 
+
 ## Implementations
 There are two implementations of the [API](DSL4GA_API):
 - [Truffle](DSL4GA_Impl_Truffle), which will be optimized for a good development experience. **Use truffle by default.**
