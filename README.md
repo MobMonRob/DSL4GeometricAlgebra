@@ -352,9 +352,9 @@ There exist three types of involution operations: Space inversion, reversion and
 | :---------- | ------------ |
 | dot()       | dot product, 0-grade indcluded - different to inner product |
 | ip()        | inner product, 0-grade is excluded different to the dot-product |
+| scp()       | scalar product |
 | up()        | up-projection of an euclidian point represented by an euclidean vector into the space of the multivector (with intrinsic orientation type) |
 | down()      | down-projection of a multivector point with intrinsic orientation type into the euclidean space (by normalization and rejection from the minkowski plane E0 in the case of CGA) |
-| scp()       | scalar product |
 | exp()       | exponential of a bivector or a scalar |
 | log()       | logarithm of general rotor/even multivector (should be normalized) |
 | normalize() | normalize of an even multivector (general rotor, scalars inclusive)|
