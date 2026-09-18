@@ -60,7 +60,7 @@ final class ClassGenerator {
 		// Body
 		CodeBlock.Builder bodyBuilder = CodeBlock.builder();
 		bodyBuilder
-			.addStatement("String path = \"$L$L.ocga\"", i.annotation.path, m.name)
+			.addStatement("String path = \"$L$L.ga\"", i.annotation.path, m.name)
 			.addStatement("var url = this.getClass().getResource(path)")
 			.beginControlFlow("if (url == null)")
 			.addStatement("throw new $T(String.format(\"Path not found: %s\", path))", RuntimeException.class)

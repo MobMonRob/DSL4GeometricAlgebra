@@ -54,7 +54,7 @@ public class App {
 	}
 
 	/*private static void invocationTest() throws Exception {
-		String path = "./vizTest.ocga";
+		String path = "./vizTest.ga";
 		var url = DebuggerTest.class.getResource(path);
 		if (url == null) {
 			throw new RuntimeException(String.format("Path not found: %s", path));

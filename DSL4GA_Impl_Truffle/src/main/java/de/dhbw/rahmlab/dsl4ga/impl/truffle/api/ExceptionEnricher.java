@@ -26,7 +26,7 @@ class ExceptionEnricher {
 		if (origin == null) {
 			return new RuntimeException(ex);
 		}
-		//			// Hier würde noch der Ort im ocga Quelltext fehlen.
+		//			// Hier würde noch der Ort im ga Quelltext fehlen.
 		//			// Und auch die Nachricht der geworfenen Exception.
 		//			Iterable<PolyglotException.StackFrame> polyglotStackTrace = ex.getPolyglotStackTrace();
 		//			String truffleStackFrames = StreamSupport.stream(polyglotStackTrace.spliterator(), false).filter(sf -> sf.isGuestFrame()).map(sf -> sf.getRootName()).collect(Collectors.joining("\n"));

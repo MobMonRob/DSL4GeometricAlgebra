@@ -14,14 +14,14 @@ class GAFactoryServiceTest {
 
 	@Test
 	void resolvesFactoryDeclaredBySourceFile() throws URISyntaxException, IOException {
-		var factory = getFactory("dk2.ocga");
+		var factory = getFactory("dk2.ga");
 
 		assertEquals("cga", factory.getAlgebra());
 	}
 
 	@Test
 	void resolvesPgaFactoryDeclaredBySourceFile() throws URISyntaxException, IOException {
-		var factory = getFactory("pgatest.ocga");
+		var factory = getFactory("pgatest.ga");
 
 		assertEquals("pga", factory.getAlgebra());
 	}
