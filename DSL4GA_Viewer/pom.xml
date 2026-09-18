@@ -46,6 +46,17 @@
 			<version>1.0-SNAPSHOT</version>
 			<type>jar</type>
 		</dependency>
+	 <dependency>
+	  <groupId>de.orat.math.view</groupId>
+	  <artifactId>EuclidView3d</artifactId>
+	  <version>1.0-SNAPSHOT</version>
+	  <scope>runtime</scope>
+	 </dependency>
+	 <dependency>
+	  <groupId>org.netbeans.api</groupId>
+	  <artifactId>org-openide-util-lookup</artifactId>
+	  <version>RELEASE310</version>
+	 </dependency>
 	</dependencies>
 
 	<build>

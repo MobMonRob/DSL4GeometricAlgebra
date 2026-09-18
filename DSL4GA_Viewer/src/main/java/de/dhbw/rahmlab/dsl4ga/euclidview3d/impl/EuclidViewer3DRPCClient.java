@@ -7,10 +7,12 @@ import org.apache.dubbo.config.ReferenceConfig;
 import org.jogamp.vecmath.Matrix4d;
 import org.jogamp.vecmath.Point3d;
 import org.jogamp.vecmath.Vector3d;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  * @author Oliver Rettig (Oliver.Rettig@orat.de)
  */
+@ServiceProvider(service=iEuclidViewer3D.class)
 public class EuclidViewer3DRPCClient implements iEuclidViewer3D {
 
 	private iEuclidViewer3D viewerRPCService;
@@ -35,12 +37,17 @@ public class EuclidViewer3DRPCClient implements iEuclidViewer3D {
     // for result.
 	@Override
 	public void open() throws Exception {
+		System.out.println("Trys to open an external viewer (e.g in netbeans ide) via RPC (dubbio)!");
 		viewerRPCService.open();
-		// TODO soll eine Ex feuern, wenn der Server nicht verfügbar ist. Dann soll
+		// open() feuert hoffentlich bereits eine Ex feuern, wenn der Server nicht verfügbar ist. Dann soll
 		// die Default-Impl des Viewers verwendet werden die ein eigenes Fenster 
 		// aufmacht
 	}
 
+	public boolean isDefault(){
+        return false;
+    }
+	
 	@Override
 	public boolean close() {
 		return viewerRPCService.close();

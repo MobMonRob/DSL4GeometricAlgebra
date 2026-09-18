@@ -11,7 +11,9 @@ import de.orat.view3d.euclid3dviewapi.spi.iEuclidViewer3D;
 import de.orat.view3d.euclid3dviewapi.util.Line;
 import de.orat.view3d.euclid3dviewapi.util.Plane;
 import java.awt.Color;
+import java.util.Iterator;
 import java.util.Optional;
+import java.util.ServiceConfigurationError;
 import org.jogamp.vecmath.Matrix4d;
 import org.jogamp.vecmath.Point3d;
 import org.jogamp.vecmath.Tuple3d;
@@ -35,9 +37,40 @@ public class GAViewer extends GAViewObject {
 
     private final iEuclidViewer3D impl;
    
+	/**
+	 * Get an instance of the viewer and invoke open() to test if the viewer client (e.g. 
+	 * the viewer-plugin in netbeans) is availale and accessable).
+	 * 
+	 * @return an instance of a viewer if it is available and the window could be opened.
+	 */
     public static Optional<GAViewer> getInstance(){
-         Optional<iEuclidViewer3D> viewer = ViewerService.getInstance().getViewer();
-         GAViewer gaViewer = null;
+		GAViewer defaultViewer = null;
+         //Optional<iEuclidViewer3D> viewer = ViewerService.getInstance().getViewer();
+		 Iterator<iEuclidViewer3D> viewers = ViewerService.getInstance().getViewers();
+		 try {
+			while (viewers.hasNext()){
+				try {
+					GAViewer viewer = new GAViewer(viewers.next());
+					if (viewer.impl.isDefault()) {
+						defaultViewer = viewer;
+					} else {
+						return Optional.of(viewer);
+					}
+				} catch (ServiceConfigurationError e){
+					// sollte auftreten, wenn der viewer nicht geöffnet werden konnte, also
+					// z.B. bei RPC-Viewer netbeans kein passenden plugin installiert hat
+					// das ist also kein Fehler, sondern soll nur dazu führen, dass der
+					// default viewer verwendet werden soll
+					e.printStackTrace();
+				}
+			}
+		 } catch (Exception /*ServiceConfigurationError*/ err){
+			 //TODO unklar wann das auftreten kann
+			 err.printStackTrace();
+		 }
+		 return Optional.ofNullable(defaultViewer);
+		 
+         /*GAViewer gaViewer = null;
          if (viewer.isPresent()){
              try {
                 gaViewer = new GAViewer(viewer.get());
@@ -46,7 +79,7 @@ public class GAViewer extends GAViewObject {
                 ex.printStackTrace();
              }
          }
-         return Optional.ofNullable(gaViewer);
+         return Optional.ofNullable(gaViewer);*/
     }
     
     GAViewer(iEuclidViewer3D impl) throws Exception {
