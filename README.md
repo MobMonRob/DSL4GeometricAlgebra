@@ -71,7 +71,7 @@ Clone and checkout
 - [GACalcAPI](https://github.com/orat/GACalcAPI)
 - [GACasADi](https://github.com/orat/GACasADi)
 - [Euclid3DViewAPI](https://github.com/orat/Euclid3DViewAPI) - API to external visualization tools
-- [EuclidView3d](https://github.com/orat/EuclidView3d) - default visualization tool which opens its own frame
+- [EuclidView3d](https://github.com/orat/EuclidView3d) - default visualization tool which opens its own frame (optional, if not included no default visualization is available)
 
 and build the projects in these repositories to have them available in your local Maven cache. Some of them require a C++ compiler and Linux to build. Read the README.md of these projects to make sure the projects will build. Once build, the artifacts should run on Windows as well.
 
