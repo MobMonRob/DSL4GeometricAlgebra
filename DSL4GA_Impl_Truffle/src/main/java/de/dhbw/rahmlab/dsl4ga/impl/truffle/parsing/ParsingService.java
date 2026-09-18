@@ -114,6 +114,33 @@ public final class ParsingService {
 		}
 	}
 
+	/**
+	 * Resolves the factory declared by a source unit without creating a Truffle
+	 * language context or compiling its functions.
+	 */
+	public GAFactory getFactory(CharStreamSupplier program) {
+		GeomAlgeLexer lexer = this.getLexer(program);
+		GeomAlgeParser parser = this.getParser(lexer);
+		try {
+			return getFactory(parser);
+		} catch (ContextParseCancellationException ex) {
+			program.get().seek(0);
+			lexer = this.getLexer(program);
+			parser = this.getParser(lexer);
+			configureParserDiagnostic(parser);
+			try {
+				return getFactory(parser);
+			} catch (ContextParseCancellationException ex2) {
+				throw decorateException(ex);
+			}
+		}
+	}
+
+	private static GAFactory getFactory(GeomAlgeParser parser) {
+		GeomAlgeParser.SourceUnitContext sourceUnit = parser.sourceUnit();
+		return SourceUnitTransform.getFactory(parser, sourceUnit);
+	}
+
 	protected FactoryAndFunctions parse(Optional<GAFactory> optFac, Map<String, Function> functionsView, CharStreamSupplier program, GeomAlgeLangContext geomAlgeLangContext) throws ValidationParsingException {
 		GeomAlgeLexer lexer = this.getLexer(program);
 		GeomAlgeParser parser = this.getParser(lexer);
