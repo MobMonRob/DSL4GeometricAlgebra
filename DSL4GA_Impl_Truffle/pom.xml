@@ -7,8 +7,6 @@
 		<version>1.0-SNAPSHOT</version>
 	</parent>
 	<groupId>de.dhbw.rahmlab</groupId>
-	<!-- TODO können wir das in ga umbenennen um wie sl.jar ein ga.jar zu bekommen
-	enthält das überhaupt den ganzen code der von einem ga.jar erwartet wird	-->
 	<artifactId>DSL4GA_Impl_Truffle</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
@@ -42,9 +40,8 @@
 			<version>1.0-SNAPSHOT</version>
 			<scope>runtime</scope>
 		</dependency>
+		
 		<!-- Still needed for visualisation. -->
-
-
 		<dependency>
 			<groupId>de.orat.view3d</groupId>
 			<artifactId>Euclid3DViewAPI</artifactId>
@@ -84,14 +81,7 @@
 			<version>${graalvm.version}</version>
 			<type>jar</type>
 		</dependency>
-		<!--test-->
-		<!-- Core module of the polyglot Language Server backend -->
-		<!--dependency>
-			<groupId>org.graalvm.tools</groupId>
-			<artifactId>lsp-tool</artifactId>
-			<version>${graalvm.version}</version>
-			<type>runtime</type>
-		</dependency-->
+		
 		<!-- The polyglot language server backend
 		brauche ich das neben lsp-tool oder brauche ich nur das fragezeichen
 		depends runtime from lsp-tool and truffle-runtime-->
@@ -102,13 +92,15 @@
 			<!-- warum pom und nicht jar -->
 			<type>pom</type>
 		</dependency>
-	 <dependency>
-	  <groupId>de.dhbw.rahmlab</groupId>
-	  <artifactId>DSL4GA_Viewer</artifactId>
-	  <version>1.0-SNAPSHOT</version>
-	  <type>jar</type>
-	 </dependency>
+		
+		<dependency>
+			<groupId>de.dhbw.rahmlab</groupId>
+			<artifactId>DSL4GA_Viewer</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<type>jar</type>
+		</dependency>
 	</dependencies>
+	
 	<build>
 		<pluginManagement>
 			<plugins>

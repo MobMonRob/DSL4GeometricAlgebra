@@ -1,0 +1,61 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/module-info.java to edit this template
+ */
+
+module DSL4GA_Impl_Truffle {
+	requires DSL4GA.API;
+	requires SparseMatrix;
+	requires DSL4GA.Common;
+	requires org.antlr.antlr4.runtime;
+	requires GACalcAPI;
+	requires org.apache.commons.lang3;
+	requires commons.math3;
+	requires Euclid3DViewAPI;
+	requires vecmath;
+	requires org.graalvm.polyglot;
+	requires org.graalvm.collections;
+	requires org.graalvm.nativeimage;
+	requires org.graalvm.word;
+	requires org.graalvm.truffle;
+	requires org.graalvm.tools.lsp;
+	requires org.graalvm.tools.api.lsp;
+	requires org.graalvm.shadowed.org.json;
+	requires DSL4GA.Viewer;
+	//requires dubbo;
+	requires org.javassist;
+	//requires io.netty.all;
+	//requires io.netty.buffer;
+	//requires io.netty.codec;
+	//requires io.netty.codec.dns;
+	//requires io.netty.codec.haproxy;
+	//requires io.netty.codec.http;
+	//requires io.netty.codec.http2;
+	//requires io.netty.codec.memcache;
+	//requires io.netty.codec.mqtt;
+	//requires io.netty.codec.redis;
+	//requires io.netty.codec.smtp;
+	//requires io.netty.codec.socks;
+	//requires io.netty.codec.stomp;
+	//requires io.netty.codec.xml;
+	//requires io.netty.common;
+	//requires io.netty.handler;
+	//requires io.netty.transport.unix.common;
+	//requires io.netty.handler.proxy;
+	//requires io.netty.handler.ssl.ocsp;
+	//requires io.netty.resolver;
+	//requires io.netty.resolver.dns;
+	//requires io.netty.transport;
+	//requires io.netty.transport.rxtx;
+	//requires io.netty.transport.sctp;
+	//requires io.netty.transport.udt;
+	//requires io.netty.transport.classes.epoll;
+	//requires io.netty.transport.classes.kqueue;
+	//requires io.netty.resolver.dns.classes.macos;*/
+	//requires org.yaml.snakeyaml;
+	requires hessian.lite;
+	//requires com.alibaba.fastjson2;
+	//requires com.google.protobuf;
+	
+	provides com.oracle.truffle.api.provider.TruffleLanguageProvider with de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangProvider;
+}

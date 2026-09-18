@@ -46,7 +46,7 @@ fn main(theta1, theta2, theta3, theta4, theta5, theta6) {
 	:L0 = ε₁ ∧ ε₂ // line in z-direction, through the origin, e12, extrinsic, ipns
 	L0Dir = euclid(L0)/E₃
 	theta[] = {theta1, theta2, theta3, theta4, theta5, theta6}
-	L[] = f(L0, theta) // hier bekomme ich grades [0,2,4] statt homogene Multivektoren
+	L[] = fk(L0, theta) // hier bekomme ich grades [0,2,4] statt homogene Multivektoren
     ::Ls[] = map(simplify, L)
 	//::Ls1 = simplify(Ls[0]) // FIXME die Formel stimmt nicht mit der von Gaalop bestimmten überein
 	//::Ls2 = simplify(Ls[1])

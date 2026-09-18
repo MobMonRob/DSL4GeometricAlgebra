@@ -19,6 +19,10 @@ import com.oracle.truffle.api.interop.TruffleObject;
 import java.util.Collections;
 //import com.oracle.truffle.api.Scope;
 
+/**
+ * Der TruffleLanguageProvider wird von der Truffle-DSL automatisch generiert, 
+ * wenn die Sprachklasse mit @TruffleLanguage.Registration annotiert wird. 
+ */
 // contextPolicy = ContextPolicy.SHARED
 @TruffleLanguage.Registration(
 	id = GeomAlgeLang.LANGUAGE_ID,
@@ -44,7 +48,7 @@ public class GeomAlgeLang extends TruffleLanguage<GeomAlgeLangContext> {
 	// Otherwise, debugging stops working.
 	public static final String LANGUAGE_ID = "ocga";
 	public static final String FILE_ENDING = ".ocga";
-	public static final String MIME_TYPE = "application/x-ocga";
+	public static final String MIME_TYPE = "text/x-ocga"; // application/x-ocga";
 
 	private GeomAlgeLangContext context;
 
