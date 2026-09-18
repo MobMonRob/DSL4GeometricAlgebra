@@ -7,7 +7,6 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.arrays.runtime.ArrayObject;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.nodes.builtinsSuperClasses.BuiltinFunctionBody;
 import de.orat.math.gacalc.api.GAFactory;
 import de.orat.math.gacalc.api.MultivectorExpression;
-import de.orat.math.gacalc.api.MultivectorValue;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,11 +17,10 @@ public abstract class Range extends BuiltinFunctionBody {
 
 		// Hacky workaround.
 		// Better would be to have Integer directly.
-		List<MultivectorValue> numerics = GeomAlgeLangContext.get(this).getCurrentExternalArgs().evalToMV(List.of(start, stop, step));
-		int[] intNumerics = numerics.stream().mapToInt(n -> (int) Math.round(n.elements().nonzeros()[0])).toArray();
-		int startInt = intNumerics[0];
-		int stopInt = intNumerics[1];
-		int stepInt = intNumerics[2];
+		List<Integer> intNumerics = super.extractSymbolicNumericScalars(List.of(start, stop, step));
+		int startInt = intNumerics.get(0);
+		int stopInt = intNumerics.get(1);
+		int stepInt = intNumerics.get(2);
 
 		GAFactory fac = GeomAlgeLangContext.get(this).getFac();
 		List<MultivectorExpression> theRange = new ArrayList<>((stopInt - startInt) / stepInt);

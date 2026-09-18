@@ -37,6 +37,7 @@ public class BuiltinRegistry {
 		this.installBuiltin(IdleFactory.getInstance());
 		this.installBuiltin(EuclidFactory.getInstance());
 		this.installBuiltin(CoefFactory.getInstance());
+		this.installBuiltin(FilterGradeFactory.getInstance());
 
 		// in/out functions
 		this.installBuiltin(UpFactory.getInstance());
