@@ -65,7 +65,7 @@ public final class ParsingService {
 		LocationCarrier loc = new LocationCarrier();
 		loc.setSourceSection(exCtx.fromIndex, exCtx.toIndexInclusive);
 
-		throw new ValidationException(null, ex, loc);
+		throw new ValidationException(ex.getMessage(), ex, loc);
 	}
 
 	protected FactoryAndFunctions invoke(Optional<GAFactory> optFac, Map<String, Function> functionsView, GeomAlgeParser parser, GeomAlgeLangContext geomAlgeLangContext) throws ValidationParsingException {
