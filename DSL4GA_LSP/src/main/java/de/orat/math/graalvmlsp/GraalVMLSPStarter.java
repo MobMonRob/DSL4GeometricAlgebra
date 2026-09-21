@@ -26,12 +26,21 @@ public final class GraalVMLSPStarter {
             throw new IllegalArgumentException("Invalid LSP port: " + port);
         }
 
+        // The NetBeans module retains this output for startup diagnostics and
+        // logs it only at FINE level during normal operation.
+        System.err.println("[GA-LSP] Java: " + System.getProperty("java.version"));
+        System.err.println("[GA-LSP] java.home: " + System.getProperty("java.home"));
+
         try (Context context = Context.newBuilder(GeomAlgeLang.LANGUAGE_ID)
                 .allowAllAccess(true)
                 .allowExperimentalOptions(true)
                 .option("lsp", "127.0.0.1:" + port)
                 .build()) {
             context.initialize(GeomAlgeLang.LANGUAGE_ID);
+            context.getEngine().getLanguages().forEach((id, language)
+                    -> System.err.println("[GA-LSP] Language " + id + ": " + language.getName()));
+            context.getEngine().getInstruments().forEach((id, instrument)
+                    -> System.err.println("[GA-LSP] Instrument " + id + ": " + instrument.getName()));
 
             // NetBeans owns this process and terminates it when the LSP binding closes.
             new CountDownLatch(1).await();
