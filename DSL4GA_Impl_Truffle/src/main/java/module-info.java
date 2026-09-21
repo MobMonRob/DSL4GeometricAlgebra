@@ -1,8 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/module-info.java to edit this template
- */
-
 module DSL4GA_Impl_Truffle {
 	requires DSL4GA.API;
 	requires SparseMatrix;
