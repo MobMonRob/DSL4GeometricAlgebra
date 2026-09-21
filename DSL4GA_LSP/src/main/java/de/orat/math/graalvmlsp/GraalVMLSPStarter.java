@@ -17,14 +17,7 @@ public final class GraalVMLSPStarter {
     }
 
     public static void main(String[] args) throws InterruptedException {
-        if (args.length != 1) {
-            throw new IllegalArgumentException("Expected exactly one LSP port argument.");
-        }
-
-        int port = Integer.parseInt(args[0]);
-        if (port < 1 || port > 65535) {
-            throw new IllegalArgumentException("Invalid LSP port: " + port);
-        }
+        int port = parsePort(args);
 
         // The NetBeans module retains this output for startup diagnostics and
         // logs it only at FINE level during normal operation.
@@ -45,5 +38,22 @@ public final class GraalVMLSPStarter {
             // NetBeans owns this process and terminates it when the LSP binding closes.
             new CountDownLatch(1).await();
         }
+    }
+
+    static int parsePort(String[] args) {
+        if (args.length != 1) {
+            throw new IllegalArgumentException("Expected exactly one LSP port argument.");
+        }
+
+        final int port;
+        try {
+            port = Integer.parseInt(args[0]);
+        } catch (NumberFormatException ex) {
+            throw new IllegalArgumentException("Invalid LSP port: " + args[0], ex);
+        }
+        if (port < 1 || port > 65535) {
+            throw new IllegalArgumentException("Invalid LSP port: " + port);
+        }
+        return port;
     }
 }
