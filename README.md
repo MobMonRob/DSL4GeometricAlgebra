@@ -72,7 +72,7 @@ Clone and checkout
 - [GACasADi](https://github.com/orat/GACasADi)
 - [Euclid3DViewAPI](https://github.com/orat/Euclid3DViewAPI) - API to external visualization tools
 - [EuclidView3d](https://github.com/orat/EuclidView3d) - default visualization tool which opens its own frame (optional, if not included no default visualization is available)
-- [netbeans-ocga](https://github.com/orat/netbeans-ocga) - Netbeans Plugin for syntax highlighting, etc.
+- (Optional) [netbeans-ocga](https://github.com/orat/netbeans-ocga) - Netbeans Plugin for syntax highlighting, etc.
 
 and build the projects in these repositories to have them available in your local Maven cache. Some of them require a C++ compiler and Linux to build. Read the README.md of these projects to make sure the projects will build. Once build, the artifacts should run on Windows as well.
 
@@ -555,6 +555,19 @@ In `DSL4GA_Impl_Truffle`:
 	- Register yor Builtin in `installBuiltins()` similar to the existing ones.
 
 If the name of the Builtin class is “Abs”, the Builtin function in the DSL will be “abs”.
+
+
+## Dev Docs / Netbeans Plugin
+### New algebra added
+If a new algebra was added to GACasADi, in order to use its constants in the syntax highligter, rebuild and reinstall [netbeans-ocga](https://github.com/orat/netbeans-ocga).
+
+### Changes in Truffle -> LSP
+If changes occured in Truffle with effects to the LSP and you want to use them in Netbeans. Execute the following steps in this sequence:
+- Rebuild DSL4GA_Impl_Truffle.
+- Rebuild DSL4GA_LSP.
+- Rebuild netbeans-ocga.
+- Reinstall netbeans-ocga in Netbeans.
+- Restart Netbeans.
 
 
 ## Next Steps
