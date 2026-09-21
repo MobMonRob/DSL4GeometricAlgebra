@@ -72,6 +72,7 @@ Clone and checkout
 - [GACasADi](https://github.com/orat/GACasADi)
 - [Euclid3DViewAPI](https://github.com/orat/Euclid3DViewAPI) - API to external visualization tools
 - [EuclidView3d](https://github.com/orat/EuclidView3d) - default visualization tool which opens its own frame (optional, if not included no default visualization is available)
+- [netbeans-ocga](https://github.com/orat/netbeans-ocga) - Netbeans Plugin for syntax highlighting, etc.
 
 and build the projects in these repositories to have them available in your local Maven cache. Some of them require a C++ compiler and Linux to build. Read the README.md of these projects to make sure the projects will build. Once build, the artifacts should run on Windows as well.
 
@@ -105,7 +106,7 @@ A Syntax-Highlighting plugin for the Netbeans-IDE can be found [here](https://gi
 A Netbeans-IDE plugin which adds a submenu into the context-menu of the editor to insert CGA-specific symbols and operators can be found [here](https://github.com/orat/netbeans-cgasymbols).
 
 ### Visualization
-Default is to show visualizations in a seperate window. But the the module DSL4GAViewer it is possible to connect to Visualizer window which is integrated into netbeans. To use this functionality the netbeans-IDE must run the netbeans-EudlcidView3d plugin. 
+Default is to show visualizations in a seperate window. But the the module DSL4GAViewer it is possible to connect to Visualizer window which is integrated into netbeans. To use this functionality the netbeans-IDE must run the netbeans-EudlcidView3d plugin.
 
 ## Implementations
 There are two implementations of the [API](DSL4GA_API):
