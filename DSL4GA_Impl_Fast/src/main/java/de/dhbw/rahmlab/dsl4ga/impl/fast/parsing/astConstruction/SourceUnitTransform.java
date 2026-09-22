@@ -3,16 +3,15 @@ package de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.astConstruction;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParser;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParser.FunctionContext;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParserBaseListener;
+import de.dhbw.rahmlab.dsl4ga.common.api.GAFactoryService;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationParsingException;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationParsingRuntimeException;
 import de.dhbw.rahmlab.dsl4ga.impl.fast.parsing.ParsingService.FactoryAndMain;
 import de.orat.math.gacalc.api.GAFactory;
 import de.orat.math.gacalc.api.GAFunction;
-import de.orat.math.gacalc.api.GAServiceLoader;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import org.antlr.v4.runtime.Token;
 
 public class SourceUnitTransform extends GeomAlgeParserBaseListener {
 
@@ -25,16 +24,7 @@ public class SourceUnitTransform extends GeomAlgeParserBaseListener {
 
 		// SourceUnitTransform transform = new SourceUnitTransform(geomAlgeLangContext);
 		// SkippingParseTreeWalker.walk(transform, ctx, GeomAlgeParser.FunctionBodyContext.class);
-		var algebraContext = ctx.algebra();
-		String algebraID = algebraContext.algebraID.getText();
-		Token implID = algebraContext.implID;
-
-		GAFactory fac;
-		if (implID != null) {
-			fac = GAServiceLoader.getGAFactoryThrowing(algebraID, implID.getText());
-		} else {
-			fac = GAServiceLoader.getGAFactoryThrowing(algebraID);
-		}
+		GAFactory fac = GAFactoryService.getFactory(ctx);
 
 		for (FunctionContext functionCtx : ctx.functions) {
 			GAFunction function = FuncTransform.generate(fac, parser, functionCtx, functionsView);
