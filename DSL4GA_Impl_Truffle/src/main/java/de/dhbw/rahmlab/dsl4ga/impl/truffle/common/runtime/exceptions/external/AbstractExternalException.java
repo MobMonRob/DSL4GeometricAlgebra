@@ -18,7 +18,26 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.superClasses.GeomAlgeLan
 public abstract class AbstractExternalException extends AbstractTruffleException {
 
 	public AbstractExternalException(String message, Throwable cause, GeomAlgeLangBaseNode location) {
-		super(message, cause, AbstractTruffleException.UNLIMITED_STACK_TRACE, location);
+		super(normalizeMessage(message, cause), cause, AbstractTruffleException.UNLIMITED_STACK_TRACE, location);
+	}
+
+	/**
+	 * The GraalVM LSP forwards this message directly to editor diagnostics.
+	 * NetBeans rejects diagnostics without a description, so host exceptions
+	 * without their own message need a stable fallback here.
+	 */
+	private static String normalizeMessage(String message, Throwable cause) {
+		if (message != null && !message.isBlank()) {
+			return message;
+		}
+		if (cause != null) {
+			String causeMessage = cause.getMessage();
+			if (causeMessage != null && !causeMessage.isBlank()) {
+				return causeMessage;
+			}
+			return cause.getClass().getSimpleName();
+		}
+		return "Unknown language error";
 	}
 
 	public GeomAlgeLangBaseNode location() {
