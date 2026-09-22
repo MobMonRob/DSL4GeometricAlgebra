@@ -59,6 +59,11 @@ public class GeomAlgeLang extends TruffleLanguage<GeomAlgeLangContext> {
 		return catchAndRethrow(null, () -> parseImpl(request));
 	}
 
+	@Override
+	protected Object getScope(GeomAlgeLangContext context) {
+		return context.getGlobalScope();
+	}
+
 	private CallTarget parseImpl(ParsingRequest request) throws IOException {
 		Source source = request.getSource();
 		GeomAlgeLangContext context = getCurrentContext(GeomAlgeLang.class);

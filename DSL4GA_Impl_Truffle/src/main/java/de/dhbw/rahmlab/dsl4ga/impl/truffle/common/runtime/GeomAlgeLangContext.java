@@ -34,6 +34,7 @@ public final class GeomAlgeLangContext {
 	}
 
 	public final BuiltinRegistry builtinRegistry;
+	private final SymbolScope globalScope;
 	public final GeomAlgeLang truffleLanguage;
 	public final TruffleLanguage.Env env;
 	private final ThreadLocal<Deque<DocumentState>> parsingDocumentStates
@@ -101,8 +102,14 @@ public final class GeomAlgeLangContext {
 
 	public GeomAlgeLangContext(GeomAlgeLang truffleLanguage, Env env) {
 		this.builtinRegistry = new BuiltinRegistry(truffleLanguage);
+		this.globalScope = new SymbolScope("builtins", builtinRegistry.getBuiltinsView(), null);
 		this.truffleLanguage = truffleLanguage;
 		this.env = env;
+	}
+
+	/** Global symbols are context-wide; document symbols must use a child scope. */
+	public SymbolScope getGlobalScope() {
+		return globalScope;
 	}
 
 	/** Activates the document whose AST root is currently executing. */

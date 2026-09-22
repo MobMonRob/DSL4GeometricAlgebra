@@ -5,18 +5,25 @@ import com.oracle.truffle.api.instrumentation.GenerateWrapper;
 import com.oracle.truffle.api.instrumentation.ProbeNode;
 import com.oracle.truffle.api.instrumentation.StandardTags;
 import com.oracle.truffle.api.instrumentation.Tag;
+import com.oracle.truffle.api.frame.Frame;
+import com.oracle.truffle.api.interop.NodeLibrary;
+import com.oracle.truffle.api.library.ExportLibrary;
+import com.oracle.truffle.api.library.ExportMessage;
 import com.oracle.truffle.api.nodes.BlockNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.stmtSuperClasses.NonReturningStatementBaseNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.stmt.RetExprStmt;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.superClasses.AbstractFunctionBody;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.visualization.nodes.stmt.CleanupVisualizer;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.SymbolScope;
 
 /**
   * The root node of a function must declare itself as a RootTag so GraalVM knows it represents an identifiable 
   * block of logic.
   */
 @GenerateWrapper
+@ExportLibrary(NodeLibrary.class)
 public class FunctionDefinitionBody extends AbstractFunctionBody {
 
 	// Needed for Debugger.
@@ -92,5 +99,22 @@ public class FunctionDefinitionBody extends AbstractFunctionBody {
 	@Override
 	public boolean hasTag(Class<? extends Tag> tag) {
 		return tag == StandardTags.RootTag.class;
+	}
+
+	/**
+	 * Supplies document symbols when completion is requested in a function area
+	 * that has no nearby statement, for example an otherwise empty body.
+	 */
+	@ExportMessage
+	boolean hasScope(@SuppressWarnings("unused") Frame frame) {
+		return true;
+	}
+
+	@ExportMessage
+	SymbolScope getScope(@SuppressWarnings("unused") Frame frame,
+			@SuppressWarnings("unused") boolean onEnter) {
+		FunctionDefinitionRootNode rootNode = (FunctionDefinitionRootNode) getRootNode();
+		return SymbolScope.forDocument(rootNode.getDocumentState(), getSourceSection().getCharIndex(),
+				GeomAlgeLangContext.get(this).getGlobalScope());
 	}
 }

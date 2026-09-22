@@ -95,8 +95,11 @@ final class TruffleSourceCompiler {
 			ensureCompatibleImport(importedFactory.get(), factory);
 		}
 
+		// Keep the pre-existing namespace separately: it contains builtins and
+		// algebra-library functions, but no declarations from this source file.
+		Map<String, Function> externalFunctions = allFunctions;
 		allFunctions = SourceUnitTransform.generate(allFunctions, parser, sourceUnit, context, analysisBuilder);
-		documentState.complete(allFunctions, analysisBuilder.build());
+		documentState.complete(externalFunctions, allFunctions, analysisBuilder.build());
 		return new CompiledSource(documentState, allFunctions);
 	}
 

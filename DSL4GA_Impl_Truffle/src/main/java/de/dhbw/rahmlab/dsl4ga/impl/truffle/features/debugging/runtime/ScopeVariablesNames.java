@@ -12,7 +12,7 @@ public class ScopeVariablesNames implements TruffleObject {
 
 	private final List<String> variablesNames;
 
-	ScopeVariablesNames(List<String> memberNames) {
+	public ScopeVariablesNames(List<String> memberNames) {
 		this.variablesNames = memberNames;
 	}
 

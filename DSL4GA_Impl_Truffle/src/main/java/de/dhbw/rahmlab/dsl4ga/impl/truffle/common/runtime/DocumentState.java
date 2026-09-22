@@ -38,10 +38,19 @@ public final class DocumentState {
         return result;
     }
 
-    public Map<String, Function> getFunctions() {
+	public Map<String, Function> getFunctions() {
         CompletedAnalysis analysis = completedAnalysis;
         return analysis == null ? Map.of() : analysis.functions();
-    }
+	}
+
+	/**
+	 * Returns functions already available before this document added its own
+	 * declarations, such as builtins and its algebra library.
+	 */
+	public Map<String, Function> getExternalFunctions() {
+		CompletedAnalysis analysis = completedAnalysis;
+		return analysis == null ? Map.of() : analysis.externalFunctions();
+	}
 
     /** Returns the immutable source-level symbol analysis of this document. */
     public DocumentAnalysis getDocumentAnalysis() {
@@ -57,15 +66,16 @@ public final class DocumentState {
     }
 
     /** Completes this state once its source unit has been parsed successfully. */
-    public synchronized void complete(Map<String, Function> functions,
-            DocumentAnalysis documentAnalysis) {
+	public synchronized void complete(Map<String, Function> externalFunctions,
+			Map<String, Function> functions,
+			DocumentAnalysis documentAnalysis) {
         if (completedAnalysis != null) {
             throw new IllegalStateException("Document state has already been completed.");
         }
         // A single volatile reference publishes the immutable result atomically
         // to later LSP requests, which can run on another thread.
-        this.completedAnalysis = new CompletedAnalysis(Map.copyOf(functions),
-                Objects.requireNonNull(documentAnalysis, "documentAnalysis"));
+		this.completedAnalysis = new CompletedAnalysis(Map.copyOf(externalFunctions), Map.copyOf(functions),
+				Objects.requireNonNull(documentAnalysis, "documentAnalysis"));
     }
 
     private CompletedAnalysis getCompletedAnalysis() {
@@ -76,7 +86,8 @@ public final class DocumentState {
         return analysis;
     }
 
-    private record CompletedAnalysis(Map<String, Function> functions,
-            DocumentAnalysis documentAnalysis) {
+	private record CompletedAnalysis(Map<String, Function> externalFunctions,
+			Map<String, Function> functions,
+			DocumentAnalysis documentAnalysis) {
     }
 }

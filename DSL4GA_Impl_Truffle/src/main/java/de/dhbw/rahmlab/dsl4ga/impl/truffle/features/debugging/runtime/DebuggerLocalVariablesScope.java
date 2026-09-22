@@ -18,6 +18,7 @@ import com.oracle.truffle.api.source.SourceSection;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.stmtSuperClasses.NonReturningStatementBaseNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLang;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.SymbolScope;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.arrays.runtime.ArrayObject;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.FunctionDefinitionRootNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.nodes.stmt.LocalVariableAssignment;
@@ -37,14 +38,17 @@ public class DebuggerLocalVariablesScope implements TruffleObject {
 	private final FunctionDefinitionRootNode rootNode;
 	private final Map<String, LocalVariableAssignment> namesToVarNodes;
 	private final List<String> visibleVarsNames;
+	private final SymbolScope documentScope;
 
 	// Erst mal lasse ich es bei der ineffizienten Implementierung.
 	// Der Scope sollte gecached werden pro rootNode mit den schweren Berechnungen.
 	// Und dann sollte es nur eine leichtgewichtige View geben mit dem scopeVisibleVariablesIndex.
 	// Holen aus HashMap muss dann vergleichen, ob der scopeVisiableVariablesIndex kleiner ist.
-	public DebuggerLocalVariablesScope(Frame frame, FunctionDefinitionRootNode rootNode, int scopeVisibleVariablesIndex) {
-		this.frame = frame.materialize();
+	public DebuggerLocalVariablesScope(Frame frame, FunctionDefinitionRootNode rootNode,
+			int scopeVisibleVariablesIndex, int sourceOffset, SymbolScope globalScope) {
+		this.frame = frame == null ? null : frame.materialize();
 		this.rootNode = rootNode;
+		this.documentScope = SymbolScope.forDocument(rootNode.getDocumentState(), sourceOffset, globalScope);
 
 		BlockNode<NonReturningStatementBaseNode> stmts = this.rootNode.getBody().getStmts();
 		int maxLength = stmts.getElements().length;
@@ -102,7 +106,11 @@ public class DebuggerLocalVariablesScope implements TruffleObject {
 	@ExportMessage
 	@TruffleBoundary
 	ScopeVariablesNames getMembers(boolean includeInternal) {
-		return new ScopeVariablesNames(visibleVarsNames);
+		List<String> names = new ArrayList<>(visibleVarsNames);
+		documentScope.getVisibleMemberNames().forEach(name -> {
+			if (!names.contains(name)) names.add(name);
+		});
+		return new ScopeVariablesNames(names);
 	}
 
 	@ExportMessage
@@ -134,7 +142,8 @@ public class DebuggerLocalVariablesScope implements TruffleObject {
 	@ExportMessage
 	@TruffleBoundary
 	boolean isMemberReadable(String memberName) {
-		return this.namesToVarNodes.containsKey(memberName);
+		return this.namesToVarNodes.containsKey(memberName)
+				|| documentScope.getVisibleMemberNames().contains(memberName);
 	}
 
 	/**
@@ -145,9 +154,17 @@ public class DebuggerLocalVariablesScope implements TruffleObject {
 	 */
 	@ExportMessage
 	@TruffleBoundary
-	String readMember(String member) {
+	Object readMember(String member) {
 		// System.out.println(String.format("-------> Ask: %s", member));
 		LocalVariableAssignment varNode = this.namesToVarNodes.get(member);
+		if (varNode == null) {
+			Object value = documentScope.getMemberValue(member);
+			return value == null ? "unknown" : value;
+		}
+		if (frame == null) {
+			// Completion requests are static and have no execution frame.
+			return "not evaluated";
+		}
 		Object varValue = this.frame.getObjectStatic(varNode.getFrameSlot());
 		String str = "invalid";
 		if (varValue instanceof MultivectorExpression mvExpr) {
@@ -205,12 +222,12 @@ public class DebuggerLocalVariablesScope implements TruffleObject {
 
 	@ExportMessage
 	boolean hasScopeParent() {
-		return false;
+		return true;
 	}
 
 	@ExportMessage
 	Object getScopeParent() throws UnsupportedMessageException {
-		throw UnsupportedMessageException.create();
+		return documentScope;
 	}
 
 	@ExportMessage
