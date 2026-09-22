@@ -7,7 +7,6 @@ import com.oracle.truffle.api.TruffleLanguage.Env;
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.debug.Debugger;
 import com.oracle.truffle.api.nodes.Node;
-import com.oracle.truffle.api.source.Source;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.builtinFunctionDefinitions.runtime.BuiltinRegistry;
 import de.orat.math.gacalc.api.GAFactory;
 import de.orat.math.gacalc.api.MultivectorVariable;
@@ -34,8 +33,9 @@ public final class GeomAlgeLangContext {
 	public final GeomAlgeLang truffleLanguage;
 	public final TruffleLanguage.Env env;
 	private GAFactory gaFactory = null;
-	private Source source = null;
 	private ArgsMapper currentExternalArgs = null;
+	private final ThreadLocal<Deque<DocumentState>> parsingDocumentStates
+		= ThreadLocal.withInitial(ArrayDeque::new);
 	private final ThreadLocal<Deque<List<MultivectorVariable>>> functionSpecializationVariableScopes
 		= ThreadLocal.withInitial(ArrayDeque::new);
 	private int mainArity = -1;
@@ -118,12 +118,29 @@ public final class GeomAlgeLangContext {
 		return this.gaFactory;
 	}
 
-	public void setSource(Source source) {
-		this.source = source;
+
+	/** Makes a document state available while its AST is being constructed. */
+	public void pushParsingDocumentState(DocumentState documentState) {
+		this.parsingDocumentStates.get().addLast(documentState);
 	}
 
-	public Source getSource() {
-		return this.source;
+	/** Removes the innermost document state after parsing, including failed parses. */
+	public void popParsingDocumentState() {
+		this.parsingDocumentStates.get().removeLast();
+	}
+
+	/**
+	 * Returns the document currently being parsed on this thread.
+	 *
+	 * <p>A stack is required because an algebra library can be parsed while its
+	 * importing document is still being constructed.</p>
+	 */
+	public DocumentState getCurrentParsingDocumentState() {
+		DocumentState documentState = this.parsingDocumentStates.get().peekLast();
+		if (documentState == null) {
+			throw new IllegalStateException("No document is currently being parsed.");
+		}
+		return documentState;
 	}
 
 	@TruffleBoundary

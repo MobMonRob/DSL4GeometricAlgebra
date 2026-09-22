@@ -11,6 +11,8 @@ import de.dhbw.rahmlab.dsl4ga.common.parsing.IGetExceptionContext;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.SyntaxErrorListener;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationParsingException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.superClasses.GeomAlgeLangBaseNode;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.DocumentState;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLang;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.ValidationException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.Function;
@@ -22,10 +24,10 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
-import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.atn.PredictionMode;
+import com.oracle.truffle.api.source.Source;
 
 public final class ParsingService {
 
@@ -59,11 +61,11 @@ public final class ParsingService {
 		T invoke(GeomAlgeParser parser) throws ValidationParsingException;
 	}
 
-	private static <E extends Exception & IGetExceptionContext> ValidationException decorateException(E ex) {
+	private static <E extends Exception & IGetExceptionContext> ValidationException decorateException(E ex, Source source) {
 		ExceptionContext exCtx = ex.getExceptionContext();
 
 		LocationCarrier loc = new LocationCarrier();
-		loc.setSourceSection(exCtx.fromIndex, exCtx.toIndexInclusive);
+		loc.setSourceSection(source, exCtx.fromIndex, exCtx.toIndexInclusive);
 
 		throw new ValidationException(ex.getMessage(), ex, loc);
 	}
@@ -71,6 +73,7 @@ public final class ParsingService {
 	protected FactoryAndFunctions invoke(Optional<GAFactory> optFac, Map<String, Function> functionsView, GeomAlgeParser parser, GeomAlgeLangContext geomAlgeLangContext) throws ValidationParsingException {
 		GeomAlgeParser.SourceUnitContext sourceUnit = parser.sourceUnit();
 		GAFactory fac = resolveFactory(sourceUnit);
+		DocumentState documentState = geomAlgeLangContext.getCurrentParsingDocumentState();
 		Map<String, Function> allFunctions = functionsView;
 
 		if (geomAlgeLangContext.getFac() == null) {
@@ -81,14 +84,13 @@ public final class ParsingService {
 			// Get algebra import file.
 			Optional<Path> optLibFile = fac.getAlgebraLibFile();
 			if (optLibFile.isPresent()) {
-				// Exceptions hier liefern später nicht die Source Datei zurück.
-				CharStreamSupplier libFileSupplier;
+				Source librarySource;
 				try {
-					libFileSupplier = CharStreamSupplier.from(CharStreams.fromPath(optLibFile.get()));
+					librarySource = Source.newBuilder(GeomAlgeLang.LANGUAGE_ID, optLibFile.get().toUri().toURL()).build();
 				} catch (IOException ex) {
 					throw new ValidationException(ex);
 				}
-				allFunctions = parse(Optional.of(fac), allFunctions, libFileSupplier, geomAlgeLangContext).functions();
+				allFunctions = parse(Optional.of(fac), allFunctions, librarySource, geomAlgeLangContext).functions();
 			}
 		} else {
 			GAFactory previousFac = optFac.get();
@@ -106,19 +108,39 @@ public final class ParsingService {
 		}
 
 		allFunctions = SourceUnitTransform.generate(allFunctions, parser, sourceUnit, geomAlgeLangContext);
+		documentState.complete(fac, allFunctions);
 		return new FactoryAndFunctions(fac, allFunctions);
 	}
 
-	public FactoryAndMain parse(CharStreamSupplier program, GeomAlgeLangContext geomAlgeLangContext) {
+	/** Parses a Truffle source and binds all created AST nodes to that source. */
+	public FactoryAndMain parse(Source source, GeomAlgeLangContext geomAlgeLangContext) {
 		try {
-			FactoryAndFunctions factoryAndFunctions = parse(Optional.empty(), geomAlgeLangContext.builtinRegistry.getBuiltinsView(), program, geomAlgeLangContext);
+			FactoryAndFunctions factoryAndFunctions = parse(Optional.empty(), geomAlgeLangContext.builtinRegistry.getBuiltinsView(), source, geomAlgeLangContext);
 			Function main = factoryAndFunctions.functions().get("main");
 			if (main == null) {
 				throw new ValidationException("No main function has been defined.");
 			}
 			return new FactoryAndMain(factoryAndFunctions.fac(), main);
 		} catch (ValidationParsingException ex) {
-			throw decorateException(ex);
+			throw decorateException(ex, source);
+		}
+	}
+
+	/**
+	 * Compatibility entry point for callers outside Truffle that do not have a
+	 * {@link Source}. Such parses receive a synthetic source name.
+	 */
+	public FactoryAndMain parse(CharStreamSupplier program, GeomAlgeLangContext geomAlgeLangContext) {
+		Source source = Source.newBuilder(GeomAlgeLang.LANGUAGE_ID, program.get().toString(), "in-memory.ga").build();
+		try {
+			FactoryAndFunctions factoryAndFunctions = parse(Optional.empty(), geomAlgeLangContext.builtinRegistry.getBuiltinsView(), program, source, geomAlgeLangContext);
+			Function main = factoryAndFunctions.functions().get("main");
+			if (main == null) {
+				throw new ValidationException("No main function has been defined.");
+			}
+			return new FactoryAndMain(factoryAndFunctions.fac(), main);
+		} catch (ValidationParsingException ex) {
+			throw decorateException(ex, source);
 		}
 	}
 
@@ -127,10 +149,11 @@ public final class ParsingService {
 	 * language context or compiling its functions.
 	 */
 	public GAFactory getFactory(CharStreamSupplier program) {
+		Source source = Source.newBuilder(GeomAlgeLang.LANGUAGE_ID, program.get().toString(), "in-memory.ga").build();
 		try {
-			return parseWithFallback(program, parser -> resolveFactory(parser.sourceUnit()));
+			return parseWithFallback(program, source, parser -> resolveFactory(parser.sourceUnit()));
 		} catch (ValidationParsingException ex) {
-			throw decorateException(ex);
+			throw decorateException(ex, source);
 		}
 	}
 
@@ -144,11 +167,33 @@ public final class ParsingService {
 		return GAServiceLoader.getGAFactoryThrowing(algebraID);
 	}
 
-	protected FactoryAndFunctions parse(Optional<GAFactory> optFac, Map<String, Function> functionsView, CharStreamSupplier program, GeomAlgeLangContext geomAlgeLangContext) throws ValidationParsingException {
-		return parseWithFallback(program, parser -> invoke(optFac, functionsView, parser, geomAlgeLangContext));
+	protected FactoryAndFunctions parse(Optional<GAFactory> optFac, Map<String, Function> functionsView, Source source, GeomAlgeLangContext geomAlgeLangContext) throws ValidationParsingException {
+		try {
+			CharStreamSupplier program = CharStreamSupplier.from(source.getReader());
+			return parse(optFac, functionsView, program, source, geomAlgeLangContext);
+		} catch (IOException ex) {
+			throw new ValidationException(ex);
+		}
 	}
 
-	private <T> T parseWithFallback(CharStreamSupplier program, ParserOperation<T> operation) throws ValidationParsingException {
+	/**
+	 * Parses the supplied ANTLR input while retaining the separate Truffle source
+	 * used for source sections and the document-bound analysis state.
+	 */
+	protected FactoryAndFunctions parse(Optional<GAFactory> optFac, Map<String, Function> functionsView,
+			CharStreamSupplier program, Source source, GeomAlgeLangContext geomAlgeLangContext) throws ValidationParsingException {
+		DocumentState documentState = new DocumentState(source);
+		geomAlgeLangContext.pushParsingDocumentState(documentState);
+		try {
+			return parseWithFallback(program, source, parser -> invoke(optFac, functionsView, parser, geomAlgeLangContext));
+		} catch (ValidationParsingException ex) {
+			throw decorateException(ex, source);
+		} finally {
+			geomAlgeLangContext.popParsingDocumentState();
+		}
+	}
+
+	private <T> T parseWithFallback(CharStreamSupplier program, Source source, ParserOperation<T> operation) throws ValidationParsingException {
 		GeomAlgeLexer lexer = this.getLexer(program);
 		GeomAlgeParser parser = this.getParser(lexer);
 		try {
@@ -161,7 +206,7 @@ public final class ParsingService {
 			try {
 				return operation.invoke(parser);
 			} catch (ContextParseCancellationException ex2) {
-				throw decorateException(ex);
+				throw decorateException(ex, source);
 			}
 		}
 	}

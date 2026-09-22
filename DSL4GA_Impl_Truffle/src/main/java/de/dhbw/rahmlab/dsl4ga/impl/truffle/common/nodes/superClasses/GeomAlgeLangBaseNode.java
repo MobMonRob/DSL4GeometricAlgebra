@@ -18,10 +18,16 @@ public abstract class GeomAlgeLangBaseNode extends Node {
 
 	private int sourceCharIndex = NO_SOURCE;
 	private int sourceLength;
+	private Source source;
 
 	// invoked by the parser to set the source
 	// parse() und damit diese Methode wird unter Umständen mehrfach aufgerufen
 	public void setSourceSection(int fromIndex, int toIndexInclusive) throws IllegalArgumentException {
+		setSourceSection(currentLanguageContext().getCurrentParsingDocumentState().getSource(), fromIndex, toIndexInclusive);
+	}
+
+	/** Sets a source section for parser errors that are created outside an AST parse. */
+	public void setSourceSection(Source source, int fromIndex, int toIndexInclusive) throws IllegalArgumentException {
 		//assert sourceCharIndex == NO_SOURCE : "source should only be set once";
 		// testweise
 		// ich lande hier zwei mal mit gleichem fromIndex
@@ -43,6 +49,9 @@ public abstract class GeomAlgeLangBaseNode extends Node {
 		}
 		this.sourceCharIndex = fromIndex;
 		this.sourceLength = toIndexInclusive - fromIndex + 1;
+		// Keep the source with this AST node. The language context can later parse
+		// another open document on the same engine.
+		this.source = source;
 	}
 
 	public boolean hasSourceSection() {
@@ -55,8 +64,6 @@ public abstract class GeomAlgeLangBaseNode extends Node {
 			// AST node without source
 			return null;
 		}
-		GeomAlgeLangContext context = currentLanguageContext();
-		Source source = context.getSource();
 		return source.createSection(sourceCharIndex, sourceLength);
 	}
 
