@@ -13,9 +13,6 @@ module DSL4GA_Impl_Truffle {
 	requires org.graalvm.nativeimage;
 	requires org.graalvm.word;
 	requires org.graalvm.truffle;
-	requires org.graalvm.tools.lsp;
-	requires org.graalvm.tools.api.lsp;
-	requires org.graalvm.shadowed.org.json;
 	requires DSL4GA.Viewer;
 	//requires dubbo;
 	requires org.javassist;
