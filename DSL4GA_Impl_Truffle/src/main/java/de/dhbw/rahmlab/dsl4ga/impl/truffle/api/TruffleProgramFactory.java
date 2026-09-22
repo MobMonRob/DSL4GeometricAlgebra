@@ -5,7 +5,6 @@ import de.dhbw.rahmlab.dsl4ga.common.AutoCloser;
 import de.dhbw.rahmlab.dsl4ga.common.LifeTimeExtender;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLang;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
-import de.orat.math.gacalc.api.GAFactory;
 import java.io.IOException;
 import java.io.Reader;
 import java.net.URL;
@@ -48,17 +47,16 @@ public class TruffleProgramFactory implements iProgramFactory<TruffleProgram> {
 		Context context = this.contextCloser.get();
 
 		final Value parsedProgram;
-		final GAFactory fac;
+		final GeomAlgeLangContext.ParsedProgramMetadata metadata;
 		try {
 			parsedProgram = context.parse(source);
-			fac = context.getPolyglotBindings().getMember(GeomAlgeLangContext.FAC_SYMBOL).asHostObject(); // Available after parsing.
+			metadata = new Contexter(context).exec2(GeomAlgeLangContext::consumeParsedProgramMetadata);
 		} catch (PolyglotException ex) {
 			throw ExceptionEnricher.enrichException(ex);
 		}
 
 		Contexter contexter = new Contexter(context);
-		// LifeTimeExtender.extend(this.contextCloser, contexter); // Not necessary since lifetime is bound to truffleProgram anyway.
-		TruffleProgram truffleProgram = new TruffleProgram(parsedProgram, fac, contexter);
+		TruffleProgram truffleProgram = new TruffleProgram(parsedProgram, metadata.factory(), metadata.mainArity(), contexter);
 		LifeTimeExtender.extend(this.contextCloser, truffleProgram);
 		return truffleProgram;
 	}

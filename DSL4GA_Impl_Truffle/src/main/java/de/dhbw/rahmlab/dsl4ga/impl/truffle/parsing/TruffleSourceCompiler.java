@@ -21,10 +21,10 @@ import java.util.Optional;
 /** Compiles one GA source and its optional algebra library into Truffle functions. */
 final class TruffleSourceCompiler {
 
-	record CompiledSource(GAFactory factory, Map<String, Function> functions) {
+	record CompiledSource(DocumentState documentState, Map<String, Function> functions) {
 	}
 
-	record CompiledMain(GAFactory factory, Function main) {
+	record CompiledMain(DocumentState documentState, Function main) {
 	}
 
 	CompiledMain compileMain(Source source, GeomAlgeLangContext context) throws ValidationParsingException {
@@ -33,7 +33,7 @@ final class TruffleSourceCompiler {
 		if (main == null) {
 			throw new ValidationException("No main function has been defined.");
 		}
-		return new CompiledMain(compiled.factory(), main);
+		return new CompiledMain(compiled.documentState(), main);
 	}
 
 	CompiledMain compileMain(CharStreamSupplier program, Source source, GeomAlgeLangContext context)
@@ -43,7 +43,7 @@ final class TruffleSourceCompiler {
 		if (main == null) {
 			throw new ValidationException("No main function has been defined.");
 		}
-		return new CompiledMain(compiled.factory(), main);
+		return new CompiledMain(compiled.documentState(), main);
 	}
 
 	private CompiledSource compile(Optional<GAFactory> importedFactory, Map<String, Function> functions,
@@ -77,11 +77,8 @@ final class TruffleSourceCompiler {
 		GeomAlgeParser.SourceUnitContext sourceUnit = parser.sourceUnit();
 		GAFactory factory = GAFactoryService.getFactory(sourceUnit);
 		DocumentState documentState = context.getCurrentParsingDocumentState();
+		documentState.setFactory(factory);
 		Map<String, Function> allFunctions = functions;
-
-		if (context.getFac() == null) {
-			context.setFac(factory);
-		}
 
 		if (importedFactory.isEmpty()) {
 			// Only the main document initializes its algebra library. The recursive
@@ -96,8 +93,8 @@ final class TruffleSourceCompiler {
 		}
 
 		allFunctions = SourceUnitTransform.generate(allFunctions, parser, sourceUnit, context);
-		documentState.complete(factory, allFunctions);
-		return new CompiledSource(factory, allFunctions);
+		documentState.complete(allFunctions);
+		return new CompiledSource(documentState, allFunctions);
 	}
 
 	private static Source createLibrarySource(Path libraryFile) {

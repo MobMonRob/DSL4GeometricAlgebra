@@ -5,6 +5,7 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.source.SourceSection;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLang;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.DocumentState;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.nodes.superClasses.AbstractFunctionRootNode;
 
 public class FunctionDefinitionRootNode extends AbstractFunctionRootNode {
@@ -32,7 +33,15 @@ public class FunctionDefinitionRootNode extends AbstractFunctionRootNode {
 
 	@Override
 	public Object execute(VirtualFrame frame) {
-		return this.funcDefBodyNode.executeGeneric(frame);
+		GeomAlgeLangContext context = GeomAlgeLangContext.get(this);
+		context.pushExecutingDocument(this.documentState);
+		try {
+			return this.funcDefBodyNode.executeGeneric(frame);
+		} finally {
+			// Imported-library roots can be entered while a main-document root is
+			// active, so the previous document must always be restored.
+			context.popExecutingDocument();
+		}
 	}
 
 	// Needed for Debugger.

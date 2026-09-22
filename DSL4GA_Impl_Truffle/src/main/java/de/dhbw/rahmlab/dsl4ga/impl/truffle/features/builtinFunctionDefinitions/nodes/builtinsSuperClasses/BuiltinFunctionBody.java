@@ -21,7 +21,7 @@ public abstract class BuiltinFunctionBody extends AbstractFunctionBody {
 	 */
 	@Deprecated
 	protected final List<Integer> extractSymbolicNumericScalars(List<MultivectorExpression> mvs) {
-		GAFactory fac = GeomAlgeLangContext.get(this).getFac();
+		GAFactory fac = GeomAlgeLangContext.get(this).getCurrentFactory();
 		List<MultivectorValue> vals;
 		GAFunction func = fac.createFunction("eval", Collections.emptyList(), mvs);
 		vals = func.callValue(Collections.emptyList());

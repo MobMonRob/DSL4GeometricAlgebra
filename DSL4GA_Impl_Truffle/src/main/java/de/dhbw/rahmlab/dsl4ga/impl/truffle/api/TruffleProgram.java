@@ -1,7 +1,6 @@
 package de.dhbw.rahmlab.dsl4ga.impl.truffle.api;
 
 import de.dhbw.rahmlab.dsl4ga.api.iProgram;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.exchange.ArgsMapper;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.exchange.TruffleBox;
 import de.orat.math.gacalc.api.GAFactory;
@@ -24,11 +23,11 @@ public class TruffleProgram implements iProgram {
 	private final Contexter contexter;
 	private final int mainArity;
 
-	protected TruffleProgram(Value parsedProgram, GAFactory fac, Contexter contexter) {
+	protected TruffleProgram(Value parsedProgram, GAFactory fac, int mainArity, Contexter contexter) {
 		this.parsedProgram = parsedProgram;
 		this.fac = fac;
 		this.contexter = contexter;
-		this.mainArity = contexter.exec2(GeomAlgeLangContext::getMainArity);
+		this.mainArity = mainArity;
 	}
 
 	private List<MultivectorExpression> invokeTruffleSym(ArgsMapper argsMapper) {
@@ -38,15 +37,12 @@ public class TruffleProgram implements iProgram {
 			}
 		}
 
-		// Needs to be set before truffle execution.
-		this.contexter.exec1(c -> c.setCurrentExternalArgs(argsMapper));
-
 		// Same types as in TruffleProgram.
 		TruffleBox<List<? extends MultivectorExpression>> symArgsBoxed = new TruffleBox<>(argsMapper.params);
 
 		List<MultivectorExpression> truffleResults;
 		try {
-			Value result = this.parsedProgram.execute(symArgsBoxed);
+			Value result = this.contexter.execute(argsMapper, () -> this.parsedProgram.execute(symArgsBoxed));
 			// Same types as in ExecutionRootNode.
 			TruffleBox<List<MultivectorExpression>> truffleResultsBoxed = (TruffleBox<List<MultivectorExpression>>) result.as(TruffleBox.class);
 			truffleResults = truffleResultsBoxed.getInner();

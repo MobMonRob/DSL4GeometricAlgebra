@@ -42,6 +42,7 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOp
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOps.ReverseNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOps.UndualNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.nodes.expr.LocalVariableReferenceNodeGen;
+import de.orat.math.gacalc.api.GAFactory;
 import de.orat.math.gacalc.api.MultivectorExpression;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -71,11 +72,13 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 
 	protected final Deque<ExpressionBaseNode> nodeStack = new ArrayDeque<>();
 	protected final GeomAlgeLangContext geomAlgeLangContext;
+	protected final GAFactory factory;
 	protected final Map<String, Function> functionsView;
 	protected final Map<String, Integer> localVariablesView;
 
 	protected ExprTransform(GeomAlgeLangContext geomAlgeLangContext, Map<String, Function> functionsView, Map<String, Integer> localVariablesView) {
 		this.geomAlgeLangContext = geomAlgeLangContext;
+		this.factory = geomAlgeLangContext.getCurrentParsingDocumentState().getFactory();
 		this.functionsView = functionsView;
 		this.localVariablesView = localVariablesView;
 	}
@@ -282,7 +285,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 			Function function = this.geomAlgeLangContext.builtinRegistry.getBuiltinFunction(name);
 			ref = FunctionReferenceNodeGen.create(function);
 		} else {
-			Map<String, MultivectorExpression> constants = this.geomAlgeLangContext.getFac().getConstants();
+			Map<String, MultivectorExpression> constants = this.factory.getConstants();
 
 			if (constants.isEmpty()) {
 				throw new ValidationParsingRuntimeException(String.format("Variable or function \"%s\" has not been declared before.", name));

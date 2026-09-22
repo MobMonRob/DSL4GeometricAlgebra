@@ -130,10 +130,7 @@ final class FunctionCache {
 	}
 
 	private GAFunctionSpecializationCache newBackendCache() {
-		var factory = GeomAlgeLangContext.get().getFac();
-		if (factory == null) {
-			throw new ValidationException("Cannot build function cache entry for '" + owner.getName() + "': GA factory is unavailable.");
-		}
+		var factory = GeomAlgeLangContext.get().getCurrentFactory();
 		return factory.newCache();
 	}
 

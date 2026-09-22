@@ -11,6 +11,6 @@ public abstract class TypeCasts {
 
 	@ImplicitCast
 	public static MultivectorExpression castDoubleToMVExpr(double value) {
-		return GeomAlgeLangContext.get(null).getFac().createExpr(value);
+		return GeomAlgeLangContext.get(null).getCurrentFactory().createExpr(value);
 	}
 }

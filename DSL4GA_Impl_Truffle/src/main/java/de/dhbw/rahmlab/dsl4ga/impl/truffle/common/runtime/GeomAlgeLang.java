@@ -49,12 +49,9 @@ public class GeomAlgeLang extends TruffleLanguage<GeomAlgeLangContext> {
 	public static final String FILE_ENDING = ".ga";
 	public static final String MIME_TYPE = "text/x-ga"; // application/x-ga";
 
-	private GeomAlgeLangContext context;
-
 	@Override
 	protected GeomAlgeLangContext createContext(Env env) {
-		this.context = new GeomAlgeLangContext(this, env);
-		return this.context;
+		return new GeomAlgeLangContext(this, env);
 	}
 
 	@Override
@@ -64,10 +61,10 @@ public class GeomAlgeLang extends TruffleLanguage<GeomAlgeLangContext> {
 
 	private CallTarget parseImpl(ParsingRequest request) throws IOException {
 		Source source = request.getSource();
-		ParsingService.FactoryAndMain factoryAndMain = ParsingService.instance().parse(source, this.context);
-		this.context.setFac(factoryAndMain.fac()); // Set in ParsingService::invoke, too.
+		GeomAlgeLangContext context = getCurrentContext(GeomAlgeLang.class);
+		ParsingService.FactoryAndMain factoryAndMain = ParsingService.instance().parse(source, context);
 		Function main = factoryAndMain.main();
-		this.context.setMainArity(main.getArity());
+		context.publishParsedProgramMetadata(factoryAndMain.documentState(), main.getArity());
 		ExecutionRootNode rootNode = new ExecutionRootNode(this, main);
 		return rootNode.getCallTarget();
 	}

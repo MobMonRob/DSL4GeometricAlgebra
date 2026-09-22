@@ -19,6 +19,10 @@ import java.util.Map;
 
 public final class GeomAlgeLangContext {
 
+	/** Metadata bridge used only by {@code Context.parse} callers. */
+	public record ParsedProgramMetadata(GAFactory factory, int mainArity) {
+	}
+
 	protected static final ContextReference<GeomAlgeLangContext> contextRef = ContextReference.create(GeomAlgeLang.class);
 
 	public static GeomAlgeLangContext get(Node node) {
@@ -32,32 +36,29 @@ public final class GeomAlgeLangContext {
 	public final BuiltinRegistry builtinRegistry;
 	public final GeomAlgeLang truffleLanguage;
 	public final TruffleLanguage.Env env;
-	private GAFactory gaFactory = null;
-	private ArgsMapper currentExternalArgs = null;
 	private final ThreadLocal<Deque<DocumentState>> parsingDocumentStates
 		= ThreadLocal.withInitial(ArrayDeque::new);
+	private final ExecutionState executionState = new ExecutionState();
+	private final ThreadLocal<ParsedProgramMetadata> pendingParsedProgramMetadata = new ThreadLocal<>();
 	private final ThreadLocal<Deque<List<MultivectorVariable>>> functionSpecializationVariableScopes
 		= ThreadLocal.withInitial(ArrayDeque::new);
-	private int mainArity = -1;
-
-	public int getMainArity() {
-		return this.mainArity;
-	}
-
-	public void setMainArity(int mainArity) {
-		this.mainArity = mainArity;
-	}
 
 	/**
 	 * Caution! params can be not enough if FunctionCache is activated. use
 	 * getVisibleSimplificationVariables() instead. ToDo: Make safer if FunctionCache stays.
 	 */
 	public ArgsMapper getCurrentExternalArgs() {
-		return this.currentExternalArgs;
+		return this.executionState.getExternalArguments();
 	}
 
-	public void setCurrentExternalArgs(ArgsMapper currentExternalArgs) {
-		this.currentExternalArgs = currentExternalArgs;
+	/** Opens the external-argument scope for one top-level program invocation. */
+	public void pushExternalArguments(ArgsMapper currentExternalArgs) {
+		this.executionState.pushExternalArguments(currentExternalArgs);
+	}
+
+	/** Closes the external-argument scope opened for one top-level invocation. */
+	public void popExternalArguments() {
+		this.executionState.popExternalArguments();
 	}
 
 	/**
@@ -88,6 +89,7 @@ public final class GeomAlgeLangContext {
 	 */
 	public List<MultivectorVariable> getVisibleSimplificationVariables() {
 		List<MultivectorVariable> visible = new ArrayList<>();
+		ArgsMapper currentExternalArgs = executionState.getExternalArgumentsOrNull();
 		if (currentExternalArgs != null) visible.addAll(currentExternalArgs.params);
 		functionSpecializationVariableScopes.get().forEach(visible::addAll);
 		return List.copyOf(visible);
@@ -103,19 +105,40 @@ public final class GeomAlgeLangContext {
 		this.env = env;
 	}
 
-	public static final String FAC_SYMBOL = "__fac";
+	/** Activates the document whose AST root is currently executing. */
+	public void pushExecutingDocument(DocumentState documentState) {
+		this.executionState.pushDocument(documentState);
+	}
 
-	public void setFac(GAFactory fac) {
-		this.gaFactory = fac;
-		// Alternative to GeomAlgeLangContext.get().getFac() (which needs context.enter()) from outside Truffle.
-		this.env.exportSymbol(FAC_SYMBOL, this.env.asGuestValue(fac));
+	/** Restores the document active before the current AST root was entered. */
+	public void popExecutingDocument() {
+		this.executionState.popDocument();
+	}
+
+	public DocumentState getCurrentExecutingDocumentState() {
+		return this.executionState.getActiveDocument();
+	}
+
+	public GAFactory getCurrentFactory() {
+		return getCurrentExecutingDocumentState().getFactory();
 	}
 
 	/**
-	 * Can be null, if not set in parsing. Should never happen after parsing.
+	 * Publishes metadata for the immediately returning {@code Context.parse}
+	 * call. It is not consulted while compiling or executing ASTs.
 	 */
-	public GAFactory getFac() {
-		return this.gaFactory;
+	public void publishParsedProgramMetadata(DocumentState documentState, int mainArity) {
+		this.pendingParsedProgramMetadata.set(new ParsedProgramMetadata(documentState.getFactory(), mainArity));
+	}
+
+	/** Consumes the metadata belonging to the preceding successful parse. */
+	public ParsedProgramMetadata consumeParsedProgramMetadata() {
+		ParsedProgramMetadata metadata = this.pendingParsedProgramMetadata.get();
+		this.pendingParsedProgramMetadata.remove();
+		if (metadata == null) {
+			throw new IllegalStateException("No parsed GA program metadata is available.");
+		}
+		return metadata;
 	}
 
 

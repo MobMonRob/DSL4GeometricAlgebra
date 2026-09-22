@@ -6,6 +6,7 @@ import de.dhbw.rahmlab.dsl4ga.common.parsing.ContextParseCancellationException;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationParsingException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLang;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.DocumentState;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.Function;
 import de.orat.math.gacalc.api.GAFactory;
 import java.util.Map;
@@ -13,7 +14,10 @@ import java.util.Map;
 /** Public compatibility facade for parsing GA sources into Truffle functions. */
 public final class ParsingService {
 
-	public static record FactoryAndMain(GAFactory fac, Function main) {
+	public static record FactoryAndMain(DocumentState documentState, Function main) {
+		public GAFactory fac() {
+			return documentState.getFactory();
+		}
 	}
 
 	public static record FactoryAndFunctions(GAFactory fac, Map<String, Function> functions) {
@@ -32,7 +36,7 @@ public final class ParsingService {
 	public FactoryAndMain parse(Source source, GeomAlgeLangContext context) {
 		try {
 			TruffleSourceCompiler.CompiledMain compiled = sourceCompiler.compileMain(source, context);
-			return new FactoryAndMain(compiled.factory(), compiled.main());
+			return new FactoryAndMain(compiled.documentState(), compiled.main());
 		} catch (ValidationParsingException | ContextParseCancellationException exception) {
 			throw SourceExceptionDecorator.decorate(exception, source);
 		}
@@ -46,7 +50,7 @@ public final class ParsingService {
 		Source source = Source.newBuilder(GeomAlgeLang.LANGUAGE_ID, program.get().toString(), "in-memory.ga").build();
 		try {
 			TruffleSourceCompiler.CompiledMain compiled = sourceCompiler.compileMain(program, source, context);
-			return new FactoryAndMain(compiled.factory(), compiled.main());
+			return new FactoryAndMain(compiled.documentState(), compiled.main());
 		} catch (ValidationParsingException | ContextParseCancellationException exception) {
 			throw SourceExceptionDecorator.decorate(exception, source);
 		}

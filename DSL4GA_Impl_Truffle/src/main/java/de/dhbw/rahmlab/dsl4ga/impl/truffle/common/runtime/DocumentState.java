@@ -16,6 +16,7 @@ import java.util.Objects;
 public final class DocumentState {
 
     private final Source source;
+    private volatile GAFactory factory;
     private volatile CompletedAnalysis completedAnalysis;
 
     public DocumentState(Source source) {
@@ -26,9 +27,15 @@ public final class DocumentState {
         return source;
     }
 
+    /**
+     * Returns the factory selected while compiling this document.
+     */
     public GAFactory getFactory() {
-        CompletedAnalysis analysis = completedAnalysis;
-        return analysis == null ? null : analysis.factory();
+        GAFactory result = factory;
+        if (result == null) {
+            throw new IllegalStateException("Document algebra has not been resolved yet.");
+        }
+        return result;
     }
 
     public Map<String, Function> getFunctions() {
@@ -36,17 +43,25 @@ public final class DocumentState {
         return analysis == null ? Map.of() : analysis.functions();
     }
 
+    /** Resolves the document algebra before its AST nodes are constructed. */
+    public synchronized void setFactory(GAFactory factory) {
+        if (this.factory != null) {
+            throw new IllegalStateException("Document algebra has already been resolved.");
+        }
+        this.factory = Objects.requireNonNull(factory, "factory");
+    }
+
     /** Completes this state once its source unit has been parsed successfully. */
-    public synchronized void complete(GAFactory factory, Map<String, Function> functions) {
+    public synchronized void complete(Map<String, Function> functions) {
         if (completedAnalysis != null) {
             throw new IllegalStateException("Document state has already been completed.");
         }
         // A single volatile reference publishes the immutable result atomically
         // to later LSP requests, which can run on another thread.
         this.completedAnalysis = new CompletedAnalysis(
-                Objects.requireNonNull(factory, "factory"), Map.copyOf(functions));
+                Map.copyOf(functions));
     }
 
-    private record CompletedAnalysis(GAFactory factory, Map<String, Function> functions) {
+    private record CompletedAnalysis(Map<String, Function> functions) {
     }
 }

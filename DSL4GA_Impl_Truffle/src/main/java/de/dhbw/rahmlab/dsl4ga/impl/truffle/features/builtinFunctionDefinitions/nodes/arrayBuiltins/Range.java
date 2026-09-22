@@ -22,7 +22,7 @@ public abstract class Range extends BuiltinFunctionBody {
 		int stopInt = intNumerics.get(1);
 		int stepInt = intNumerics.get(2);
 
-		GAFactory fac = GeomAlgeLangContext.get(this).getFac();
+		GAFactory fac = GeomAlgeLangContext.get(this).getCurrentFactory();
 		List<MultivectorExpression> theRange = new ArrayList<>((stopInt - startInt) / stepInt);
 		for (int i = startInt; i < stopInt; i += stepInt) {
 			theRange.add(fac.createExpr(i));
