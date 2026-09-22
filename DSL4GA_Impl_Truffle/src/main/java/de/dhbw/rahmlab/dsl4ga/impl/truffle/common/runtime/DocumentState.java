@@ -43,6 +43,11 @@ public final class DocumentState {
         return analysis == null ? Map.of() : analysis.functions();
     }
 
+    /** Returns the immutable source-level symbol analysis of this document. */
+    public DocumentAnalysis getDocumentAnalysis() {
+        return getCompletedAnalysis().documentAnalysis();
+    }
+
     /** Resolves the document algebra before its AST nodes are constructed. */
     public synchronized void setFactory(GAFactory factory) {
         if (this.factory != null) {
@@ -52,16 +57,26 @@ public final class DocumentState {
     }
 
     /** Completes this state once its source unit has been parsed successfully. */
-    public synchronized void complete(Map<String, Function> functions) {
+    public synchronized void complete(Map<String, Function> functions,
+            DocumentAnalysis documentAnalysis) {
         if (completedAnalysis != null) {
             throw new IllegalStateException("Document state has already been completed.");
         }
         // A single volatile reference publishes the immutable result atomically
         // to later LSP requests, which can run on another thread.
-        this.completedAnalysis = new CompletedAnalysis(
-                Map.copyOf(functions));
+        this.completedAnalysis = new CompletedAnalysis(Map.copyOf(functions),
+                Objects.requireNonNull(documentAnalysis, "documentAnalysis"));
     }
 
-    private record CompletedAnalysis(Map<String, Function> functions) {
+    private CompletedAnalysis getCompletedAnalysis() {
+        CompletedAnalysis analysis = completedAnalysis;
+        if (analysis == null) {
+            throw new IllegalStateException("Document analysis has not been completed yet.");
+        }
+        return analysis;
+    }
+
+    private record CompletedAnalysis(Map<String, Function> functions,
+            DocumentAnalysis documentAnalysis) {
     }
 }

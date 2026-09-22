@@ -8,7 +8,8 @@ import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationParsingException;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationParsingRuntimeException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.nodes.exprSuperClasses.ExpressionBaseNode;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
-import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.ValidationException;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.DocumentAnalysis;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.DocumentAnalysisBuilder;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.arrays.runtime.nodes.expr.ArrayReaderNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.arrays.runtime.nodes.expr.ArraySlicerNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionCalls.nodes.expr.FunctionCall;
@@ -42,20 +43,17 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOp
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOps.ReverseNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOps.UndualNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.nodes.expr.LocalVariableReferenceNodeGen;
-import de.orat.math.gacalc.api.GAFactory;
 import de.orat.math.gacalc.api.MultivectorExpression;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.SequencedCollection;
-import java.util.Set;
 import java.util.stream.Collectors;
 import org.antlr.v4.runtime.Token;
 
@@ -72,19 +70,33 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 
 	protected final Deque<ExpressionBaseNode> nodeStack = new ArrayDeque<>();
 	protected final GeomAlgeLangContext geomAlgeLangContext;
-	protected final GAFactory factory;
 	protected final Map<String, Function> functionsView;
 	protected final Map<String, Integer> localVariablesView;
+	protected final SymbolResolver symbolResolver;
+	protected final DocumentAnalysisBuilder analysisBuilder;
+	protected final DocumentAnalysisBuilder.FunctionScopeBuilder functionScopeBuilder;
 
-	protected ExprTransform(GeomAlgeLangContext geomAlgeLangContext, Map<String, Function> functionsView, Map<String, Integer> localVariablesView) {
+	protected ExprTransform(GeomAlgeLangContext geomAlgeLangContext,
+			Map<String, Function> functionsView, Map<String, Integer> localVariablesView,
+			DocumentAnalysisBuilder analysisBuilder,
+			DocumentAnalysisBuilder.FunctionScopeBuilder functionScopeBuilder) {
 		this.geomAlgeLangContext = geomAlgeLangContext;
-		this.factory = geomAlgeLangContext.getCurrentParsingDocumentState().getFactory();
 		this.functionsView = functionsView;
 		this.localVariablesView = localVariablesView;
+		this.symbolResolver = new SymbolResolver(geomAlgeLangContext, functionsView,
+				localVariablesView, geomAlgeLangContext.getCurrentParsingDocumentState()
+						.getFactory().getConstants());
+		this.analysisBuilder = analysisBuilder;
+		this.functionScopeBuilder = functionScopeBuilder;
 	}
 
-	public static ExpressionBaseNode generateExprAST(GeomAlgeParser parser, GeomAlgeParser.ExprContext exprCtx, GeomAlgeLangContext geomAlgeLangContext, Map<String, Function> functionsView, Map<String, Integer> localVariablesView) throws ValidationParsingException {
-		ExprTransform exprTransform = new ExprTransform(geomAlgeLangContext, functionsView, localVariablesView);
+	public static ExpressionBaseNode generateExprAST(GeomAlgeParser parser,
+			GeomAlgeParser.ExprContext exprCtx, GeomAlgeLangContext geomAlgeLangContext,
+			Map<String, Function> functionsView, Map<String, Integer> localVariablesView,
+			DocumentAnalysisBuilder analysisBuilder,
+			DocumentAnalysisBuilder.FunctionScopeBuilder functionScopeBuilder) throws ValidationParsingException {
+		ExprTransform exprTransform = new ExprTransform(geomAlgeLangContext, functionsView,
+				localVariablesView, analysisBuilder, functionScopeBuilder);
 
 		ParseTreeWalker.walk(parser, exprTransform, exprCtx);
 
@@ -92,8 +104,13 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 		return rootNode;
 	}
 
-	public static FunctionCall generateCallAST(GeomAlgeParser parser, GeomAlgeParser.CallExprContext callExprCtx, GeomAlgeLangContext geomAlgeLangContext, Map<String, Function> functionsView, Map<String, Integer> localVariablesView) throws ValidationParsingException {
-		ExprTransform exprTransform = new ExprTransform(geomAlgeLangContext, functionsView, localVariablesView);
+	public static FunctionCall generateCallAST(GeomAlgeParser parser,
+			GeomAlgeParser.CallExprContext callExprCtx, GeomAlgeLangContext geomAlgeLangContext,
+			Map<String, Function> functionsView, Map<String, Integer> localVariablesView,
+			DocumentAnalysisBuilder analysisBuilder,
+			DocumentAnalysisBuilder.FunctionScopeBuilder functionScopeBuilder) throws ValidationParsingException {
+		ExprTransform exprTransform = new ExprTransform(geomAlgeLangContext, functionsView,
+				localVariablesView, analysisBuilder, functionScopeBuilder);
 
 		ParseTreeWalker.walk(parser, exprTransform, callExprCtx);
 
@@ -102,8 +119,13 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 	}
 
 	// Package-private
-	static ExprList generateExprListAST(GeomAlgeParser parser, GeomAlgeParser.ExprListContext callExprCtx, GeomAlgeLangContext geomAlgeLangContext, Map<String, Function> functionsView, Map<String, Integer> localVariablesView) throws ValidationParsingException {
-		ExprTransform exprTransform = new ExprTransform(geomAlgeLangContext, functionsView, localVariablesView);
+	static ExprList generateExprListAST(GeomAlgeParser parser,
+			GeomAlgeParser.ExprListContext callExprCtx, GeomAlgeLangContext geomAlgeLangContext,
+			Map<String, Function> functionsView, Map<String, Integer> localVariablesView,
+			DocumentAnalysisBuilder analysisBuilder,
+			DocumentAnalysisBuilder.FunctionScopeBuilder functionScopeBuilder) throws ValidationParsingException {
+		ExprTransform exprTransform = new ExprTransform(geomAlgeLangContext, functionsView,
+				localVariablesView, analysisBuilder, functionScopeBuilder);
 
 		ParseTreeWalker.walk(parser, exprTransform, callExprCtx);
 
@@ -198,7 +220,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 			case GeomAlgeParser.SUPERSCRIPT_MINUS__SUPERSCRIPT_ONE ->
 				GeneralInverseNodeGen.create(left);
 			case GeomAlgeParser.ASTERISK -> {
-				var func = this.functionsView.get("dual");
+				var func = this.symbolResolver.findOperatorOverload("dual");
 				if (func == null) {
 					yield DualNodeGen.create(left);
 				} else {
@@ -214,7 +236,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 			case GeomAlgeParser.DAGGER ->
 				CliffordConjugateNodeGen.create(left);
 			case GeomAlgeParser.SUPERSCRIPT_MINUS__ASTERISK -> {
-				var func = this.functionsView.get("undual");
+				var func = this.symbolResolver.findOperatorOverload("undual");
 				if (func == null) {
 					yield UndualNodeGen.create(left);
 				} else {
@@ -273,65 +295,22 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 	public void exitLiteralOrReference(GeomAlgeParser.LiteralOrReferenceContext ctx) {
 		String name = ctx.name.stream().map(Token::getText).collect(Collectors.joining());
 
-		ExpressionBaseNode ref;
-		// Local variable hides function with same name.
-		if (this.localVariablesView.containsKey(name)) {
-			int frameSlot = this.localVariablesView.get(name);
-			ref = LocalVariableReferenceNodeGen.create(name, frameSlot);
-		} else if (this.functionsView.containsKey(name)) {
-			Function function = this.functionsView.get(name);
-			ref = FunctionReferenceNodeGen.create(function);
-		} else if (this.geomAlgeLangContext.builtinRegistry.hasBuiltinFunction(name)) {
-			Function function = this.geomAlgeLangContext.builtinRegistry.getBuiltinFunction(name);
-			ref = FunctionReferenceNodeGen.create(function);
-		} else {
-			Map<String, MultivectorExpression> constants = this.factory.getConstants();
-
-			if (constants.isEmpty()) {
-				throw new ValidationParsingRuntimeException(String.format("Variable or function \"%s\" has not been declared before.", name));
+		DocumentAnalysis.SourceRange range = new DocumentAnalysis.SourceRange(
+				ctx.name.getFirst().getStartIndex(), ctx.name.getLast().getStopIndex() + 1);
+		SymbolResolver.ValueResolution resolution = this.symbolResolver.resolveValue(name);
+		ExpressionBaseNode ref = switch (resolution) {
+			case SymbolResolver.LocalVariable local -> {
+				this.functionScopeBuilder.findLocal(local.frameSlot()).ifPresent(definition
+						-> this.analysisBuilder.recordReference(name, range, definition));
+				yield LocalVariableReferenceNodeGen.create(name, local.frameSlot());
 			}
-
-			// Simple case: name is one constant
-			MultivectorExpression mv = constants.get(name);
-			if (mv != null) {
-				ref = ConstantNodeGen.create(mv);
-			} else {
-				// Difficult case: name is multiple constants
-				List<Integer> sizesDescending = constants.keySet().stream().map(String::length).distinct().sorted().toList().reversed();
-				String remainingNamePart = name;
-				List<String> constantsNames = new ArrayList<>();
-				while (!remainingNamePart.isEmpty()) {
-					boolean reducedInLastRound = false;
-					for (int size : sizesDescending) {
-						if (size > remainingNamePart.length()) {
-							continue;
-						}
-						String currentName = remainingNamePart.substring(0, size);
-						if (constants.containsKey(currentName)) {
-							constantsNames.add(currentName);
-							remainingNamePart = remainingNamePart.substring(size);
-							reducedInLastRound = true;
-							break; // Inner loop.
-						}
-					}
-					if (!reducedInLastRound) {
-						throw new ValidationParsingRuntimeException(String.format("Variable or function \"%s\" has not been declared before.", name));
-					}
-				}
-				List<Constant> constantsTruffle = constantsNames.stream().map(cName -> ConstantNodeGen.create(constants.get(cName))).toList();
-				// Has at least 2 constants.
-				final int foundConstantsSize = constantsTruffle.size();
-				int foundConstantsIndex = 0;
-				ExpressionBaseNode currentRef = constantsTruffle.get(foundConstantsIndex);
-				++foundConstantsIndex;
-				for (; foundConstantsIndex < foundConstantsSize; ++foundConstantsIndex) {
-					Constant currentConstant = constantsTruffle.get(foundConstantsIndex);
-					// Left-associative
-					currentRef = GeometricProductNodeGen.create(currentRef, currentConstant);
-				}
-				ref = currentRef;
+			case SymbolResolver.FunctionValue functionValue -> {
+				this.analysisBuilder.findFunctionDefinition(functionValue.function()).ifPresent(definition
+						-> this.analysisBuilder.recordReference(name, range, definition));
+				yield FunctionReferenceNodeGen.create(functionValue.function());
 			}
-		}
+			case SymbolResolver.Constants values -> createConstantReference(values.values());
+		};
 
 		ref.setSourceSection(ctx.name.getFirst().getStartIndex(), ctx.name.getLast().getStopIndex());
 		nodeStack.push(ref);
@@ -340,13 +319,14 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 	@Override
 	public void exitArrayAccessExprSimple(GeomAlgeParser.ArrayAccessExprSimpleContext ctx) {
 		String name = ctx.name.getText();
-		if (!this.localVariablesView.containsKey(name)) {
+		Integer frameSlot = this.symbolResolver.findLocalFrameSlot(name);
+		if (frameSlot == null) {
 			throw new ValidationParsingRuntimeException(String.format("Array \"%s\" has not been declared before.", name));
 		}
 		String indexString = ctx.index.getText();
 		final int index = Integer.parseInt(indexString);
 
-		final int frameSlot = this.localVariablesView.get(name);
+		recordLocalReference(name, ctx.name.getStartIndex(), ctx.name.getStopIndex() + 1, frameSlot);
 		var ref = LocalVariableReferenceNodeGen.create(name, frameSlot);
 		var arrayReader = ArrayReaderNodeGen.create(ref, index);
 
@@ -357,12 +337,13 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 	@Override
 	public void exitArrayAccessExprSlice(GeomAlgeParser.ArrayAccessExprSliceContext ctx) {
 		String name = ctx.name.getText();
-		if (!this.localVariablesView.containsKey(name)) {
+		Integer frameSlot = this.symbolResolver.findLocalFrameSlot(name);
+		if (frameSlot == null) {
 			throw new ValidationParsingRuntimeException(String.format("Array \"%s\" has not been declared before.", name));
 		}
 		Integer from = Optional.ofNullable(ctx.from).map(GeomAlgeParser.IndexExprContext::getText).map(Integer::valueOf).orElse(null);
 		Integer to = Optional.ofNullable(ctx.to).map(GeomAlgeParser.IndexExprContext::getText).map(Integer::valueOf).orElse(null);
-		final int frameSlot = this.localVariablesView.get(name);
+		recordLocalReference(name, ctx.name.getStartIndex(), ctx.name.getStopIndex() + 1, frameSlot);
 		var ref = LocalVariableReferenceNodeGen.create(name, frameSlot);
 		var arraySlicer = ArraySlicerNodeGen.create(ref, from, to);
 
@@ -451,22 +432,30 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 
 		String functionName = ctx.name.getText();
 
-		Function function = findFunction(functionName);
+		Function function = this.symbolResolver.resolveCall(functionName);
+		DocumentAnalysis.SourceRange nameRange = new DocumentAnalysis.SourceRange(
+				ctx.name.getStartIndex(), ctx.name.getStopIndex() + 1);
+		this.analysisBuilder.findFunctionDefinition(function).ifPresent(definition
+				-> this.analysisBuilder.recordReference(functionName, nameRange, definition));
 
 		FunctionCall functionCall = FunctionCallNodeGen.create(function, argumentsArray);
 		functionCall.setSourceSection(ctx.getStart().getStartIndex(), ctx.getStop().getStopIndex());
 		this.nodeStack.push(functionCall);
 	}
 
-	private Function findFunction(String functionName) {
-		if (this.functionsView.containsKey(functionName)) {
-			return this.functionsView.get(functionName);
-		} else {
-			try {
-				return this.geomAlgeLangContext.builtinRegistry.getBuiltinFunction(functionName);
-			} catch (ValidationException ex) {
-				throw new ValidationParsingRuntimeException(String.format("Function \"%s\" to call not found.", functionName));
-			}
+	private ExpressionBaseNode createConstantReference(List<MultivectorExpression> values) {
+		List<Constant> constantsTruffle = values.stream().map(ConstantNodeGen::create).toList();
+		ExpressionBaseNode currentRef = constantsTruffle.getFirst();
+		for (int index = 1; index < constantsTruffle.size(); ++index) {
+			currentRef = GeometricProductNodeGen.create(currentRef, constantsTruffle.get(index));
 		}
+		return currentRef;
+	}
+
+	private void recordLocalReference(String name, int startOffset, int endOffset,
+			int frameSlot) {
+		this.functionScopeBuilder.findLocal(frameSlot).ifPresent(definition
+				-> this.analysisBuilder.recordReference(name,
+						new DocumentAnalysis.SourceRange(startOffset, endOffset), definition));
 	}
 }

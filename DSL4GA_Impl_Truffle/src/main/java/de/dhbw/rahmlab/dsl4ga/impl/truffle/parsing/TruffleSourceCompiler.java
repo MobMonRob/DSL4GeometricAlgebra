@@ -7,6 +7,7 @@ import de.dhbw.rahmlab.dsl4ga.common.api.GAFactoryService;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.GeomAlgeParser;
 import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationParsingException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.DocumentState;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.DocumentAnalysisBuilder;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLang;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.ValidationException;
@@ -63,17 +64,19 @@ final class TruffleSourceCompiler {
 			CharStreamSupplier program, Source source, GeomAlgeLangContext context)
 			throws ValidationParsingException {
 		DocumentState documentState = new DocumentState(source);
+        DocumentAnalysisBuilder analysisBuilder = new DocumentAnalysisBuilder(source);
 		context.pushParsingDocumentState(documentState);
 		try {
 			return AntlrParsing.parseWithFallback(program,
-					parser -> compileSourceUnit(importedFactory, functions, parser, context));
+					parser -> compileSourceUnit(importedFactory, functions, parser, context, analysisBuilder));
 		} finally {
 			context.popParsingDocumentState();
 		}
 	}
 
 	private CompiledSource compileSourceUnit(Optional<GAFactory> importedFactory, Map<String, Function> functions,
-			GeomAlgeParser parser, GeomAlgeLangContext context) throws ValidationParsingException {
+			GeomAlgeParser parser, GeomAlgeLangContext context,
+            DocumentAnalysisBuilder analysisBuilder) throws ValidationParsingException {
 		GeomAlgeParser.SourceUnitContext sourceUnit = parser.sourceUnit();
 		GAFactory factory = GAFactoryService.getFactory(sourceUnit);
 		DocumentState documentState = context.getCurrentParsingDocumentState();
@@ -92,8 +95,8 @@ final class TruffleSourceCompiler {
 			ensureCompatibleImport(importedFactory.get(), factory);
 		}
 
-		allFunctions = SourceUnitTransform.generate(allFunctions, parser, sourceUnit, context);
-		documentState.complete(allFunctions);
+		allFunctions = SourceUnitTransform.generate(allFunctions, parser, sourceUnit, context, analysisBuilder);
+		documentState.complete(allFunctions, analysisBuilder.build());
 		return new CompiledSource(documentState, allFunctions);
 	}
 
