@@ -19,10 +19,9 @@ public final class GraalVMLSPStarter {
     public static void main(String[] args) throws InterruptedException {
         int port = parsePort(args);
 
-        // The NetBeans module retains this output for startup diagnostics and
-        // logs it only at FINE level during normal operation.
-        System.err.println("[GA-LSP] Java: " + System.getProperty("java.version"));
-        System.err.println("[GA-LSP] java.home: " + System.getProperty("java.home"));
+		// The NetBeans module retains this output for startup diagnostics and logs it.
+        System.out.println("[GA-LSP] Java: " + System.getProperty("java.version"));
+		System.out.println("[GA-LSP] java.home: " + System.getProperty("java.home"));
 
         try (Context context = Context.newBuilder(GeomAlgeLang.LANGUAGE_ID)
                 .allowAllAccess(true)
@@ -31,9 +30,9 @@ public final class GraalVMLSPStarter {
                 .build()) {
             context.initialize(GeomAlgeLang.LANGUAGE_ID);
             context.getEngine().getLanguages().forEach((id, language)
-                    -> System.err.println("[GA-LSP] Language " + id + ": " + language.getName()));
+				-> System.out.println("[GA-LSP] Language " + id + ": " + language.getName()));
             context.getEngine().getInstruments().forEach((id, instrument)
-                    -> System.err.println("[GA-LSP] Instrument " + id + ": " + instrument.getName()));
+				-> System.out.println("[GA-LSP] Instrument " + id + ": " + instrument.getName()));
 
             // NetBeans owns this process and terminates it when the LSP binding closes.
             new CountDownLatch(1).await();
