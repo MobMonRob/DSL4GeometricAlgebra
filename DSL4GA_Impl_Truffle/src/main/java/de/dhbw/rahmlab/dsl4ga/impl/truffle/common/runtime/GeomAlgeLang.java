@@ -18,6 +18,7 @@ import com.oracle.truffle.api.frame.Frame;
 import com.oracle.truffle.api.interop.TruffleObject;
 import java.util.Collections;
 import org.graalvm.options.OptionCategory;
+import org.graalvm.options.OptionDescriptors;
 import org.graalvm.options.OptionKey;
 //import com.oracle.truffle.api.Scope;
 
@@ -64,6 +65,12 @@ public class GeomAlgeLang extends TruffleLanguage<GeomAlgeLangContext> {
 	@Override
 	protected GeomAlgeLangContext createContext(Env env) {
 		return new GeomAlgeLangContext(this, env);
+	}
+
+	@Override
+	protected OptionDescriptors getOptionDescriptors() {
+		// Generated from this class's @Option fields by the Truffle DSL processor.
+		return new GeomAlgeLangOptionDescriptors();
 	}
 
 	@Override
