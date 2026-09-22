@@ -22,7 +22,7 @@ public class TruffleDKDebugging {
 	/**
 	 * <pre>
 	 * netbeans-ocga Plugin muss installiert sein.
-	 * dk.ocga Breakpoint setzen per IDE.
+	 * dk.ga Breakpoint setzen per IDE.
 	 * Rechtsklick auf die Datei TruffleDKDebugging.java "Debug file".
 	 * Breakpoint und durchsteppen sollte funktionieren. Ebenso Visualisierung.
 	 * Es braucht ein paar Sekunden bis sich das Visualisierungsfenster öffnet beim    ersten Doppelpunkt.
@@ -34,7 +34,7 @@ public class TruffleDKDebugging {
 	 * Wie Pose definieren?
 	 */
 	private static void invocationTest() throws Exception {
-		String path = "./gafiles/common/fk.ocga";
+		String path = "./gafiles/common/fk.ga";
 		var uri = TruffleDKDebugging.class.getResource(path);
 		if (uri == null) {
 			throw new RuntimeException(String.format("Path not found: %s", path));

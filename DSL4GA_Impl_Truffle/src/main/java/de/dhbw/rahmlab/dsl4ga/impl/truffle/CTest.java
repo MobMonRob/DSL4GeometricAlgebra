@@ -8,7 +8,7 @@ import java.net.URL;
 public class CTest {
 
 	public static void main(String[] args) {
-		String path = "./ctest.ocga";
+		String path = "./ctest.ga";
 		URL url = CTest.class.getResource(path);
 		if (url == null) {
 			throw new RuntimeException(String.format("Path not found: %s", path));

@@ -7,12 +7,9 @@ import de.dhbw.rahmlab.dsl4ga.common.parsing.ValidationParsingException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.GeomAlgeLangContext;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime.exceptions.external.ValidationException;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.functionDefinitions.runtime.Function;
-import de.orat.math.gacalc.api.GAFactory;
-import de.orat.math.gacalc.api.GAServiceLoader;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import org.antlr.v4.runtime.Token;
 
 public class SourceUnitTransform extends GeomAlgeParserBaseListener {
 
@@ -20,21 +17,6 @@ public class SourceUnitTransform extends GeomAlgeParserBaseListener {
 
 	protected SourceUnitTransform(GeomAlgeLangContext geomAlgeLangContext) {
 		this.geomAlgeLangContext = geomAlgeLangContext;
-	}
-
-	public static GAFactory getFactory(GeomAlgeParser parser, GeomAlgeParser.SourceUnitContext ctx) {
-		var algebraContext = ctx.algebra();
-		String algebraID = algebraContext.algebraID.getText();
-		Token implID = algebraContext.implID;
-
-		GAFactory fac;
-		if (implID != null) {
-			fac = GAServiceLoader.getGAFactoryThrowing(algebraID, implID.getText());
-		} else {
-			fac = GAServiceLoader.getGAFactoryThrowing(algebraID);
-		}
-
-		return fac;
 	}
 
 	public static Map<String, Function> generate(Map<String, Function> initialFunctionsView, GeomAlgeParser parser, GeomAlgeParser.SourceUnitContext ctx, GeomAlgeLangContext geomAlgeLangContext) throws ValidationParsingException {

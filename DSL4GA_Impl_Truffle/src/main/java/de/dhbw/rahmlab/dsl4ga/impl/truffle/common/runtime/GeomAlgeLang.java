@@ -46,9 +46,9 @@ public class GeomAlgeLang extends TruffleLanguage<GeomAlgeLangContext> {
 
 	// All these need to be compatible with https://github.com/orat/netbeans-ocga .
 	// Otherwise, debugging stops working.
-	public static final String LANGUAGE_ID = "ocga";
-	public static final String FILE_ENDING = ".ocga";
-	public static final String MIME_TYPE = "text/x-ocga"; // application/x-ocga";
+	public static final String LANGUAGE_ID = "ga";
+	public static final String FILE_ENDING = ".ga";
+	public static final String MIME_TYPE = "text/x-ga"; // application/x-ga";
 
 	private GeomAlgeLangContext context;
 

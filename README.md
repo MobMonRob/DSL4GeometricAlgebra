@@ -64,14 +64,15 @@ Alternatively clone it from [GitHub](https://github.com/JogAmp/vecmath/tree/dev1
 
 Clone and checkout
 - [SparseMatrix](https://github.com/orat/SparseMatrix)
-- [GeometricAlgebra](https://github.com/orat/GeometricAlgebra)
-- [ConformalGeometricAlgebra](https://github.com/orat/ConformalGeometricAlgebra)
+- [GeometricAlgebra](https://github.com/orat/GeometricAlgebra) - DEPRECATED
+- [ConformalGeometricAlgebra](https://github.com/orat/ConformalGeometricAlgebra) - DEPRECATED
 - [JNativeLibLoader](https://github.com/MobMonRob/JNativeLibLoader)
 - [JCasADi](https://github.com/MobMonRob/JCasADi)
 - [GACalcAPI](https://github.com/orat/GACalcAPI)
 - [GACasADi](https://github.com/orat/GACasADi)
-- [Euclid3DViewAPI](https://github.com/orat/Euclid3DViewAPI)
-- [EuclidView3d](https://github.com/orat/EuclidView3d)
+- [Euclid3DViewAPI](https://github.com/orat/Euclid3DViewAPI) - API to external visualization tools
+- [EuclidView3d](https://github.com/orat/EuclidView3d) - default visualization tool which opens its own frame (optional, if not included no default visualization is available)
+- (Optional) [netbeans-ocga](https://github.com/orat/netbeans-ocga) - Netbeans Plugin for syntax highlighting, etc.
 
 and build the projects in these repositories to have them available in your local Maven cache. Some of them require a C++ compiler and Linux to build. Read the README.md of these projects to make sure the projects will build. Once build, the artifacts should run on Windows as well.
 
@@ -103,6 +104,9 @@ A Syntax-Highlighting plugin for the Netbeans-IDE can be found [here](https://gi
 
 ### Insertion of special characters
 A Netbeans-IDE plugin which adds a submenu into the context-menu of the editor to insert CGA-specific symbols and operators can be found [here](https://github.com/orat/netbeans-cgasymbols).
+
+### Visualization
+Default is to show visualizations in a seperate window. But the the module DSL4GAViewer it is possible to connect to Visualizer window which is integrated into netbeans. To use this functionality the netbeans-IDE must run the netbeans-EudlcidView3d plugin.
 
 ## Implementations
 There are two implementations of the [API](DSL4GA_API):
@@ -350,22 +354,31 @@ There exist three types of involution operations: Space inversion, reversion and
 ### Built-in functions
 | symbol      | description |
 | :---------- | ------------ |
-| simplify()  | simplifies the underlying expression. Helpful in debugging to see if structural zeroes are created or unexpected values might be caused by compounded numerical errors. |
-| setBlade()  | with 3 multivectors as arguments. 1. the multivector to be applied on, 2. the bladeIndexMV which contains only 1 blade, used to select the blade, 3. a scalar containing the expression or value the selected blade's coefficient will be set to. Can be used to enforce structural zeroes. |
-| filterGrade() | Retains only blades of the given grade. 1. argument: mv to be filtered. 2. argument: grade. |
+| dot()       | dot product, 0-grade indcluded - different to inner product |
+| ip()        | inner product, 0-grade is excluded different to the dot-product |
+| scp()       | scalar product |
+| up()        | up-projection of an euclidian point represented by an euclidean vector into the space of the multivector (with intrinsic orientation type) |
+| down()      | down-projection of a multivector point with intrinsic orientation type into the euclidean space (by normalization and rejection from the minkowski plane E0 in the case of CGA) |
 | exp()       | exponential of a bivector or a scalar |
 | log()       | logarithm of general rotor/even multivector (should be normalized) |
 | normalize() | normalize of an even multivector (general rotor, scalars inclusive)|
 | sqrt()      | squared root of a general rotor/even multivector or a scalar |
 | squaredNorm()      | squared norm of a mulitvector |
-| scp()       | scalar product |
-| dot()       | dot product, 0-grade indcluded - different to inner product |
-| ip()        | inner product, 0-grade is excluded different to the dot-product |
-| up()        | up-projection of an euclidian point represented by an euclidean vector into the space of the multivector (with intrinsic orientation type) |
-| down()      | down-projection of a multivector point with intrinsic orientation type into the euclidean space (by normalization and rejection from the minkowski plane E0 in the case of CGA) |
-| euclid()    | euclidean part of the multivector (Blades containing **only** base elements with metric 1 and no others. (without 0-grade scalar)) - encodes the objects orientation or weight; an object with a non zero euclidean part is called finite; an object with a vanashing euclidean part is called idle  |
+
+#### functions to work with and manipulate coefficients of multivectors
+| symbol      | description |
+| :---------- | ------------ |
+| setBlade()  | with 3 multivectors as arguments. 1. the multivector to be applied on, 2. the bladeIndexMV which contains only 1 blade, used to select the blade, 3. a scalar containing the expression or value the selected blade's coefficient will be set to. Can be used to enforce structural zeroes. |
+| filterGrade() | Retains only blades of the given grade. 1. argument: mv to be filtered. 2. argument: grade. |
 | idle()      | idle part of the multivector (Blades containing base elements with metric 0 or -1. (without 0-grade scalar)) - encodes the position relative to the origin; an object with a vanashing idea part necessarily passes through the origin |
+| euclid()    | euclidean part of the multivector (Blades containing **only** base elements with metric 1 and no others. (without 0-grade scalar)) - encodes the objects orientation or weight; an object with a non zero euclidean part is called finite; an object with a vanashing euclidean part is called idle  |
 | coef()      | with two multivectors as arguments. The second must be one blade only. The function extracts the coefficient for this blade in the first argument as as scalar |
+
+#### functions to optimize the underlaying expressions
+| symbol      | description |
+| :---------- | ------------ |
+| simplify()  | simplifies the underlying expression. Helpful in debugging to see if structural zeroes are created or unexpected values might be caused by compounded numerical errors. |
+
 
 #### Scalar functions
 | symbol      | description |
@@ -542,6 +555,19 @@ In `DSL4GA_Impl_Truffle`:
 	- Register yor Builtin in `installBuiltins()` similar to the existing ones.
 
 If the name of the Builtin class is “Abs”, the Builtin function in the DSL will be “abs”.
+
+
+## Dev Docs / Netbeans Plugin
+### New algebra added
+If a new algebra was added to GACasADi, in order to use its constants in the syntax highligter, rebuild and reinstall [netbeans-ocga](https://github.com/orat/netbeans-ocga).
+
+### Changes in Truffle -> LSP
+If changes occured in Truffle with effects to the LSP and you want to use them in Netbeans. Execute the following steps in this sequence:
+- Rebuild DSL4GA_Impl_Truffle.
+- Rebuild DSL4GA_LSP.
+- Rebuild netbeans-ocga.
+- Reinstall netbeans-ocga in Netbeans.
+- Restart Netbeans.
 
 
 ## Next Steps

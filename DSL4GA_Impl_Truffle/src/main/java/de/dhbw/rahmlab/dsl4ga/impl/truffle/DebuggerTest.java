@@ -11,14 +11,14 @@ public class DebuggerTest {
 
 	/**
 	 * <pre>
-	 * netbeans-ocga Plugin muss installiert sein.
-	 * debugTest.ocga Breakpoint installieren per IDE.
+	 * netbeans-ga Plugin muss installiert sein.
+	 * debugTest.ga Breakpoint installieren per IDE.
 	 * Rechtsklick auf die Datei DebuggerTest.java "Debug file".
 	 * Breakpoint und durchsteppen sollte funktionieren.
 	 * </pre>
 	 */
 	private static void invocationTest() throws Exception {
-		String path = "./debugTest.ocga";
+		String path = "./debugTest.ga";
 		var url = DebuggerTest.class.getResource(path);
 		if (url == null) {
 			throw new RuntimeException(String.format("Path not found: %s", path));

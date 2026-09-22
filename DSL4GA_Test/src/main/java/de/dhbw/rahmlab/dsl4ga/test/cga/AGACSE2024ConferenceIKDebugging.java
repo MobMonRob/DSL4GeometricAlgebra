@@ -12,14 +12,14 @@ public class AGACSE2024ConferenceIKDebugging {
 	/**
 	 * <pre>
 	 * netbeans-ocga Plugin muss installiert sein.
-	 * ik.ocga Breakpoint setzen per IDE.
+	 * ik.ga Breakpoint setzen per IDE.
 	 * Rechtsklick auf die Datei ConferenceTruffleIkDebugging.java "Debug file".
 	 * Breakpoint und durchsteppen sollte funktionieren. Ebenso Visualisierung.
 	 * Es braucht ein paar Sekunden bis sich das Visualisierungsfenster öffnet beim ersten Doppelpunkt.
 	 * </pre>
 	 */
 	private static void invocationTest() throws Exception {
-		String path = "./gafiles/common/ik_AGACSE2024.ocga";
+		String path = "./gafiles/common/ik_AGACSE2024.ga";
 		var uri = AGACSE2024ConferenceIKDebugging.class.getResource(path);
 		if (uri == null) {
 			throw new RuntimeException(String.format("Path not found: %s", path));
