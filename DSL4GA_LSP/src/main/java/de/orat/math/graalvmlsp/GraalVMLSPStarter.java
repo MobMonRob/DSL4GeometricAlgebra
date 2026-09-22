@@ -27,6 +27,7 @@ public final class GraalVMLSPStarter {
                 .allowAllAccess(true)
                 .allowExperimentalOptions(true)
                 .option("lsp", "127.0.0.1:" + port)
+				.option(GeomAlgeLang.LANGUAGE_ID + ".editorAnalysis", "true")
                 .build()) {
             context.initialize(GeomAlgeLang.LANGUAGE_ID);
             context.getEngine().getLanguages().forEach((id, language)

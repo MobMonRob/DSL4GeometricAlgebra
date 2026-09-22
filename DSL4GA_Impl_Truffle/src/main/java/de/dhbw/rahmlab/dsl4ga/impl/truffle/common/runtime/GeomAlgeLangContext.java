@@ -35,6 +35,7 @@ public final class GeomAlgeLangContext {
 
 	public final BuiltinRegistry builtinRegistry;
 	private final SymbolScope globalScope;
+	private final boolean editorAnalysis;
 	public final GeomAlgeLang truffleLanguage;
 	public final TruffleLanguage.Env env;
 	private final ThreadLocal<Deque<DocumentState>> parsingDocumentStates
@@ -103,8 +104,14 @@ public final class GeomAlgeLangContext {
 	public GeomAlgeLangContext(GeomAlgeLang truffleLanguage, Env env) {
 		this.builtinRegistry = new BuiltinRegistry(truffleLanguage);
 		this.globalScope = new SymbolScope("builtins", builtinRegistry.getBuiltinsView(), null);
+		this.editorAnalysis = env != null && env.getOptions().get(GeomAlgeLang.EDITOR_ANALYSIS);
 		this.truffleLanguage = truffleLanguage;
 		this.env = env;
+	}
+
+	/** True only for the language-server context that opts into partial editor analysis. */
+	public boolean isEditorAnalysis() {
+		return editorAnalysis;
 	}
 
 	/** Global symbols are context-wide; document symbols must use a child scope. */

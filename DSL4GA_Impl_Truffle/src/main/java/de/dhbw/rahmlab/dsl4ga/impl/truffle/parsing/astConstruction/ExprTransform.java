@@ -43,6 +43,7 @@ import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOp
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOps.ReverseNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.operators.nodes.expr.unaryOps.UndualNodeGen;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.nodes.expr.LocalVariableReferenceNodeGen;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.variables.nodes.expr.UnresolvedReferenceNode;
 import de.orat.math.gacalc.api.MultivectorExpression;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -310,6 +311,7 @@ public class ExprTransform extends GeomAlgeParserBaseListener {
 				yield FunctionReferenceNodeGen.create(functionValue.function());
 			}
 			case SymbolResolver.Constants values -> createConstantReference(values.values());
+			case SymbolResolver.UnresolvedValue unresolved -> new UnresolvedReferenceNode(unresolved.name());
 		};
 
 		ref.setSourceSection(ctx.name.getFirst().getStartIndex(), ctx.name.getLast().getStopIndex());

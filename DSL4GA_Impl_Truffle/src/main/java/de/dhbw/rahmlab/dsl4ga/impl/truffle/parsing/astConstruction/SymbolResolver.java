@@ -11,7 +11,7 @@ import java.util.Map;
 /** Resolves source names with the same precedence used by the compiler. */
 final class SymbolResolver {
 
-    sealed interface ValueResolution permits LocalVariable, FunctionValue, Constants {
+    sealed interface ValueResolution permits LocalVariable, FunctionValue, Constants, UnresolvedValue {
     }
 
     record LocalVariable(int frameSlot) implements ValueResolution {
@@ -24,6 +24,9 @@ final class SymbolResolver {
         Constants {
             values = List.copyOf(values);
         }
+    }
+
+    record UnresolvedValue(String name) implements ValueResolution {
     }
 
     private final GeomAlgeLangContext context;
@@ -46,10 +49,17 @@ final class SymbolResolver {
             return new LocalVariable(frameSlot);
         }
         Function function = findFunction(name);
-        if (function != null) {
-            return new FunctionValue(function);
-        }
-        return new Constants(resolveConstants(name));
+		if (function != null) {
+			return new FunctionValue(function);
+		}
+		List<MultivectorExpression> resolvedConstants = resolveConstantsOrNull(name);
+		if (resolvedConstants != null) {
+			return new Constants(resolvedConstants);
+		}
+		if (context.isEditorAnalysis()) {
+			return new UnresolvedValue(name);
+		}
+		throw undeclaredName(name);
     }
 
     Function resolveCall(String name) {
@@ -84,9 +94,9 @@ final class SymbolResolver {
         return null;
     }
 
-    private List<MultivectorExpression> resolveConstants(String name) {
-        if (constants.isEmpty()) {
-            throw new ValidationParsingRuntimeException("Variable or function \"" + name + "\" has not been declared before.");
+	private List<MultivectorExpression> resolveConstantsOrNull(String name) {
+		if (constants.isEmpty()) {
+			return null;
         }
         MultivectorExpression exact = constants.get(name);
         if (exact != null) {
@@ -109,11 +119,15 @@ final class SymbolResolver {
                     reduced = true;
                     break;
                 }
-            }
-            if (!reduced) {
-                throw new ValidationParsingRuntimeException("Variable or function \"" + name + "\" has not been declared before.");
-            }
-        }
-        return result;
-    }
+			}
+			if (!reduced) {
+				return null;
+			}
+		}
+		return result;
+	}
+
+	private static ValidationParsingRuntimeException undeclaredName(String name) {
+		return new ValidationParsingRuntimeException("Variable or function \"" + name + "\" has not been declared before.");
+	}
 }

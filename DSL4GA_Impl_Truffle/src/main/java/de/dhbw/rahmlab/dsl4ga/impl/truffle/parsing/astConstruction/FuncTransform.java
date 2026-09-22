@@ -155,11 +155,21 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 				this.analysisBuilder, this.functionScopeBuilder));
 
 		addVariableAssignment(ctx.vizAssigned, expr, getNewScopeVisibleVariablesIndex(), true,
-				true, ctx.getStop().getStopIndex() + 1);
+				true, ctx.getStop().getStopIndex() + 1,
+				ctx.getStart().getStartIndex(), ctx.getStop().getStopIndex());
 	}
 
 	private void addVariableAssignment(VizAssignedRContext vizAssigned, ExpressionBaseNode expr,
 			int scopeVisibleVariablesIndex, boolean step, boolean show, int visibleFromOffset)
+			throws ValidationException, IllegalArgumentException {
+		Token assigned = vizAssigned.assigned;
+		addVariableAssignment(vizAssigned, expr, scopeVisibleVariablesIndex, step, show,
+				visibleFromOffset, assigned.getStartIndex(), assigned.getStopIndex());
+	}
+
+	private void addVariableAssignment(VizAssignedRContext vizAssigned, ExpressionBaseNode expr,
+			int scopeVisibleVariablesIndex, boolean step, boolean show, int visibleFromOffset,
+			int sourceStart, int sourceEnd)
 			throws ValidationException, IllegalArgumentException {
 		Token assigned = vizAssigned.assigned;
 		String name = assigned.getText();
@@ -175,7 +185,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 				frameSlot, visibleFromOffset);
 
 		LocalVariableAssignment assignmentNode = LocalVariableAssignmentNodeGen.create(expr, scopeVisibleVariablesIndex, name, frameSlot, step, show);
-		assignmentNode.setSourceSection(assigned.getStartIndex(), assigned.getStopIndex());
+		assignmentNode.setSourceSection(sourceStart, sourceEnd);
 
 		this.stmts.add(assignmentNode);
 
@@ -264,6 +274,7 @@ public class FuncTransform extends GeomAlgeParserBaseListener {
 		}
 
 		addVariableAssignment(ctx.vizAssigned, arrayInit, getNewScopeVisibleVariablesIndex(), true,
-				true, ctx.getStop().getStopIndex() + 1);
+				true, ctx.getStop().getStopIndex() + 1,
+				ctx.getStart().getStartIndex(), ctx.getStop().getStopIndex());
 	}
 }

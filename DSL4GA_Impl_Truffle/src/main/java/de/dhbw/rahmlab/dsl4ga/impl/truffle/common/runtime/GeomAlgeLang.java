@@ -1,6 +1,7 @@
 package de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime;
 
 import com.oracle.truffle.api.CallTarget;
+import com.oracle.truffle.api.Option;
 import com.oracle.truffle.api.TruffleLanguage;
 import com.oracle.truffle.api.debug.DebuggerTags;
 import com.oracle.truffle.api.instrumentation.ProvidedTags;
@@ -16,6 +17,8 @@ import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.frame.Frame;
 import com.oracle.truffle.api.interop.TruffleObject;
 import java.util.Collections;
+import org.graalvm.options.OptionCategory;
+import org.graalvm.options.OptionKey;
 //import com.oracle.truffle.api.Scope;
 
 /**
@@ -48,6 +51,15 @@ public class GeomAlgeLang extends TruffleLanguage<GeomAlgeLangContext> {
 	public static final String LANGUAGE_ID = "ga";
 	public static final String FILE_ENDING = ".ga";
 	public static final String MIME_TYPE = "text/x-ga"; // application/x-ga";
+
+	/**
+	 * Lets the language server retain syntactically complete expressions whose
+	 * final value name has not been resolved yet. It is intentionally internal:
+	 * normal language execution must keep reporting unknown names during parsing.
+	 */
+	@Option(name = "editorAnalysis", help = "Allow unresolved value names for editor analysis.",
+			category = OptionCategory.INTERNAL)
+	public static final OptionKey<Boolean> EDITOR_ANALYSIS = new OptionKey<>(false);
 
 	@Override
 	protected GeomAlgeLangContext createContext(Env env) {
