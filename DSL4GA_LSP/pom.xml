@@ -15,18 +15,6 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.5.4</version>
-                <configuration>
-                    <!-- The older Graal LSP behavior suite uses an obsolete GA syntax. -->
-                    <includes>
-                        <include>**/GraalVMLSPStarterTest.java</include>
-                        <include>**/GraalVMLSPStarterIntegrationTest.java</include>
-                    </includes>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>3.7.1</version>
                 <executions>
