@@ -62,8 +62,6 @@ fn main(theta1, theta2, theta3, theta4, theta5, theta6) {
 	//position = Ls[5]/direction
     position = ((ε₁∧ε₂∧ε₃)⋅Ls[5])Ls[5]
 	// a direction is a flat point at infinity directs into direction? or plane?
-
-	c = p
     
 	// TODO extract all coordinates as double coefficients
 	position, direction
