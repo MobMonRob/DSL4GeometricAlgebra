@@ -23,12 +23,7 @@ public final class GraalVMLSPStarter {
         System.out.println("[GA-LSP] Java: " + System.getProperty("java.version"));
 		System.out.println("[GA-LSP] java.home: " + System.getProperty("java.home"));
 
-        try (Context context = Context.newBuilder(GeomAlgeLang.LANGUAGE_ID)
-                .allowAllAccess(true)
-                .allowExperimentalOptions(true)
-                .option("lsp", "127.0.0.1:" + port)
-				.option(GeomAlgeLang.LANGUAGE_ID + ".editorAnalysis", "true")
-                .build()) {
+        try (Context context = createContext(port)) {
             context.initialize(GeomAlgeLang.LANGUAGE_ID);
             context.getEngine().getLanguages().forEach((id, language)
 				-> System.out.println("[GA-LSP] Language " + id + ": " + language.getName()));
@@ -38,6 +33,16 @@ public final class GraalVMLSPStarter {
             // NetBeans owns this process and terminates it when the LSP binding closes.
             new CountDownLatch(1).await();
         }
+    }
+
+    /** Shared by the standalone server and direct LSP protocol tests. */
+    static Context createContext(int port) {
+        return Context.newBuilder(GeomAlgeLang.LANGUAGE_ID)
+                .allowAllAccess(true)
+                .allowExperimentalOptions(true)
+                .option("lsp", "127.0.0.1:" + port)
+                .option(GeomAlgeLang.LANGUAGE_ID + ".editorAnalysis", "true")
+                .build();
     }
 
     static int parsePort(String[] args) {
