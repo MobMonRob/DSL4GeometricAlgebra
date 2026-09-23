@@ -4,17 +4,20 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import org.graalvm.polyglot.Context;
+import org.graalvm.polyglot.PolyglotException;
+import org.graalvm.polyglot.Source;
 import org.graalvm.shadowed.org.json.JSONArray;
 import org.graalvm.shadowed.org.json.JSONObject;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * Opt-in reproducer for the current completion failure. Once completion works,
- * this test can become part of the regular suite without changing the client.
+ * Opt-in protocol checks for value-prefix completion and strict normal parsing.
  *
  * <p>From the parent project, run it with {@code mvn -o -q -pl DSL4GA_LSP -am
  * -Dtest=GaCompletionLspTest -Dsurefire.failIfNoSpecifiedTests=false
@@ -65,6 +68,18 @@ class GaCompletionLspTest {
             client.initialize(directory.toUri().toString());
             client.didOpen(uri, source);
             assertPositionCompletion(client, uri);
+        }
+    }
+
+    @Test
+    void ordinaryParsingStillRejectsUnknownValue() throws Exception {
+        requireOptIn();
+        String source = SOURCE.replace("c = position", "c = p");
+        try (Context context = Context.newBuilder("ga").allowAllAccess(true).build()) {
+            PolyglotException exception = assertThrows(PolyglotException.class,
+                    () -> context.parse(Source.newBuilder("ga", source, "strict.ga").build()));
+            assertTrue(exception.getMessage().contains("Variable or function \"p\""),
+                    exception::getMessage);
         }
     }
 

@@ -75,7 +75,7 @@ public class DebuggerLocalVariablesScope implements TruffleObject {
 					visibleVarsNames.add(name);
 
 					Object prev = namesToVarNodes.put(name, varAssign);
-					assert prev != null : "Validation implemented incorrectly: Each variable should only be assignable once.";
+					assert prev == null : "Validation implemented incorrectly: Each variable should only be assignable once.";
 					return true;
 				}
 				return true;

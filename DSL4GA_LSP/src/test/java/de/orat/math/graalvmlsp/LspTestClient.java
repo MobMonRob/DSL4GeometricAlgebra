@@ -22,27 +22,31 @@ final class LspTestClient implements AutoCloseable {
 
     private static final int TIMEOUT_MILLIS = 10_000;
     private final Context context;
+    private final String previousEditorAnalysisProperty;
     private final Socket socket;
     private final InputStream input;
     private final OutputStream output;
     private final List<String> received = new ArrayList<>();
     private int nextId = 1;
 
-    private LspTestClient(Context context, Socket socket) throws IOException {
+    private LspTestClient(Context context, Socket socket, String previousEditorAnalysisProperty) throws IOException {
         this.context = context;
+        this.previousEditorAnalysisProperty = previousEditorAnalysisProperty;
         this.socket = socket;
         this.input = socket.getInputStream();
         this.output = socket.getOutputStream();
     }
 
     static LspTestClient start() throws Exception {
+        String previousEditorAnalysisProperty = System.getProperty(GraalVMLSPStarter.EDITOR_ANALYSIS_PROPERTY);
         int port;
         try (ServerSocket reservation = new ServerSocket(0, 1, InetAddress.getByName("127.0.0.1"))) {
             port = reservation.getLocalPort();
         }
 
-        Context context = GraalVMLSPStarter.createContext(port);
+        Context context = null;
         try {
+            context = GraalVMLSPStarter.createContext(port);
             context.initialize(GeomAlgeLang.LANGUAGE_ID);
             long deadline = System.nanoTime() + TIMEOUT_MILLIS * 1_000_000L;
             IOException lastFailure = null;
@@ -51,7 +55,7 @@ final class LspTestClient implements AutoCloseable {
                 try {
                     socket.connect(new InetSocketAddress("127.0.0.1", port), 250);
                     socket.setSoTimeout(TIMEOUT_MILLIS);
-                    return new LspTestClient(context, socket);
+                    return new LspTestClient(context, socket, previousEditorAnalysisProperty);
                 } catch (IOException ex) {
                     lastFailure = ex;
                     socket.close();
@@ -60,8 +64,22 @@ final class LspTestClient implements AutoCloseable {
             }
             throw new IOException("The GA LSP did not listen on port " + port, lastFailure);
         } catch (Exception | Error ex) {
-            context.close();
+            try {
+                if (context != null) {
+                    context.close();
+                }
+            } finally {
+                restoreEditorAnalysisProperty(previousEditorAnalysisProperty);
+            }
             throw ex;
+        }
+    }
+
+    private static void restoreEditorAnalysisProperty(String previousValue) {
+        if (previousValue == null) {
+            System.clearProperty(GraalVMLSPStarter.EDITOR_ANALYSIS_PROPERTY);
+        } else {
+            System.setProperty(GraalVMLSPStarter.EDITOR_ANALYSIS_PROPERTY, previousValue);
         }
     }
 
@@ -187,7 +205,11 @@ final class LspTestClient implements AutoCloseable {
         try {
             socket.close();
         } finally {
-            context.close();
+            try {
+                context.close();
+            } finally {
+                restoreEditorAnalysisProperty(previousEditorAnalysisProperty);
+            }
         }
     }
 }

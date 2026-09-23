@@ -20,6 +20,7 @@ import java.util.Collections;
 import org.graalvm.options.OptionCategory;
 import org.graalvm.options.OptionDescriptors;
 import org.graalvm.options.OptionKey;
+import org.graalvm.options.OptionStability;
 //import com.oracle.truffle.api.Scope;
 
 /**
@@ -55,11 +56,13 @@ public class GeomAlgeLang extends TruffleLanguage<GeomAlgeLangContext> {
 
 	/**
 	 * Lets the language server retain syntactically complete expressions whose
-	 * final value name has not been resolved yet. It is intentionally internal:
-	 * normal language execution must keep reporting unknown names during parsing.
+	 * final value name has not been resolved yet. Its default remains false so
+	 * normal language execution reports unknown names during parsing. Graal's
+	 * LSP creates a separate engine, which needs to accept this option without
+	 * enabling experimental options in that engine.
 	 */
 	@Option(name = "editorAnalysis", help = "Allow unresolved value names for editor analysis.",
-			category = OptionCategory.INTERNAL)
+			category = OptionCategory.USER, stability = OptionStability.STABLE)
 	public static final OptionKey<Boolean> EDITOR_ANALYSIS = new OptionKey<>(false);
 
 	@Override

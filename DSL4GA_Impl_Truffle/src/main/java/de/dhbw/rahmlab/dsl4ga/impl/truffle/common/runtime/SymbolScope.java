@@ -2,6 +2,7 @@ package de.dhbw.rahmlab.dsl4ga.impl.truffle.common.runtime;
 
 import com.oracle.truffle.api.interop.InteropLibrary;
 import com.oracle.truffle.api.interop.TruffleObject;
+import com.oracle.truffle.api.interop.UnsupportedMessageException;
 import com.oracle.truffle.api.library.ExportLibrary;
 import com.oracle.truffle.api.library.ExportMessage;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.features.debugging.runtime.ScopeVariablesNames;
@@ -116,7 +117,10 @@ public final class SymbolScope implements TruffleObject {
     }
 
     @ExportMessage
-    Object getScopeParent() {
+    Object getScopeParent() throws UnsupportedMessageException {
+        if (parent == null) {
+            throw UnsupportedMessageException.create();
+        }
         return parent;
     }
 

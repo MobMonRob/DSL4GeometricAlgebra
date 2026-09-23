@@ -13,6 +13,8 @@ import org.graalvm.polyglot.Context;
  */
 public final class GraalVMLSPStarter {
 
+    static final String EDITOR_ANALYSIS_PROPERTY = "polyglot.ga.editorAnalysis";
+
     private GraalVMLSPStarter() {
     }
 
@@ -37,11 +39,14 @@ public final class GraalVMLSPStarter {
 
     /** Shared by the standalone server and direct LSP protocol tests. */
     static Context createContext(int port) {
+        // Graal LSP creates its own engine and context; Context.Builder options
+        // below do not reach it. A JVM property is read by both engines in this
+        // dedicated server process.
+        System.setProperty(EDITOR_ANALYSIS_PROPERTY, "true");
         return Context.newBuilder(GeomAlgeLang.LANGUAGE_ID)
                 .allowAllAccess(true)
                 .allowExperimentalOptions(true)
                 .option("lsp", "127.0.0.1:" + port)
-                .option(GeomAlgeLang.LANGUAGE_ID + ".editorAnalysis", "true")
                 .build();
     }
 
