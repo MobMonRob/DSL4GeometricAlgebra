@@ -11,8 +11,11 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
+import java.security.CodeSource;
+import java.security.ProtectionDomain;
 import java.util.ArrayList;
 import java.util.List;
+import com.oracle.truffle.api.TruffleLanguage;
 import org.graalvm.polyglot.Context;
 import org.graalvm.shadowed.org.json.JSONArray;
 import org.graalvm.shadowed.org.json.JSONObject;
@@ -38,6 +41,7 @@ final class LspTestClient implements AutoCloseable {
     }
 
     static LspTestClient start() throws Exception {
+        printRuntimeSources();
         String previousEditorAnalysisProperty = System.getProperty(GraalVMLSPStarter.EDITOR_ANALYSIS_PROPERTY);
         int port;
         try (ServerSocket reservation = new ServerSocket(0, 1, InetAddress.getByName("127.0.0.1"))) {
@@ -48,6 +52,7 @@ final class LspTestClient implements AutoCloseable {
         try {
             context = GraalVMLSPStarter.createContext(port);
             context.initialize(GeomAlgeLang.LANGUAGE_ID);
+            System.out.println("[GA-LSP test] Polyglot engine: " + context.getEngine().getVersion());
             long deadline = System.nanoTime() + TIMEOUT_MILLIS * 1_000_000L;
             IOException lastFailure = null;
             while (System.nanoTime() < deadline) {
@@ -73,6 +78,20 @@ final class LspTestClient implements AutoCloseable {
             }
             throw ex;
         }
+    }
+
+    private static void printRuntimeSources() {
+        System.out.println("[GA-LSP test] Java: " + System.getProperty("java.version")
+                + " (" + System.getProperty("java.home") + ")");
+        System.out.println("[GA-LSP test] GA language: " + codeSourceOf(GeomAlgeLang.class));
+        System.out.println("[GA-LSP test] Truffle API: " + codeSourceOf(TruffleLanguage.class));
+    }
+
+    private static String codeSourceOf(Class<?> type) {
+        ProtectionDomain protectionDomain = type.getProtectionDomain();
+        CodeSource codeSource = protectionDomain != null ? protectionDomain.getCodeSource() : null;
+        return codeSource != null && codeSource.getLocation() != null
+                ? codeSource.getLocation().toExternalForm() : "unknown";
     }
 
     private static void restoreEditorAnalysisProperty(String previousValue) {
