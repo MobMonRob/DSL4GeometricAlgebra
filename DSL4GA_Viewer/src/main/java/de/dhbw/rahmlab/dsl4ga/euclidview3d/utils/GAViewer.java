@@ -87,6 +87,10 @@ public class GAViewer extends GAViewObject {
         this.impl = impl;
         impl.open();
     }
+
+	public boolean close() {
+		return impl.close();
+	}
     
     /**
      * 

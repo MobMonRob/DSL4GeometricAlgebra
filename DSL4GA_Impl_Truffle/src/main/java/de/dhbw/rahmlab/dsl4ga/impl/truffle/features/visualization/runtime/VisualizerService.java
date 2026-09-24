@@ -9,8 +9,11 @@ import de.orat.math.gacalc.api.MultivectorValue;
 import de.orat.math.gacalc.util.GeometricObject;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class VisualizerService {
+	private static final Logger LOG = Logger.getLogger(VisualizerService.class.getName());
 
 	private final GAViewer viewer;
 
@@ -29,6 +32,22 @@ public class VisualizerService {
 			INSTANCE = new VisualizerService(viewerOptional.get());
 		}
 		return INSTANCE;
+	}
+
+	public static void closeIfOpen() {
+		VisualizerService current = INSTANCE;
+		if (current == null) {
+			return;
+		}
+		// A later program run must obtain a fresh viewer, even if closing fails.
+		INSTANCE = null;
+		try {
+			if (!current.viewer.close()) {
+				LOG.warning("The visualization window could not be closed.");
+			}
+		} catch (RuntimeException ex) {
+			LOG.log(Level.WARNING, "The visualization window could not be closed.", ex);
+		}
 	}
 
 	public void add(MultivectorExpression mv, String name, VisualizerFunctionContext vizContext, boolean isExtrinsic) {
