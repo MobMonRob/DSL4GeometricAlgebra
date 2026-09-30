@@ -547,6 +547,22 @@ Different to PGA there are spheres which do not intersect and further flat geome
 ## command line tool
 
 ## Export plain c-code
+#### Example
+The following example transpiles a given program written in our DSL into plain c-code.
+```
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.api.TruffleProgram;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.api.TruffleProgramFactory;
+import de.orat.math.gacalc.api.GAFunction;
+import java.net.URL;
+...
+TruffleProgramFactory fac = new TruffleProgramFactory();
+TruffleProgram prog = fac.parse(gafile_url);
+GAFunction func = prog.invokeSymAsFunction();
+func.generateC(output-folder, "gen.c");
+```
+"gafile_url" is the url of a ga-file containing a program written in the GA DSL.
+"gen.c" is the file name of the generated c-source-file
+"output-folder" is the folder write the generated c-source-file written into.
 
 ## Dev Docs / Implementation notes
 ### How to create a new Builtin?
