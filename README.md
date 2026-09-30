@@ -19,6 +19,7 @@ Especially be cautious regarding:
 - Visualization of objects while debugging.
 - Fast numeric evaluation due to the internal use of sparsity and symbolic simplification of expressions (with CasADi and Maxima CAS). Additionally, the use of Geometric Algebra linearizes some transformations which increases likelyhood that the CAS finds shorter (faster) expressions.
 - LaTeX printing of expressions (with help of Maxima). Currently only at the end of program execution. Adding more flexibility is planned.
+- Export of optimized plain C-code (no dependency to any further library)
 
 
 ## GraalVM Setup
