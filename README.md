@@ -548,7 +548,7 @@ Different to PGA there are spheres which do not intersect and further flat geome
 
 ## Export plain c-code
 #### Example
-The following example transpiles a given program written in our DSL into plain c-code.
+The following example code in Java transpiles a given program written in our DSL into plain c-code.
 ```
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.api.TruffleProgram;
 import de.dhbw.rahmlab.dsl4ga.impl.truffle.api.TruffleProgramFactory;
