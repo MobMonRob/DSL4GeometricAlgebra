@@ -220,6 +220,8 @@ HOF currently cannot be defined in the language itself. Instead HOF builtins are
 | mapaccum    | Same as map, but accumulate on the first argument and result value of its argument function. Evaluates sequentially while passing an accumulator (state) forward to the next step. No Parallelisation support (Inherently sequential due to state dependency). Reduces creation time, saves memory and therefore allows to work with 2 order bigger problems.|
 | mapfold     | Same as mapaccum, but return only the last result values. Evaluates sequentially like mapaccum, but accumulates into a single reduction space (e.g., a cumulative sum). No Parallelisation support (Inherently sequential).|
 
+The high order functions map, mapaccum, and mapfold are structural loop constructs designed to automate the evaluation of an existing Function object over multiple inputs. Instead of constructing large symbolic loops in Python or MATLAB (which creates a massive, memory-heavy expression graph and drastically slows down execution), these constructs embed loop logic directly into the C++ core graph of CasADi.
+
 #### Pseudocode signatures
 - `map(Func<SimpleX... -> SimpleY...>, Array/Simple...) -> Tuple of Array of Simple`
 - `mapaccum(Func<SimpleAcc, SimpleCurrent... -> SimpleAcc, SimpleOut...>, SimpleAccInit, Array/Simple...) -> Tuple of Array of Simple`
