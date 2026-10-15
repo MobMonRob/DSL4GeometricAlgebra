@@ -216,9 +216,9 @@ HOF currently cannot be defined in the language itself. Instead HOF builtins are
 #### Available HOF builtins
 | HOF         | Explanation |
 | :---------- | :---------- |
-| map         | Execute its argument function and return all intermediate result values. |
-| mapaccum    | Same as map, but accumulate on the first argument and result value of its argument function. |
-| mapfold     | Same as mapaccum, but return only the last result values. |
+| map         | Execute its argument function and return all intermediate result values. Evaluates independent inputs entirely in parallel or sequentially. No state transfers between evaluations. Parallelisation support for Threads, OpenMP, OpenCL and Serial.|
+| mapaccum    | Same as map, but accumulate on the first argument and result value of its argument function. Evaluates sequentially while passing an accumulator (state) forward to the next step. No Parallelisation support (Inherently sequential due to state dependency). Reduces creation time, saves memory and therefore allows to work with 2 order bigger problems.|
+| mapfold     | Same as mapaccum, but return only the last result values. Evaluates sequentially like mapaccum, but accumulates into a single reduction space (e.g., a cumulative sum). No Parallelisation support (Inherently sequential).|
 
 #### Pseudocode signatures
 - `map(Func<SimpleX... -> SimpleY...>, Array/Simple...) -> Tuple of Array of Simple`
