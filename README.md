@@ -234,6 +234,12 @@ HOF currently cannot be defined in the language itself. Instead HOF builtins are
 - The HOF calls its argument function in each iteration with the array elements at the index equal to the iteration.
 - mapaccum and mapfold only: each iteration depends on the previous iteration. To achieve this, a single accumulator variable is used. It has to be the first argument and the first return value of the argument function. The first value of the accumulator variable is the second argument of the respective HOF.
 
+#### Optimization methods of map
+- serial: Evaluates inputs sequentially in C++.
+- unroll: Unrolls the loop into standard scalar graphs (reverts optimization; useful only for tiny dimensions).
+- thread: Spawns native OS threads across system CPU cores, bypassing languages like Python's Global Interpreter Lock (GIL).
+- openmp / opencl: Deploys tasks to multi-core CPUs, GPUs, or FPGAs for massive parallelization (highly effective for image processing or particle evaluations).
+  
 #### Examples
 ```
 fn add(a, b) {
