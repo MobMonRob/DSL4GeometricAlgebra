@@ -236,7 +236,7 @@ The high order functions map, mapaccum, and mapfold are structural loop construc
 - The HOF calls its argument function in each iteration with the array elements at the index equal to the iteration.
 - mapaccum and mapfold only: each iteration depends on the previous iteration. To achieve this, a single accumulator variable is used. It has to be the first argument and the first return value of the argument function. The first value of the accumulator variable is the second argument of the respective HOF.
 
-#### Optimization methods of map
+#### Optimization modes of map
 - serial: Evaluates inputs sequentially in C++.
 - unroll: Unrolls the loop into standard scalar graphs (reverts optimization; useful only for tiny dimensions).
 - thread: Spawns a pool of native OS threads across system CPU cores. Pros: Native execution completely bypasses Python's Global Interpreter Lock (GIL). Memory is shared efficiently. Best use case: Medium-scale optimization problems (e.g., N = 50 to 500) with a moderate number of states. Excellent for multi-core desktop CPUs.
