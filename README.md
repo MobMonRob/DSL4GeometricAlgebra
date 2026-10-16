@@ -92,7 +92,7 @@ Generally, to run a `.ocga`-file, you have to
 
 **Only scalars can be passed to and received from the main function.**
 
-**The user is responsible to include the correct up- and down-projections between the external scalar values and the multivectors of their chosen algebra into their `.ocga`-file.**
+**The user is responsible to include the correct up- and down-projections between the external scalar values and the multivectors of their chosen algebra into their `.ga`-file.**
 
 
 ## Annotation based API
@@ -237,11 +237,11 @@ The high order functions map, mapaccum, and mapfold are structural loop construc
 - mapaccum and mapfold only: each iteration depends on the previous iteration. To achieve this, a single accumulator variable is used. It has to be the first argument and the first return value of the argument function. The first value of the accumulator variable is the second argument of the respective HOF.
 
 #### Optimization modes of map
-- serial: Evaluates inputs sequentially in C++.
-- unroll: Unrolls the loop into standard scalar graphs (reverts optimization; useful only for tiny dimensions).
-- thread: Spawns a pool of native OS threads across system CPU cores. Pros: Native execution completely bypasses Python's Global Interpreter Lock (GIL). Memory is shared efficiently. Best use case: Medium-scale optimization problems (e.g., N = 50 to 500) with a moderate number of states. Excellent for multi-core desktop CPUs.
-- openmp: Deploys tasks to multi-core CPUs, GPUs, or FPGAs for massive parallelization (highly effective for image processing or particle evaluations). Multi-threading managed via compiler directives (#pragma omp parallel for). Pros: Extremely low scheduling overhead compared to raw std::thread. It utilizes highly optimized work-stealing thread pools provided by the compiler (GCC/Clang). Cons: Requires CasADi to be explicitly compiled with OpenMP support (default in most binaries, but occasionally missing in custom builds). Best use case: High-performance computing (HPC) nodes or heavy multiple-shooting formulations where thread scheduling overhead matters.
-- opencl: CasADi translates the symbolic expressions of the base function directly into OpenCL kernel C code, compiles it on the fly, and loads it onto a GPU or accelerator. Pros: Can evaluate thousands (N > 10,000) of function instances simultaneously. Cons: High initial compilation latency when the script starts. Only works if your base function consists entirely of operations supported by CasADi's OpenCL code-generator (complex conditional logic or custom C-plugins inside the base function will fail). Best use case: Large Monte Carlo simulations, particle filters, or massive parallel parameter estimation sweeps.
+- **serial**: Evaluates inputs sequentially in C++.
+- **unroll**: Unrolls the loop into standard scalar graphs (reverts optimization; useful only for tiny dimensions).
+- **thread**: Spawns a pool of native OS threads across system CPU cores. Pros: Native execution completely bypasses Python's Global Interpreter Lock (GIL). Memory is shared efficiently. Best use case: Medium-scale optimization problems (e.g., N = 50 to 500) with a moderate number of states. Excellent for multi-core desktop CPUs.
+- **openmp**: Deploys tasks to multi-core CPUs, GPUs, or FPGAs for massive parallelization (highly effective for image processing or particle evaluations). Multi-threading managed via compiler directives (#pragma omp parallel for). Pros: Extremely low scheduling overhead compared to raw std::thread. It utilizes highly optimized work-stealing thread pools provided by the compiler (GCC/Clang). Cons: Requires CasADi to be explicitly compiled with OpenMP support (default in most binaries, but occasionally missing in custom builds). Best use case: High-performance computing (HPC) nodes or heavy multiple-shooting formulations where thread scheduling overhead matters.
+- **opencl**: CasADi translates the symbolic expressions of the base function directly into OpenCL kernel C code, compiles it on the fly, and loads it onto a GPU or accelerator. Pros: Can evaluate thousands (N > 10,000) of function instances simultaneously. Cons: High initial compilation latency when the script starts. Only works if your base function consists entirely of operations supported by CasADi's OpenCL code-generator (complex conditional logic or custom C-plugins inside the base function will fail). Best use case: Large Monte Carlo simulations, particle filters, or massive parallel parameter estimation sweeps.
   
 #### Examples
 ```
