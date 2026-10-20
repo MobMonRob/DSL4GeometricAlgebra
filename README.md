@@ -464,10 +464,11 @@ Spears correspond with polar vectors and can represent local orbits or momenta o
 
 The orientation type of the following objects corresponds with the so called commutator product null space representation (CPNS), sometimes also named as "plane-based" representation.
 
-| object | grade | formula |
-| :---------- | :------ | :-------- |
-| plane | 1 |  $\displaystyle \pi =\vec{n}+(\vec{x}\cdot\vec{n})\epsilon_0 = p_3\vee p_2\vee p_1$ |
-| 1D direction | 1 |  $\displaystyle d =\vec{n}$ |
+| object | grade | formula | description |
+| :---------- | :------ | :-------- | --- |
+| plane | 1 |  $\displaystyle \pi =\vec{n}+(\vec{x}\cdot\vec{n})\epsilon_0 = p_3\vee p_2\vee p_1$ | |
+| idle plane | 1 | $\pi = -\epsilon_0$ | |
+| 1D direction | 1 |  $\displaystyle d =\vec{n}$ | |
 
 The following objects are constructed by meeting planes (also using the wedge-operator).
 
