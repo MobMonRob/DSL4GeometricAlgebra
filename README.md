@@ -453,7 +453,7 @@ and from this, the following geometric objects can be created by joining the poi
 
 | object | grade | formula | description |
 | :---------- | :------ | :-------- | ---------------- |
-| spear (join line) | 2 |  $\displaystyle l = P_2\wedge P_1 = \vec{n}\wedge Q = \vec{n}\cdot\Q$ | The line points from $p_1$ to $p_2$, or is defined by one point and an euclidean direction vector. |
+| spear (join line) | 2 |  $\displaystyle l = P_2\wedge P_1 = \vec{n}\wedge Q = \vec{n}\cdot Q$ | The line points from $p_1$ to $p_2$, or is defined by one point $Q$ and an euclidean direction vector $\vec{n}$. It can be used to represend a force. |
 | 1D direction  | 2 | $\displaystyle d = \vec{n}\wedge E_3= \vec{n}^{\ast}$  | A 1D direction is an oriented line through the origin, represented by a nonzero vector. It is a one-dimensional subspace, not the vector's coordinates. The vector is merely a representative of that direction.|
 | plane | 3 |   $\displaystyle \pi = p_1\wedge p_2\wedge p_3 = p\wedge\vec{n}^{\ast} =\epsilon_0\wedge\vec{n}^{\ast}+\vec{x}\wedge\vec{n}^{\ast} = \epsilon_0\wedge\vec{n}^{\ast}-(\vec{x}\cdot\vec{n})E_3$ | clockwise  arrangement of the points, defines the plane and the direction of its normal vector. |
 | 2D direction | 3 |  | A 2D direction is an oriented plane through the origin, represented by a nonzero bivector. |
