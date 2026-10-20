@@ -466,7 +466,7 @@ The orientation type of the following objects corresponds with the so called com
 
 | object | grade | formula | description |
 | :---------- | :------ | :-------- | --- |
-| plane | 1 |  $\displaystyle \pi =\vec{n}+(\vec{x}\cdot\vec{n})\epsilon_0 = p_3\vee p_2\vee p_1$ | |
+| plane | 1 |  $\displaystyle \pi =\vec{n}+(\vec{x}\cdot\vec{n})\epsilon_0 = \vec{n} - \delta\epsilon_0 = p_3\vee p_2\vee p_1$ | $\delta$ has the dimension of length and represents the distance of the plane to the origin.|
 | idle plane | 1 | $\pi = -\epsilon_0$ | |
 | 1D direction | 1 |  $\displaystyle d =\vec{n}$ | |
 
