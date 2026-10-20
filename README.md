@@ -472,7 +472,7 @@ The orientation type of the following objects corresponds with the so called com
 The following objects are constructed by meeting planes (also using the wedge-operator).
 
 | object | grade | formula | description |
-| :----- | :--- | -------- | |
+| :----- | :---  | -------- | ---------- |
 | axis (meet/hyper line) | 2 |  $\displaystyle l=\pi_2\wedge\pi_1=\vec{n}^{\ast}-(\vec{x}\cdot\vec{n}^{\ast})\mathord{\epsilon_0}$ | |
 | 2D direction (idle line)  | 2 |  $\displaystyle d = \epsilon_0\wedge\vec{n} = \epsilon_0\vec{n}$ (because  $\displaystyle \epsilon_0\dot{\vec{n}} = 0$) |  It can be used as an axis of translation.|
 | point | 3 | $\displaystyle p=\pi_3\wedge\pi_2\wedge\pi_1=\pi\wedge l=E_3 + \vec{x}\epsilon_0 E_3$ | |
