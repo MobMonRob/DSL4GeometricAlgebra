@@ -468,14 +468,14 @@ The orientation type of the following objects corresponds with the so called com
 | :---------- | :------ | :-------- | --- |
 | plane | 1 |  $\displaystyle \pi =\vec{n}+(\vec{x}\cdot\vec{n})\epsilon_0 = \vec{n} - \delta\epsilon_0 = p_3\vee p_2\vee p_1$ | $\delta$ has the dimension of length and represents the distance of the plane to the origin.|
 | idle plane | 1 | $\pi = -\epsilon_0$ | |
-| 1D direction | 1 |  $\displaystyle d =\vec{n}$ | It can be called free direction and it corresponds to an eudlidean vector. You can transform this object by a motor. This results in a rotated direction only. The translation part of a motor does not affect the transformation of the 1D direction. |
+| 2D direction | 1 |  $\displaystyle d =\vec{n}$ | It can be called free direction and it corresponds to an eudlidean vector. You can transform this object by a motor. This results in a rotated direction only. The translation part of a motor does not affect the transformation of the 1D direction. |
 
 The following objects are constructed by meeting planes (also using the wedge-operator).
 
 | object | grade | formula | description |
 | :----- | :---  | -------- | ---------- |
 | axis (meet/hyper line) | 2 |  $\displaystyle l=\pi_2\wedge\pi_1=\vec{n}^{\ast}-(\vec{x}\cdot\vec{n}^{\ast})\mathord{\epsilon_0}$ | The coefficients directly correspond to Plucker-coordinates. The idle components build the moment and the euclid components build the lines direction.|
-| 2D direction (idle line)  | 2 |  $\displaystyle d = \epsilon_0\wedge\vec{n} = \epsilon_0\vec{n}$ (because  $\displaystyle \epsilon_0\cdot\vec{n} = 0$) |  It can be used as an axis of translation.|
+| 1D direction (idle line)  | 2 |  $\displaystyle d = \epsilon_0\wedge\vec{n} = \epsilon_0\vec{n}$ (because  $\displaystyle \epsilon_0\cdot\vec{n} = 0$) |  It can be used as an axis of translation.|
 | point | 3 | $\displaystyle p=\pi_3\wedge\pi_2\wedge\pi_1=\pi\wedge l=E_3 + \vec{x}\epsilon_0 E_3$ | |
 
 Axes correspond to axial vectors and can describe movement velocity (rotations (finite) and translations (idial)).
