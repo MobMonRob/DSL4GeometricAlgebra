@@ -19,6 +19,7 @@ Especially be cautious regarding:
 - Visualization of objects while debugging.
 - Fast numeric evaluation due to the internal use of sparsity and symbolic simplification of expressions (with CasADi and Maxima CAS). Additionally, the use of Geometric Algebra linearizes some transformations which increases likelyhood that the CAS finds shorter (faster) expressions.
 - LaTeX printing of expressions (with help of Maxima). Currently only at the end of program execution. Adding more flexibility is planned.
+- Export of optimized plain C-code (no dependency to any further library)
 
 
 ## GraalVM Setup
@@ -91,7 +92,7 @@ Generally, to run a `.ocga`-file, you have to
 
 **Only scalars can be passed to and received from the main function.**
 
-**The user is responsible to include the correct up- and down-projections between the external scalar values and the multivectors of their chosen algebra into their `.ocga`-file.**
+**The user is responsible to include the correct up- and down-projections between the external scalar values and the multivectors of their chosen algebra into their `.ga`-file.**
 
 
 ## Annotation based API
@@ -215,9 +216,11 @@ HOF currently cannot be defined in the language itself. Instead HOF builtins are
 #### Available HOF builtins
 | HOF         | Explanation |
 | :---------- | :---------- |
-| map         | Execute its argument function and return all intermediate result values. |
-| mapaccum    | Same as map, but accumulate on the first argument and result value of its argument function. |
-| mapfold     | Same as mapaccum, but return only the last result values. |
+| map         | Execute its argument function and return all intermediate result values. Evaluates independent inputs entirely in parallel or sequentially. No state transfers between evaluations. Parallelisation support for Threads, OpenMP, OpenCL and Serial.|
+| mapaccum    | Same as map, but accumulate on the first argument and result value of its argument function. Evaluates sequentially while passing an accumulator (state) forward to the next step. No Parallelisation support (Inherently sequential due to state dependency). Reduces creation time, saves memory and therefore allows to work with 2 order bigger problems.|
+| mapfold     | Same as mapaccum, but return only the last result values. Evaluates sequentially like mapaccum, but accumulates into a single reduction space (e.g., a cumulative sum). No Parallelisation support (Inherently sequential).|
+
+The high order functions map, mapaccum, and mapfold are structural loop constructs designed to automate the evaluation of an existing Function object over multiple inputs. Instead of constructing large symbolic loops in Python or MATLAB (which creates a massive, memory-heavy expression graph and drastically slows down execution), these constructs embed loop logic directly into the C++ core graph of CasADi.
 
 #### Pseudocode signatures
 - `map(Func<SimpleX... -> SimpleY...>, Array/Simple...) -> Tuple of Array of Simple`
@@ -232,6 +235,16 @@ HOF currently cannot be defined in the language itself. Instead HOF builtins are
 - Simple value (not array) arguments will be repeated for each iteration.
 - The HOF calls its argument function in each iteration with the array elements at the index equal to the iteration.
 - mapaccum and mapfold only: each iteration depends on the previous iteration. To achieve this, a single accumulator variable is used. It has to be the first argument and the first return value of the argument function. The first value of the accumulator variable is the second argument of the respective HOF.
+
+#### Optimization modes of map
+- **serial**: Evaluates inputs sequentially in C++.
+- **unroll**: Unrolls the loop into standard scalar graphs (reverts optimization; useful only for tiny dimensions).
+- **thread**: Spawns a pool of native OS threads across system CPU cores. Pros: Memory is shared efficiently. Best use case: Medium-scale optimization problems (e.g., N = 50 to 500) with a moderate number of states. Excellent for multi-core desktop CPUs.
+- **openmp**: Deploys tasks to multi-core CPUs, GPUs, or FPGAs for massive parallelization (highly effective for image processing or particle evaluations). Multi-threading managed via compiler directives (#pragma omp parallel for). Pros: Extremely low scheduling overhead compared to raw std::thread. It utilizes highly optimized work-stealing thread pools provided by the compiler (GCC/Clang). Cons: Requires CasADi to be explicitly compiled with OpenMP support (default in most binaries, but occasionally missing in custom builds). Best use case: High-performance computing (HPC) nodes or heavy multiple-shooting formulations where thread scheduling overhead matters.
+- **opencl**: CasADi translates the symbolic expressions of the base function directly into OpenCL kernel C code, compiles it on the fly, and loads it onto a GPU or accelerator. Pros: Can evaluate thousands (N > 10,000) of function instances simultaneously. Cons: High initial compilation latency when the script starts. Only works if your base function consists entirely of operations supported by CasADi's OpenCL code-generator (complex conditional logic or custom C-plugins inside the base function will fail). Best use case: Large Monte Carlo simulations, particle filters, or massive parallel parameter estimation sweeps.
+
+#### Remarks
+Compilation for Codegen: For maximum speed, you can export the mapped function to C code using f_parallel.generate() and compile it using gcc -O3 -fopenmp. Loading the compiled .so or .dll back into CasADi eliminates virtual machine overhead entirely.
 
 #### Examples
 ```
@@ -372,7 +385,7 @@ There exist three types of involution operations: Space inversion, reversion and
 | filterGrade() | Retains only blades of the given grade. 1. argument: mv to be filtered. 2. argument: grade. |
 | idle()      | idle part of the multivector (Blades containing base elements with metric 0 or -1. (without 0-grade scalar)) - encodes the position relative to the origin; an object with a vanashing idea part necessarily passes through the origin |
 | euclid()    | euclidean part of the multivector (Blades containing **only** base elements with metric 1 and no others. (without 0-grade scalar)) - encodes the objects orientation or weight; an object with a non zero euclidean part is called finite; an object with a vanashing euclidean part is called idle  |
-| coef()      | with two multivectors as arguments. The second must be one blade only. The function extracts the coefficient for this blade in the first argument as as scalar |
+| coef()      | with two multivectors as arguments. The second defines the index of a blade and therefore must be a one blade only. The function extracts the coefficient for this blade in the first argument as as scalar. |
 
 #### functions to optimize the underlaying expressions
 | symbol      | description |
@@ -417,12 +430,12 @@ The inverse operator is implemented by analysing the type of the mulitivector an
 
 | symbol           | latex        | Unicode      | description |
 | :--------------: | ------------ | ------------ | ----------- |
-| &#x03B5;&#x2080; | \epsilon_0 | \u03B5\u2080 | base vector representing the origin |
-| &#x03B5;&#x2081; | \epsilon_1 | \u03B5\u2081 | base vector representing x direction |
-| &#x03B5;&#x2082; | \epsilon_2 | \u03B5\u2082 | base vector representing y direction |
-| &#x03B5;&#x2083; | \epsilon_3 | \u03B5\u2083 | base vector representing z direction |
-| &#x0045;&#x2083; | E_3        | \u0045\u2083 | Euclidean pseudoscalar &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083;  |
-| &#x0049;         | I          | \u0049       | Pseudoscalar &#x03B5;&#x2080;  &#x2227; &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083; &#x2227;  |
+| &#x03B5;&#x2080; | \epsilon_0 | \u03B5\u2080 | base vector with physical unit 1/[length] e.g. 1/m  |
+| &#x03B5;&#x2081; | \epsilon_1 | \u03B5\u2081 | base vector representing x direction, dimensionless (the corresponding coefficients have the unit of a length).|
+| &#x03B5;&#x2082; | \epsilon_2 | \u03B5\u2082 | base vector representing y direction, dimensionless (the corresponding coefficients have the unit of a length). |
+| &#x03B5;&#x2083; | \epsilon_3 | \u03B5\u2083 | base vector representing z direction, dimensionless (the corresponding coefficients have the unit of a length). |
+| &#x0045;&#x2083; | E_3        | \u0045\u2083 | Euclidean pseudoscalar &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083; It represents the point at the origin. |
+| &#x0049;         | I          | \u0049       | Pseudoscalar &#x03B5;&#x2080;  &#x2227; &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083; &#x2227; |
 
 #### Geometric objects with intrinsic orientation type
 
@@ -440,25 +453,31 @@ and from this, the following geometric objects can be created by joining the poi
 
 | object | grade | formula | description |
 | :---------- | :------ | :-------- | ---------------- |
-| spear (join line) | 2 |  $\displaystyle l = p_2\wedge p_1 = \vec{n}\wedge p$ | The line points from $p_1$ to $p_2$, or is defined by one point and an euclidean direction vector. |
+| spear (join line) | 2 |  $\displaystyle l = P_2\wedge P_1 = \vec{n}\wedge Q = \vec{n}\cdot Q$ | The line points from $p_1$ to $p_2$, or is defined by one point $Q$ and an euclidean direction vector $\vec{n}$. The coefficients directly correspond to Plucker-coordinates. The idle components build the moment and the euclid components build the lines direction. It can be used to represend a force. |
+| 1D direction  | 2 | $\displaystyle d = \vec{n}\wedge E_3= \vec{n}^{\ast} = n_x\epsilon_{23}+n_y\epsilon_{13}+n_z\epsilon_{12}$  | A 1D direction is an oriented line through the origin, represented by a nonzero vector. It is a one-dimensional subspace, not the vector's coordinates. The vector is merely a representative of that direction. It results from the intersection of two planes. It corresponds to an so called axial vector (pseudovector).|
 | plane | 3 |   $\displaystyle \pi = p_1\wedge p_2\wedge p_3 = p\wedge\vec{n}^{\ast} =\epsilon_0\wedge\vec{n}^{\ast}+\vec{x}\wedge\vec{n}^{\ast} = \epsilon_0\wedge\vec{n}^{\ast}-(\vec{x}\cdot\vec{n})E_3$ | clockwise  arrangement of the points, defines the plane and the direction of its normal vector. |
+| 2D direction | 3 |  | A 2D direction is an oriented plane through the origin, represented by a nonzero bivector. |
 
 Spears correspond with polar vectors and can represent local orbits or momenta of points.
 
 #### Geometric objects with extrinsic orientation type
 
-The orientation type of the following objects corresponds with the so called commutator product null space representation (CPNS), sometimes also named as "plane-based" representation.
+The orientation type of the following objects corresponds with the so called commutator product null space representation (CPNS), sometimes also named as "plane-based" representation. For odd motions (mirroring) these elements flip its sign.
 
-| object | grade | formula |
-| :---------- | :------ | :-------- |
-| plane | 1 |  $\displaystyle \pi =\vec{n}+(\vec{x}\cdot\vec{n})\epsilon_0 = p_3\vee p_2\vee p_1$ |
+| object | grade | formula | description |
+| :---------- | :------ | :-------- | --- |
+| plane | 1 |  $\displaystyle \pi =\vec{n}+(\vec{x}\cdot\vec{n})\epsilon_0 = \vec{n} - \delta\epsilon_0 = p_3\vee p_2\vee p_1$ | $\delta$ has the dimension of length and represents the distance of the plane to the origin.|
+| idle plane | 1 | $\pi = -\epsilon_0$ | The only plane that is fully transltional invariant. |
+| 2D direction | 1 |  $\displaystyle d =\vec{n}$ | It is the orientation of a plane through the origin. It can be called free direction and it corresponds to an eudlidean vector. You can transform this object by a motor. This results in a rotated direction only. The translation part of a motor does not affect the transformation of the 1D direction. |
 
 The following objects are constructed by meeting planes (also using the wedge-operator).
 
-| object | grade | formula |
-| :----- | :--- | -------- |
-| axis (meet line) | 2 |  $\displaystyle l=\pi_2\wedge\pi_1=\vec{n}^{\ast}-(\vec{x}\cdot\vec{n}^{\ast})\mathord{\epsilon_0}$ |
-| point | 3 | $\displaystyle p=\pi_3\wedge\pi_2\wedge\pi_1=\pi\wedge l=E_3 + \vec{x}\epsilon_0 E_3$ |
+| object | grade | formula | description |
+| :----- | :---  | -------- | ---------- |
+| axis (meet/hyper line) | 2 |  $\displaystyle l=\pi_2\wedge\pi_1=\vec{n}^{\ast}-(\vec{x}\cdot\vec{n}^{\ast})\mathord{\epsilon_0}$ | Build as a pencil of hyperplanes. Normalized can be used as a rotation operator.|
+| 1D direction (idle line)  | 2 |  $\displaystyle d = \epsilon_0\wedge\vec{n} = \epsilon_0\vec{n}$ (because  $\displaystyle \epsilon_0\cdot\vec{n} = 0$) |  This is the direction of an idle line. It results from an intersection of a plane with an idle plane. It can be used as an axis of translation. It corresponds with so called polar vectors. It changes its sign after mirroring on a plane parallel to the direction (NOT parallel to the normal of the plane!!!).|
+| point | 3 | $\displaystyle p=\pi_3\wedge\pi_2\wedge\pi_1=\pi\wedge l=E_3 + \vec{x}\epsilon_0 E_3$ | |
+| 0D direction | 3 | | |
 
 Axes correspond to axial vectors and can describe movement velocity (rotations (finite) and translations (idial)).
 
@@ -543,6 +562,25 @@ Different to PGA there are spheres which do not intersect and further flat geome
 | plane  | 1 |  n+d&#x03B5;&#7522; |
 | axis (meet line) | 2 |  p1&#8743;p2 |
 
+## command line tool
+
+## Export plain c-code
+#### Example
+The following example code in Java transpiles a given program written in our DSL into plain c-code.
+```
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.api.TruffleProgram;
+import de.dhbw.rahmlab.dsl4ga.impl.truffle.api.TruffleProgramFactory;
+import de.orat.math.gacalc.api.GAFunction;
+import java.net.URL;
+...
+TruffleProgramFactory fac = new TruffleProgramFactory();
+TruffleProgram prog = fac.parse(gafile_url);
+GAFunction func = prog.invokeSymAsFunction();
+func.generateC(output-folder, "gen.c");
+```
+"gafile_url" is the url of a ga-file containing a program written in the GA DSL.
+"gen.c" is the file name of the generated c-source-file
+"output-folder" is the folder write the generated c-source-file written into.
 
 ## Dev Docs / Implementation notes
 ### How to create a new Builtin?
@@ -555,7 +593,6 @@ In `DSL4GA_Impl_Truffle`:
 	- Register yor Builtin in `installBuiltins()` similar to the existing ones.
 
 If the name of the Builtin class is “Abs”, the Builtin function in the DSL will be “abs”.
-
 
 ## Dev Docs / Netbeans Plugin
 ### New algebra added
@@ -571,15 +608,14 @@ If changes occured in Truffle with effects to the LSP and you want to use them i
 
 
 ## Next Steps
-- symbolically optimizing expressions with many trigometric functions
-- adding G6 - Cl(6,0,0) algebra
+- symbolically optimizing expressions with many trigometric functions (mainly working, but more testing needed)
+- adding G6 - Cl(6,0,0) and Cl(3,0,0) algebras
 - adding syntax for using of matrices
 - adding operators and built-ins for symbolic derivation and algorithmic differentiation
 - adding builtins for symbolic (implemented with Maxima) and numeric (implementy with Casadi) zerofinding, e.g. for singularity detection in robotics
 - adding more smart-editing features based on the language-agnostic LSP from GraalVM, completion of the implementation of a language-specific LSP
 - adding more debugging features e.g. showing the complete stacktrace polyglot till inside the native [CasADi](https://web.casadi.org/) libraries by building to LLVM
-- completing the design of a type-system and its implementation
+- completing the design of a type-system and its implementation (intrinsic sub-types of multivector: scalar, bivector, trivector, ...)
 - Hyperwedge product implementation following [DeKeninck2020] to speed up program execution
-- C-code export and parallelization with CasADi
-- execution speed benchmarks, espcially to compare FAST- and TRUFFLE-implementation, autogenerated C-Code, ...
+- execution speed benchmarks, especially to compare FAST- and TRUFFLE-implementation, autogenerated C-Code, ...
 
