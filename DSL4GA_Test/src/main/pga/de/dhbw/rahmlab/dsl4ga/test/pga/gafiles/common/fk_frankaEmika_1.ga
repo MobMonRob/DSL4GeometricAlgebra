@@ -1,0 +1,89 @@
+#algebra pga
+
+// anders als im paper, entsprechend der AI Antworten
+// vor allem andere Vorzeichen
+
+// frame i-1 is attached to axis i-1 and fame i is attached to axis i
+// a, alpha are the parameters of the frame i-1
+// theta, d are the parameters of the rame i
+fn motorMdh(theta, a, d, alpha) {
+	R_x = cos(0.5 alpha) - sin(0.5 alpha) (ε₂ ∧ ε₃) // Lx = ε₂ ∧ ε₃
+	T_x = 1 - 0.5 a (ε₀ ∧ ε₁) // Lx I = (ε₂ ∧ ε₃)I = ε₀ ∧ ε₁, 
+	R_z = cos(0.5 theta) - sin(0.5 theta) (ε₁ ∧ ε₂) // Lz = ε₁ ∧ ε₂
+	T_z = 1 - 0.5 d (ε₀ ∧ ε₃) // Lz = d 
+	M_link = R_x T_x
+	M_joint = R_z T_z
+	M_link M_joint
+}
+
+// to use in the mapaccum() high order function
+// first argument and first result value is the accumulator variable
+fn applyMotor(obj_prev, theta, a, d, alpha) {
+	M = motorMdh(theta, a, d, alpha)
+	obj = M obj_prev  M˜ 
+	obj, M
+}
+
+// Agut2017 5.3-3 S. 60
+// Zaplana2021 3. S. 10
+// Seybold2015 Diss 14.2 S. 136
+// fn fk(L0, theta)
+fn fk(L0, theta[]){
+	
+	// mdh parameters Franka Emika Panda (default order)
+	// joint i, link length ai-1, link twist alphai-1, link offset di
+	alpha[] = {0.0, -π/2, π/2, π/2, -π/2, π/2, π/2}
+	a[] = {0.0, 0.0, 0.0, 0.0825, -0.0825, 0.0, 0.088}
+	d[] = {0.333, 0.0, 0.316, 0.0, 0.384, 0.0, 0.0}
+    
+    // Motors from the spatial reference frame i to the 
+    // initial bodyfixed reference frame
+	// TODO motorMdh ist ja nur die Trafo zum vorherigen Joint
+    // ich will aber komplette Trafo zum initial frame!!!
+    // map(Func<SimpleX... -> SimpleY...>, Array/Simple...) -> Tuple of Array of Simple
+    // mapaccum?
+    // mapaccum(Func<SimpleAcc, SimpleCurrent... -> SimpleAcc, SimpleOut...>,    
+    // SimpleAccInit, Array/Simple...) -> Tuple of Array of Simple
+	M[] = map(motorMdh, theta, a, d, alpha)
+
+	//M_rev[] = reversed(M)
+	//ps[] = reversed(ps_rev)
+	//ps
+
+	//L0s[] = mapaccum(applyMotor, L0, M)
+	//L0s
+	//mapaccum(applyMotor, L0, M)
+	M_total, M[] = mapaccum(applyMotor, M0, theta, a, d, alpha)
+
+}
+
+fn main(theta1, theta2, theta3, theta4, theta5, theta6) {
+
+	// bounding box
+    ::P1 = up(2 ε₁)
+	::P2 = up(2 ε₂)
+	::P3 = up(2 ε₃)
+
+	:L0 = ε₁ ∧ ε₂ // line in z-direction, through the origin, e12, extrinsic, ipns
+	L0Dir = euclid(L0)/E₃
+	theta[] = {theta1, theta2, theta3, theta4, theta5, theta6}
+	L[] = fk(L0, theta) // hier bekomme ich grades [0,2,4] statt homogene Multivektoren
+    ::Ls[] = map(simplify, L)
+	//::Ls1 = simplify(Ls[0]) // FIXME die Formel stimmt nicht mit der von Gaalop bestimmten überein
+	//::Ls2 = simplify(Ls[1])
+	//::Ls3 = simplify(Ls[2])
+    // grade=4 ist nicht strukturell null, aber numerisch fast 0
+
+	// euclidean part of the line divived by I3 = direction
+    // corresponding to points at infinity, with an implied e123 coefficient of 00
+    direction = euclid(Ls[5])/E₃
+    //direction = Ls[5]∧ε₀ // direction ideal point, direction in the trivectors, ToDo how to extract it from e023, e031, e012
+
+    // closest point on the line to the origin
+	//position = Ls[5]/direction
+    position = ((ε₁∧ε₂∧ε₃)⋅Ls[5])Ls[5]
+	// a direction is a flat point at infinity directs into direction? or plane?
+    
+	// TODO extract all coordinates as double coefficients
+	position, direction
+}

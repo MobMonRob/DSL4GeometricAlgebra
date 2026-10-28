@@ -11,9 +11,9 @@ import util.pga.SparsePGAColumnVector;
 public class TruffleDKDebugging {
 
 	// dh parameters UR5
-	private static double[] a = new double[]{0.0, -0.425, -0.392, 0.0, 0.0, 0.0};
-	private static double[] d = new double[]{0.0892, 0.0, 0.0, 0.10915, 0.09465, 0.0825};
-	private static double[] alpha = new double[]{Math.PI/2.0, 0.0, 0.0, Math.PI/2.0, -Math.PI/2.0, 0.0}; 
+	//private static double[] a = new double[]{0.0, -0.425, -0.392, 0.0, 0.0, 0.0};
+	//private static double[] d = new double[]{0.0892, 0.0, 0.0, 0.10915, 0.09465, 0.0825};
+	//private static double[] alpha = new double[]{Math.PI/2.0, 0.0, 0.0, Math.PI/2.0, -Math.PI/2.0, 0.0}; 
 
 	public static void main(String[] args) throws Exception {
 		invocationTest();
@@ -34,7 +34,7 @@ public class TruffleDKDebugging {
 	 * Wie Pose definieren?
 	 */
 	private static void invocationTest() throws Exception {
-		String path = "./gafiles/common/fk.ga";
+		String path = "./gafiles/common/fk_ur5e.ga";
 		var uri = TruffleDKDebugging.class.getResource(path);
 		if (uri == null) {
 			throw new RuntimeException(String.format("Path not found: %s", path));
@@ -43,7 +43,9 @@ public class TruffleDKDebugging {
 		var fac = new TruffleProgramFactory();
 		var prog = fac.parse(uri);
 		
-		double[] thetas = new double[]{0, 0, 0, 0, 0, 0};
+		// thetas and dthetas
+		double[] thetas = new double[]{0, 0, 0, 0, 0, 0,
+									   0, 0, 0, 0, 0, 0};
 		var res = prog.invoke(Arrays.stream(thetas).boxed().toList());
 
 		System.out.println("answer: ");
@@ -63,7 +65,7 @@ public class TruffleDKDebugging {
 	
 	// for testing the ga-based fk a comparable matrix based implementation
 	
-	private static Pose dk(double[] theta){
+	/*private static Pose dk(double[] theta){
 		Matrix4d m = new Matrix4d();
 		m.setIdentity();
 		for (int i=0;i<6;i++){
@@ -73,7 +75,7 @@ public class TruffleDKDebugging {
 			m.mul(createRx(alpha[i]));
 		}
 		return new Pose(m);
-	}
+	}*/
 	
 	private static Matrix4d createRz(double theta){
 		Matrix4d m = new Matrix4d();

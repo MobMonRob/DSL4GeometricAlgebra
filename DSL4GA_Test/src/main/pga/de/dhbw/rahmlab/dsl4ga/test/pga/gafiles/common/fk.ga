@@ -1,12 +1,15 @@
 #algebra pga
 
-fn motor(theta, a, d, alpha) {
-	T_d = 1 - 0.5 d (ε₀ ∧ ε₂) // Tz 
-	R_theta = cos(0.5 theta) - sin(0.5 theta) (ε₁ ∧ ε₂) // Rz - rotation around the z-axis
-	T_a = 1 - 0.5 a (ε₀ ∧ ε₁) // Tx
-    R_alpha = cos(0.5 alpha) - sin(0.5 alpha) (ε₂ ∧ ε₃) // Rx
-	M = R_alpha T_d T_a R_theta 
-	M
+// local joit motor
+fn motorDH(theta, a, d, alpha) {
+	T_z = 1 - 0.5 d (ε₀ ∧ ε₃) 
+	R_z = cos(0.5 theta) - sin(0.5 theta) (ε₁ ∧ ε₂) 
+	T_x = 1 - 0.5 a (ε₀ ∧ ε₁) 
+    R_x = cos(0.5 alpha) - sin(0.5 alpha) (ε₂ ∧ ε₃) 
+	//M = R_x T_z T_x R_z 
+	M_z = R_z T_z
+	M_x = T_x R_x 
+	M_z M_x
 }
 
 fn applyMotor(obj_prev, M) {
@@ -25,14 +28,10 @@ fn fk(L0, theta[]){
 	d[] = {0.0892, 0.0, 0.0, 0.10915, 0.09465, 0.0825}
     alpha[] = {π/2, 0, 0, π/2, -π/2, 0}
 
-	M[] = map(motor, theta, a, d, alpha)
+	M[] = map(motorDH, theta, a, d, alpha)
 
-	//M_rev[] = reversed(M)
-	//ps[] = reversed(ps_rev)
-	//ps
-
-	//L0s[] = mapaccum(applyMotor, L0, M)
-	//L0s
+	// test
+	
 	mapaccum(applyMotor, L0, M)
 }
 

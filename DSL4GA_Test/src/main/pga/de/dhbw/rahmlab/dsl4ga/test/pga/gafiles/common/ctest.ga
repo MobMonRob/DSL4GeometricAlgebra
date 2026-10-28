@@ -1,0 +1,7 @@
+#algebra pga
+
+fn main(a, b) {
+	c = a+b
+	c
+}
+

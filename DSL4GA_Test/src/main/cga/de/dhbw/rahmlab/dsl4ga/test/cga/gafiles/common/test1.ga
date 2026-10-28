@@ -7,7 +7,10 @@ fn test(a) {
 fn main(a, b) {
 	c1, _ = test(b)
 	d = abs(c1) 2.0
+	d1 = d ε₁
+	e1 =  coef(d, 2) // FIXME extracts always the scalar, independent from the value of the second argument
 	e = coef(d, 1)
 	f = 2 × 3
-	a, b, d, e, f
+	a, b, d, e1, f
+	// 2 3 10
 }

@@ -1,0 +1,185 @@
+#algebra pga
+
+// local joint motor from dh-parameters
+fn motorDH(theta, a, d, alpha) {
+	T_z = 1 + 0.5 d (ε₀ ∧ ε₃) // Taylor only up to the linear element, therefor + sign
+	R_z = cos(0.5 theta) - sin(0.5 theta) (ε₁ ∧ ε₂) 
+	T_x = 1 + 0.5 a (ε₀ ∧ ε₁) 
+    R_x = cos(0.5 alpha) - sin(0.5 alpha) (ε₂ ∧ ε₃) 
+	R_z T_z T_x R_x
+}
+
+fn accumMotor(M_prev, theta, a, d, alpha) {
+	M = motorDH(theta, a, d, alpha)
+	M_total = M_prev M 
+	M_total, M
+}
+
+fn filterGrade2(mv[]){
+	mv_filtered[] = map(filterGrade, mv, 2)
+	map(simplify, mv_filtered)
+}
+
+//TODO builtin function grade() needed to test obj if it is homogeneous and if it is:
+// filter the result to the grade of the input (obj)
+fn applyMotor(obj, M) {
+	// Transformation from right to left of obj e.g. (0,0,0)=TCP (local last frame) into the base frame
+	M obj M˜ // Moves the actual Point P within fixed coordinate system/local frame to global coordinates. 
+}
+
+// get euclidean point from extrinisic trivector representation
+// FIXME scheint nicht zu funkionieren -- alle Komponenten sind 0
+fn getEuclideanPoint(P){
+	1/(P⁻*⋅ε₀) ((P⁻*∧ε₀)⋅E₃)
+}
+
+fn fk(theta[]){
+	
+	// dh parameters UR5e
+	a[] = {0.0, -0.425, -0.3922, 0.0, 0.0, 0.0}
+	d[] = {0.1625, 0.0, 0.0, 0.1333, 0.0997, 0.0996}
+    alpha[] = {π/2, 0, 0, π/2, -π/2, 0}
+	
+	// rotation around the base z-axis about pi, due to the ur convention for the base frame
+	initial_rotation = 1 // cos(0.5 π) - sin(0.5 π) (ε₁ ∧ ε₂) 
+
+	M_accum[], M[] = mapaccum(accumMotor, initial_rotation, theta, a, d, alpha)
+
+	// test y der letzten 3 hat anderes Vorzeichen als in der UR5e-excel, 
+    // die ersten 3 sind 0, da fällt es nicht auf
+	//test1 = applyMotor(E₃, M_accum[0]) 
+	//test2 = applyMotor(E₃, M_accum[1]) 
+	//test3 = applyMotor(E₃, M_accum[2]) 
+	//test4 = applyMotor(E₃, M_accum[3]) 
+	//test5 = applyMotor(E₃, M_accum[4]) 
+	//test6 = applyMotor(E₃, M_accum[5]) 
+
+	//test1_ = getEuclideanPoint(test1)
+	//test2_ = getEuclideanPoint(test2)
+
+	//test2_omega = (test2⋅ε₀) // test2⁻*⋅ε₀=0 falsch, aktuell ist auch = 0
+	//test2_omega1 = test2_omega I
+	//test2_1durchomega = 1/(test2⁻*⋅ε₀) // nan in e0
+	//test2_vec = ((test2⁻*∧ε₀)⋅E₃)
+
+    //M_accum, M
+	M_accum
+}
+
+fn linearMap(prev, a,b){
+	prev + a b
+}
+
+fn main(theta1, theta2, theta3, theta4, theta5, theta6, dtheta1, dtheta2, dtheta3, dtheta4, dtheta5, dtheta6) {
+
+	// bounding box
+	// "::" intrinsic, up() produces intrinsic representation 
+	// red corresponding to grade=1
+    ::P1 = up(2 ε₁) // e0 + 2e1
+	::P2 = up(2 ε₂)
+	::P3 = up(2 ε₃)
+
+	// testweise
+	::P4 = up(-2 ε₁) 
+	::P5 = up(-2 ε₂)
+	::P6 = up(-2 ε₃)
+
+	// 1. Mög.: line in z direction mit den Motoren so drehen, dass L1-L6 auskommen
+    // 2. Mög.: log(motor) um L1-L6 direkt zu bestimmen
+
+	//theta[] =  {theta1, theta2, theta3, theta4, theta5, theta6}
+	theta[] =  {0, 0, 0, 0, 0, 0}
+	M_accum[] = fk(theta) // mit einem Rückgabewert stürzt es nicht mehr ab
+	//M_accum[], M[] = fk(theta) //FIXME 
+	
+	TCP = applyMotor(E₃, M_accum[5]) // TCP in global frame
+	
+    // green corresponding to grade=2, ":" extrinsic
+	// FIXME verschwindet, sobald L0-L5 dargestellt werden
+	:L0 = ε₁ ∧ ε₂ // line in z-direction, through the origin
+	//L0Dir = euclid(L0)/E₃
+
+    L[] = map(applyMotor, L0, M_accum) // siehe sehr ähnlich aus, vermutlich korrekt
+    :Ls[] = filterGrade2(L)
+
+	//::Ls1 = simplify(Ls[0]) // FIXME die Formel stimmt nicht mit der von Gaalop bestimmten überein
+	//::Ls2 = simplify(Ls[1])
+	//::Ls3 = simplify(Ls[2])
+    // grade=4 ist nicht strukturell null, aber numerisch fast 0
+
+	//L_[] = map(log, M_accum) //FIXME Message: ifele.length != elseele.length! erfüllt M_accum die Voraussetzungen? vermutlich Problem mit fehlenden strukturellen Nullen
+
+
+	// velocity 
+
+	dtheta[] = {dtheta1, dtheta2, dtheta3, dtheta4, dtheta5, dtheta6}
+	twist = mapfold(linearMap, 0, Ls, dtheta)
+
+	// angular velocity
+	// rotation = motion which has an idle plane (ε₀) as an invariant, this eliminates the tranlation parts
+	omega = (twist∧ε₀)*  // angular velocity
+	velocity = twist⋅TCP // linear velocity of the TCP
+
+
+	// direction
+
+	// euclidean part of the line divived by I3 = direction
+    // corresponding to points at infinity, with an implied e123 coefficient of 00
+	// scheint korrekt in -y-Richtung zu zeigen
+    //dirZ = euclid(Ls[5])/E₃ // hier ist -1 in e2 wie es sein sollte
+	//dir_zx = coef(dirZ, 2) // =0
+	//dir_zy = coef(dirZ, 3) // =0 falsch, sollte -1 sein
+	//dir_zz = coef(dirZ, 4) // =0
+
+	// direction z,x mit Motor transformieren
+	// extrinsic 1D oder 2D direction transformieren?
+	dir_z = applyMotor(ε₃, M_accum[5]) // -0.2e0-0.9e2 stimmt prinzipiell, Normierung?
+	//dir_z2d = applyMotor(ε₀∧ε₃, M_accum[5]) // -e02 stimmt
+
+	dir_x = applyMotor(ε₁, M_accum[5]) // e1, korrekt
+	//dir_x2d = applyMotor(ε₀∧ε₁, M_accum[5]) //e01, korrekt
+
+    // Alternative way to determine end-effector z- and x-direction from the motor
+    //dir_zxa = 2 (coef(M_accum[5], 8) coef(M_accum[5], 10) + coef(M_accum[5], 0) coef(M_accum[5], 9))
+	//dir_zya = 2 (coef(M_accum[5], 9) coef(M_accum[5], 10) - coef(M_accum[5], 0) coef(M_accum[5], 8))
+	//dir_zza = 1 - 2 (coef(M_accum[5], 8) coef(M_accum[5], 8) + coef(M_accum[5], 9) coef(M_accum[5], 9))
+
+	//dir_xxa = 1 - 2 (coef(M_accum[5], 9) coef(M_accum[5], 9) + coef(M_accum[5], 10) coef(M_accum[5], 10))
+	//dir_xya = 2 (coef(M_accum[5], 8) coef(M_accum[5], 9)  + coef(M_accum[5], 0) coef(M_accum[5], 10))
+	//dir_xza = 2 (coef(M_accum[5], 8) coef(M_accum[5], 10) - coef(M_accum[5], 0) coef(M_accum[5], 9))
+
+
+    //dirZ1 = Ls[5]∧ε₀ // direction ideal point, direction in the trivectors, ToDo how to extract it from e023, e031, e012
+
+    // closest point on the line to the origin, not what we want
+	//TCP = Ls[5]/dirZ
+
+    //TCP = ((ε₁∧ε₂∧ε₃)⋅Ls[5])Ls[5]
+	// a direction is a flat point at infinity directs into direction? or plane?
+
+    
+	// 12=e012, 13=e013, 14=e023, 15=e0123
+	// pos_x = coef(TCP, 13)/coef(TCP, 14)
+	//FIXME funktioniert nicht, vermutlich das Divisor ein skalar und damit die division nicht klappt?
+	norm_ = coef(TCP, 14)
+	norm__ = coef(TCP, 15)
+	norm___ = coef(TCP, 16)
+	pos_x = coef(TCP, 13)
+	pos_y = coef(TCP, 12)
+	pos_z = coef(TCP, 11)
+
+	// Alternative position extraction: 1. Normalization by dividing through the coef from e123 = (TCP⋅ε₀)
+	// multiplying with the pseudoscalar for convertion into grade-1 vector
+	//TCP_Euclid = -(TCP⋅I)/(TCP⋅ε₀) // FIXME funktioniert nicht
+	TCP_Euclid = ((TCP⁻*∧ε₀)⋅E₃)/(TCP⁻*⋅ε₀)
+
+	// Alternative way to determine end-effector position
+	norm = coef(M_accum[5], 0) coef(M_accum[5], 0) + coef(M_accum[5], 8) coef(M_accum[5], 8) + coef(M_accum[5], 9) coef(M_accum[5], 9) + coef(M_accum[5], 10) coef(M_accum[5], 10)
+	pos_xa = 2 (coef(M_accum[5], 0) coef(M_accum[5], 5) + coef(M_accum[5], 10) coef(M_accum[5], 15))/norm
+	pos_ya = 2 (coef(M_accum[5], 0) coef(M_accum[5], 6) - coef(M_accum[5], 9)  coef(M_accum[5], 15))/norm
+	pos_za = 2 (coef(M_accum[5], 0) coef(M_accum[5], 7) + coef(M_accum[5], 8)  coef(M_accum[5], 15))/norm
+
+	// x,y,z, dir_zx, dir_zy, dir_zz, dir_xx, dir_xy, dirxz
+    //pos_x, pos_y, pos_z, dir_zx, dir_zy, dir_zz, dir_xxa, dir_xya, dir_xza
+	coef(dir_z, 1), coef(dir_z, 2), coef(dir_z, 3), coef(dir_x, 1), coef(dir_x, 2), coef(dir_x, 3)
+}

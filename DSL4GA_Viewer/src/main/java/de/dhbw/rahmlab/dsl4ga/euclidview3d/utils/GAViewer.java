@@ -536,7 +536,7 @@ public class GAViewer extends GAViewObject {
         if (points.length == 2){
             result = impl.addLine(points[0], points[1], color, LINE_RADIUS*1000,  label);
         } else {
-            System.out.println("Clipping of line \""+label+"\" failed, because no intersection with the bounding box!");
+            System.out.println("Clipping of line \""+label+"\" failed, because no intersection with the bounding box ("+String.valueOf(points.length)+")!");
         }
         return result;
     }
