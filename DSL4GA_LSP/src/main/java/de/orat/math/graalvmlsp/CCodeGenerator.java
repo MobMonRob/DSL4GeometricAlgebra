@@ -14,10 +14,10 @@ public class CCodeGenerator {
 	
 	public static void main(String[] args) throws InterruptedException {
 		TruffleProgramFactory fac = new TruffleProgramFactory();
-		TruffleProgram prog = fac.parse(url);
+		/*TruffleProgram prog = fac.parse(url);
 		GAFunction func = prog.invokeSymAsFunction();
 		// func.generateC(folderPath, fileName+".c");
 		func.generateC("", fileName + ".c");
-
+*/
 	}
 }
