@@ -430,7 +430,7 @@ The inverse operator is implemented by analysing the type of the mulitivector an
 
 | symbol           | latex        | Unicode      | description |
 | :--------------: | ------------ | ------------ | ----------- |
-| &#x03B5;&#x2080; | \epsilon_0 | \u03B5\u2080 | base vector with physical unit 1/[length] e.g. 1/m  |
+| &#x03B5;&#x2080; | \epsilon_0 | \u03B5\u2080 | base vector with physical unit 1/[length] e.g. 1/m. It represents the origin in intrinsic representation. |
 | &#x03B5;&#x2081; | \epsilon_1 | \u03B5\u2081 | base vector representing x direction, dimensionless (the corresponding coefficients have the unit of a length).|
 | &#x03B5;&#x2082; | \epsilon_2 | \u03B5\u2082 | base vector representing y direction, dimensionless (the corresponding coefficients have the unit of a length). |
 | &#x03B5;&#x2083; | \epsilon_3 | \u03B5\u2083 | base vector representing z direction, dimensionless (the corresponding coefficients have the unit of a length). |
