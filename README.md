@@ -445,10 +445,10 @@ Orthogonal reflection of objects from this type results in inversion of the orie
 
 Homogeneous/directed points are defined as:
 
-| object | grade | formula |
-| :---------- | :------ | :-------- |
-| point | 1 |  $\displaystyle p = e_0 + \vec{x}$ |
-| 0D direction | 1 |  | |
+| object | grade | formula | description |
+| :---------- | :------ | :-------- | ----------- |
+| point | 1 |  $\displaystyle p = e_0 + \vec{x}$ | |
+| 0D direction | 1 | $\displaystyle p = \vec{x}$ | |
 
 and from this, the following geometric objects can be created by joining the points (using the wedge-operator):
 
