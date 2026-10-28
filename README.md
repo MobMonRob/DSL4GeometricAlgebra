@@ -474,7 +474,7 @@ The following objects are constructed by meeting planes (also using the wedge-op
 
 | object | grade | formula | description |
 | :----- | :---  | -------- | ---------- |
-| axis (meet/hyper line) | 2 |  $\displaystyle l=\pi_2\wedge\pi_1=\vec{n}^{\ast}-(\vec{x}\cdot\vec{n}^{\ast})\mathord{\epsilon_0}$ | The coefficients directly correspond to Plucker-coordinates. The idle components build the moment and the euclid components build the lines direction.|
+| axis (meet/hyper line) | 2 |  $\displaystyle l=\pi_2\wedge\pi_1=\vec{n}^{\ast}-(\vec{x}\cdot\vec{n}^{\ast})\mathord{\epsilon_0}$ | Build as a pencil of hyperplanes. Normalized can be used as a rotation operator.The coefficients directly correspond to Plucker-coordinates. The idle components build the moment and the euclid components build the lines direction.|
 | 1D direction  | 2 | $\displaystyle d = \vec{n}\wedge E_3= \vec{n}^{\ast}$  | A 1D direction is an oriented line through the origin, represented by a nonzero vector. It is a one-dimensional subspace, not the vector's coordinates. The vector is merely a representative of that direction. It results from the intersection of two planes. It corresponds to an so called axial vector (pseudovector).|
 | point | 3 | $\displaystyle p=\pi_3\wedge\pi_2\wedge\pi_1=\pi\wedge l=E_3 + \vec{x}\epsilon_0 E_3$ | |
 
