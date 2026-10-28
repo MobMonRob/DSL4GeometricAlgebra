@@ -468,7 +468,7 @@ The orientation type of the following objects corresponds with the so called com
 | :---------- | :------ | :-------- | --- |
 | plane | 1 |  $\displaystyle \pi =\vec{n}+(\vec{x}\cdot\vec{n})\epsilon_0 = \vec{n} - \delta\epsilon_0 = p_3\vee p_2\vee p_1$ | $\delta$ has the dimension of length and represents the distance of the plane to the origin.|
 | idle plane | 1 | $\pi = -\epsilon_0$ | |
-| 1D direction | 1 |  $\displaystyle d =\vec{n}$ | I can be called free direction and it corresponds to an eudlidean vector. You can transform this object by a motor. This results in a rotated direction only. The translation part of a motor does not affect the transformation of the 1D direction. |
+| 1D direction | 1 |  $\displaystyle d =\vec{n}$ | It can be called free direction and it corresponds to an eudlidean vector. You can transform this object by a motor. This results in a rotated direction only. The translation part of a motor does not affect the transformation of the 1D direction. |
 
 The following objects are constructed by meeting planes (also using the wedge-operator).
 
