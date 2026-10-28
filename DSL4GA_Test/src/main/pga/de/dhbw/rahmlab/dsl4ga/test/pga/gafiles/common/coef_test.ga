@@ -1,0 +1,10 @@
+#algebra cga
+
+fn main() {
+	a = 0.5 + 1.2 ε₁
+	i = 2
+	b0 =  coef(a, 1) 
+	b1= coef(a, i) // FIXME extracts always the scalar, independent from the value of the second argument
+	b2 = coef(a, 2)
+	b0, b1, b2
+}
