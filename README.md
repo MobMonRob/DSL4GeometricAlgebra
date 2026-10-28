@@ -478,7 +478,7 @@ The following objects are constructed by meeting planes (also using the wedge-op
 | point | 3 | $\displaystyle p=\pi_3\wedge\pi_2\wedge\pi_1=\pi\wedge l=E_3 + \vec{x}\epsilon_0 E_3$ | |
 | 0D direction | 3 | $\displaystyle d= \vec{x}\epsilon_0 E_3$ | This is the direction of the vanshing point. |
 
-Decomposition of a PGA point $p$ (described as a tri-vector) into an Euclidean point $\vec{x}$ can be done by $\displaystyle \vec{x}=(\frac{-p}{\langle p \cdot E_3 \rangle\_0}-E_3)^{\ast}$
+Decomposition of a PGA point $p$ (described as a tri-vector - extrinsic representation) into a point in Euclidean vector representation: $\vec{x}$ can be done by $\displaystyle \vec{x}=(\frac{-p}{\langle p \cdot E_3 \rangle\_0}-E_3)^{\ast}$.
 
 ### CGA - Conformal Geometric Algebra Cl(4,1,0)
 
