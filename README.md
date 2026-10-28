@@ -454,7 +454,7 @@ and from this, the following geometric objects can be created by joining the poi
 | object | grade | formula | description |
 | :---------- | :------ | :-------- | ---------------- |
 | spear (join line) | 2 |  $\displaystyle l = P_2\wedge P_1 = \vec{n}\wedge Q = \vec{n}\cdot Q$ | The line points from $p_1$ to $p_2$, or is defined by one point $Q$ and an euclidean direction vector $\vec{n}$. It can be used to represend a force. |
-| 1D direction  | 2 | $\displaystyle d = \vec{n}\wedge E_3= \vec{n}^{\ast}$  | A 1D direction is an oriented line through the origin, represented by a nonzero vector. It is a one-dimensional subspace, not the vector's coordinates. The vector is merely a representative of that direction.|
+| 1D direction (idle line)  | 2 |  $\displaystyle d = \epsilon_0\wedge\vec{n} = \epsilon_0\vec{n}$ (because  $\displaystyle \epsilon_0\cdot\vec{n} = 0$) |  It can be used as an axis of translation.|
 | plane | 3 |   $\displaystyle \pi = p_1\wedge p_2\wedge p_3 = p\wedge\vec{n}^{\ast} =\epsilon_0\wedge\vec{n}^{\ast}+\vec{x}\wedge\vec{n}^{\ast} = \epsilon_0\wedge\vec{n}^{\ast}-(\vec{x}\cdot\vec{n})E_3$ | clockwise  arrangement of the points, defines the plane and the direction of its normal vector. |
 | 2D direction | 3 |  | A 2D direction is an oriented plane through the origin, represented by a nonzero bivector. |
 
@@ -475,7 +475,7 @@ The following objects are constructed by meeting planes (also using the wedge-op
 | object | grade | formula | description |
 | :----- | :---  | -------- | ---------- |
 | axis (meet/hyper line) | 2 |  $\displaystyle l=\pi_2\wedge\pi_1=\vec{n}^{\ast}-(\vec{x}\cdot\vec{n}^{\ast})\mathord{\epsilon_0}$ | The coefficients directly correspond to Plucker-coordinates. The idle components build the moment and the euclid components build the lines direction.|
-| 1D direction (idle line)  | 2 |  $\displaystyle d = \epsilon_0\wedge\vec{n} = \epsilon_0\vec{n}$ (because  $\displaystyle \epsilon_0\cdot\vec{n} = 0$) |  It can be used as an axis of translation.|
+| 1D direction  | 2 | $\displaystyle d = \vec{n}\wedge E_3= \vec{n}^{\ast}$  | A 1D direction is an oriented line through the origin, represented by a nonzero vector. It is a one-dimensional subspace, not the vector's coordinates. The vector is merely a representative of that direction.|
 | point | 3 | $\displaystyle p=\pi_3\wedge\pi_2\wedge\pi_1=\pi\wedge l=E_3 + \vec{x}\epsilon_0 E_3$ | |
 
 Axes correspond to axial vectors and can describe movement velocity (rotations (finite) and translations (idial)).
