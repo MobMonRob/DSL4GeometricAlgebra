@@ -476,7 +476,7 @@ The following objects are constructed by meeting planes (also using the wedge-op
 | axis (meet/hyper line) | 2 |  $\displaystyle l=\pi_2\wedge\pi_1=\vec{n}^{\ast}-(\vec{x}\cdot\vec{n}^{\ast})\mathord{\epsilon_0}$ | Build from a pencil of hyperplanes. Normalized can be used as a rotation operator. They correspond to axial vectors and can describe movement velocity (rotations (finite) and translations (idial)).|
 | 1D direction (idle line)  | 2 |  $\displaystyle d = \epsilon_0\wedge\vec{n} = \epsilon_0\vec{n}$ (because  $\displaystyle \epsilon_0\cdot\vec{n} = 0$) |  This is the direction of an idle line. It results from an intersection of a plane with an idle plane. It can be used as an axis of translation. It corresponds with so called polar vectors. It changes its sign after mirroring on a plane parallel to the direction (NOT parallel to the normal of the plane!!!).|
 | point | 3 | $\displaystyle p=\pi_3\wedge\pi_2\wedge\pi_1=\pi\wedge l=E_3 + \vec{x}\epsilon_0 E_3$ | |
-| 0D direction | 3 | | |
+| 0D direction | 3 | $\displaystyle d= \vec{x}\epsilon_0 E_3$ | This is the direction of the vanshing point. |
 
 Decomposition of a PGA point $p$ (described as a tri-vector) into an Euclidean point $\vec{x}$ can be done by $\displaystyle \vec{x}=(\frac{-p}{\langle p \cdot E_3 \rangle\_0}-E_3)^{\ast}$
 
