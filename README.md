@@ -462,7 +462,7 @@ Spears correspond with polar vectors and can represent local orbits or momenta o
 
 #### Geometric objects with extrinsic orientation type
 
-The orientation type of the following objects corresponds with the so called commutator product null space representation (CPNS), sometimes also named as "plane-based" representation.
+The orientation type of the following objects corresponds with the so called commutator product null space representation (CPNS), sometimes also named as "plane-based" representation. For odd motions (mirroring) these elements flip its sign.
 
 | object | grade | formula | description |
 | :---------- | :------ | :-------- | --- |
