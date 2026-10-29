@@ -430,11 +430,11 @@ The inverse operator is implemented by analysing the type of the mulitivector an
 
 | symbol           | latex        | Unicode      | description |
 | :--------------: | ------------ | ------------ | ----------- |
-| &#x03B5;&#x2080; | \epsilon_0 | \u03B5\u2080 | base vector with physical unit 1/[length] e.g. 1/m  |
+| &#x03B5;&#x2080; | \epsilon_0 | \u03B5\u2080 | base vector with physical unit 1/[length] e.g. 1/m. It represents the origin in intrinsic representation. |
 | &#x03B5;&#x2081; | \epsilon_1 | \u03B5\u2081 | base vector representing x direction, dimensionless (the corresponding coefficients have the unit of a length).|
 | &#x03B5;&#x2082; | \epsilon_2 | \u03B5\u2082 | base vector representing y direction, dimensionless (the corresponding coefficients have the unit of a length). |
 | &#x03B5;&#x2083; | \epsilon_3 | \u03B5\u2083 | base vector representing z direction, dimensionless (the corresponding coefficients have the unit of a length). |
-| &#x0045;&#x2083; | E_3        | \u0045\u2083 | Euclidean pseudoscalar &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083; It represents the point at the origin. |
+| &#x0045;&#x2083; | E_3        | \u0045\u2083 | Euclidean pseudoscalar &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083; It represents the point at the origin in extrinsic representation. |
 | &#x0049;         | I          | \u0049       | Pseudoscalar &#x03B5;&#x2080;  &#x2227; &#x03B5;&#x2081; &#x2227; &#x03B5;&#x2082; &#x2227; &#x03B5;&#x2083; &#x2227; |
 
 #### Geometric objects with intrinsic orientation type
@@ -445,20 +445,19 @@ Orthogonal reflection of objects from this type results in inversion of the orie
 
 Homogeneous/directed points are defined as:
 
-| object | grade | formula |
-| :---------- | :------ | :-------- |
-| point | 1 |  $\displaystyle p = e_0 + \vec{x}$ |
+| object | grade | formula | description |
+| :---------- | :------ | :-------- | ----------- |
+| point | 1 |  $\displaystyle p = e_0 + \vec{x}$ | |
+| 0D direction | 1 | $\displaystyle p = \vec{x}$ | This is the direction of the vanashing point. |
 
 and from this, the following geometric objects can be created by joining the points (using the wedge-operator):
 
 | object | grade | formula | description |
 | :---------- | :------ | :-------- | ---------------- |
-| spear (join line) | 2 |  $\displaystyle l = P_2\wedge P_1 = \vec{n}\wedge Q = \vec{n}\cdot Q$ | The line points from $p_1$ to $p_2$, or is defined by one point $Q$ and an euclidean direction vector $\vec{n}$. The coefficients directly correspond to Plucker-coordinates. The idle components build the moment and the euclid components build the lines direction. It can be used to represend a force. |
+| spear (join line) | 2 |  $\displaystyle l = P_2\wedge P_1 = \vec{n}\wedge Q = \vec{n}\cdot Q$ | The line points from $p_1$ to $p_2$, or is defined by one point $Q$ and an euclidean direction vector $\vec{n}$. The coefficients directly correspond to Plucker-coordinates. The idle components build the moment and the euclid components build the lines direction. They correspond with polar vectors, can represent local orbits or momenta of points and therefore can be used to represend a force. |
 | 1D direction  | 2 | $\displaystyle d = \vec{n}\wedge E_3= \vec{n}^{\ast} = n_x\epsilon_{23}+n_y\epsilon_{13}+n_z\epsilon_{12}$  | A 1D direction is an oriented line through the origin, represented by a nonzero vector. It is a one-dimensional subspace, not the vector's coordinates. The vector is merely a representative of that direction. It results from the intersection of two planes. It corresponds to an so called axial vector (pseudovector).|
 | plane | 3 |   $\displaystyle \pi = p_1\wedge p_2\wedge p_3 = p\wedge\vec{n}^{\ast} =\epsilon_0\wedge\vec{n}^{\ast}+\vec{x}\wedge\vec{n}^{\ast} = \epsilon_0\wedge\vec{n}^{\ast}-(\vec{x}\cdot\vec{n})E_3$ | clockwise  arrangement of the points, defines the plane and the direction of its normal vector. |
-| 2D direction | 3 |  | A 2D direction is an oriented plane through the origin, represented by a nonzero bivector. |
-
-Spears correspond with polar vectors and can represent local orbits or momenta of points.
+| 2D direction | 3 |  | A 2D direction is the direction of an idle plane? |
 
 #### Geometric objects with extrinsic orientation type
 
@@ -474,14 +473,12 @@ The following objects are constructed by meeting planes (also using the wedge-op
 
 | object | grade | formula | description |
 | :----- | :---  | -------- | ---------- |
-| axis (meet/hyper line) | 2 |  $\displaystyle l=\pi_2\wedge\pi_1=\vec{n}^{\ast}-(\vec{x}\cdot\vec{n}^{\ast})\mathord{\epsilon_0}$ | Build as a pencil of hyperplanes. Normalized can be used as a rotation operator.|
+| axis (meet/hyper line) | 2 |  $\displaystyle l=\pi_2\wedge\pi_1=\vec{n}^{\ast}-(\vec{x}\cdot\vec{n}^{\ast})\mathord{\epsilon_0}$ | Build from a pencil of hyperplanes. Normalized can be used as a rotation operator. They correspond to axial vectors and can describe movement velocity (rotations (finite) and translations (idial)).|
 | 1D direction (idle line)  | 2 |  $\displaystyle d = \epsilon_0\wedge\vec{n} = \epsilon_0\vec{n}$ (because  $\displaystyle \epsilon_0\cdot\vec{n} = 0$) |  This is the direction of an idle line. It results from an intersection of a plane with an idle plane. It can be used as an axis of translation. It corresponds with so called polar vectors. It changes its sign after mirroring on a plane parallel to the direction (NOT parallel to the normal of the plane!!!).|
 | point | 3 | $\displaystyle p=\pi_3\wedge\pi_2\wedge\pi_1=\pi\wedge l=E_3 + \vec{x}\epsilon_0 E_3$ | |
-| 0D direction | 3 | | |
+| 0D direction | 3 | $\displaystyle d= \vec{x}\epsilon_0 E_3$ | This is the direction of the vanshing point. |
 
-Axes correspond to axial vectors and can describe movement velocity (rotations (finite) and translations (idial)).
-
-Decomposition of a PGA point $p$ (as a tri-vector) into an Euclidean point $\vec{x}$ can be done by $\displaystyle \vec{x}=(\frac{-p}{\langle p \cdot E_3 \rangle\_0}-E_3)^{\ast}$
+Decomposition of a PGA point $p$ (described as a tri-vector - extrinsic representation) into a point in Euclidean vector representation: $\vec{x}$ can be done by $\displaystyle \vec{x}=(\frac{-p}{\langle p \cdot E_3 \rangle\_0}-E_3)^{-\ast}$.
 
 ### CGA - Conformal Geometric Algebra Cl(4,1,0)
 
