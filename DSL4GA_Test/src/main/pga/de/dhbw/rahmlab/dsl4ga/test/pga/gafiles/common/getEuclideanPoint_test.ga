@@ -1,0 +1,7 @@
+#algebra pga
+
+fn main() {
+    x = ε₁ + 2 ε₂ + 3 ε₃ // euclidean vector
+	p = E₃ + x ε₀ E₃ // extrinsic representation
+    (-p/(<p⋅E₃>₀) - E₃)⁻* 
+}
