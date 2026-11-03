@@ -378,16 +378,16 @@ There exist three types of involution operations: Space inversion, reversion and
 | sqrt()      | squared root of a general rotor/even multivector or a scalar |
 | squaredNorm()      | squared norm of a mulitvector |
 
-#### functions to work with and manipulate coefficients of multivectors
+#### Functions to work with and manipulate coefficients of multivectors
 | symbol      | description |
 | :---------- | ------------ |
 | setBlade()  | with 3 multivectors as arguments. 1. the multivector to be applied on, 2. the bladeIndexMV which contains only 1 blade, used to select the blade, 3. a scalar containing the expression or value the selected blade's coefficient will be set to. Can be used to enforce structural zeroes. |
 | filterGrade() | Retains only blades of the given grade. 1. argument: mv to be filtered. 2. argument: grade. |
 | idle()      | idle part of the multivector (Blades containing base elements with metric 0 or -1. (without 0-grade scalar)) - encodes the position relative to the origin; an object with a vanashing idea part necessarily passes through the origin |
 | euclid()    | euclidean part of the multivector (Blades containing **only** base elements with metric 1 and no others. (without 0-grade scalar)) - encodes the objects orientation or weight; an object with a non zero euclidean part is called finite; an object with a vanashing euclidean part is called idle  |
-| coef()      | with two multivectors as arguments. The second defines the index of a blade and therefore must be a one blade only. The function extracts the coefficient for this blade in the first argument as as scalar. |
+| coef()      | with two multivectors as arguments. The second defines the blade and therefore must be a one blade multivector only. The function extracts the coefficient for this blade in the first argument as as scalar, e.g. $coef(m, \epsilon_{12})$ results in a multivector which contains the coeffcient of the blade $\epsilon_{12}$ of the multivector given as first argument in the scalar part. |
 
-#### functions to optimize the underlaying expressions
+#### Functions to optimize the underlaying expressions
 | symbol      | description |
 | :---------- | ------------ |
 | simplify()  | simplifies the underlying expression. Helpful in debugging to see if structural zeroes are created or unexpected values might be caused by compounded numerical errors. |
