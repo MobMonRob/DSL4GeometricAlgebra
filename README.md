@@ -557,7 +557,7 @@ Different to PGA there are spheres which do not intersect and further flat geome
 | object | grade |  formula |
 | :---------- | :------ |  :-------------|
 | plane  | 1 |  $\displaystyle \pi = \vec{x} + d\epsilon_\infty = \vec{n}+(\vec{x}\cdot\vec{n})\epsilon_\infty$ |
-| axis (meet line) | 2 |  p1&#8743;p2 |
+| axis (meet line) | 2 |  $\displaystyle L = \pi_1\wedge\pi_2 = (\vec{n}+(\vec{x}\wedge\vec{n})\epsilon_\infty)E_3$ |
 
 ## command line tool
 
