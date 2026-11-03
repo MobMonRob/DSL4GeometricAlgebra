@@ -532,7 +532,7 @@ An oriented point can be created from euclidean parameters/coordinates:
 
 | object | grade | type | formula |
 | :---------- | :---- | :----| :-------------------- |
-| oriented point | 3 | round | 	$$\vec{Q}=\vec{m}\wedge\vec{v}+(\frac{1}{2}\vec{v}^2\vec{m}-\vec{v}(\vec{v}\cdot\vec{m}))\epsilon_\infty+\vec{m}\epsilon_0-\vec{m}\cdot\vec{v}E_0$$|
+| oriented point | 3 | round | 	$$Q=\vec{m}\wedge\vec{v}+(\frac{1}{2}\vec{v}^2\vec{m}-\vec{v}(\vec{v}\cdot\vec{m}))\epsilon_\infty+\vec{m}\epsilon_0-\vec{m}\cdot\vec{v}E_0$$|
 
 #### Geometric objects with extrinsic orientation type
 
@@ -542,7 +542,7 @@ Spheres can be created from euclidean parameters/coordinates:
 
 | object | grade |  formula | description |
 | :---------- | :---- |  :---------- | -------------------|
-| sphere | 1 |  $\displaystyle s = p - \frac{1}{2} r^2\epsilon_{\infty}  = \vec{x} + \frac{1}{2}(\vec{x}^2 - r^2)\epsilon_\infty + \epsilon_0$ | $p$ is a point of extrinsic orientation type |
+| sphere | 1 |  $\displaystyle S = p - \frac{1}{2} r^2\epsilon_{\infty}  = \vec{x} + \frac{1}{2}(\vec{x}^2 - r^2)\epsilon_\infty + \epsilon_0$ | $p$ is a point of extrinsic orientation type |
 
 Further round objects are constructed by intersection of spheres (using the wedge-operator). That´s why these geometric objects are called "sphere-based".
 
@@ -551,8 +551,8 @@ Further round objects are constructed by intersection of spheres (using the wedg
 | circle  | 2 |  $\displaystyle S = S_1 \wedge S_2 = S \wedge \pi = \epsilon_0 \wedge \vec{n} + (\vec{x}\cdot\vec{n})E_0 + \vec{x} \wedge \vec{n} + ((\vec{x}\cdot\vec{n})\vec{x}-\frac{1}{2}(\vec{x}^2-r^2)\vec{n})\wedge \epsilon_\infty)$ |
 | oriented point | 2 | $\displaystyle Q = \vec{n}\wedge\vec{x} + (\frac{1}{2}\vec{x}^2\vec{n}-\vec{x}(\vec{x}\cdot\vec{n}))\epsilon_\infty+\vec{n}\epsilon_0-(\vec{x}\cdot\vec{n})E_0$|
 | point pair | 3 |  $\displaystyle P_p = S_1 \wedge S_2 \wedge S_3 = (\epsilon_0 \wedge \vec{n} + \vec{x} \wedge \vec{n} \wedge E_0 + \vec{x} \cdot \vec{n} - (\vec{x}\cdot\vec{n})\vec{n} - \frac{1}{2}(\vec{x}^2+r^2)\vec{n})\wedge\epsilon_\infty)E_3 = (\vec{p}-\frac{1}{2}r^2\epsilon_\infty)\wedge (-\vec{p}\cdot\vec{n}/(E_3\epsilon_\infty)) $ |
-| flat point | 3 | $\displaystyle p_f = \pi_1 \wedge \pi_2 \wedge \pi_3 = (\vec{x}\wedge \epsilon_\infty-1)E_3$|
-| point  | 4 |  $\displaystyle p = S_1 \wedge S_2 \wedge S_3$ |
+| flat point | 3 | $\displaystyle P_f = \pi_1 \wedge \pi_2 \wedge \pi_3 = (\vec{x}\wedge \epsilon_\infty-1)E_3$|
+| point  | 4 |  $\displaystyle P = S_1 \wedge S_2 \wedge S_3$ |
 
 Different to PGA there are spheres which do not intersect and further flat geometric objects are determined otherwise.
 
