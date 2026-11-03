@@ -542,7 +542,7 @@ Spheres can be created from euclidean parameters/coordinates:
 
 | object | grade |  formula | description |
 | :---------- | :---- |  :---------- | -------------------|
-| sphere | 1 |  $\displaystyle s = p - \frac{1}{2} r^2\epsilon_{\infty} $ | $p$ is a point of extrinsic orientation type |
+| sphere | 1 |  $\displaystyle s = p - \frac{1}{2} r^2\epsilon_{\infty}  = \vec{x} + \frac{1}{2}(\vec{x}^2 - r^2)\epsilon_\infty + \epsilon_0$ | $p$ is a point of extrinsic orientation type |
 
 Further round objects are constructed by intersection of spheres (using the wedge-operator). That´s why these geometric objects are called "sphere-based".
 
@@ -556,7 +556,7 @@ Different to PGA there are spheres which do not intersect and further flat geome
 
 | object | grade |  formula |
 | :---------- | :------ |  :-------------|
-| plane  | 1 |  n+d&#x03B5;&#7522; |
+| plane  | 1 |  $\displaystyle \pi = \vec{x} + d\epsilon_\infty = \vec{n}+(\vec{x}\cdot\vec{n})\epsilon_\infty$ |
 | axis (meet line) | 2 |  p1&#8743;p2 |
 
 ## command line tool
