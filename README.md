@@ -556,10 +556,10 @@ Further round objects are constructed by intersection of spheres (using the wedg
 
 Different to PGA there are spheres which do not intersect and further flat geometric objects are determined otherwise.
 
-| object | grade |  formula |
-| :---------- | :------ |  :-------------|
-| plane  | 1 |  $\displaystyle \pi = \vec{x} + d\epsilon_\infty = \vec{n}+(\vec{x}\cdot\vec{n})\epsilon_\infty$ |
-| axis (meet line) | 2 |  $\displaystyle L = \pi_1\wedge\pi_2 = (\vec{n}+(\vec{x}\wedge\vec{n})\epsilon_\infty)E_3$ |
+| object | grade | formula | remarks |
+| :---------- | :------ | :-------------| :-------------|
+| plane  | 1 | $\displaystyle \pi = \vec{x} + d\epsilon_\infty = \vec{n}+(\vec{x}\cdot\vec{n})\epsilon_\infty$ | $d$ is ar real number representing the signed distance to the origin |
+| axis (meet line) | 2 | $\displaystyle L = \pi_1\wedge\pi_2 = (\vec{n}+(\vec{x}\wedge\vec{n})\epsilon_\infty)E_3$ | |
 
 ## command line tool
 
