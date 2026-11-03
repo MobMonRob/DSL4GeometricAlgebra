@@ -385,7 +385,7 @@ There exist three types of involution operations: Space inversion, reversion and
 | filterGrade() | Retains only blades of the given grade. 1. argument: mv to be filtered. 2. argument: grade. |
 | idle()      | idle part of the multivector (Blades containing base elements with metric 0 or -1. (without 0-grade scalar)) - encodes the position relative to the origin; an object with a vanashing idea part necessarily passes through the origin |
 | euclid()    | euclidean part of the multivector (Blades containing **only** base elements with metric 1 and no others. (without 0-grade scalar)) - encodes the objects orientation or weight; an object with a non zero euclidean part is called finite; an object with a vanashing euclidean part is called idle  |
-| coef()      | with two multivectors as arguments. The second defines the blade and therefore must be a one blade multivector only. The function extracts the coefficient for this blade in the first argument as as scalar, e.g. $coef(m, \epsilon_{12})$ results in a multivector which contains the coeffcient of the blade $\epsilon_{12}$ of the multivector given as first argument in the scalar part. |
+| coef()      | with two multivectors as arguments. The second defines the blade and therefore must be a one blade multivector only. The function extracts the coefficient for this blade in the first argument as as scalar, e.g. $coef(m, \epsilon_{12})$ results in a multivector which contains the coeffcient of the blade $\epsilon_{12}$ of the multivector $m$ in the scalar part. |
 
 #### Functions to optimize the underlaying expressions
 | symbol      | description |
