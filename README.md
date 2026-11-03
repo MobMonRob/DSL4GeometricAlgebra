@@ -550,7 +550,7 @@ Further round objects are constructed by intersection of spheres (using the wedg
 | :---------- | :------ | :-------------|
 | circle  | 2 |  $\displaystyle S = S_1 \wedge S_2 = S \wedge \pi = \epsilon_0 \wedge \vec{n} + (\vec{x}\cdot\vec{n})E_0 + \vec{x} \wedge \vec{n} + ((\vec{x}\cdot\vec{n})\vec{x}-\frac{1}{2}(\vec{x}^2-r^2)\vec{n})\wedge \epsilon_\infty)$ |
 | oriented point | 2 | $\displaystyle Q = \vec{n}\wedge\vec{x} + (\frac{1}{2}\vec{x}^2\vec{n}-\vec{x}(\vec{x}\cdot\vec{n}))\epsilon_\infty+\vec{n}\epsilon_0-(\vec{x}\cdot\vec{n})E_0$|
-| point pair | 3 |  s1&#8743;s2&#8743;s3 |
+| point pair | 3 |  $\displaystyle P_p = S_1 \wedge S_2 \wedge S_3 = (\epsilon_0 \wedge \vec{n} + \vec{x} \wedge \vec{n} \wedge E_0 + \vec{x} \cdot \vec{n} - (\vec{x}\cdot\vec{n})\vec{n} - \frac{1}{2}(\vec{x}^2+r^2)\vec{n})\wedge\epsilon_infty)E_3 = (\vec{p}-\frac{1}{2}r^2\epsilon_\infty)\wedge (-\vec{p}\cdot\vec[n}/(E_3\epsilon_\infty)) $ |
 | point  | 4 |  s1&#8743;s2&#8743;s3&#8743;s4 |
 
 Different to PGA there are spheres which do not intersect and further flat geometric objects are determined otherwise.
