@@ -549,7 +549,7 @@ Further round objects are constructed by intersection of spheres (using the wedg
 | object | grade |  formula |
 | :---------- | :------ | :-------------|
 | circle  | 2 |  $\displaystyle S = S_1 \wedge S_2 = S \wedge \pi = \epsilon_0 \wedge \vec{n} + (\vec{x}\cdot\vec{n})E_0 + \vec{x} \wedge \vec{n} + ((\vec{x}\cdot\vec{n})\vec{x}-\frac{1}{2}(\vec{x}^2-r^2)\vec{n})\wedge \epsilon_\infty)$ |
-| oriented point | 2 | $\displaystyle Q = \vec{n}\wedge\vec{x} + (\frac{1}{2}\vec{x}^2\vec{n}-\vec{x}(\vec{x}\cdot\vec{n}))\epsilon_\infty+\vec{n}\epsilon_0-(\vec{x}\cot\vec{n})E_0$|
+| oriented point | 2 | $\displaystyle Q = \vec{n}\wedge\vec{x} + (\frac{1}{2}\vec{x}^2\vec{n}-\vec{x}(\vec{x}\cdot\vec{n}))\epsilon_\infty+\vec{n}\epsilon_0-(\vec{x}\cdot\vec{n})E_0$|
 | point pair | 3 |  s1&#8743;s2&#8743;s3 |
 | point  | 4 |  s1&#8743;s2&#8743;s3&#8743;s4 |
 
