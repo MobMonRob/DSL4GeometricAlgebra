@@ -542,7 +542,7 @@ Spheres can be created from euclidean parameters/coordinates:
 
 | object | grade |  formula | description |
 | :---------- | :---- |  :---------- | -------------------|
-| sphere | 1 |  $\displaystyle S = p - \frac{1}{2} r^2\epsilon_{\infty}  = \vec{x} + \frac{1}{2}(\vec{x}^2 - r^2)\epsilon_\infty + \epsilon_0$ | $p$ is a point of extrinsic orientation type |
+| sphere | 1 |  $\displaystyle S = P - \frac{1}{2} r^2\epsilon_{\infty}  = \vec{x} + \frac{1}{2}(\vec{x}^2 - r^2)\epsilon_\infty + \epsilon_0$ | $p$ is a point of extrinsic orientation type |
 
 Further round objects are constructed by intersection of spheres (using the wedge-operator). That´s why these geometric objects are called "sphere-based".
 
