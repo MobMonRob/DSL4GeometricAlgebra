@@ -577,8 +577,8 @@ Different to PGA there are spheres which do not intersect and further flat geome
 | :---------- | :------ | :-------------|
 | scalar attitude | 1 | $\displaystyle a_0 = r \epsilon_\infty $ |
 | vector attitude | 2 | $\displaystyle a_1 = \vec{x} \wedge \epsilon_\infty = v \wedge \epsilon_\infty $ |
-| bivector attitude | 3 | $\displaystyle a_2 = \vec{x}_{1} \wedge \vec{x}_{2} \wedge \epsilon_\infty = m \wedge \epsilon_\infty$ |
-| trivector attitude | 4 |$\displaystyle a_2 = \vec{x}_1 \wedge \vec{x}_2 \wedge \vec{x}_3 \wedge \epsilon_\infty = w \wedge \epsilon_\infty$|
+| bivector attitude | 3 | $\displaystyle a_2 = \vec{x}\textsubscript{1} \wedge \vec{x}\textsubscript{2} \wedge \epsilon_\infty = m \wedge \epsilon_\infty$ |
+| trivector attitude | 4 |$\displaystyle a_2 = \vec{x}\textsubscript{1} \wedge \vec{x}\textsubscript{2} \wedge \vec{x}\textsubscript{3} \wedge \epsilon_\infty = w \wedge \epsilon_\infty$|
 
 ## command line tool
 
