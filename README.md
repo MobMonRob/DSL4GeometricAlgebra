@@ -510,23 +510,23 @@ Round points can be created from euclidean parameters/coordinates:
 
 | object | grade |  formula |
 | :---------- | :---- | :----------------- |
-| round point | 1 |  $\displaystyle p=\vec{x}+\frac{1}{2}\vec{x}^2\epsilon_\infty+\epsilon_0$ |
+| round point | 1 |  $\displaystyle P=\vec{x}+\frac{1}{2}\vec{x}^2\epsilon_\infty+\epsilon_0$ |
 
 Joining round points only (using the wedge-operator) produces further round objects. That´s why these geometric objects are called "point-based".
 
 | object | grade | formula |
 | :---------- | :------ | :-------- |
-| dipole (oriented point pair) | 2 |  $\displaystyle \vec{P}_p=\vec{p}_1\wedge\vec{p}_2$ |
-| circle | 3 |  $\displaystyle C=p_1\wedge p_2\wedge p_3 = \vec{Q} + \frac{1}{2} r^2 \vec{m}\epsilon_\infty$ |
-| sphere | 4 |  $\displaystyle S=p_1\wedge p_2\wedge p_3\wedge p_4$ |
+| dipole (oriented point pair) | 2 |  $\displaystyle \vec{P}_p=\vec{P}_1\wedge\vec{P}_2$ |
+| circle | 3 |  $\displaystyle C=P_1\wedge P_2\wedge P_3 = \vec{Q} + \frac{1}{2} r^2 \vec{m}\epsilon_\infty$ |
+| sphere | 4 |  $\displaystyle S=P_1\wedge P_2\wedge P_3\wedge p_4$ |
 
 Joining round points with the point in infinity creates the flat objects:
 
 | object | grade | formula |
 | :---------- | :------ |  :-------- |
-| flat (homogeneous) point |  2 |  p&#8743;&#x03B5;&#7522; |
-| spear (join line) | 3 | p1&#8743;p2&#8743;&#x03B5;&#7522; |
-| plane | 4 |  p1&#8743;p2&#8743;p3&#8743;&#x03B5;&#7522;|
+| flat (homogeneous) point |  2 |  $\displaystyle P_f = P \wedge \epsilon_\infty = (\vec{v}+\epsilon_0)\wedge \epsilon_\infty$ |
+| spear (join line) | 3 | $\displaystyle L = P_1 \wedge P_2 \wedge \epsilon_\infty = P \wedge a_1 = \vec{x}_1 \wedge \vec{x}_2 \wedge \epsilon_\infty + (\vec{x}_1 - \vec{x}_2)E_0 = m \epsilon_\infty + d E_0$ |
+| plane | 4 |  $\displaystyle \pi = P_1 \wedge P_2 \wedge P_3 \wedge \epsilon_\infty = P \wedge a_2$|
 
 An oriented point can be created from euclidean parameters/coordinates:
 
