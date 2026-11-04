@@ -224,7 +224,7 @@ The high order functions map, mapaccum, and mapfold are structural loop construc
 
 #### Pseudocode signatures
 - `map(Func<SimpleX... -> SimpleY...>, Array/Simple...) -> Tuple of Array of Simple`
-- `mapaccum(Func<SimpleAcc, SimpleCurrent... -> SimpleAcc, SimpleOut...>, SimpleAccInit, Array/Simple...) -> Tuple of Array of Simple`
+- `mapaccum(Func<SimpleAcc, SimpleCurrent... -> SimpleAcc, SimpleOut...>, SimpleAccInit, Array/Simple...) -> Tuple of Array of Simple, Tuple of Array of Simple`
 - `mapfold(Func<SimpleAcc, SimpleCurrent... -> SimpleAcc, SimpleOut...>, SimpleAccInit, Array/Simple...) -> Tuple`
 
 #### Rules
