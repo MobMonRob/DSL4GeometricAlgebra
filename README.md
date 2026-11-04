@@ -505,10 +505,10 @@ This algebra contains flat and round elements.
 #### Euclidean elements used to create geometric objects
 | object | grade |  formula |
 | :---------- | :---- | :----------------- |
-| scalar | 0 | $s$ |
+| scalar | 0 | $\bf{s} = s$ |
 | (euclidean) vector | 1 | $\vec{x}, \vec{d} = \vec{x}_1 - \vec{x}_2$ |
 | (euclidean) bivector | 2 | $ \vec{m} = \vec{x}_1 \wedge \vec{x}_2$ |
-| (euclidean) trivector | 3 $ \vec{w} = \vec{x}_1 \wedge \vec{x}_2 \wedge \vec{x}_3 = \vec{m} \wedge \vec{x}_3$ |
+| (euclidean) trivector | 3 | $ \vec{w} = \vec{x}\_1 \wedge \vec{x}\_2 \wedge \vec{x}\_3 = \vec{m} \wedge \vec{x}\_3$ |
 
 These euclidean elements can not be transformed by versors with a sandwichproduct.
 
