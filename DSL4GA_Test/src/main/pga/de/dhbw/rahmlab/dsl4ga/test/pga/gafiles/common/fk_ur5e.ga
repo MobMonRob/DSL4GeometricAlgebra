@@ -53,15 +53,7 @@ fn fk(theta[]){
 	//test5 = applyMotor(E₃, M_accum[4]) 
 	//test6 = applyMotor(E₃, M_accum[5]) 
 
-	//test1_ = getEuclideanPoint(test1)
-	//test2_ = getEuclideanPoint(test2)
-
-	//test2_omega = (test2⋅ε₀) // test2⁻*⋅ε₀=0 falsch, aktuell ist auch = 0
-	//test2_omega1 = test2_omega I
-	//test2_1durchomega = 1/(test2⁻*⋅ε₀) // nan in e0
-	//test2_vec = ((test2⁻*∧ε₀)⋅E₃)
-
-    //M_accum, M
+    //)M_accum, M
 	M_accum
 }
 
@@ -141,5 +133,5 @@ fn main(theta1, theta2, theta3, theta4, theta5, theta6, dtheta1, dtheta2, dtheta
 	dir_x = applyMotor(ε₁, M_accum[5]) // -0.817e0+e1 ok but why not normalized
 	//dir_x2d = applyMotor(ε₀∧ε₁, M_accum[5]) //e01, korrekt
 
-		coef(TCP_Euclid , ε₁), coef(TCP_Euclid, ε₂), coef(TCP_Euclid , ε₃), coef(dir_z, ε₁), coef(dir_z, ε₂), coef(dir_z, ε₃), coef(dir_x, ε₁), coef(dir_x, ε₂), coef(dir_x, ε₃), coef(velocity , ε₁), coef(velocity, ε₂), coef(velocity, ε₃), coef(omgega , ε₁), coef(omgega, ε₂), coef(omgega, ε₃)
+		coef(TCP_Euclid , ε₁), coef(TCP_Euclid, ε₂), coef(TCP_Euclid , ε₃), coef(dir_z, ε₁), coef(dir_z, ε₂), coef(dir_z, ε₃), coef(dir_x, ε₁), coef(dir_x, ε₂), coef(dir_x, ε₃), coef(velocity , ε₁), coef(velocity, ε₂), coef(velocity, ε₃), coef(omega , ε₁), coef(omega, ε₂), coef(omega, ε₃)
 }
