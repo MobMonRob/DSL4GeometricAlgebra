@@ -535,7 +535,7 @@ Joining round points with the point in infinity creates the flat objects:
 | object | grade | formula |
 | :---------- | :------ |  :---------- |
 | flat (homogeneous) point | 2 |  $\displaystyle P_f = P \wedge \epsilon_\infty = (\vec{v}+\epsilon_0)\wedge \epsilon_\infty$ |
-| spear (join line) | 3 | $\displaystyle L = P_1 \wedge P_2 \wedge \epsilon_\infty = P \wedge a_1 = \vec{x}_1 \wedge \vec{x}_2 \wedge \epsilon_\infty + (\vec{x}_1 - \vec{x}_2) E_0 = m \epsilon_\infty + d E_0 $ |
+| spear (join line) | 3 | $\displaystyle L = P_1 \wedge P_2 \wedge \epsilon_\infty = P \wedge a_1 = \vec{x}\_1 \wedge \vec{x}\_2 \wedge \epsilon_\infty + (\vec{x}\_1 - \vec{x}\_2) E_0 = m \epsilon_\infty + d E_0 $ |
 | plane | 4 |  $\displaystyle \pi = P_1 \wedge P_2 \wedge P_3 \wedge \epsilon_\infty = P \wedge a_2$| 
 
 An oriented point can be created from euclidean parameters/coordinates:
@@ -578,7 +578,7 @@ Different to PGA there are spheres which do not intersect and further flat geome
 | scalar attitude | 1 | $\displaystyle a_0 = r \epsilon_\infty $ |
 | vector attitude | 2 | $\displaystyle a_1 = \vec{x} \wedge \epsilon_\infty = v \wedge \epsilon_\infty $ |
 | bivector attitude | 3 | $\displaystyle a_2 = \vec{x}\_{1} \wedge \vec{x}\_{2} \wedge \epsilon_\infty = m \wedge \epsilon_\infty$ |
-| trivector attitude | 4 |$\displaystyle a_2 = \vec{x}\textsubscript{1} \wedge \vec{x}\textsubscript{2} \wedge \vec{x}\textsubscript{3} \wedge \epsilon_\infty = w \wedge \epsilon_\infty$|
+| trivector attitude | 4 |$\displaystyle a_2 = \vec{x}\_{1} \wedge \vec{x}\_{2} \wedge \vec{x}\_{3} \wedge \epsilon_\infty = w \wedge \epsilon_\infty$|
 
 ## command line tool
 
