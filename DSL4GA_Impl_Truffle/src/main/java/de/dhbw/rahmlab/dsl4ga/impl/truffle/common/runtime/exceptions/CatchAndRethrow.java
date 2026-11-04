@@ -68,7 +68,8 @@ public abstract class CatchAndRethrow {
 					if (ex.getCause() == null) {
 						throw new LanguageRuntimeException(ex, location);
 					} else {
-						throw new LanguageRuntimeException(ex.getCause(), location);
+						// Preserve the language message while keeping the existing immediate cause.
+						throw new LanguageRuntimeException(ex.getMessage(), ex.getCause(), location);
 					}
 				}
 				System.out.flush();
