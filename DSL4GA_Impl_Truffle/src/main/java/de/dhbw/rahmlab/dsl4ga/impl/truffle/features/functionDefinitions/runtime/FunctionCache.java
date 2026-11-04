@@ -31,12 +31,29 @@ final class FunctionCache {
 			return kind == other.kind && (kind != Kind.TUPLE || length == other.length);
 		}
 	}
+	/** Output nesting is limited to a tuple of multivectors or multivector arrays. */
+	private record OutputShape(Kind kind, int length, List<ValueShape> tupleElements) {
+		OutputShape {
+			tupleElements = List.copyOf(tupleElements);
+		}
+
+		boolean hasSameBaseShape(OutputShape other) {
+			return kind == other.kind && (kind != Kind.TUPLE
+				|| (length == other.length && sameBaseShapes(tupleElements, other.tupleElements)));
+		}
+
+		int leafCount() {
+			return kind == Kind.TUPLE
+				? tupleElements.stream().mapToInt(ValueShape::length).sum()
+				: length;
+		}
+	}
 	private record ArrayLengthKey(List<Integer> lengths) { }
 
 	private static final class FunctionLengthSpecialization {
 		private final List<ValueShape> inputShapes;
 		private final GAFunctionSpecializationCache cache;
-		private ValueShape outputShape;
+		private OutputShape outputShape;
 
 		FunctionLengthSpecialization(List<ValueShape> inputShapes, GAFunctionSpecializationCache cache) {
 			this.inputShapes = inputShapes;
@@ -47,7 +64,7 @@ final class FunctionCache {
 	private final Function owner;
 	private final Map<ArrayLengthKey, FunctionLengthSpecialization> specializations = new HashMap<>();
 	private List<ValueShape> inputBaseShape;
-	private ValueShape outputBaseShape;
+	private OutputShape outputBaseShape;
 
 	FunctionCache(Function owner) { this.owner = owner; }
 
@@ -79,7 +96,7 @@ final class FunctionCache {
 			key -> new FunctionLengthSpecialization(inputShapes, newBackendCache()));
 		// Could simplify Arguments as well.
 		List<MultivectorExpression> flatArguments = flatten(arguments, inputShapes);
-		ValueShape[] createdOutputShape = new ValueShape[1];
+		OutputShape[] createdOutputShape = new OutputShape[1];
 		GeomAlgeLangContext context = GeomAlgeLangContext.get();
 		String funcName = Integer.toString(context.getFunctionSpecializationScopeDepth() + 1);
 		List<MultivectorExpression> flatResult = specialization.cache.executeCached(flatArguments, funcName,
@@ -104,7 +121,7 @@ final class FunctionCache {
 		List<MultivectorExpression> flatArguments = flatten(arguments, inputShapes);
 		List<Object> shapedArguments = deflattenInput(flatArguments, inputShapes);
 		Object result = rawCall.call(new Object[]{new ListTruffleBox(shapedArguments)});
-		ValueShape outputShape = analyseOutput(result);
+		OutputShape outputShape = analyseOutput(result);
 		bindOutputBaseShape(outputShape);
 		List<MultivectorExpression> flatResult = flattenOutput(result, outputShape);
 		if (flatResult.isEmpty()) {
@@ -135,13 +152,13 @@ final class FunctionCache {
 	}
 
 	private List<MultivectorExpression> create(List<MultivectorVariable> formalVariables,
-		FunctionLengthSpecialization specialization, RawCall rawCall, ValueShape[] createdOutputShape) {
+		FunctionLengthSpecialization specialization, RawCall rawCall, OutputShape[] createdOutputShape) {
 		GeomAlgeLangContext context = GeomAlgeLangContext.get();
 		context.pushFunctionSpecializationVariables(formalVariables);
 		try {
 			List<Object> deflattenedArguments = deflattenInput(formalVariables, specialization.inputShapes);
 			Object result = rawCall.call(new Object[]{new ListTruffleBox(deflattenedArguments)});
-			ValueShape outputShape = analyseOutput(result);
+			OutputShape outputShape = analyseOutput(result);
 			validateOutputBaseShape(outputShape);
 			if (specialization.outputShape != null && !specialization.outputShape.equals(outputShape)) {
 				throw new ValidationException("Function cache for '" + owner.getName()
@@ -170,12 +187,12 @@ final class FunctionCache {
 		}
 	}
 
-	private void bindOutputBaseShape(ValueShape outputShape) {
+	private void bindOutputBaseShape(OutputShape outputShape) {
 		validateOutputBaseShape(outputShape);
 		if (outputBaseShape == null) outputBaseShape = outputShape;
 	}
 
-	private void validateOutputBaseShape(ValueShape outputShape) {
+	private void validateOutputBaseShape(OutputShape outputShape) {
 		if (outputBaseShape != null && !outputBaseShape.hasSameBaseShape(outputShape)) {
 			throw new ValidationException("Function cache for '" + owner.getName() + "' produced a different output base shape.");
 		}
@@ -197,17 +214,24 @@ final class FunctionCache {
 		return List.copyOf(shapes);
 	}
 
-	private ValueShape analyseOutput(Object value) {
+	private OutputShape analyseOutput(Object value) {
+		if (value instanceof Tuple tuple) {
+			Object[] values = tuple.getValues();
+			List<ValueShape> elements = new ArrayList<>(values.length);
+			for (int i = 0; i < values.length; i++) elements.add(analyseOutputElement(values[i], i));
+			return new OutputShape(Kind.TUPLE, values.length, elements);
+		}
+		ValueShape shape = analyseOutputElement(value, 0);
+		return new OutputShape(shape.kind(), shape.length(), List.of());
+	}
+
+	private ValueShape analyseOutputElement(Object value, int index) {
 		if (value instanceof MultivectorExpression) return new ValueShape(Kind.MULTIVECTOR, 1);
 		if (value instanceof ArrayObject array) {
-			validateLeaves(array.getValues(), "output", 0);
+			validateLeaves(array.getValues(), "output", index);
 			return new ValueShape(Kind.ARRAY, array.getValues().length);
 		}
-		if (value instanceof Tuple tuple) {
-			validateLeaves(tuple.getValues(), "output", 0);
-			return new ValueShape(Kind.TUPLE, tuple.getValues().length);
-		}
-		throw unsupported("output", 0, value);
+		throw unsupported("output", index, value);
 	}
 
 	private ArrayLengthKey arrayLengthKey(List<ValueShape> shapes) {
@@ -240,14 +264,24 @@ final class FunctionCache {
 		return result;
 	}
 
-	private List<MultivectorExpression> flattenOutput(Object value, ValueShape shape) {
+	private List<MultivectorExpression> flattenOutput(Object value, OutputShape shape) {
 		if (shape.kind() == Kind.MULTIVECTOR) return List.of((MultivectorExpression) value);
+		if (shape.kind() == Kind.TUPLE) {
+			return flatten(Arrays.asList(((Tuple) value).getValues()), shape.tupleElements());
+		}
 		return Arrays.stream(leaves(value)).map(leaf -> (MultivectorExpression) leaf).toList();
 	}
 
-	private Object deflattenOutput(List<MultivectorExpression> leaves, ValueShape shape) {
+	private Object deflattenOutput(List<MultivectorExpression> leaves, OutputShape shape) {
+		if (leaves.size() != shape.leafCount()) {
+			throw new ValidationException("Function cache for '" + owner.getName()
+				+ "' returned a multivector count that does not match its output shape.");
+		}
 		if (shape.kind() == Kind.MULTIVECTOR) return leaves.get(0);
-		return container(shape.kind(), leaves.toArray());
+		if (shape.kind() == Kind.TUPLE) {
+			return new Tuple(deflattenInput(leaves, shape.tupleElements()).toArray());
+		}
+		return new ArrayObject(leaves.toArray());
 	}
 
 	private static Object[] take(List<? extends MultivectorExpression> leaves, int[] index, int count) {
