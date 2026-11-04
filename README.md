@@ -502,6 +502,16 @@ This algebra contains flat and round elements.
 #### Useful equations between some of the above symbols
 &#x03B5;&#x2080;&#x0045;&#x2080;=-&#x03B5;&#x2080;, &#x0045;&#x2080;&#x03B5;&#x2080;=&#x03B5;&#x2080;, &#x03B5;&#x1D62;&#x0045;&#x2080;=&#x03B5;&#x1D62;, &#x0045;&#x2080;&#x03B5;&#x1D62;=-&#x03B5;&#x1D62;, &#x0045;&#x2080;&#x00B2;=1, &#x03B5;&#x2080;&#x00B2;=&#x03B5;&#x1D62;&#x00B2;=0, &#x03B5;&#x208A;&#x00B2;=1, &#x03B5;&#x208B;&#x00B2;=-1, &#x03B5;&#x208A;&#x22C5;&#x03B5;&#x208B;=0
 
+#### Euclidean elements used to create geometric objects
+| object | grade |  formula |
+| :---------- | :---- | :----------------- |
+| scalar | 0 | $s$ |
+| (euclidean) vector | 1 | $\vec{x}, \vec{d} = \vec{x}_1 - \vec{x}_2$ |
+| (euclidean) bivector | 2 | $ \vec{m} = \vec{x}_1 \wedge \vec{x}_2$ |
+| (euclidean) trivector | 3 $ \vec{w} = \vec{x}_1 \wedge \vec{x}_2 \wedge \vec{x}_3 = \vec{m} \wedge \vec{x}_3$ |
+
+These euclidean elements can not be transformed by versors with a sandwichproduct.
+
 #### Geometric objects with intrinsic orientation type
 
 The orientation type of these objects corresponds with the so called outer product null space representation (OPNS), sometimes also named as "direct" representation.
@@ -560,6 +570,15 @@ Different to PGA there are spheres which do not intersect and further flat geome
 | plane  | 1 | $\displaystyle \pi = \vec{x} + d\epsilon_\infty = \vec{n}+(\vec{x}\cdot\vec{n})\epsilon_\infty$ | $d$ is ar real number representing the signed distance to the origin |
 | axis (meet line) | 2 | $\displaystyle L = \pi_1\wedge\pi_2 = (\vec{n}+(\vec{x}\wedge\vec{n})\epsilon_\infty)E_3$ | |
 | flat point | 3 | $\displaystyle P_f = \pi_1 \wedge \pi_2 \wedge \pi_3 = (\vec{x}\wedge \epsilon_\infty-1)E_3$|
+
+#### Attitudes and tangents
+
+| object | grade |  formula |
+| :---------- | :------ | :-------------|
+| scalar attitude | 1 | $a_0 = r \epsilon_\infty $ |
+| vector attitude | 2 | $ a_1 = \vec{x} \wedge \epsilon_\infty = v \wedge \epsilon_\infty $ |
+| bivector attitude | 3 | $a_2 = \vec{x}_1 \wedge \vec{x}_2 \wedge \epsilon_\infty = m \wedge \epsilon_\infty$ |
+| trivector attitude | 4 |$a_2 = \vec{x}_1 \wedge \vec{x}_2 \wedge \vec{x}_3 \wedge \epsilon_\infty = w \wedge \epsilon_\infty$|
 
 ## command line tool
 
