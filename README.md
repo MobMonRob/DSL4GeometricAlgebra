@@ -224,7 +224,7 @@ The high order functions map, mapaccum, and mapfold are structural loop construc
 
 #### Pseudocode signatures
 - `map(Func<SimpleX... -> SimpleY...>, Array/Simple...) -> Tuple of Array of Simple`
-- `mapaccum(Func<SimpleAcc, SimpleCurrent... -> SimpleAcc, SimpleOut...>, SimpleAccInit, Array/Simple...) -> Tuple of Array of Simple`
+- `mapaccum(Func<SimpleAcc, SimpleCurrent... -> SimpleAcc, SimpleOut...>, SimpleAccInit, Array/Simple...) -> Tuple of Array of Simple, Tuple of Array of Simple`
 - `mapfold(Func<SimpleAcc, SimpleCurrent... -> SimpleAcc, SimpleOut...>, SimpleAccInit, Array/Simple...) -> Tuple`
 
 #### Rules
@@ -378,16 +378,16 @@ There exist three types of involution operations: Space inversion, reversion and
 | sqrt()      | squared root of a general rotor/even multivector or a scalar |
 | squaredNorm()      | squared norm of a mulitvector |
 
-#### functions to work with and manipulate coefficients of multivectors
+#### Functions to work with and manipulate coefficients of multivectors
 | symbol      | description |
 | :---------- | ------------ |
 | setBlade()  | with 3 multivectors as arguments. 1. the multivector to be applied on, 2. the bladeIndexMV which contains only 1 blade, used to select the blade, 3. a scalar containing the expression or value the selected blade's coefficient will be set to. Can be used to enforce structural zeroes. |
 | filterGrade() | Retains only blades of the given grade. 1. argument: mv to be filtered. 2. argument: grade. |
 | idle()      | idle part of the multivector (Blades containing base elements with metric 0 or -1. (without 0-grade scalar)) - encodes the position relative to the origin; an object with a vanashing idea part necessarily passes through the origin |
 | euclid()    | euclidean part of the multivector (Blades containing **only** base elements with metric 1 and no others. (without 0-grade scalar)) - encodes the objects orientation or weight; an object with a non zero euclidean part is called finite; an object with a vanashing euclidean part is called idle  |
-| coef()      | with two multivectors as arguments. The second defines the index of a blade and therefore must be a one blade only. The function extracts the coefficient for this blade in the first argument as as scalar. |
+| coef()      | with two multivectors as arguments. The second defines the blade and therefore must be a one blade multivector only. The function extracts the coefficient for this blade in the first argument as as scalar, e.g. $coef(m, \epsilon_{12})$ results in a multivector which contains the coeffcient of the blade $\epsilon_{12}$ of the multivector $m$ in the scalar part. |
 
-#### functions to optimize the underlaying expressions
+#### Functions to optimize the underlaying expressions
 | symbol      | description |
 | :---------- | ------------ |
 | simplify()  | simplifies the underlying expression. Helpful in debugging to see if structural zeroes are created or unexpected values might be caused by compounded numerical errors. |
@@ -502,6 +502,16 @@ This algebra contains flat and round elements.
 #### Useful equations between some of the above symbols
 &#x03B5;&#x2080;&#x0045;&#x2080;=-&#x03B5;&#x2080;, &#x0045;&#x2080;&#x03B5;&#x2080;=&#x03B5;&#x2080;, &#x03B5;&#x1D62;&#x0045;&#x2080;=&#x03B5;&#x1D62;, &#x0045;&#x2080;&#x03B5;&#x1D62;=-&#x03B5;&#x1D62;, &#x0045;&#x2080;&#x00B2;=1, &#x03B5;&#x2080;&#x00B2;=&#x03B5;&#x1D62;&#x00B2;=0, &#x03B5;&#x208A;&#x00B2;=1, &#x03B5;&#x208B;&#x00B2;=-1, &#x03B5;&#x208A;&#x22C5;&#x03B5;&#x208B;=0
 
+#### Euclidean elements used to create geometric objects
+| object | grade |  formula |
+| :---------- | :---- | :----------------- |
+| scalar | 0 | $\bf{s} = s$ |
+| (euclidean) vector | 1 | $\displaystyle\vec{x}, \vec{d} = \vec{x}\_1 - \vec{x}\_2$ |
+| (euclidean) bivector | 2 | $\displaystyle \vec{m} = \vec{x}\_1 \wedge \vec{x}\_2$ |
+| (euclidean) trivector | 3 | $\displaystyle \vec{w} = \vec{x}\_1 \wedge \vec{x}\_2 \wedge \vec{x}\_3 = \vec{m} \wedge \vec{x}\_3$ |
+
+These euclidean elements are not transformed properly by versors with a sandwichproduct.
+
 #### Geometric objects with intrinsic orientation type
 
 The orientation type of these objects corresponds with the so called outer product null space representation (OPNS), sometimes also named as "direct" representation.
@@ -510,29 +520,29 @@ Round points can be created from euclidean parameters/coordinates:
 
 | object | grade |  formula |
 | :---------- | :---- | :----------------- |
-| round point | 1 |  $\displaystyle p=\vec{x}+\frac{1}{2}\vec{x}^2\epsilon_\infty+\epsilon_0$ |
+| round point | 1 |  $\displaystyle P=\vec{x}+\frac{1}{2}\vec{x}^2\epsilon_\infty+\epsilon_0$ |
 
 Joining round points only (using the wedge-operator) produces further round objects. That´s why these geometric objects are called "point-based".
 
 | object | grade | formula |
 | :---------- | :------ | :-------- |
-| dipole (oriented point pair) | 2 |  $\displaystyle \vec{P}_p=\vec{p}_1\wedge\vec{p}_2$ |
-| circle | 3 |  $\displaystyle C=p_1\wedge p_2\wedge p_3$ |
-| sphere | 4 |  $\displaystyle S=p_1\wedge p_2\wedge p_3\wedge p_4$ |
+| dipole (oriented point pair) | 2 |  $\displaystyle \vec{P}_p=\vec{P}_1\wedge\vec{P}_2$ |
+| circle | 3 |  $\displaystyle C=P_1\wedge P_2\wedge P_3 = \vec{Q} + \frac{1}{2} r^2 \vec{m}\epsilon_\infty$ |
+| sphere | 4 |  $\displaystyle S=P_1\wedge P_2\wedge P_3\wedge p_4$ |
 
 Joining round points with the point in infinity creates the flat objects:
 
 | object | grade | formula |
-| :---------- | :------ |  :-------- |
-| flat (homogeneous) point |  2 |  p&#8743;&#x03B5;&#7522; |
-| spear (join line) | 3 | p1&#8743;p2&#8743;&#x03B5;&#7522; |
-| plane | 4 |  p1&#8743;p2&#8743;p3&#8743;&#x03B5;&#7522;|
+| :---------- | :------ |  :---------- |
+| flat (homogeneous) point | 2 |  $\displaystyle P_f = P \wedge \epsilon_\infty = (\vec{v}+\epsilon_0)\wedge \epsilon_\infty$ |
+| spear (join line) | 3 | $\displaystyle L = P_1 \wedge P_2 \wedge \epsilon_\infty = P \wedge a_1 = \vec{x}\_1 \wedge \vec{x}\_2 \wedge \epsilon_\infty + (\vec{x}\_1 - \vec{x}\_2) E_0 = m \epsilon_\infty + d E_0 $ |
+| plane | 4 |  $\displaystyle \pi = P_1 \wedge P_2 \wedge P_3 \wedge \epsilon_\infty = P \wedge a_2$| 
 
 An oriented point can be created from euclidean parameters/coordinates:
 
 | object | grade | type | formula |
 | :---------- | :---- | :----| :-------------------- |
-| oriented point | 3 | round | 	$$\vec{Q}=\vec{m}\wedge\vec{v}+(\frac{1}{2}\vec{v}^2\vec{m}-\vec{v}(\vec{v}\cdot\vec{m}))\epsilon_\infty+\vec{m}\epsilon_0-\vec{m}\cdot\vec{v}E_0$$|
+| oriented point | 3 | round | 	$$Q=\vec{m}\wedge\vec{v}+(\frac{1}{2}\vec{v}^2\vec{m}-\vec{v}(\vec{v}\cdot\vec{m}))\epsilon_\infty+\vec{m}\epsilon_0-\vec{m}\cdot\vec{v}E_0$$|
 
 #### Geometric objects with extrinsic orientation type
 
@@ -542,22 +552,33 @@ Spheres can be created from euclidean parameters/coordinates:
 
 | object | grade |  formula | description |
 | :---------- | :---- |  :---------- | -------------------|
-| sphere | 1 |  $ s = p - \frac{1}{2} r^2\epsilon_{\infty} $ | p is a point of extrinsic orientation type |
+| sphere | 1 |  $\displaystyle S = P - \frac{1}{2} r^2\epsilon_{\infty}  = \vec{x} + \frac{1}{2}(\vec{x}^2 - r^2)\epsilon_\infty + \epsilon_0$ | $p$ is a point of extrinsic orientation type |
 
 Further round objects are constructed by intersection of spheres (using the wedge-operator). That´s why these geometric objects are called "sphere-based".
 
 | object | grade |  formula |
 | :---------- | :------ | :-------------|
-| circle  | 2 |  s1&#8743;s2 |
-| point pair | 3 |  s1&#8743;s2&#8743;s3 |
-| point  | 4 |  s1&#8743;s2&#8743;s3&#8743;s4 |
+| circle  | 2 |  $\displaystyle S = S_1 \wedge S_2 = S \wedge \pi = \epsilon_0 \wedge \vec{n} + (\vec{x}\cdot\vec{n})E_0 + \vec{x} \wedge \vec{n} + ((\vec{x}\cdot\vec{n})\vec{x}-\frac{1}{2}(\vec{x}^2-r^2)\vec{n})\wedge \epsilon_\infty)$ |
+| oriented point | 2 | $\displaystyle Q = \vec{n}\wedge\vec{x} + (\frac{1}{2}\vec{x}^2\vec{n}-\vec{x}(\vec{x}\cdot\vec{n}))\epsilon_\infty+\vec{n}\epsilon_0-(\vec{x}\cdot\vec{n})E_0$|
+| point pair | 3 |  $\displaystyle P_p = S_1 \wedge S_2 \wedge S_3 = (\epsilon_0 \wedge \vec{n} + \vec{x} \wedge \vec{n} \wedge E_0 + \vec{x} \cdot \vec{n} - (\vec{x}\cdot\vec{n})\vec{n} - \frac{1}{2}(\vec{x}^2+r^2)\vec{n})\wedge\epsilon_\infty)E_3 = (\vec{p}-\frac{1}{2}r^2\epsilon_\infty)\wedge (-\vec{p}\cdot\vec{n}/(E_3\epsilon_\infty)) $ |
+| point  | 4 |  $\displaystyle P = S_1 \wedge S_2 \wedge S_3$ |
 
 Different to PGA there are spheres which do not intersect and further flat geometric objects are determined otherwise.
 
+| object | grade | formula | remarks |
+| :---------- | :------ | :-------------| :-------------|
+| plane  | 1 | $\displaystyle \pi = \vec{x} + d\epsilon_\infty = \vec{n}+(\vec{x}\cdot\vec{n})\epsilon_\infty$ | $d$ is ar real number representing the signed distance to the origin |
+| axis (meet line) | 2 | $\displaystyle L = \pi_1\wedge\pi_2 = (\vec{n}+(\vec{x}\wedge\vec{n})\epsilon_\infty)E_3$ | |
+| flat point | 3 | $\displaystyle P_f = \pi_1 \wedge \pi_2 \wedge \pi_3 = (\vec{x}\wedge \epsilon_\infty-1)E_3$|
+
+#### Attitudes and tangents
+
 | object | grade |  formula |
-| :---------- | :------ |  :-------------|
-| plane  | 1 |  n+d&#x03B5;&#7522; |
-| axis (meet line) | 2 |  p1&#8743;p2 |
+| :---------- | :------ | :-------------|
+| scalar attitude | 1 | $\displaystyle a_0 = r \epsilon_\infty $ |
+| vector attitude | 2 | $\displaystyle a_1 = \vec{x} \wedge \epsilon_\infty = v \wedge \epsilon_\infty $ |
+| bivector attitude | 3 | $\displaystyle a_2 = \vec{x}\_{1} \wedge \vec{x}\_{2} \wedge \epsilon_\infty = m \wedge \epsilon_\infty$ |
+| trivector attitude | 4 |$\displaystyle a_2 = \vec{x}\_{1} \wedge \vec{x}\_{2} \wedge \vec{x}\_{3} \wedge \epsilon_\infty = w \wedge \epsilon_\infty$|
 
 ## command line tool
 
