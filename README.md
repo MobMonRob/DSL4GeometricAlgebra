@@ -523,9 +523,9 @@ Joining round points only (using the wedge-operator) produces further round obje
 Joining round points with the point in infinity creates the flat objects:
 
 | object | grade | formula |
-| :---------- | :------ |  :-------- |
-| flat (homogeneous) point |  2 |  $\displaystyle P_f = P \wedge \epsilon_\infty = (\vec{v}+\epsilon_0)\wedge \epsilon_\infty$ |
-| spear (join line) | 3 | $$ L = P_1 \wedge P_2 \wedge \epsilon_\infty = P \wedge a_1 = \vec{x}_1 \wedge \vec{x}_2 \wedge \epsilon_\infty + (\vec{x}_1 - \vec{x}_2) E_0 = m \epsilon_\infty + d E_0 $$ |
+| :---------- | :------ |  :---------- |
+| flat (homogeneous) point | 2 |  $\displaystyle P_f = P \wedge \epsilon_\infty = (\vec{v}+\epsilon_0)\wedge \epsilon_\infty$ |
+| spear (join line) | 3 | $\displaystyle L = P_1 \wedge P_2 \wedge \epsilon_\infty = P \wedge a_1 = \vec{x}_1 \wedge \vec{x}_2 \wedge \epsilon_\infty + (\vec{x}_1 - \vec{x}_2) E_0 = m \epsilon_\infty + d E_0 $ |
 | plane | 4 |  $\displaystyle \pi = P_1 \wedge P_2 \wedge P_3 \wedge \epsilon_\infty = P \wedge a_2$| 
 
 An oriented point can be created from euclidean parameters/coordinates:
