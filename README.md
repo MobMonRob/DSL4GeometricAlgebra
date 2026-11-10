@@ -448,7 +448,7 @@ Homogeneous/directed points are defined as:
 | object | grade | formula | description |
 | :---------- | :------ | :-------- | ----------- |
 | point | 1 |  $\displaystyle p = e_0 + \vec{x}$ | |
-| 0D direction | 1 | $\displaystyle p = \vec{x}$ | This is the direction of the vanashing point. |
+| 0D direction | 1 | $\displaystyle p = \vec{x}$ | This is the direction of the vanashing/ideal point. It results from shifting a point to infinity |
 
 and from this, the following geometric objects can be created by joining the points (using the wedge-operator):
 
