@@ -1,0 +1,25 @@
+#algebra pga
+
+fn motorDH(theta, a, d, alpha) {
+	T_z = 1 + 0.5 d (ε₀ ∧ ε₃)
+	R_z = cos(0.5 theta) - sin(0.5 theta) (ε₁ ∧ ε₂)
+	T_x = 1 + 0.5 a (ε₀ ∧ ε₁)
+	R_x = cos(0.5 alpha) - sin(0.5 alpha) (ε₂ ∧ ε₃)
+	R_z T_z T_x R_x
+}
+
+fn accumMotor(M_prev, theta, a, d, alpha) {
+	M = motorDH(theta, a, d, alpha)
+	M_total = M_prev M
+	M_total, M
+}
+
+fn main() {
+	a[] = {0, -0.425, -0.3922, 0, 0, 0}
+	d[] = {0.1625, 0, 0, 0.1333, 0.0997, 0.0996}
+	alpha[] = {π/2, 0, 0, π/2, -π/2, 0}
+	theta[] = {0, 0.1, 0.2, 0.3, 0.4, 0.5}
+	M_accum[], M[] = mapaccum(accumMotor, 1, theta, a, d, alpha)
+	m = M_accum[-1]
+	coef(m, 1), coef(m, ε₀∧ε₁), coef(m, ε₀∧ε₂), coef(m, ε₀∧ε₃), coef(m, ε₁∧ε₂), coef(m, ε₁∧ε₃), coef(m, ε₂∧ε₃), coef(m, E₃)
+}

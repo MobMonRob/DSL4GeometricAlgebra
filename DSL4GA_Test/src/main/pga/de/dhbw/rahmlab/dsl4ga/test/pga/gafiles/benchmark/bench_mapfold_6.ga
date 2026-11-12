@@ -1,0 +1,12 @@
+#algebra pga
+
+fn linearMap(prev, a, b) {
+	prev + a b
+}
+
+fn main() {
+	Ls[] = {ε₁∧ε₂, ε₁∧ε₂ + 0.001 (ε₀∧ε₃), ε₁∧ε₂ + 0.002 (ε₀∧ε₃), ε₁∧ε₂ + 0.003 (ε₀∧ε₃), ε₁∧ε₂ + 0.004 (ε₀∧ε₃), ε₁∧ε₂ + 0.005 (ε₀∧ε₃)}
+	dtheta[] = {0.01, 0.02, 0.03, 0.04, 0.05, 0.01}
+	twist = mapfold(linearMap, 0, Ls, dtheta)
+	coef(twist, 1), coef(twist, ε₀∧ε₁), coef(twist, ε₀∧ε₂), coef(twist, ε₀∧ε₃), coef(twist, ε₁∧ε₂), coef(twist, ε₁∧ε₃), coef(twist, ε₂∧ε₃), coef(twist, E₃)
+}

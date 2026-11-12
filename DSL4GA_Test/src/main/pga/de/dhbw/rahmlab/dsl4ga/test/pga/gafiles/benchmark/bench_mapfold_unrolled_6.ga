@@ -1,0 +1,14 @@
+#algebra pga
+
+fn main() {
+	Ls[] = {ε₁∧ε₂, ε₁∧ε₂ + 0.001 (ε₀∧ε₃), ε₁∧ε₂ + 0.002 (ε₀∧ε₃), ε₁∧ε₂ + 0.003 (ε₀∧ε₃), ε₁∧ε₂ + 0.004 (ε₀∧ε₃), ε₁∧ε₂ + 0.005 (ε₀∧ε₃)}
+	dtheta[] = {0.01, 0.02, 0.03, 0.04, 0.05, 0.01}
+	t0 = 0 + dtheta[0] Ls[0]
+	t1 = t0 + dtheta[1] Ls[1]
+	t2 = t1 + dtheta[2] Ls[2]
+	t3 = t2 + dtheta[3] Ls[3]
+	t4 = t3 + dtheta[4] Ls[4]
+	t5 = t4 + dtheta[5] Ls[5]
+	twist = t5
+	coef(twist, 1), coef(twist, ε₀∧ε₁), coef(twist, ε₀∧ε₂), coef(twist, ε₀∧ε₃), coef(twist, ε₁∧ε₂), coef(twist, ε₁∧ε₃), coef(twist, ε₂∧ε₃), coef(twist, E₃)
+}

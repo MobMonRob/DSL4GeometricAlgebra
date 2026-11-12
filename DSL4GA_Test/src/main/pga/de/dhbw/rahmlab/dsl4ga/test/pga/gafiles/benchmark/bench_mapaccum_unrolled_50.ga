@@ -1,0 +1,68 @@
+#algebra pga
+
+fn motorDH(theta, a, d, alpha) {
+	T_z = 1 + 0.5 d (ε₀ ∧ ε₃)
+	R_z = cos(0.5 theta) - sin(0.5 theta) (ε₁ ∧ ε₂)
+	T_x = 1 + 0.5 a (ε₀ ∧ ε₁)
+	R_x = cos(0.5 alpha) - sin(0.5 alpha) (ε₂ ∧ ε₃)
+	R_z T_z T_x R_x
+}
+
+fn main() {
+	a[] = {0, -0.425, -0.3922, 0, 0, 0, 0, -0.425, -0.3922, 0, 0, 0, 0, -0.425, -0.3922, 0, 0, 0, 0, -0.425, -0.3922, 0, 0, 0, 0, -0.425, -0.3922, 0, 0, 0, 0, -0.425, -0.3922, 0, 0, 0, 0, -0.425, -0.3922, 0, 0, 0, 0, -0.425, -0.3922, 0, 0, 0, 0, -0.425}
+	d[] = {0.1625, 0, 0, 0.1333, 0.0997, 0.0996, 0.1625, 0, 0, 0.1333, 0.0997, 0.0996, 0.1625, 0, 0, 0.1333, 0.0997, 0.0996, 0.1625, 0, 0, 0.1333, 0.0997, 0.0996, 0.1625, 0, 0, 0.1333, 0.0997, 0.0996, 0.1625, 0, 0, 0.1333, 0.0997, 0.0996, 0.1625, 0, 0, 0.1333, 0.0997, 0.0996, 0.1625, 0, 0, 0.1333, 0.0997, 0.0996, 0.1625, 0}
+	alpha[] = {π/2, 0, 0, π/2, -π/2, 0, π/2, 0, 0, π/2, -π/2, 0, π/2, 0, 0, π/2, -π/2, 0, π/2, 0, 0, π/2, -π/2, 0, π/2, 0, 0, π/2, -π/2, 0, π/2, 0, 0, π/2, -π/2, 0, π/2, 0, 0, π/2, -π/2, 0, π/2, 0, 0, π/2, -π/2, 0, π/2, 0}
+	theta[] = {0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0}
+	m0 = motorDH(theta[0], a[0], d[0], alpha[0])
+	m1 = m0 motorDH(theta[1], a[1], d[1], alpha[1])
+	m2 = m1 motorDH(theta[2], a[2], d[2], alpha[2])
+	m3 = m2 motorDH(theta[3], a[3], d[3], alpha[3])
+	m4 = m3 motorDH(theta[4], a[4], d[4], alpha[4])
+	m5 = m4 motorDH(theta[5], a[5], d[5], alpha[5])
+	m6 = m5 motorDH(theta[6], a[6], d[6], alpha[6])
+	m7 = m6 motorDH(theta[7], a[7], d[7], alpha[7])
+	m8 = m7 motorDH(theta[8], a[8], d[8], alpha[8])
+	m9 = m8 motorDH(theta[9], a[9], d[9], alpha[9])
+	m10 = m9 motorDH(theta[10], a[10], d[10], alpha[10])
+	m11 = m10 motorDH(theta[11], a[11], d[11], alpha[11])
+	m12 = m11 motorDH(theta[12], a[12], d[12], alpha[12])
+	m13 = m12 motorDH(theta[13], a[13], d[13], alpha[13])
+	m14 = m13 motorDH(theta[14], a[14], d[14], alpha[14])
+	m15 = m14 motorDH(theta[15], a[15], d[15], alpha[15])
+	m16 = m15 motorDH(theta[16], a[16], d[16], alpha[16])
+	m17 = m16 motorDH(theta[17], a[17], d[17], alpha[17])
+	m18 = m17 motorDH(theta[18], a[18], d[18], alpha[18])
+	m19 = m18 motorDH(theta[19], a[19], d[19], alpha[19])
+	m20 = m19 motorDH(theta[20], a[20], d[20], alpha[20])
+	m21 = m20 motorDH(theta[21], a[21], d[21], alpha[21])
+	m22 = m21 motorDH(theta[22], a[22], d[22], alpha[22])
+	m23 = m22 motorDH(theta[23], a[23], d[23], alpha[23])
+	m24 = m23 motorDH(theta[24], a[24], d[24], alpha[24])
+	m25 = m24 motorDH(theta[25], a[25], d[25], alpha[25])
+	m26 = m25 motorDH(theta[26], a[26], d[26], alpha[26])
+	m27 = m26 motorDH(theta[27], a[27], d[27], alpha[27])
+	m28 = m27 motorDH(theta[28], a[28], d[28], alpha[28])
+	m29 = m28 motorDH(theta[29], a[29], d[29], alpha[29])
+	m30 = m29 motorDH(theta[30], a[30], d[30], alpha[30])
+	m31 = m30 motorDH(theta[31], a[31], d[31], alpha[31])
+	m32 = m31 motorDH(theta[32], a[32], d[32], alpha[32])
+	m33 = m32 motorDH(theta[33], a[33], d[33], alpha[33])
+	m34 = m33 motorDH(theta[34], a[34], d[34], alpha[34])
+	m35 = m34 motorDH(theta[35], a[35], d[35], alpha[35])
+	m36 = m35 motorDH(theta[36], a[36], d[36], alpha[36])
+	m37 = m36 motorDH(theta[37], a[37], d[37], alpha[37])
+	m38 = m37 motorDH(theta[38], a[38], d[38], alpha[38])
+	m39 = m38 motorDH(theta[39], a[39], d[39], alpha[39])
+	m40 = m39 motorDH(theta[40], a[40], d[40], alpha[40])
+	m41 = m40 motorDH(theta[41], a[41], d[41], alpha[41])
+	m42 = m41 motorDH(theta[42], a[42], d[42], alpha[42])
+	m43 = m42 motorDH(theta[43], a[43], d[43], alpha[43])
+	m44 = m43 motorDH(theta[44], a[44], d[44], alpha[44])
+	m45 = m44 motorDH(theta[45], a[45], d[45], alpha[45])
+	m46 = m45 motorDH(theta[46], a[46], d[46], alpha[46])
+	m47 = m46 motorDH(theta[47], a[47], d[47], alpha[47])
+	m48 = m47 motorDH(theta[48], a[48], d[48], alpha[48])
+	m49 = m48 motorDH(theta[49], a[49], d[49], alpha[49])
+	m = m49
+	coef(m, 1), coef(m, ε₀∧ε₁), coef(m, ε₀∧ε₂), coef(m, ε₀∧ε₃), coef(m, ε₁∧ε₂), coef(m, ε₁∧ε₃), coef(m, ε₂∧ε₃), coef(m, E₃)
+}

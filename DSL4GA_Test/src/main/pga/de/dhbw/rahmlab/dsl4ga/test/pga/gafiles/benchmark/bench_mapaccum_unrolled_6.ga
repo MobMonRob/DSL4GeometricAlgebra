@@ -1,0 +1,24 @@
+#algebra pga
+
+fn motorDH(theta, a, d, alpha) {
+	T_z = 1 + 0.5 d (ε₀ ∧ ε₃)
+	R_z = cos(0.5 theta) - sin(0.5 theta) (ε₁ ∧ ε₂)
+	T_x = 1 + 0.5 a (ε₀ ∧ ε₁)
+	R_x = cos(0.5 alpha) - sin(0.5 alpha) (ε₂ ∧ ε₃)
+	R_z T_z T_x R_x
+}
+
+fn main() {
+	a[] = {0, -0.425, -0.3922, 0, 0, 0}
+	d[] = {0.1625, 0, 0, 0.1333, 0.0997, 0.0996}
+	alpha[] = {π/2, 0, 0, π/2, -π/2, 0}
+	theta[] = {0, 0.1, 0.2, 0.3, 0.4, 0.5}
+	m0 = motorDH(theta[0], a[0], d[0], alpha[0])
+	m1 = m0 motorDH(theta[1], a[1], d[1], alpha[1])
+	m2 = m1 motorDH(theta[2], a[2], d[2], alpha[2])
+	m3 = m2 motorDH(theta[3], a[3], d[3], alpha[3])
+	m4 = m3 motorDH(theta[4], a[4], d[4], alpha[4])
+	m5 = m4 motorDH(theta[5], a[5], d[5], alpha[5])
+	m = m5
+	coef(m, 1), coef(m, ε₀∧ε₁), coef(m, ε₀∧ε₂), coef(m, ε₀∧ε₃), coef(m, ε₁∧ε₂), coef(m, ε₁∧ε₃), coef(m, ε₂∧ε₃), coef(m, E₃)
+}
